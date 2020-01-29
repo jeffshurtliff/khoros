@@ -24,13 +24,10 @@ def initialize(**kwargs):
     :returns: None
     """
     # Define the global dictionary if it doesn't already exist
-    try:
-        settings
-    except NameError:
-        global settings
-        settings = {}
+    global settings
+    settings = {}
 
     # Execute the khoros.core.initialize() function and retrieve the global variable
-    core.initialize(kwargs)
+    core.initialize(**kwargs)
     settings = core.settings
     return

@@ -18,11 +18,8 @@ def initialize(**kwargs):
     :returns: None
     """
     # Define the global dictionary if it doesn't already exist
-    try:
-        settings
-    except NameError:
-        global settings
-        settings = {}
+    global settings
+    settings = {}
 
     # Populate the dictionary with any supplied key value pairs that are supported
     permitted_fields = ['base_url', 'community', 'access_token', 'helper']
