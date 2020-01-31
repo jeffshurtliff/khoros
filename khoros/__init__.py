@@ -6,28 +6,13 @@
 :Example:        ``khoros.initialize(base_url='community.example.com', community='mycommunity')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  29 Jan 2020
+:Modified Date:  31 Jan 2020
 """
 
-from . import core
+from . import core, errors
 from .utils import version
+
+__all__ = ['core', 'auth', 'errors']
 
 # Define the package version by pulling from the khoros.utils.version module
 __version__ = version.get_full_version()
-
-
-def initialize(**kwargs):
-    """This function initializes the package by defining a global dictionary of environmental variables.
-    
-    :param kwargs: Keyword arguments to popuate in the global dictionary
-    :type kwargs: dict 
-    :returns: None
-    """
-    # Define the global dictionary if it doesn't already exist
-    global settings
-    settings = {}
-
-    # Execute the khoros.core.initialize() function and retrieve the global variable
-    core.initialize(**kwargs)
-    settings = core.settings
-    return
