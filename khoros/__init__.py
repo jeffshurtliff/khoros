@@ -3,13 +3,14 @@
 :Package:        khoros
 :Synopsis:       This is the ``__init__`` module for the khoros package
 :Usage:          ``import khoros``
-:Example:        ``khoros.initialize(base_url='community.example.com', community='mycommunity')``
+:Example:        TBD
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  31 Jan 2020
+:Modified Date:  12 Feb 2020
 """
 
-from . import core, errors
+from . import errors
+from .core import Khoros
 from .utils import version
 
 __all__ = ['core', 'auth', 'errors']
