@@ -1,33 +1,40 @@
 # -*- coding: utf-8 -*-
 """
 :Module:            khoros.auth
-:Synopsis:          TBD
-:Usage:             TBD
-:Example:           TBD
+:Synopsis:          This module handles authentication-related tasks and operations for the Khoros Community APIs
+:Usage:             ``import khoros.auth``
+:Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     31 Jan 2020
+:Modified Date:     20 Feb 2020
 """
 
 import requests
-from requests_oauthlib import OAuth2Session
 
-from . import core
+from . import errors
+from .utils import core_utils
 
 
-def init_empty_attributes(khoros_object, oauth, sso):
-    """This function initializes empty attributes for the object when not supplied during instantiation.
+def get_session_key(khoros_object):
+    """This function retrieves the session key for an authentication session.
 
-    :param khoros_object: The Khoros object generated in the khoros.core module
-    :type khoros_object: class
-    :param oauth: Attribute containing information for connecting via OAuth 2.0
-    :type oauth: dict, NoneType
-    :param sso: Attribute containing information for connecting via LithiumSSO
-    :type sso: dict, NoneType
-    :returns: The Khoros object
+    :param khoros_object: The core Khoros object
+    :returns: The session key in string format
     """
-    if oauth is None:
-        khoros_object.oauth = {}
-    if sso is None:
-        khoros_object.sso = {}
-    return
+    community_url = khoros_object._settings['community_url']
+    username = khoros_object._settings['session_auth']['username']
+    password = khoros_object._settings['session_auth']['password']
+    query_string = core_utils.encode_query_string({
+        'user.login': username,
+        'user.password': password,
+        'restapi.response_format': 'json'
+    })
+    uri = f"{community_url}/restapi/vc/authentication/sessions/login/?{query_string}"
+    header = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = requests.post(uri, headers=header)
+    if response.status_code != 200:
+        raise errors.exceptions.SessionAuthenticationError
+    else:
+        response = response.json()
+        session_key = response['response']['value']['$']
+    return session_key
