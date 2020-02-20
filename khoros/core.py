@@ -6,7 +6,7 @@
 :Example:           ``khoros.core.initialize(base_url='community.example.com', community='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     31 Jan 2020
+:Modified Date:     20 Feb 2020
 """
 
 import sys
@@ -123,3 +123,6 @@ class Khoros(object):
     def __del__(self):
         """This function fully destroys the instance."""
         self.close()
+
+    def close(self):
+        pass
