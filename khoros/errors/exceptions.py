@@ -29,9 +29,20 @@ class KhorosError(Exception):
 class MissingAuthDataError(KhorosError):
     """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
     def __init__(self, *args, **kwargs):
-        default_msg = "The authentication data was not provided and a connection cannot be established.."
+        default_msg = "The authentication data was not provided and a connection cannot be established."
         if not (args or kwargs):
             args = (default_msg,)
+        super().__init__(*args)
+
+
+# Define exception for missing authentication data
+class SessionAuthenticationError(KhorosError):
+    """This exception is used when the session key authentication attempt failed."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The session key authentication attempt failed."
+        if not (args or kwargs):
+            args = (default_msg,)
+        # TODO: Add alternate message if variable is passed to the exception class
         super().__init__(*args)
 
 
