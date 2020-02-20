@@ -55,7 +55,8 @@ def __get_connection_info(_helper_cfg):
 def __get_oauth2_info(_helper_cfg):
     _oauth2 = {
         'client_id': _helper_cfg['connection']['oauth2']['client_id'],
-        'client_secret': _helper_cfg['connection']['oauth2']['client_secret']
+        'client_secret': _helper_cfg['connection']['oauth2']['client_secret'],
+        'redirect_url': _helper_cfg['connection']['oauth2']['redirect_url']
     }
     return _oauth2
 
