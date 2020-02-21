@@ -6,7 +6,7 @@
 :Example:           ``khoros.core.initialize(base_url='community.example.com', community='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 Feb 2020
+:Modified Date:     21 Feb 2020
 """
 
 import sys
