@@ -31,7 +31,7 @@ class Khoros(object):
     }
 
     def __init__(self, settings=None, community_url=None, tenant_id=None, auth_type=None, session_auth=None,
-                 oauth2=None, sso=None, helper=None):
+                 oauth2=None, sso=None, helper=None, auto_connect=True):
         # Initializes the dictionaries if not passed to the class
         if settings is None:
             settings = {}
@@ -96,6 +96,11 @@ class Khoros(object):
         self.__validate_base_url()
         self.__define_url_settings()
 
+        # Auto-connect to the environment if specified (default)
+        if auto_connect:
+            if 'session_auth' in self._settings['auth_type']:
+                self._settings['session_auth']['session_key'] = self.__connect_with_session_key()
+
     def __parse_helper_settings(self):
         # Parse the helper settings and add them to the primary settings
         if 'connection' in self._helper_settings:
@@ -116,6 +121,12 @@ class Khoros(object):
         else:
             self._settings['base_url'] = self._settings['community_url']
         self._settings['v2_base'] = f"{self._settings['base_url']}/api/2.0"
+
+    def __connect_with_session_key(self):
+        if ('username' not in self._settings['session_auth']) or ('password' not in self._settings['session_auth']):
+            error_msg = f"The username and/or password for session key authentication cannot be found."
+            raise errors.exceptions.MissingAuthDataError(error_msg)
+        self._settings['session_auth']['session_key'] = auth.get_session_key(self)
 
     # def __define_auth_header(self):
     #     self._settings['auth_header'] = {"Authorization": f"Bearer {self._settings['access_token']}"}
