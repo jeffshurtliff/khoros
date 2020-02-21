@@ -6,7 +6,7 @@
 :Example:        ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  12 Feb 2020
+:Modified Date:  21 Feb 2020
 """
 
 import yaml
@@ -41,24 +41,40 @@ def __convert_yaml_to_bool(_yaml_bool_value):
 
 # Define function to get the connection information
 def __get_connection_info(_helper_cfg):
+    """This function parses any connection information found in the helper file."""
     # Define the base URL as a global string variable
     _connection_info = {
         'community_url': _helper_cfg['connection']['community_url'],
         'tenant_id': _helper_cfg['connection']['tenant_id']
     }
 
+    # Parse OAuth 2.0 information if found
     if 'oauth2' in _helper_cfg['connection']:
         _connection_info['oauth2'] = __get_oauth2_info(_helper_cfg)
+
+    # Parse session authentication information if found
+    if 'session_auth' in _helper_cfg['connection']:
+        _connection_info['session_auth'] = __get_session_auth_info(_helper_cfg)
     return _connection_info
 
 
 def __get_oauth2_info(_helper_cfg):
+    """This function parses OAuth 2.0 information if found in the helper file."""
     _oauth2 = {
         'client_id': _helper_cfg['connection']['oauth2']['client_id'],
         'client_secret': _helper_cfg['connection']['oauth2']['client_secret'],
         'redirect_url': _helper_cfg['connection']['oauth2']['redirect_url']
     }
     return _oauth2
+
+
+def __get_session_auth_info(_helper_cfg):
+    """This function parses session authentication information if found in the helper file."""
+    _session_auth = {
+        'username': _helper_cfg['connection']['session_auth']['username'],
+        'password': _helper_cfg['connection']['session_auth']['password']
+    }
+    return _session_auth
 
 
 # Define function to retrieve the helper configuration settings
