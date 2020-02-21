@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 Feb 2020
+:Modified Date:     21 Feb 2020
 """
 
 import requests
@@ -33,6 +33,10 @@ def get_session_key(khoros_object):
     header = {"Content-Type": "application/x-www-form-urlencoded"}
     response = requests.post(uri, headers=header)
     if response.status_code != 200:
+        if type(response.text) == str and response.text.startswith('<html>'):
+            api_error = errors.handlers.get_error_from_html(response.text)
+            error_msg = f"The authentication attempt failed with the following error:\n\t{api_error}"
+            raise errors.exceptions.SessionAuthenticationError(error_msg)
         raise errors.exceptions.SessionAuthenticationError
     else:
         response = response.json()
