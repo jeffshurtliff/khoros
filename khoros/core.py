@@ -99,7 +99,7 @@ class Khoros(object):
         # Auto-connect to the environment if specified (default)
         if auto_connect:
             if 'session_auth' in self._settings['auth_type']:
-                self._settings['session_auth']['session_key'] = self.__connect_with_session_key()
+                self.__connect_with_session_key()
 
     def __parse_helper_settings(self):
         # Parse the helper settings and add them to the primary settings
