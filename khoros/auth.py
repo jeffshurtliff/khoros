@@ -42,3 +42,13 @@ def get_session_key(khoros_object):
         response = response.json()
         session_key = response['response']['value']['$']
     return session_key
+
+
+def get_session_header(session_key):
+    """This function constructs and returns a proper API header containing the session key for authorization.
+
+    :param session_key: The session key for the authorization session
+    :type session_key: str
+    :returns: The API in dictionary format
+    """
+    return {'li-api-session-key': session_key}
