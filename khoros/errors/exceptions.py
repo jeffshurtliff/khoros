@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     31 Jan 2020
+:Modified Date:     21 Feb 2020
 """
 
 #################
@@ -40,6 +40,21 @@ class SessionAuthenticationError(KhorosError):
     """This exception is used when the session key authentication attempt failed."""
     def __init__(self, *args, **kwargs):
         default_msg = "The session key authentication attempt failed."
+        if not (args or kwargs):
+            args = (default_msg,)
+        # TODO: Add alternate message if variable is passed to the exception class
+        super().__init__(*args)
+
+
+#####################
+# General Exceptions
+#####################
+
+
+class CurrentlyUnsupportedError(KhorosError):
+    """This exception is used when a feature or functionality being used is currently unsupported."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "This function is currently unsupported at this time."
         if not (args or kwargs):
             args = (default_msg,)
         # TODO: Add alternate message if variable is passed to the exception class
