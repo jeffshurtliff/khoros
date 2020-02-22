@@ -10,6 +10,13 @@
 """
 
 import re
+import sys
+
+
+def eprint(*args, **kwargs):
+    """This function behaves the same as the ``print()`` function but is leveraged to print errors to ``sys.stderr``."""
+    print(*args, file=sys.stderr, **kwargs)
+    return
 
 
 def get_error_from_html(html_error):
