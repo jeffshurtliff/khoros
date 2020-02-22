@@ -21,6 +21,7 @@ logging.getLogger("khoros").addHandler(logging.NullHandler())
 
 
 class Khoros(object):
+    """This is the class for the core object leveraged in this library."""
     # Define default configuration information
     DEFAULT_SETTINGS = {
         'community_url': 'https://community.khoros.com',
@@ -32,6 +33,27 @@ class Khoros(object):
 
     def __init__(self, settings=None, community_url=None, tenant_id=None, auth_type=None, session_auth=None,
                  oauth2=None, sso=None, helper=None, auto_connect=True):
+        """This method initializes the Khoros object.
+
+        :param settings: Predefined settings that the object should use
+        :type settings: dict
+        :param community_url: The base URL of the Khoros community instance (e.g. ``community.khoros.com``)
+        :type community_url: str
+        :param tenant_id: The tenant ID for the Khoros community instance (e.g. ``lithosphere``)
+        :type tenant_id: str
+        :param auth_type: The authentication type to use when connecting to the instance (``session_auth`` by default)
+        :type auth_type: str
+        :param session_auth: The ``username`` and ``password`` values for session key authentication
+        :type session_auth: dict
+        :param oauth2: The ``client_id``, ``client_secret`` and ``redirect_url`` values for OAuth 2.0 authentication
+        :type oauth2: dict
+        :param sso: The values for single sign-on (SSO) authentication
+        :type sso: dict
+        :param helper: The path (and optional file type) to the YAML or JSON helper configuration file
+        :type helper: str, tuple, list, dict
+        :param auto_connect: Determines if a connection should be established when initialized (``True`` by default)
+        :type auto_connect: bool
+        """
         # Initializes the dictionaries if not passed to the class
         if settings is None:
             settings = {}
@@ -60,7 +82,10 @@ class Khoros(object):
                 if auth_map.get(auth_type) is None:
                     error_msg = f"The '{auth_type}' authentication type was specified but no associated data was found."
                     raise errors.exceptions.MissingAuthDataError(error_msg)
-            # TODO: Display error if invalid option provided (revert to default)
+            else:
+                error_msg = f"'{auth_type}' is an invalid authentication type. Reverting to default. ('session_auth')"
+                errors.handlers.eprint(error_msg)
+                self._settings.update(Khoros.DEFAULT_AUTH)
         elif sso is not None:
             self._settings['auth_type'] = 'sso'
         elif oauth2 is not None:
@@ -100,8 +125,12 @@ class Khoros(object):
         if auto_connect:
             if 'session_auth' in self._settings['auth_type']:
                 self.__connect_with_session_key()
+            else:
+                errors.handlers.eprint("Unable to auto-connect to the instance with the given " +
+                                       f"'{self._settings['auth_type']}' authentication type.")
 
     def __parse_helper_settings(self):
+        """This method parses the settings in the helper configuration file when provided."""
         # Parse the helper settings and add them to the primary settings
         if 'connection' in self._helper_settings:
             helper_keys = ['community_url', 'tenant_id', 'oauth2', 'session_auth']
@@ -110,6 +139,7 @@ class Khoros(object):
                     self._settings[helper_key] = self._helper_settings['connection'][helper_key]
 
     def __validate_base_url(self):
+        """This method ensures that the Community URL is defined appropriately."""
         if ('http://' not in self._settings['community_url']) and ('https://' not in self._settings['community_url']):
             self._settings['community_url'] = f"https://{self._settings['community_url']}"
         if self._settings['community_url'].endswith('/'):
@@ -127,13 +157,27 @@ class Khoros(object):
             error_msg = f"The username and/or password for session key authentication cannot be found."
             raise errors.exceptions.MissingAuthDataError(error_msg)
         self._settings['session_auth']['session_key'] = auth.get_session_key(self)
+        self._settings['auth_header'] = auth.get_session_header(self._settings['session_auth']['session_key'])
 
-    # def __define_auth_header(self):
-    #     self._settings['auth_header'] = {"Authorization": f"Bearer {self._settings['access_token']}"}
+    def connect(self, connection_type=None):
+        """This method establishes a connection to the environment using a specified authentication type.
+
+        :param connection_type: The type of authentication method (e.g. ``session_auth``)
+        :type connection_type: str
+        :returns: None
+        """
+        if connection_type is None:
+            connection_type = self._settings['auth_type']
+        if connection_type == 'session_auth':
+            self.__connect_with_session_key()
+        else:
+            msg = f"The '{connection_type}' authentication type is currently unsupported."
+            raise errors.exceptions.CurrentlyUnsupportedError(msg)
 
     def __del__(self):
-        """This function fully destroys the instance."""
+        """This method fully destroys the instance."""
         self.close()
 
     def close(self):
+        """This core method destroys the instance."""
         pass
