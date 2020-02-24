@@ -35,5 +35,5 @@ setuptools.setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Message Boards",
         "Topic :: Internet :: WWW/HTTP :: Site Management"
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.6, <3.8.1',
 )
