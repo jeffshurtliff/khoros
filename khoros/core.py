@@ -54,9 +54,13 @@ class Khoros(object):
         :param auto_connect: Determines if a connection should be established when initialized (``True`` by default)
         :type auto_connect: bool
         """
-        # Initializes the dictionaries if not passed to the class
+        # Initialize the dictionaries if not passed to the class
         if settings is None:
             settings = {}
+        
+        # Initialize other dictionaries that will be used by the class object
+        self.auth = {}
+        self.core = {}
 
         # Add supplied elements to the settings dictionary
         if community_url:
@@ -70,6 +74,7 @@ class Khoros(object):
         self._settings.update(settings)
 
         # Update the default authentication type if necessary
+        self.auth['type'] = self._settings['auth_type']
         if auth_type is not None:
             accepted_auth_types = ['session_auth', 'oauth2', 'sso']
             auth_map = {
@@ -79,6 +84,7 @@ class Khoros(object):
             }
             if str(auth_type) in accepted_auth_types:
                 self._settings['auth_type'] = auth_type
+                self.auth['type'] = auth_type
                 if auth_map.get(auth_type) is None:
                     error_msg = f"The '{auth_type}' authentication type was specified but no associated data was found."
                     raise errors.exceptions.MissingAuthDataError(error_msg)
@@ -86,10 +92,13 @@ class Khoros(object):
                 error_msg = f"'{auth_type}' is an invalid authentication type. Reverting to default. ('session_auth')"
                 errors.handlers.eprint(error_msg)
                 self._settings.update(Khoros.DEFAULT_AUTH)
+                self.auth['type'] = self._settings['auth_type']
         elif sso is not None:
             self._settings['auth_type'] = 'sso'
+            self.auth['type'] = self._settings['auth_type']
         elif oauth2 is not None:
             self._settings['auth_type'] = 'oauth2'
+            self.auth['type'] = self._settings['auth_type']
         else:
             if session_auth is not None:
                 error_msg = f"No data was found for the default '{auth_type}' authentication type."
@@ -158,6 +167,7 @@ class Khoros(object):
             raise errors.exceptions.MissingAuthDataError(error_msg)
         self._settings['session_auth']['session_key'] = auth.get_session_key(self)
         self._settings['auth_header'] = auth.get_session_header(self._settings['session_auth']['session_key'])
+        self.auth['header'] = self._settings['auth_header']
 
     def connect(self, connection_type=None):
         """This method establishes a connection to the environment using a specified authentication type.
