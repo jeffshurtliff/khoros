@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.helper
-:Synopsis:       Module that allows the khoros library to leverage a helper configuration file
-:Usage:          ``from khoros.utils import helper``
-:Example:        ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  01 Mar 2020
+:Module:            khoros.utils.helper
+:Synopsis:          Module that allows the khoros library to leverage a helper configuration file
+:Usage:             ``from khoros.utils import helper``
+:Example:           ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     01 Mar 2020
 """
 
 import yaml
