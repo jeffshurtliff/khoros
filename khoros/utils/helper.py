@@ -6,7 +6,7 @@
 :Example:        ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  29 Feb 2020
+:Modified Date:  01 Mar 2020
 """
 
 import yaml
@@ -83,6 +83,7 @@ def __get_session_auth_info(_helper_cfg):
 
 
 def __get_construct_info(_helper_cfg):
+    """This function parses settings that can be leveraged in constructing API responses and similar tasks."""
     _construct_info = {}
     _top_level_keys = ['prefer_json']
     for _key in _top_level_keys:
