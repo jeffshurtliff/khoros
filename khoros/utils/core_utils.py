@@ -40,3 +40,12 @@ def encode_query_string(url_dict):
     :returns: The URL query string in string format
     """
     return urllib.parse.urlencode(url_dict)
+
+
+def convert_set(iterable, convert_to='list'):
+    if type(iterable) == set:
+        if convert_to == 'tuple':
+            iterable = tuple(iterable)
+        else:
+            iterable = list(iterable)
+    return iterable

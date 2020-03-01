@@ -91,3 +91,28 @@ class HelperFunctionNotFoundError(KhorosError, FileNotFoundError):
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
+
+
+##################
+# LiQL Exceptions
+##################
+
+
+# Define exception for missing authentication data
+class InvalidOperatorError(KhorosError):
+    """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "An invalid operator was provided for the LiQL query."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+# Define exception for missing authentication data
+class OperatorMismatchError(KhorosError):
+    """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)

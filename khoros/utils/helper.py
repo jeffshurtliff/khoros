@@ -6,7 +6,7 @@
 :Example:        ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  21 Feb 2020
+:Modified Date:  29 Feb 2020
 """
 
 import yaml
@@ -42,11 +42,11 @@ def __convert_yaml_to_bool(_yaml_bool_value):
 # Define function to get the connection information
 def __get_connection_info(_helper_cfg):
     """This function parses any connection information found in the helper file."""
-    # Define the base URL as a global string variable
-    _connection_info = {
-        'community_url': _helper_cfg['connection']['community_url'],
-        'tenant_id': _helper_cfg['connection']['tenant_id']
-    }
+    _connection_info = {}
+    _connection_keys = ['community_url', 'tenant_id', 'default_auth_type']
+    for _key in _connection_keys:
+        if _key in _helper_cfg['connection']:
+            _connection_info[_key] = _helper_cfg['connection'][_key]
 
     # Parse OAuth 2.0 information if found
     if 'oauth2' in _helper_cfg['connection']:
@@ -60,21 +60,40 @@ def __get_connection_info(_helper_cfg):
 
 def __get_oauth2_info(_helper_cfg):
     """This function parses OAuth 2.0 information if found in the helper file."""
-    _oauth2 = {
-        'client_id': _helper_cfg['connection']['oauth2']['client_id'],
-        'client_secret': _helper_cfg['connection']['oauth2']['client_secret'],
-        'redirect_url': _helper_cfg['connection']['oauth2']['redirect_url']
-    }
+    _oauth2 = {}
+    _oauth2_keys = ['client_id', 'client_secret', 'redirect_url']
+    for _key in _oauth2_keys:
+        if _key in _helper_cfg['connection']['oauth2']:
+            _oauth2[_key] = _helper_cfg['connection']['oauth2'][_key]
+        else:
+            _oauth2[_key] = ''
     return _oauth2
 
 
 def __get_session_auth_info(_helper_cfg):
     """This function parses session authentication information if found in the helper file."""
-    _session_auth = {
-        'username': _helper_cfg['connection']['session_auth']['username'],
-        'password': _helper_cfg['connection']['session_auth']['password']
-    }
+    _session_auth = {}
+    _session_info = ['username', 'password']
+    for _key in _session_info:
+        if _key in _helper_cfg['connection']['session_auth']:
+            _session_auth[_key] = _helper_cfg['connection']['session_auth'][_key]
+        else:
+            _session_auth[_key] = None
     return _session_auth
+
+
+def __get_construct_info(_helper_cfg):
+    _construct_info = {}
+    _top_level_keys = ['prefer_json']
+    for _key in _top_level_keys:
+        if _key in _helper_cfg:
+            _key_val = _helper_cfg[_key]
+            if _key_val in HelperParsing.yaml_boolean_values:
+                _key_val = HelperParsing.yaml_boolean_values.get(_key_val)
+            _construct_info[_key] = _key_val
+        else:
+            _construct_info[_key] = None
+    return _construct_info
 
 
 # Define function to retrieve the helper configuration settings
@@ -97,9 +116,14 @@ def get_helper_settings(file_path, file_type='yaml'):
     else:
         raise errors.exceptions.InvalidHelperFileTypeError
 
-    # Populate and return the helper_settings dictionary
+    # Populate the connection information in the helper dictionary
     if 'connection' in helper_cfg:
         helper_settings['connection'] = __get_connection_info(helper_cfg)
+
+    # Populate the construct information in the helper dictionary
+    helper_settings['construct'] = __get_construct_info(helper_cfg)
+
+    # Return the helper_settings dictionary
     return helper_settings
 
 
