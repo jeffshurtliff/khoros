@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Feb 2020
+:Modified Date:     01 Mar 2020
 """
 
 #################
