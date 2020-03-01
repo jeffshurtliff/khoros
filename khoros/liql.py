@@ -2,8 +2,8 @@
 """
 :Module:            khoros.liql
 :Synopsis:          Collection of functions and classes to leverage the Community API v2 and LiQL for searches
-:Usage:             ``import khoros.liql`` (Imported by default in :py:mod:`khoros.core` package)``
-:Example:           TBD
+:Usage:             ``from khoros import liql`` (Imported by default in :py:mod:`khoros.core` package)``
+:Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
 :Modified Date:     01 Mar 2020
@@ -16,6 +16,23 @@ from .utils.core_utils import convert_set
 
 
 def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='', format_statements=True):
+    """This function formats and URL-encodes a raw LiQL query to be able to use it within a Community v2 API URL.
+
+    :param query: The LiQL query to be formatted and url-encoded
+    :type query: str
+    :param pretty_print: Defines if the response should be "pretty printed" (``False`` by default)
+    :type pretty_print: bool
+    :param track_in_lsi: Defines if the query should be tracked within LSI (``False`` by default)
+    :type track_in_lsi: bool
+    :param always_ok: Defines if the HTTP response should **always** be ``200 OK`` (``False`` by default)
+    :type always_ok: bool
+    :param error_code: Allows an error code to optionally be supplied for testing purposes (ignored by default)
+    :type error_code: str
+    :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
+                              all caps (``True`` by default)
+    :type format_statements: bool
+    :returns: The properly formatted query to be inserted in the URL
+    """
     chars_to_encode = {
         ' ': '+',
         '=': '%3D'
@@ -55,11 +72,40 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
 
 def get_query_url(core_dict, query, pretty_print=False, track_in_lsi=False, always_ok=False,
                   error_code='', format_statements=True):
+    """This function defines the full Community API v2 query URL for the LiQL query.
+
+    :param core_dict: The ``core`` dictionary defined in the :py:class:`khoros.core.Khoros` object
+    :type core_dict: dict
+    :param query: The LiQL query to be encoded and embedded in the URL
+    :type query: str
+    :param pretty_print: Defines if the response should be "pretty printed" (``False`` by default)
+    :type pretty_print: bool
+    :param track_in_lsi: Defines if the query should be tracked within LSI (``False`` by default)
+    :type track_in_lsi: bool
+    :param always_ok: Defines if the HTTP response should **always** be ``200 OK`` (``False`` by default)
+    :type always_ok: bool
+    :param error_code: Allows an error code to optionally be supplied for testing purposes (ignored by default)
+    :type error_code: str
+    :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
+                              all caps (``True`` by default)
+    :type format_statements: bool
+    :returns: The full Community API v2 URL in string format
+    """
     query = format_query(query, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
     return f"{core_dict['v2_base']}/search?q={query}"
 
 
 def perform_query(khoros_object, query_url, return_json=True):
+    """This function performs a LiQL query using full Community API v2 URL containing the query."
+
+    :param khoros_object: The Khoros object initialized via the :py:mod:`khoros.core` module
+    :param query_url: The full Khoros Community API v2 URL for the query
+    :type query_url: str
+    :param return_json: Determines if the response should be returned in JSON format (``True`` by default)
+    :type return_json: bool
+    :returns: The API response (in JSON format by default)
+    :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+    """
     if 'header' not in khoros_object.auth:
         error_msg = f"Cannot perform the query as an authorization header is not configured."
         raise errors.exceptions.MissingAuthDataError(error_msg)
@@ -70,6 +116,24 @@ def perform_query(khoros_object, query_url, return_json=True):
 
 
 def parse_query_elements(select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0):
+    """This function parses query elements to construct a full LiQL query in the appropriate syntax.
+
+    :param select_fields: One or more fields to be selected within the SELECT statement (e.g. ``id``)
+    :type select_fields: str, tuple, list, set
+    :param from_source: The source of the data to use in the FROM statement (e.g. ``messages``)
+    :type from_source: str
+    :param where_filter: The filters (if any) to use in the WHERE clause (e.g. ``id = '2'``)
+    :type where_filter: str, tuple, list, dict, set
+    :param order_by: The field(s) by which to order the response data (optional)
+    :type order_by: str, tuple, set, dict, list
+    :param order_desc: Defines if the ORDER BY directionality is DESC (default) or ASC
+    :type order_desc: bool
+    :param limit: Allows an optional limit to be placed on the response items (ignored by default)
+    :type limit: int
+    :returns: The query response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.OperatorMismatchError`,
+             :py:exc:`khoros.errors.exceptions.InvalidOperatorError`
+    """
     # Properly format the provided SELECT fields
     select_fields = __parse_select_fields(select_fields)
 
@@ -84,8 +148,6 @@ def parse_query_elements(select_fields, from_source, where_filter="", order_by=N
 
     # Append the ORDER BY clause to the syntax is provided
     if order_by:
-        print(f"ORDER BY: {order_by}")
-        print(f"TYPE: {type(order_by)}")
         order_direction = {True: 'DESC', False: 'ASC'}
         if type(order_by) in LiQLSyntax.container_types:
             order_by = convert_set(order_by)
@@ -104,6 +166,12 @@ def parse_query_elements(select_fields, from_source, where_filter="", order_by=N
 
 
 def __parse_select_fields(_select_fields):
+    """This function parses the fields to be used in the SELECT statement of the LiQL query.
+
+    :param _select_fields: The field(s) to be used in the SELECT statement
+    :type _select_fields: str, tuple, list, set
+    :returns: The properly formatted SELECT fields in string format (comma-separated)
+    """
     if type(_select_fields) == tuple or type(_select_fields) == list or type(_select_fields) == set:
         _select_fields = convert_set(_select_fields)
         _select_fields = ",".join(_select_fields)
@@ -113,6 +181,11 @@ def __parse_select_fields(_select_fields):
 
 
 def __wrap_string_vales(_where_value):
+    """This function wraps values going in the WHERE clause in single-quotes if they are not integers.
+
+    :param _where_value: The value to be evaluated and potentially wrapped in single-quotes
+    :returns: The value in int or string format
+    """
     try:
         _where_value = int(_where_value)
     except (TypeError, ValueError):
@@ -121,6 +194,12 @@ def __wrap_string_vales(_where_value):
 
 
 def __convert_where_dicts_to_lists(_dict_list):
+    """This function converts dictionaries supplied as WHERE clause filters into properly formatted lists.
+
+    :param _dict_list: A list of dictionaries with the WHERE clause information
+    :type _dict_list: list
+    :returns: A list of lists containing the WHERE clause information
+    """
     _master_list = []
     for _where_dict in _dict_list:
         for _dict_key, _dict_val in _where_dict.items():
@@ -139,6 +218,15 @@ def __convert_where_dicts_to_lists(_dict_list):
 
 
 def __parse_where_clause(_where, _join_logic='AND'):
+    """This function parses the data supplied for the WHERE clause of a LiQL query.
+
+    :param _where: The WHERE clause information
+    :type _where: str, tuple, list, set, dict
+    :param _join_logic: The logic to use
+    :type _join_logic: str, tuple, list
+    :returns: A properly formatted WHERE clause (excluding the WHERE statement at the beginning)
+    :raises: InvalidOperatorError, OperatorMismatchError
+    """
     # Examples:
     #   _where = ('id', 5)      #2-length tuple
     #   _where = ('id', '>', 5)     # 3-length tuple
@@ -206,14 +294,8 @@ def __parse_where_clause(_where, _join_logic='AND'):
     return _full_clause
 
 
-
-
-
-
-
-
-
 class LiQLSyntax:
+    """This class defines lists of syntax elements for use in LiQL queries."""
     comparison_operators = ['=', '!=', '>', '<', '>=', '<=']
     logic_operators = ['AND', 'OR', 'IN', 'MATCHES']
     order_operators = ['ASC', 'DESC']
