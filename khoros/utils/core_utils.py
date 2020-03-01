@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 Feb 2020
+:Modified Date:     01 Mar 2020
 """
 
 import urllib.parse
@@ -43,6 +43,13 @@ def encode_query_string(url_dict):
 
 
 def convert_set(iterable, convert_to='list'):
+    """This function casts a ``set`` variable to be a ``list`` instead so that it can be scriptable.
+
+    :param iterable: The iterable to be evaluated to see if it has a ``set`` type
+    :param convert_to: Defines if the iterable should be cast to a ``list`` (default) or a ``tuple``
+    :type convert_to: str
+    :returns: The converted variable as a ``list`` or ``tuple`` (or untouched if not a ``set``)
+    """
     if type(iterable) == set:
         if convert_to == 'tuple':
             iterable = tuple(iterable)
