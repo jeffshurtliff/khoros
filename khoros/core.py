@@ -32,6 +32,7 @@ class Khoros(object):
         'auth_type': 'session_auth'
     }
 
+    # Define the function that initializes the object instance
     def __init__(self, settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, auto_connect=True, use_community_name=False,
                  prefer_json=True):
@@ -177,6 +178,7 @@ class Khoros(object):
                 self.core[_setting] = self._settings[_setting]
 
     def __populate_auth_settings(self):
+        """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks."""
         _auth_settings = ['auth_type', 'oauth2', 'session_auth', 'sso']
         _setting_keys = {
             'oauth2': ['client_id', 'client_secret', 'redirect_url'],
@@ -190,6 +192,7 @@ class Khoros(object):
                             self.auth[_setting_key] = self._settings[_setting][_setting_key]
 
     def __populate_construct_settings(self):
+        """This method populates the khoros.construct dictionary to assist in constructing API queries and responses."""
         assert 'prefer_json' in self._settings
         if 'prefer_json' in self._settings:
             return_formats = {True: '&restapi.response_format=json', False: ''}
@@ -259,6 +262,26 @@ class Khoros(object):
 
     def query(self, query, return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False,
               error_code='', format_statements=True):
+        """This function performs a Community API v2 query using LiQL with the full LiQL syntax.
+
+        :param query: The full LiQL query in its standard syntax (not URL-encoded)
+        :type query: str
+        :param return_json: Determines if the API response should be returned in JSON format (``True`` by default)
+        :type return_json: bool
+        :param pretty_print: Defines if the response should be "pretty printed" (``False`` by default)
+        :type pretty_print: bool
+        :param track_in_lsi: Defines if the query should be tracked within LSI (``False`` by default)
+        :type track_in_lsi: bool
+        :param always_ok: Defines if the HTTP response should **always** be ``200 OK`` (``False`` by default)
+        :type always_ok: bool
+        :param error_code: Allows an error code to optionally be supplied for testing purposes (ignored by default)
+        :type error_code: str
+        :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
+                                  all caps (``True`` by default)
+        :type format_statements: bool
+        :returns: The query response from the API in JSON format (unless defined otherwise)
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+        """
         query_url = liql.get_query_url(self.core, query, pretty_print, track_in_lsi, always_ok,
                                        error_code, format_statements)
         response = liql.perform_query(self, query_url, return_json)
@@ -267,6 +290,38 @@ class Khoros(object):
     def search(self, select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0,
                return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='',
                format_statements=True):
+        """This function performs a LiQL query in the Community API v2 by specifying the query elements.
+
+        :param select_fields: One or more fields to be selected within the SELECT statement (e.g. ``id``)
+        :type select_fields: str, tuple, list, set
+        :param from_source: The source of the data to use in the FROM statement (e.g. ``messages``)
+        :type from_source: str
+        :param where_filter: The filters (if any) to use in the WHERE clause (e.g. ``id = '2'``)
+        :type where_filter: str, tuple, list, dict, set
+        :param order_by: The field(s) by which to order the response data (optional)
+        :type order_by: str, tuple, set, dict, list
+        :param order_desc: Defines if the ORDER BY directionality is DESC (default) or ASC
+        :type order_desc: bool
+        :param limit: Allows an optional limit to be placed on the response items (ignored by default)
+        :type limit: int
+        :param return_json:Determines if the API response should be returned in JSON format (``True`` by default)
+        :type return_json: bool
+        :param pretty_print: Defines if the response should be "pretty printed" (``False`` by default)
+        :type pretty_print: bool
+        :param track_in_lsi: Defines if the query should be tracked within LSI (``False`` by default)
+        :type track_in_lsi: bool
+        :param always_ok: Defines if the HTTP response should **always** be ``200 OK`` (``False`` by default)
+        :type always_ok: bool
+        :param error_code: Allows an error code to optionally be supplied for testing purposes (ignored by default)
+        :type error_code: str
+        :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
+                                  all caps (``True`` by default)
+        :type format_statements: bool
+        :returns: The query response from the API in JSON format (unless defined otherwise)
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                 :py:exc:`khoros.errors.exceptions.OperatorMismatchError`,
+                 :py:exc:`khoros.errors.exceptions.InvalidOperatorError`
+        """
         query = liql.parse_query_elements(select_fields, from_source, where_filter, order_by, order_desc, limit)
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
