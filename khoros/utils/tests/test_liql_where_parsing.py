@@ -50,8 +50,11 @@ def parse_where_clauses():
 
         # Print results of each test
         print(f"Test Case:\t{test_case}")
-        print(f"Length:\t\t{len(print_example)}")
-        print(f"Length[0]:\t{len(print_example[0])}")
+        try:
+            print(f"Length:\t\t{len(print_example)}")
+            print(f"Length[0]:\t{len(print_example[0])}")
+        except (KeyError, TypeError):
+            pass
         print(f"Example:\t{print_example}")
         where = liql.__parse_where_clause(example, logic)
         print(f"Parsed:\t\t{where}\n")
