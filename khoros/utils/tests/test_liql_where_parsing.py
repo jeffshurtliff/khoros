@@ -42,11 +42,17 @@ def parse_where_clauses():
         else:
             logic = 'AND'
 
+        # Convert any sets to lists for printing below without changing the original identifier
+        if type(example) == set:
+            print_example = list(example)
+        else:
+            print_example = example
+
         # Print results of each test
         print(f"Test Case:\t{test_case}")
-        print(f"Length:\t\t{len(example)}")
-        print(f"Length[0]:\t{len(example[0])}")
-        print(f"Example:\t{example}")
+        print(f"Length:\t\t{len(print_example)}")
+        print(f"Length[0]:\t{len(print_example[0])}")
+        print(f"Example:\t{print_example}")
         where = liql.__parse_where_clause(example, logic)
         print(f"Parsed:\t\t{where}\n")
     return True
