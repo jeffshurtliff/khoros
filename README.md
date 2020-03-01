@@ -9,7 +9,7 @@ The package can be installed via pip using the syntax below.
 pip install khoros
 ```
 
-You may also clone the repository and install from source using the syntax below.
+You may also clone the repository and install from source using below.
 
 ``` sh
 git clone git://github.com/jeffshurtliff/khoros.git
