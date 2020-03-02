@@ -114,7 +114,10 @@ The community and connection information can be passed directly into the `Khoros
 demonstrated in the example below.
 
 ```python
-khoros = Khoros(community_url='https://community.example.com', session_auth={'username': USERNAME, 'password': PASSWD})
+khoros = Khoros(
+    community_url='https://community.example.com', 
+    session_auth={'username': USERNAME, 'password': PASSWD}
+)
 ```
 
 Alternatively, configuration settings can be passed at once using the `options` argument in the `Khoros` class, as 
