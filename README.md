@@ -201,4 +201,4 @@ The documentation is located here: [https://khoros.readthedocs.io/en/latest/](ht
 Issues can be reported within the [GitHub repository](https://github.com/jeffshurtliff/khoros/issues).
 
 ## Disclaimer
-This package is considered unofficial and is in no way endorsed or supported by [Khoros](https://www.khoros.com).
+This package is considered unofficial and is in no way endorsed or supported by [Khoros, LLC](https://www.khoros.com).
