@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Mar 2020
+:Modified Date:     18 Mar 2020
 """
 
 import sys
@@ -304,7 +304,7 @@ class Khoros(object):
         :type order_desc: bool
         :param limit: Allows an optional limit to be placed on the response items (ignored by default)
         :type limit: int
-        :param return_json:Determines if the API response should be returned in JSON format (``True`` by default)
+        :param return_json: Determines if the API response should be returned in JSON format (``True`` by default)
         :type return_json: bool
         :param pretty_print: Defines if the response should be "pretty printed" (``False`` by default)
         :type pretty_print: bool

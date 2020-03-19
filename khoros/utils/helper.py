@@ -21,7 +21,7 @@ def import_yaml_file(file_path):
     :param file_path: The file path to the YAML file
     :type file_path: str
     :returns: The parsed configuration data
-    :raises: FileNotFoundError
+    :raises: :py:exc:`FileNotFoundError`
     """
     with open(file_path, 'r') as yml_file:
         helper_cfg = yaml.load(yml_file, Loader=yaml.BaseLoader)
@@ -106,7 +106,7 @@ def get_helper_settings(file_path, file_type='yaml'):
     :param file_type: Defines the helper configuration file as a ``yaml`` file (default) or a ``json`` file
     :type file_type: str
     :returns: Dictionary of helper variables
-    :raises: InvalidHelperFileTypeError
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidHelperFileTypeError`
     """
     # Initialize the helper_settings dictionary
     helper_settings = {}

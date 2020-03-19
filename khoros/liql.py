@@ -2,11 +2,11 @@
 """
 :Module:            khoros.liql
 :Synopsis:          Collection of functions and classes to leverage the Community API v2 and LiQL for searches
-:Usage:             ``from khoros import liql`` (Imported by default in :py:mod:`khoros.core` package)``
+:Usage:             ``from khoros import liql`` (Imported by default in :py:mod:`khoros.core` package)
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Mar 2020
+:Modified Date:     18 Mar 2020
 """
 
 import requests
