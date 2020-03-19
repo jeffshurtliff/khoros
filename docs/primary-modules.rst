@@ -18,7 +18,7 @@ This module (being the primary ``__init__.py`` file for the library) provides a
 "jumping-off-point" to initialize the primary :py:class:`khoros.core.Khoros` object.
 
 .. automodule:: khoros
-   :members:
+   :members: Khoros
 
 :doc:`Return to Top <primary-modules>`
 
