@@ -9,6 +9,7 @@ Table of Contents
 
 .. toctree::
 
+   introduction
    primary-modules
    supporting-modules
 
