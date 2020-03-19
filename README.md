@@ -84,7 +84,7 @@ python setup.py install
 ```
 
 ## Change Log
-Coming in the next version
+The change log can be found in the [documentation](https://khorosjx.readthedocs.io/en/latest/changelog.html).
 
 ## Usage
 This section provides basic usage instructions for the package.
