@@ -1,19 +1,25 @@
-.. Khoros Python Library documentation master file, created by
-   sphinx-quickstart on Fri Feb 21 08:47:54 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+###############################
+Khoros Community Python Library
+###############################
+Welcome to the official documentation for the Khoros Community Python Library.
 
-Welcome to Khoros Python Library's documentation!
-=================================================
+*****************
+Table of Contents
+*****************
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
+   primary-modules
+   supporting-modules
 
+.. toctree::
+   :maxdepth: 3
 
-Indices and tables
-==================
+   changelog
+
+***********************
+Module Index and Search
+***********************
 
 * :ref:`genindex`
 * :ref:`modindex`
