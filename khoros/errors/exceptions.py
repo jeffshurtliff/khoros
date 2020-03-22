@@ -20,6 +20,50 @@ class KhorosError(Exception):
     pass
 
 
+#########################
+# Base Object Exceptions
+#########################
+
+
+# Define exception for missing authentication data
+class InvalidNodeTypeError(KhorosError):
+    """This exception is used when an invalid node type is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The node type that was provided is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('node type ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+# Define exception for missing authentication data
+class NodeIDNotFoundError(KhorosError):
+    """This exception is used when a valid Node ID could not be found in a provided URL."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "A valid Node ID could not be identified in the given URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+# Define exception for missing authentication data
+class NodeTypeNotFoundError(KhorosError):
+    """This exception is used when a valid node type could not be found in a provided URL."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "A valid node type could not be identified in the given URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
 ############################
 # Authentication Exceptions
 ############################

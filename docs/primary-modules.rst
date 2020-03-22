@@ -9,6 +9,7 @@ which are listed below.
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
 * `LiQL Module (khoros.liql)`_
+* `Objects Module (khoros.objects)`_
 
 |
 
@@ -71,3 +72,28 @@ This module contains functions that enable API queries using the LiQL syntax.
    :members:
 
 :doc:`Return to Top <primary-modules>`
+
+|
+
+*******************************
+Objects Module (khoros.objects)
+*******************************
+This module contains sub-modules that are specific to the various Community API objects.
+
+.. automodule:: khoros.objects
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Base Module (khoros.objects.base)
+=================================
+This module contains functions that relate to the various Community API objects but which are object-agnostic.
+
+.. automodule:: khoros.objects.base
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|

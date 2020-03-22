@@ -4,6 +4,34 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.0.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the new :py:mod:`khoros.objects` module to contain sub-modules for the various API objects.
+
+Documentation
+-------------
+* Added the :py:mod:`khoros.objects` module and the :py:mod:`khoros.objects.base` sub-module to the
+  :doc:`Primary Modules <primary-modules>` page.
+
+Fixed
+=====
+
+Documentation
+-------------
+* Fixed two bad hyperlinks in the `README.md <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ file.
+
+|
+
+******
 v1.2.0
 ******
 **Release Date: 2020-03-22**
