@@ -11,7 +11,7 @@
 
 import requests
 
-from . import errors
+from . import api, errors
 from .utils import core_utils
 
 
@@ -56,6 +56,17 @@ def get_session_header(session_key):
 
 
 def invalidate_session(khoros_object, user_id=None, sso_id=None):
+    """This function invalidates an active authentication session.
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_id: The User ID of the service account (Lithium Registration)
+    :type user_id: str, int, NoneType
+    :param sso_id: The SSO ID of the service account (Single Sign-On)
+    :type sso_id: str, int, NoneType
+    :returns: Boolean value defining if the session was invalidated successfully
+    """
+    session_terminated = False
     payload = {}
     if sso_id:
         payload['sso_id'] = sso_id
@@ -66,7 +77,15 @@ def invalidate_session(khoros_object, user_id=None, sso_id=None):
         user_id = khoros_object.search('id', 'users', f'login = "{username}"')
         user_id = user_id['data']['items'][0]['id']
         payload['id'] = user_id
-
+    query_url = f"{khoros_object._settings['v2_base']}/auth/signout"
+    headers = {'content-type': 'application/json'}
+    response = api.post_request_with_retries(query_url, payload, return_json=True,
+                                             auth_dict=khoros_object.auth, headers=headers)
+    if response['status'] == "success":
+        if response['data']['signed_off_all_sessions'] is True:
+            session_terminated = True
+            print("The authentication session has been terminated.\n")
+    return session_terminated
 
 
 def get_oauth_authorization_url(khoros_object):

@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v1.2.0
 ******
-**Release Date: TBD**
+**Release Date: 2020-03-22**
 
 Added
 =====
@@ -15,8 +15,10 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
+* Added the :py:func:`khoros.core.Khoros.signout` method.
 * Added the :py:func:`khoros.auth.get_oauth_authorization_url` function.
 * Added the :py:func:`khoros.auth.get_oauth_callback_url_from_user` function.
+* Added the :py:func:`khoros.auth.invalidate_session` function.
 * Added the :py:mod:`khoros.api` module with the following functions:
     * :py:func:`khoros.api.define_headers`
     * :py:func:`khoros.api.get_request_with_retries`
@@ -42,6 +44,12 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:exc:`khoros.errors.exceptions.POSTRequestError`
     * :py:exc:`khoros.errors.exceptions.PUTRequestError`
 
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.api` module to the :doc:`Primary Modules <primary-modules>` page.
+
 Changed
 =======
 
@@ -49,6 +57,7 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
+* Updated the core :py:class:`khoros.core.Khoros` class to include the ``active`` Boolean flag in ``self.auth``.
 * Updated the :py:func:`khoros.liql.perform_query` function to utilize the
   :py:func:`khoros.api.get_request_with_retries` function.
 * Made minor docstring adjustments to the :py:func:`khoros.liql.perform_query` function.

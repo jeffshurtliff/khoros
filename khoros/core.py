@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Mar 2020
+:Modified Date:     21 Mar 2020
 """
 
 import sys
@@ -109,6 +109,10 @@ class Khoros(object):
 
             # Parse the helper settings
             self.__parse_helper_settings()
+
+        # Add the authentication status
+        if 'active' not in self.auth:
+            auth['active'] = False
 
         # Update the default authentication type if necessary
         self.auth['type'] = self._settings['auth_type']
@@ -243,6 +247,7 @@ class Khoros(object):
         self._settings['auth_header'] = auth.get_session_header(self._settings['session_auth']['session_key'])
         self.auth['session_key'] = self._settings['session_auth']['session_key']
         self.auth['header'] = self._settings['auth_header']
+        self.auth['active'] = True
 
     # The public functions below provide ways to interact with the Khoros object
     def connect(self, connection_type=None):
@@ -325,6 +330,13 @@ class Khoros(object):
         query = liql.parse_query_elements(select_fields, from_source, where_filter, order_by, order_desc, limit)
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
+
+    def signout(self):
+        """This method invalidates the active session key or SSO authentication session."""
+        session_terminated = auth.invalidate_session(self)
+        if session_terminated:
+            self.auth['active'] = False
+        return
 
     def __del__(self):
         """This method fully destroys the instance."""

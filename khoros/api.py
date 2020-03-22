@@ -84,7 +84,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
         raise ConnectionError(failure_msg)
 
     # Convert to JSON if specified
-    if return_json:
+    if return_json and type(response) != dict:
         response = response.json()
     return response
 
@@ -119,13 +119,15 @@ def __api_request_with_payload(_url, _json_payload, _request_type, headers=None)
 
 
 # Define function to perform a POST request with supplied JSON data
-def post_request_with_retries(url, json_payload, khoros_object=None, auth_dict=None, headers=None):
+def post_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the POST request in JSON format
     :type json_payload: dict
+    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros]
     :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
@@ -133,21 +135,26 @@ def post_request_with_retries(url, json_payload, khoros_object=None, auth_dict=N
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, NoneType
     :returns: The API response from the POST request
-    :raises: ValueError, APIConnectionError, POSTRequestError
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
     response = __api_request_with_payload(url, json_payload, 'post', headers)
+    if return_json and type(response) != dict:
+        response = response.json()
     return response
 
 
 # Define function to perform a PUT request with supplied JSON data
-def put_request_with_retries(url, json_payload, khoros_object=None, auth_dict=None, headers=None):
+def put_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
 
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the PUT request in JSON format
     :type json_payload: dict
+    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros]
     :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
@@ -155,8 +162,11 @@ def put_request_with_retries(url, json_payload, khoros_object=None, auth_dict=No
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, NoneType
     :returns: The API response from the PUT request
-    :raises: ValueError, APIConnectionError, PUTRequestError
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
     response = __api_request_with_payload(url, json_payload, 'put', headers)
+    if return_json and type(response) != dict:
+        response = response.json()
     return response
