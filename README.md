@@ -84,7 +84,7 @@ python setup.py install
 ```
 
 ## Change Log
-The change log can be found in the [documentation](https://khorosjx.readthedocs.io/en/latest/changelog.html).
+The change log can be found in the [documentation](https://khoros.readthedocs.io/en/latest/changelog.html).
 
 ## Usage
 This section provides basic usage instructions for the package.
@@ -195,7 +195,7 @@ response_json = khoros.search(
 The documentation is located here: [https://khoros.readthedocs.io/en/latest/](https://khoros.readthedocs.io/en/latest/)
 
 ## License
-[MIT License](https://github.com/jeffshurtliff/khorosjx/blob/master/LICENSE)
+[MIT License](https://github.com/jeffshurtliff/khoros/blob/master/LICENSE)
 
 ## Reporting Issues
 Issues can be reported within the [GitHub repository](https://github.com/jeffshurtliff/khoros/issues).
