@@ -6,12 +6,12 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Mar 2020
+:Modified Date:     21 Mar 2020
 """
 
 import requests
 
-from . import errors
+from . import api, errors
 from .utils.core_utils import convert_set
 
 
@@ -99,6 +99,7 @@ def perform_query(khoros_object, query_url, return_json=True):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
 
     :param khoros_object: The Khoros object initialized via the :py:mod:`khoros.core` module
+    :type khoros_object: class[khoros.Khoros]
     :param query_url: The full Khoros Community API v2 URL for the query
     :type query_url: str
     :param return_json: Determines if the response should be returned in JSON format (``True`` by default)
@@ -109,8 +110,8 @@ def perform_query(khoros_object, query_url, return_json=True):
     if 'header' not in khoros_object.auth:
         error_msg = f"Cannot perform the query as an authorization header is not configured."
         raise errors.exceptions.MissingAuthDataError(error_msg)
-    response = requests.get(query_url, headers=khoros_object.auth['header'])
-    if return_json:
+    response = api.get_request_with_retries(query_url, return_json, auth_dict=khoros_object.auth)
+    if return_json and type(response) != dict:
         response = response.json()
     return response
 

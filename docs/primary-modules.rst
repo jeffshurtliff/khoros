@@ -6,6 +6,7 @@ which are listed below.
 
 * `Init Module (khoros)`_
 * `Core Module (khoros.core)`_
+* `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
 * `LiQL Module (khoros.liql)`_
 
@@ -31,6 +32,18 @@ This module contains the core object and functions to establish the connection t
 and leverage it to perform various actions.
 
 .. automodule:: khoros.core
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+***********************
+API Module (khoros.api)
+***********************
+This module handles interactions with the Khoros Community REST APIs.
+
+.. automodule:: khoros.api
    :members:
 
 :doc:`Return to Top <primary-modules>`
