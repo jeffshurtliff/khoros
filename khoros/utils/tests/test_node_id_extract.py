@@ -65,7 +65,7 @@ def test_with_invalid_node_types():
     """This function tests to ensure that invalid node types will raise the appropriate exception.
 
     :returns: None
-    :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    :raises: :py:exc:`AssertionError`, :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
     """
     # Import the base and exceptions modules
     set_package_path()
@@ -91,6 +91,7 @@ def test_with_only_url():
     """This function tests the :py:func:`khoros.objects.base.get_node_id` function when only a URL is passed.
 
     :returns: None
+    :raises: :py:exc:`AssertionError`
     """
     # Import the base module
     set_package_path()
@@ -110,7 +111,7 @@ def test_url_without_node():
     """This function tests to ensure that an appropriate exception is raised when a URL does not contain a valid node.
 
     :returns: None
-    :raises: :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
+    :raises: :py:exc:`AssertionError`, :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
     """
     # Import the base and exceptions modules
     set_package_path()
