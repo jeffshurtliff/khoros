@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     22 Mar 2020
 """
 
 import json
@@ -19,11 +19,11 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     """This function defines the headers to use in an API call.
 
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
-    :type khoros_object: class[khoros.Khoros]
+    :type khoros_object: class[khoros.Khoros], NoneType
     :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
-    :type auth_dict: dict
+    :type auth_dict: dict, NoneType
     :param params: Header parameters in a dictionary format
-    :type params: dict
+    :type params: dict, NoneType
     :param accept: The ``Accept`` header value (e.g. ``application/json``)
     :type accept: str, NoneType
     :param content_type: The ``Content-Type`` header value (e.g. ``application/json``)
@@ -55,9 +55,9 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
-    :type khoros_object: class[khoros.Khoros]
+    :type khoros_object: class[khoros.Khoros], NoneType
     :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
-    :type auth_dict: dict
+    :type auth_dict: dict, NoneType
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, NoneType
     :returns: The API response from the GET request (optionally in JSON format)
@@ -129,9 +129,9 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
-    :type khoros_object: class[khoros.Khoros]
+    :type khoros_object: class[khoros.Khoros], NoneType
     :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
-    :type auth_dict: dict
+    :type auth_dict: dict, NoneType
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, NoneType
     :returns: The API response from the POST request
@@ -156,9 +156,9 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
-    :type khoros_object: class[khoros.Khoros]
+    :type khoros_object: class[khoros.Khoros], NoneType
     :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
-    :type auth_dict: dict
+    :type auth_dict: dict, NoneType
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, NoneType
     :returns: The API response from the PUT request
@@ -168,5 +168,41 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
     response = __api_request_with_payload(url, json_payload, 'put', headers)
     if return_json and type(response) != dict:
+        response = response.json()
+    return response
+
+
+def query_successful(api_response):
+    """This function reviews the API response from the Community API to verify whether or not the call was successful.
+
+    :param api_response: The response from the API
+    :returns: Boolean indicating whether or not the API call was successful
+    """
+    try:
+        successful = True if api_response['status'] == 'successful' else False
+    except (KeyError, IndexError, ValueError, TypeError):
+        successful = False
+    return successful
+
+
+# Define function to perform a DELETE request against the API
+def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=None):
+    """This function performs a DELETE request against the Core API.
+
+    :param url: The URI against which the DELETE request will be issued
+    :type url: str
+    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
+    :type return_json: bool
+    :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
+    :type khoros_object: class[khoros.Khoros], NoneType
+    :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
+    :type auth_dict: dict, NoneType
+    :param headers: Any header values (in dictionary format) to pass in the API call (optional)
+    :type headers: dict, NoneType
+    :returns: The API response from the DELETE request (optionally in JSON format)
+    """
+    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
+    response = requests.delete(url, headers=headers)
+    if return_json:
         response = response.json()
     return response

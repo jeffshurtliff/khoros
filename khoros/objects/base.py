@@ -81,7 +81,7 @@ class Mapping:
         'contest': 'con-p',
         'forum': 'bd-p',
         'group': 'gp-p',
-        'ideas': 'idb-p',
+        'idea': 'idb-p',
         'message': 'm-p',
         'qa': 'qa-p',
         'tkb': 'tkb-p'
@@ -92,7 +92,7 @@ class Mapping:
         'Contest': 'contest',
         'Forum': 'forum',
         'Group': 'group',
-        'Idea Exchange': 'ideas',
+        'Idea Exchange': 'idea',
         'Message': 'message',
         'Q&A': 'qa',
         'TKB': 'tkb'

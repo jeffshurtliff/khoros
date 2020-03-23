@@ -15,12 +15,42 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
+* Added the :py:func:`khoros.api.query_successful` function.
+* Added the :py:func:`khoros.api.delete` function.
 * Added the new :py:mod:`khoros.objects` module to contain sub-modules for the various API objects.
+* Added the :py:mod:`khoros.objects.base` module with the following functions and classes:
+    * :py:func:`khoros.objects.base.get_node_id`
+    * :py:func:`khoros.objects.base.get_node_type_from_url`
+    * :py:func:`khoros.objects.base.__get_node_type_identifier`
+    * :py:class:`khoros.objects.base.Mapping`
+* Added the :py:mod:`khoros.objects.users` module with the following functions:
+    * :py:func:`khoros.objects.users.create`
+    * :py:func:`khoros.objects.users.structure_payload`
+    * :py:func:`khoros.objects.users.delete`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the following exception classes:
+    * :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    * :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`
+    * :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
+    * :py:exc:`khoros.errors.exceptions.UserCreationError`
+* Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_node_id_extract.set_package_path`
+    * :py:func:`khoros.utils.tests.test_node_id_extract.get_test_data`
+    * :py:func:`khoros.utils.tests.test_node_id_extract.test_with_valid_node_types`
+    * :py:func:`khoros.utils.tests.test_node_id_extract.test_with_invalid_node_types`
+    * :py:func:`khoros.utils.tests.test_node_id_extract.test_with_only_url`
+    * :py:func:`khoros.utils.tests.test_node_id_extract.test_url_without_node`
 
 Documentation
 -------------
-* Added the :py:mod:`khoros.objects` module and the :py:mod:`khoros.objects.base` sub-module to the
-  :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.objects` module and the :py:mod:`khoros.objects.base` and :py:mod:`khoros.objects.users`
+  sub-modules to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module to the
+  :doc:`Supporting Modules <supporting-modules>` page.
 
 Fixed
 =====

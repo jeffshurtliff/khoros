@@ -10,6 +10,8 @@ which are listed below.
 * `Auth Module (khoros.auth)`_
 * `LiQL Module (khoros.liql)`_
 * `Objects Module (khoros.objects)`_
+    * `Base Module (khoros.objects.base)`_
+    * `Users Module (khoros.objects.users)`_
 
 |
 
@@ -92,6 +94,17 @@ Base Module (khoros.objects.base)
 This module contains functions that relate to the various Community API objects but which are object-agnostic.
 
 .. automodule:: khoros.objects.base
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Users Module (khoros.objects.users)
+===================================
+This module includes functions that handle user-related operations.
+
+.. automodule:: khoros.objects.users
    :members:
 
 :doc:`Return to Top <primary-modules>`

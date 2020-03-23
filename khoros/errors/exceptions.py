@@ -264,3 +264,24 @@ class OperatorMismatchError(KhorosError):
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
+
+
+##################
+# User Exceptions
+##################
+
+
+# Define exception for missing authentication data
+class UserCreationError(KhorosError):
+    """This exception is used when an attempt to create a user fails."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The user failed to be created."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'user' in kwargs:
+            custom_msg = f"{default_msg.split('user ')[0]}'{kwargs['user']}'{default_msg.split('user')[1]}"
+            args = (custom_msg,)
+        if 'exc_msg' in kwargs:
+            full_msg = f"{args[0].split('.')[0]} due to the following exception: {kwargs['exc_msg']}"
+            args = (full_msg,)
+        super().__init__(*args)
