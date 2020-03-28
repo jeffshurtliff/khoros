@@ -4,6 +4,21 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v1.2.1
+******
+**Release Date: TBD**
+
+Added
+=====
+
+General
+-------
+* Added *PyCharm Python Security Scanner* to the
+  `pythonpackage.yml <https://github.com/jeffshurtliff/khorosjx/blob/master/.github/workflows/pythonpackage.yml>`_ file.
+
+|
+
+******
 v1.2.0
 ******
 **Release Date: 2020-03-22**
