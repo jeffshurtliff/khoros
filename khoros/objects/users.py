@@ -6,22 +6,22 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Mar 2020
+:Modified Date:     06 Apr 2020
 """
 
 from .. import api, errors
 
 
-def create(khoros_object, params=None, username=None, email=None, password=None, first_name=None, last_name=None,
+def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
            biography=None, sso_id=None, web_page_url=None, cover_image=None):
     """This function creates a new user in the Khoros Community environment.
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
-    :param params: Allows all parameters to be passed to the function within a single dictionary
-    :type params: dict, NoneType
-    :param username: The username (i.e. ``login``) for the user (**required**)
-    :type username: str, NoneType
+    :param user_settings: Allows all user settings to be passed to the function within a single dictionary
+    :type user_settings: dict, NoneType
+    :param login: The username (i.e. ``login``) for the user (**required**)
+    :type login: str, NoneType
     :param email: The email address for the user (**required**)
     :type email: str, NoneType
     :param password: The password for the user
@@ -42,7 +42,7 @@ def create(khoros_object, params=None, username=None, email=None, password=None,
     :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
     """
     # TODO: Add functionality for followers, following, rank, roles, user_avatar and user_badges
-    payload = structure_payload(params, username, email, password, first_name, last_name, biography, sso_id,
+    payload = structure_payload(user_settings, login, email, password, first_name, last_name, biography, sso_id,
                                 web_page_url, cover_image)
     query_url = f"{khoros_object._settings['v2_base']}/users"
     headers = {'Content-Type': 'application/json'}
@@ -52,14 +52,14 @@ def create(khoros_object, params=None, username=None, email=None, password=None,
     return
 
 
-def structure_payload(params=None, username=None, email=None, password=None, first_name=None, last_name=None,
+def structure_payload(user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
                       biography=None, sso_id=None, web_page_url=None, cover_image=None):
     """This function properly structures the payload to be passed when creating or manipulating users via the API.
 
-    :param params: Allows all parameters to be passed to the function within a single dictionary
-    :type params: dict, NoneType
-    :param username: The username (i.e. ``login``) for the user (**required**)
-    :type username: str, NoneType
+    :param user_settings: Allows all user settings to be passed to the function within a single dictionary
+    :type user_settings: dict, NoneType
+    :param login: The username (i.e. ``login``) for the user (**required**)
+    :type login: str, NoneType
     :param email: The email address for the user (**required**)
     :type email: str, NoneType
     :param password: The password for the user
@@ -84,14 +84,14 @@ def structure_payload(params=None, username=None, email=None, password=None, fir
         'email': email,
         'first_name': first_name,
         'last_name': last_name,
-        'login': username,
+        'login': login,
         'password': password,
         'sso_id': sso_id,
         'web_page_url': web_page_url
     }
     payload = {}
-    if params:
-        payload.update(params)
+    if user_settings:
+        payload.update(user_settings)
     for field_name, field_value in payload_mapping.items():
         if payload_mapping[field_name]:
             payload[field_name] = field_value

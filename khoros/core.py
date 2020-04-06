@@ -6,13 +6,14 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     06 Apr 2020
 """
 
 import sys
 import copy
 import logging
 
+from .objects import users
 from . import auth, errors, liql
 from .utils.helper import get_helper_settings
 
@@ -108,11 +109,11 @@ class Khoros(object):
             self._helper_settings = get_helper_settings(file_path, file_type)
 
             # Parse the helper settings
-            self.__parse_helper_settings()
+            self._parse_helper_settings()
 
         # Add the authentication status
         if 'active' not in self.auth:
-            auth['active'] = False
+            self.auth['active'] = False
 
         # Update the default authentication type if necessary
         self.auth['type'] = self._settings['auth_type']
@@ -154,34 +155,39 @@ class Khoros(object):
         self.logging = logging
 
         # Validate the settings
-        self.__validate_base_url()
-        self.__define_url_settings()
+        self._validate_base_url()
+        self._define_url_settings()
 
         # Populate the khoros.core dictionary with core settings
-        self.__populate_core_settings()
+        self._populate_core_settings()
 
         # Populate the khoros.auth dictionary with authentication settings
-        self.__populate_auth_settings()
+        self._populate_auth_settings()
 
         # Populate the khoros.construct dictionary with query and syntax constructors
-        self.__populate_construct_settings()
+        self._populate_construct_settings()
 
         # Auto-connect to the environment if specified (default)
         if auto_connect:
             if 'session_auth' in self._settings['auth_type']:
-                self.__connect_with_session_key()
+                self._connect_with_session_key()
             else:
                 errors.handlers.eprint("Unable to auto-connect to the instance with the given " +
                                        f"'{self._settings['auth_type']}' authentication type.")
 
-    def __populate_core_settings(self):
+        # Initialize the subclasses
+        subclasses = self._subclass_container()
+        self.User = subclasses['User']
+        del subclasses
+
+    def _populate_core_settings(self):
         """This method populates the khoros.core dictionary with the core public settings used by the object."""
         _core_settings = ['community_url', 'base_url', 'v1_base', 'v2_base']
         for _setting in _core_settings:
             if _setting in self._settings:
                 self.core[_setting] = self._settings[_setting]
 
-    def __populate_auth_settings(self):
+    def _populate_auth_settings(self):
         """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks."""
         _auth_settings = ['auth_type', 'oauth2', 'session_auth', 'sso']
         _setting_keys = {
@@ -195,14 +201,14 @@ class Khoros(object):
                         if _setting_key in self._settings[_setting]:
                             self.auth[_setting_key] = self._settings[_setting][_setting_key]
 
-    def __populate_construct_settings(self):
+    def _populate_construct_settings(self):
         """This method populates the khoros.construct dictionary to assist in constructing API queries and responses."""
         assert 'prefer_json' in self._settings
         if 'prefer_json' in self._settings:
             return_formats = {True: '&restapi.response_format=json', False: ''}
             self.construct['response_format'] = return_formats.get(self._settings['prefer_json'])
 
-    def __parse_helper_settings(self):
+    def _parse_helper_settings(self):
         """This method parses the settings in the helper configuration file when provided."""
         # Parse the helper settings and add them to the primary settings
         if 'connection' in self._helper_settings:
@@ -222,14 +228,14 @@ class Khoros(object):
                         if _construct_key in self._helper_settings['construct']:
                             self._settings[_construct_key] = self._helper_settings['construct'][_construct_key]
 
-    def __validate_base_url(self):
+    def _validate_base_url(self):
         """This method ensures that the Community URL is defined appropriately."""
         if ('http://' not in self._settings['community_url']) and ('https://' not in self._settings['community_url']):
             self._settings['community_url'] = f"https://{self._settings['community_url']}"
         if self._settings['community_url'].endswith('/'):
             self._settings['community_url'] = self._settings['community_url'][:-1]
 
-    def __define_url_settings(self):
+    def _define_url_settings(self):
         """This method defines the URL settings associated with the Khoros environment."""
         if 'community_name' in self._settings and self._settings['use_community_name'] is True:
             self._settings['base_url'] = f"{self._settings['community_url']}/{self._settings['community_name']}"
@@ -238,7 +244,7 @@ class Khoros(object):
         self._settings['v1_base'] = f"{self._settings['community_url']}/restapi/vc"
         self._settings['v2_base'] = f"{self._settings['base_url']}/api/2.0"
 
-    def __connect_with_session_key(self):
+    def _connect_with_session_key(self):
         """This method establishes a connection to the Khoros environment using basic / session key authentication."""
         if ('username' not in self._settings['session_auth']) or ('password' not in self._settings['session_auth']):
             error_msg = f"The username and/or password for session key authentication cannot be found."
@@ -260,7 +266,7 @@ class Khoros(object):
         if connection_type is None:
             connection_type = self._settings['auth_type']
         if connection_type == 'session_auth':
-            self.__connect_with_session_key()
+            self._connect_with_session_key()
         else:
             msg = f"The '{connection_type}' authentication type is currently unsupported."
             raise errors.exceptions.CurrentlyUnsupportedError(msg)
@@ -330,6 +336,59 @@ class Khoros(object):
         query = liql.parse_query_elements(select_fields, from_source, where_filter, order_by, order_desc, limit)
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
+
+    def _subclass_container(self):
+        """This method acts as a container to the subclasses for the Khoros object."""
+        _parent_class = self
+        print(_parent_class.__dict__)
+
+        class User:
+            """This inner class contains methods and functionality specific to managing users in Khoros Community."""
+            def __init__(self, user_settings=None, user_id=None, login=None, email=None, password=None, first_name=None,
+                         last_name=None, biography=None, sso_id=None, web_page_url=None, cover_image=None):
+                # Add the parent class object within the inner class
+                self._parent_class = _parent_class
+                self._settings = _parent_class._settings
+                self.auth = _parent_class.auth
+
+                print(self.__dict__.keys())
+
+                # Define the default class settings
+                default_settings = {
+                    'id': user_id,
+                    'biography': biography,
+                    'cover_image': cover_image,
+                    'email': email,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'login': login,
+                    'password': password,
+                    'sso_id': sso_id,
+                    'web_page_url': web_page_url
+                }
+
+                # Use the default settings if settings are not explicitly defined
+                if user_settings:
+                    self.user_settings = user_settings
+                else:
+                    self.user_settings = default_settings
+
+                # Overwrite any settings where fields are explicitly passed as arguments
+                for field_name, field_value in default_settings.items():
+                    if default_settings[field_name]:
+                        self.user_settings[field_name] = field_value
+
+                # Ensure the User ID uses 'id' rather than 'user_id' as the field name
+                # if self.user_settings['user_id'] and not self.user_settings['id']:
+                #     self.user_settings['id'] = self.user_settings['user_id']
+                #     del self.user_settings['user_id']
+
+        # Create a dictionary for the subclasses
+        _subclasses = {
+            'User': User
+        }
+        print(_subclasses['User'])
+        return _subclasses
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""

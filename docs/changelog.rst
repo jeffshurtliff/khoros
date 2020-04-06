@@ -34,6 +34,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the following exception classes:
     * :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    * :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     * :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`
     * :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
     * :py:exc:`khoros.errors.exceptions.UserCreationError`
@@ -51,6 +52,36 @@ Documentation
   sub-modules to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module to the
   :doc:`Supporting Modules <supporting-modules>` page.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Renamed the :py:method:`khoros.core.Khoros.__connect_with_session_key` method to be
+  :py:method:`khoros.core.Khoros._connect_with_session_key` (single underscore prefix) instead.
+* Renamed the :py:method:`khoros.core.Khoros.__define_url_settings` method to be
+  :py:method:`khoros.core.Khoros._define_url_settings` (single underscore prefix) instead.
+* Renamed the :py:method:`khoros.core.Khoros.__parse_helper_settings` method to be
+  :py:method:`khoros.core.Khoros._parse_helper_settings` (single underscore prefix) instead.
+* Renamed the :py:method:`khoros.core.Khoros.__populate_auth_settings` method to be
+  :py:method:`khoros.core.Khoros._populate_auth_settings` (single underscore prefix) instead.
+* Renamed the :py:method:`khoros.core.Khoros.__populate_construct_settings` method to be
+  :py:method:`khoros.core.Khoros._populate_construct_settings` (single underscore prefix) instead.
+* Renamed the :py:method:`khoros.core.Khoros.__populate_core_settings` method to be
+  :py:method:`khoros.core.Khoros._populate_core_settings` (single underscore prefix) instead.
+* Renamed the :py:method:`khoros.core.Khoros.__validate_base_url` method to be
+  :py:method:`khoros.core.Khoros._validate_base_url` (single underscore prefix) instead.
+
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception class to allow the respective
+  feature to be passed as a string argument for it to be explicitly referenced in the exception message.
 
 Fixed
 =====
