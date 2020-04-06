@@ -25,6 +25,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:class:`khoros.objects.base.Mapping`
 * Added the :py:mod:`khoros.objects.users` module with the following functions:
     * :py:func:`khoros.objects.users.create`
+    * :py:func:`khoros.objects.users.process_user_settings`
     * :py:func:`khoros.objects.users.structure_payload`
     * :py:func:`khoros.objects.users.delete`
 

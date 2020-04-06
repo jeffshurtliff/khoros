@@ -52,6 +52,161 @@ def create(khoros_object, user_settings=None, login=None, email=None, password=N
     return
 
 
+def process_user_settings(user_settings=None, user_id=None, albums=None, avatar=None, banned=None, biography=None,
+                          bonus_points=None, cover_image=None, deleted=None, email=None, email_excluded=None,
+                          first_name=None, followers=None, following=None, href=None, images=None, kudos_given=None,
+                          kudos_received=None, kudos_weight=None, language=None, last_name=None, last_visit_time=None,
+                          location=None, login=None, messages=None, metrics=None, online_status=None, password=None,
+                          personal_data=None, public_images=None, rank=None, registration_data=None, reviews=None,
+                          roles=None, signature_topics=None, solutions_authored=None, sso_id=None,
+                          threads_participated=None, topics=None, user_badges=None, videos=None, view_href=None,
+                          web_page_url=None):
+    """This function processes the ``user_settings`` for functions and formats them into a normalized dictionary.
+
+    :param user_settings: Allows all user settings to be passed to the function within a single dictionary
+    :type user_settings: dict, NoneType
+    :param user_id: The unique User ID associated with the user
+    :type user_id: int, str, NoneType
+    :param albums: The image albums associated with the user's profile
+    :type albums: dict, NoneType
+    :param avatar: The avatar (profile image) of the user
+    :type avatar: str, NoneType
+    :param banned: Defines whether or not the user is banned (``True`` if banned)
+    :type banned: bool, NoneType
+    :param biography: The user's biography for their profile
+    :type biography: str, NoneType
+    :param bonus_points: Bonus points that an admin has assigned to the user
+    :type bonus_points: int, NoneType
+    :param cover_image: The cover image to be used on the user's profile
+    :type cover_image: str, NoneType
+    :param deleted: Defines whether or not the user's account is deleted. (``True`` if deleted)
+    :type deleted: bool, NoneType
+    :param email: The email address for the user
+    :type email: str, NoneType
+    :param email_excluded: Defines whether or not the user has selected the "don't send me any community emails" option
+    :type email_excluded: bool, NoneType
+    :param first_name: The user's first name (i.e. given name)
+    :type first_name: str, NoneType
+    :param followers: The community members who are subscribed to the user (i.e. "friends")
+    :type followers: dict, NoneType
+    :param following: The community members who the user follows (i.e. "friends")
+    :type following: dict, NoneType
+    :param href: Relative href to the user resource (i.e. canonical path to the resource relative to the API root)
+    :type href: str, NoneType
+    :param images: Images uploaded by the user
+    :type images: dict, NoneType
+    :param kudos_given: The kudos given to the user by other community members
+    :type kudos_given: dict, NoneType
+    :param kudos_received: The kudos received by the user from other community members
+    :type kudos_received: dict, NoneType
+    :param kudos_weight: The weight of the kudos awarded
+    :type kudos_weight: int, NoneType
+    :param language: The default language selected by the user
+    :type language: str, NoneType
+    :param last_name: The user's last name (i.e. surname)
+    :type last_name: str, NoneType
+    :param last_visit_time: The date/time the user was last active on the community
+    :type last_visit_time: type[datetime.datetime], NoneType
+    :param location: The user's location
+    :type location: str, NoneType
+    :param login: The username (i.e. ``login``) for the user
+    :type login: str, NoneType
+    :param messages: The messages (topics and replies) posted by the user
+    :type messages: dict, NoneType
+    :param metrics: The metrics of the user activity
+    :param online_status: The status of the user (``ONLINE`` or ``OFFLINE``)
+    :type online_status: str, NoneType
+    :param password: The password for the user
+    :type password: str, NoneType
+    :param personal_data: The ``personal_data`` object associated with the user account containing PII about the user
+    :param public_images: Images uploaded by the user that the user has made public
+    :type public_images: dict, NoneType
+    :param rank: The rank of the user in the community (Value is ``-1`` if no rank has been achieved)
+    :type rank: dict, NoneType
+    :param registration_data: Registration information about the user
+    :type registration_data: dict, NoneType
+    :param reviews: Product reviews written by the user
+    :type reviews: dict, NoneType
+    :param roles: The roles that have been assigned to the user
+    :type roles: dict, NoneType
+    :param signature_topics: Topics of interest associated with this user account that the user has selected to display
+    :param solutions_authored: The solutions authored by the user (i.e posts selected as an accepted solutions)
+    :type solutions_authored: dict, NoneType
+    :param sso_id: The Single Sign-On (SSO) ID for the user
+    :type sso_id: str, NoneType
+    :param threads_participated: The topic IDs of message threads in which the user has participated
+    :type threads_participated: list, NoneType
+    :param topics: Topic messages (i.e the root message of a conversation) authored by the user
+    :type topics: dict, NoneType
+    :param user_badges: Badges earned by the user (as well as visible but unearned badges depending on admin settings)
+    :param videos: Videos uploaded by the user
+    :type videos: dict, NoneType
+    :param view_href: The fully-qualified href to the user resource in the Web UI (i.e. the URI of the ViewProfile page)
+    :type view_href: str, NoneType
+    :param web_page_url: The URL to the user's website
+    :type web_page_url: str, NoneType
+    :returns: The dictionary containing the user settings
+    """
+    default_settings = {
+        'id': user_id,
+        'albums': albums,
+        'avatar': avatar,
+        'banned': banned,
+        'biography': biography,
+        'bonus_points': bonus_points,
+        'cover_image': cover_image,
+        'deleted': deleted,
+        'email': email,
+        'email_excluded': email_excluded,
+        'first_name': first_name,
+        'followers': followers,
+        'following': following,
+        'href': href,
+        'images': images,
+        'kudos_given': kudos_given,
+        'kudos_received': kudos_received,
+        'kudos_weight': kudos_weight,
+        'language': language,
+        'last_name': last_name,
+        'last_visit_time': last_visit_time,
+        'location': location,
+        'login': login,
+        'messages': messages,
+        'metrics': metrics,
+        'online_status': online_status,
+        'password': password,
+        'personal_data': personal_data,
+        'public_images': public_images,
+        'rank': rank,
+        'registration_data': registration_data,
+        'reviews': reviews,
+        'roles': roles,
+        'signature_topics': signature_topics,
+        'solutions_authored': solutions_authored,
+        'sso_id': sso_id,
+        'threads_participated': threads_participated,
+        'topics': topics,
+        'user_badges': user_badges,
+        'videos': videos,
+        'view_href': view_href,
+        'web_page_url': web_page_url
+    }
+    # Use the default settings if settings are not explicitly defined
+    if not user_settings:
+        user_settings = default_settings
+
+    # Overwrite any settings where fields are explicitly passed as arguments
+    for field_name, field_value in default_settings.items():
+        if default_settings[field_name]:
+            user_settings[field_name] = field_value
+
+    # Ensure the User ID uses 'id' rather than 'user_id' as the field name
+    if user_settings['user_id'] and not user_settings['id']:
+        user_settings['id'] = user_settings['user_id']
+        del user_settings['user_id']
+    return user_settings
+
+
 def structure_payload(user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
                       biography=None, sso_id=None, web_page_url=None, cover_image=None):
     """This function properly structures the payload to be passed when creating or manipulating users via the API.

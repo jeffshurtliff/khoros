@@ -12,6 +12,7 @@
 import sys
 import copy
 import logging
+import importlib
 
 from .objects import users
 from . import auth, errors, liql
@@ -175,11 +176,6 @@ class Khoros(object):
                 errors.handlers.eprint("Unable to auto-connect to the instance with the given " +
                                        f"'{self._settings['auth_type']}' authentication type.")
 
-        # Initialize the subclasses
-        subclasses = self._subclass_container()
-        self.User = subclasses['User']
-        del subclasses
-
     def _populate_core_settings(self):
         """This method populates the khoros.core dictionary with the core public settings used by the object."""
         _core_settings = ['community_url', 'base_url', 'v1_base', 'v2_base']
@@ -337,58 +333,41 @@ class Khoros(object):
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
 
-    def _subclass_container(self):
-        """This method acts as a container to the subclasses for the Khoros object."""
-        _parent_class = self
-        print(_parent_class.__dict__)
+    class User:
+        """This inner class contains methods and functionality specific to managing users in Khoros Community."""
+        def test_me(self):
+            print(self)
 
-        class User:
-            """This inner class contains methods and functionality specific to managing users in Khoros Community."""
-            def __init__(self, user_settings=None, user_id=None, login=None, email=None, password=None, first_name=None,
-                         last_name=None, biography=None, sso_id=None, web_page_url=None, cover_image=None):
-                # Add the parent class object within the inner class
-                self._parent_class = _parent_class
-                self._settings = _parent_class._settings
-                self.auth = _parent_class.auth
+        def create(self, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
+                   biography=None, sso_id=None, web_page_url=None, cover_image=None):
+            """This function creates a new user in the Khoros Community environment.
 
-                print(self.__dict__.keys())
-
-                # Define the default class settings
-                default_settings = {
-                    'id': user_id,
-                    'biography': biography,
-                    'cover_image': cover_image,
-                    'email': email,
-                    'first_name': first_name,
-                    'last_name': last_name,
-                    'login': login,
-                    'password': password,
-                    'sso_id': sso_id,
-                    'web_page_url': web_page_url
-                }
-
-                # Use the default settings if settings are not explicitly defined
-                if user_settings:
-                    self.user_settings = user_settings
-                else:
-                    self.user_settings = default_settings
-
-                # Overwrite any settings where fields are explicitly passed as arguments
-                for field_name, field_value in default_settings.items():
-                    if default_settings[field_name]:
-                        self.user_settings[field_name] = field_value
-
-                # Ensure the User ID uses 'id' rather than 'user_id' as the field name
-                # if self.user_settings['user_id'] and not self.user_settings['id']:
-                #     self.user_settings['id'] = self.user_settings['user_id']
-                #     del self.user_settings['user_id']
-
-        # Create a dictionary for the subclasses
-        _subclasses = {
-            'User': User
-        }
-        print(_subclasses['User'])
-        return _subclasses
+            :param user_settings: Allows all user settings to be passed to the function within a single dictionary
+            :type user_settings: dict, NoneType
+            :param login: The username (i.e. ``login``) for the user (**required**)
+            :type login: str, NoneType
+            :param email: The email address for the user (**required**)
+            :type email: str, NoneType
+            :param password: The password for the user
+            :type password: str, NoneType
+            :param first_name: The user's first name (i.e. given name)
+            :type first_name: str, NoneType
+            :param last_name: The user's last name (i.e. surname)
+            :type last_name: str, NoneType
+            :param biography: The user's biography for their profile
+            :type biography: str, NoneType
+            :param sso_id: The Single Sign-On (SSO) ID for the user
+            :type sso_id: str, NoneType
+            :param web_page_url: The URL to the user's website
+            :type web_page_url: str, NoneType
+            :param cover_image: The cover image to be used on the user's profile
+            :type cover_image: str, NoneType
+            :returns: None
+            :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
+            """
+            users.create(self, user_settings, login, email, password, first_name,
+                         last_name, biography, sso_id, web_page_url, cover_image)
+            return
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""
