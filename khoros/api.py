@@ -175,14 +175,26 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
 def query_successful(api_response):
     """This function reviews the API response from the Community API to verify whether or not the call was successful.
 
-    :param api_response: The response from the API
+    :param api_response: The response from the API in JSON format
+    :type api_response: dict
     :returns: Boolean indicating whether or not the API call was successful
     """
     try:
-        successful = True if api_response['status'] == 'successful' else False
+        success_values = ['successful', 'success']
+        successful = True if api_response['status'] in success_values else False
     except (KeyError, IndexError, ValueError, TypeError):
         successful = False
     return successful
+
+
+def get_results_count(api_response):
+    """This function returns the number of results within a response from the Community API.
+
+    :param api_response: The response to an API query in JSON format
+    :type api_response: dict
+    :returns: The number of results in the API response as an integer
+    """
+    return api_response['data']['size']
 
 
 # Define function to perform a DELETE request against the API

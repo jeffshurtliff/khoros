@@ -16,6 +16,7 @@ Primary Modules
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.api.query_successful` function.
+* Added the :py:func:`khoros.api.get_results_count` function.
 * Added the :py:func:`khoros.api.delete` function.
 * Added the new :py:mod:`khoros.objects` module to contain sub-modules for the various API objects.
 * Added the :py:mod:`khoros.objects.base` module with the following functions and classes:
@@ -38,6 +39,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     * :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`
     * :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
+    * :py:exc:`khoros.errors.exceptions.TooManyResultsError`
     * :py:exc:`khoros.errors.exceptions.UserCreationError`
 * Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module with the following functions:
     * :py:func:`khoros.utils.tests.test_node_id_extract.set_package_path`
@@ -49,6 +51,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 Documentation
 -------------
+Additions to the documentation.
+
 * Added the :py:mod:`khoros.objects` module and the :py:mod:`khoros.objects.base` and :py:mod:`khoros.objects.users`
   sub-modules to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module to the
@@ -61,20 +65,21 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Renamed the :py:method:`khoros.core.Khoros.__connect_with_session_key` method to be
-  :py:method:`khoros.core.Khoros._connect_with_session_key` (single underscore prefix) instead.
-* Renamed the :py:method:`khoros.core.Khoros.__define_url_settings` method to be
-  :py:method:`khoros.core.Khoros._define_url_settings` (single underscore prefix) instead.
-* Renamed the :py:method:`khoros.core.Khoros.__parse_helper_settings` method to be
-  :py:method:`khoros.core.Khoros._parse_helper_settings` (single underscore prefix) instead.
-* Renamed the :py:method:`khoros.core.Khoros.__populate_auth_settings` method to be
-  :py:method:`khoros.core.Khoros._populate_auth_settings` (single underscore prefix) instead.
-* Renamed the :py:method:`khoros.core.Khoros.__populate_construct_settings` method to be
-  :py:method:`khoros.core.Khoros._populate_construct_settings` (single underscore prefix) instead.
-* Renamed the :py:method:`khoros.core.Khoros.__populate_core_settings` method to be
-  :py:method:`khoros.core.Khoros._populate_core_settings` (single underscore prefix) instead.
-* Renamed the :py:method:`khoros.core.Khoros.__validate_base_url` method to be
-  :py:method:`khoros.core.Khoros._validate_base_url` (single underscore prefix) instead.
+* Removed the unnecessary ``import requests`` line in the :py:mod:`khoros.liql` module.
+* Renamed the :py:meth:`khoros.core.Khoros.__connect_with_session_key` method to be
+  :py:meth:`khoros.core.Khoros._connect_with_session_key` (single underscore prefix) instead.
+* Renamed the :py:meth:`khoros.core.Khoros.__define_url_settings` method to be
+  :py:meth:`khoros.core.Khoros._define_url_settings` (single underscore prefix) instead.
+* Renamed the :py:meth:`khoros.core.Khoros.__parse_helper_settings` method to be
+  :py:meth:`khoros.core.Khoros._parse_helper_settings` (single underscore prefix) instead.
+* Renamed the :py:meth:`khoros.core.Khoros.__populate_auth_settings` method to be
+  :py:meth:`khoros.core.Khoros._populate_auth_settings` (single underscore prefix) instead.
+* Renamed the :py:meth:`khoros.core.Khoros.__populate_construct_settings` method to be
+  :py:meth:`khoros.core.Khoros._populate_construct_settings` (single underscore prefix) instead.
+* Renamed the :py:meth:`khoros.core.Khoros.__populate_core_settings` method to be
+  :py:meth:`khoros.core.Khoros._populate_core_settings` (single underscore prefix) instead.
+* Renamed the :py:meth:`khoros.core.Khoros.__validate_base_url` method to be
+  :py:meth:`khoros.core.Khoros._validate_base_url` (single underscore prefix) instead.
 
 
 Supporting Modules
@@ -84,12 +89,29 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Updated the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception class to allow the respective
   feature to be passed as a string argument for it to be explicitly referenced in the exception message.
 
+Documentation
+-------------
+Changes to the documentation.
+
+* Updated the docstring in :py:func:`khoros.api.query_successful` indicating the API response should be in JSON format.
+
 Fixed
 =====
 
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.liql.format_query` function to properly encode the double-quote (``"``) character.
+
+
 Documentation
 -------------
+Fixes in the documentation.
+
 * Fixed two bad hyperlinks in the `README.md <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ file.
+* Fixed the docstrings in the :py:exc:`khoros.errors.exceptions.InvalidOperatorError` exception class to be accurate.
+* Fixed the docstrings in the :py:exc:`khoros.errors.exceptions.OperatorMismatchError` exception class to be accurate.
 
 |
 
@@ -105,7 +127,7 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the :py:func:`khoros.core.Khoros.signout` method.
+* Added the :py:meth:`khoros.core.Khoros.signout` method.
 * Added the :py:func:`khoros.auth.get_oauth_authorization_url` function.
 * Added the :py:func:`khoros.auth.get_oauth_callback_url_from_user` function.
 * Added the :py:func:`khoros.auth.invalidate_session` function.

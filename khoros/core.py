@@ -12,10 +12,10 @@
 import sys
 import copy
 import logging
-import importlib
 
-from .objects import users
 from . import auth, errors, liql
+from .objects import base as objects_base
+from .objects import users as users_module
 from .utils.helper import get_helper_settings
 
 # Initialize logging
@@ -176,6 +176,10 @@ class Khoros(object):
                 errors.handlers.eprint("Unable to auto-connect to the instance with the given " +
                                        f"'{self._settings['auth_type']}' authentication type.")
 
+        # Import inner object classes so their methods can be called from the primary object
+        self.nodes = self._import_node_class()
+        self.users = self._import_user_class()
+
     def _populate_core_settings(self):
         """This method populates the khoros.core dictionary with the core public settings used by the object."""
         _core_settings = ['community_url', 'base_url', 'v1_base', 'v2_base']
@@ -251,6 +255,14 @@ class Khoros(object):
         self.auth['header'] = self._settings['auth_header']
         self.auth['active'] = True
 
+    def _import_node_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Node` inner class to be utilized in the core object."""
+        return Khoros.Node(self)
+
+    def _import_user_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object."""
+        return Khoros.User(self)
+
     # The public functions below provide ways to interact with the Khoros object
     def connect(self, connection_type=None):
         """This method establishes a connection to the environment using a specified authentication type.
@@ -269,7 +281,7 @@ class Khoros(object):
 
     def query(self, query, return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False,
               error_code='', format_statements=True):
-        """This function performs a Community API v2 query using LiQL with the full LiQL syntax.
+        """This method performs a Community API v2 query using LiQL with the full LiQL syntax.
 
         :param query: The full LiQL query in its standard syntax (not URL-encoded)
         :type query: str
@@ -297,7 +309,7 @@ class Khoros(object):
     def search(self, select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0,
                return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='',
                format_statements=True):
-        """This function performs a LiQL query in the Community API v2 by specifying the query elements.
+        """This method performs a LiQL query in the Community API v2 by specifying the query elements.
 
         :param select_fields: One or more fields to be selected within the SELECT statement (e.g. ``id``)
         :type select_fields: str, tuple, list, set
@@ -333,10 +345,49 @@ class Khoros(object):
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
 
-    class User:
-        """This inner class contains methods and functionality specific to managing users in Khoros Community."""
-        def test_me(self):
-            print(self)
+    class Node(object):
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Node` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        @staticmethod
+        def get_node_id(url, node_type=None):
+            """This function retrieves the Node ID for a given node within a URL.
+
+            :param url: The URL from which to parse out the Node ID
+            :type url: str
+            :param node_type: The node type (e.g. ``blog``, ``tkb``, ``message``, etc.) for the object in the URL
+            :type node_type: str, NoneType
+            :returns: The Node ID retrieved from the URL
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+                     :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`,
+                     :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
+            """
+            return objects_base.get_node_id(url, node_type)
+
+        @staticmethod
+        def get_node_type_from_url(url):
+            """This function attempts to retrieve a node type by analyzing a supplied URL.
+
+            :param url: The URL from which to extract the node type
+            :type url: str
+            :returns: The node type based on the URL provided
+            :raises: :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
+            """
+            return objects_base.get_node_type_from_url(url)
+
+    class User(object):
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.User` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
 
         def create(self, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
                    biography=None, sso_id=None, web_page_url=None, cover_image=None):
@@ -365,9 +416,23 @@ class Khoros(object):
             :returns: None
             :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
             """
-            users.create(self, user_settings, login, email, password, first_name,
-                         last_name, biography, sso_id, web_page_url, cover_image)
+            users_module.create(self.khoros_object, user_settings, login, email, password, first_name, last_name,
+                                biography, sso_id, web_page_url, cover_image)
             return
+
+        def delete(self, user_id, return_json=False):
+            """This function deletes a user from the Khoros Community environment.
+
+            :param user_id: The User ID of the user to be deleted
+            :type user_id: str, int
+            :param return_json: Determines if the API response should be returned in JSON format (``False`` by default)
+            :type return_json: bool
+            :returns: The API response (optionally in JSON format)
+            """
+            return users_module.delete(self.khoros_object, user_id, return_json)
+
+        def get_user_id(self, user_settings=None, login=None, email=None, first_name=None, last_name=None):
+            return users_module.get_user_id(self.khoros_object, user_settings, login, email, first_name, last_name)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""
@@ -383,3 +448,4 @@ class Khoros(object):
     def close(self):
         """This core method destroys the instance."""
         pass
+

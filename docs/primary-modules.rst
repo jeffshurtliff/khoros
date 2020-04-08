@@ -6,6 +6,7 @@ which are listed below.
 
 * `Init Module (khoros)`_
 * `Core Module (khoros.core)`_
+    * `Core Object Subclasses (khoros.core.Khoros)`_
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
 * `LiQL Module (khoros.liql)`_
@@ -37,9 +38,31 @@ and leverage it to perform various actions.
 .. automodule:: khoros.core
    :members:
 
+.. autoclass:: khoros.core::Khoros.Node
+   :members:
+
+.. autoclass:: khoros.core::Khoros.User
+   :members:
+
 :doc:`Return to Top <primary-modules>`
 
 |
+
+Core Object Subclasses (khoros.core.Khoros)
+===========================================
+The classes below are inner/nested classes within the core :py:class:`khoros.core.Khoros` class.
+
+.. note:: The classes themselves are *CamelCase* format and singular (e.g. ``Node``, ``User``, etc.) whereas the names
+          used to call the inner class methods are all *lowercase* (or *snake_case*) and plural. (e.g.
+          ``core_object.nodes.get_node_id()``, ``core_object.users.create()``, etc.)
+
+.. autoclass:: khoros.core::Khoros.Node
+   :members:
+
+.. autoclass:: khoros.core::Khoros.User
+   :members:
+
+:doc:`Return to Top <primary-modules>`
 
 ***********************
 API Module (khoros.api)

@@ -6,10 +6,8 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     08 Apr 2020
 """
-
-import requests
 
 from . import api, errors
 from .utils.core_utils import convert_set
@@ -17,6 +15,9 @@ from .utils.core_utils import convert_set
 
 def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='', format_statements=True):
     """This function formats and URL-encodes a raw LiQL query to be able to use it within a Community v2 API URL.
+
+    .. versionchanged:: 2.0.0
+       The double-quote character (``"``) in queries is now properly encoded.
 
     :param query: The LiQL query to be formatted and url-encoded
     :type query: str
@@ -35,7 +36,8 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
     """
     chars_to_encode = {
         ' ': '+',
-        '=': '%3D'
+        '=': '%3D',
+        '"': '%22'
     }
     query_statements = {
         'select': 'SELECT',

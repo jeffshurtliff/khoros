@@ -6,10 +6,12 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Apr 2020
+:Modified Date:     08 Apr 2020
 """
 
-from .. import api, errors
+import warnings
+
+from .. import api, liql, errors
 
 
 def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
@@ -201,7 +203,7 @@ def process_user_settings(user_settings=None, user_id=None, albums=None, avatar=
             user_settings[field_name] = field_value
 
     # Ensure the User ID uses 'id' rather than 'user_id' as the field name
-    if user_settings['user_id'] and not user_settings['id']:
+    if 'user_id' in user_settings and 'id' not in user_settings:
         user_settings['id'] = user_settings['user_id']
         del user_settings['user_id']
     return user_settings
@@ -267,3 +269,79 @@ def delete(khoros_object, user_id, return_json=False):
     """
     query_url = f"{khoros_object._settings['v2_base']}/users/{user_id}"
     return api.delete(query_url, return_json, auth_dict=khoros_object.auth)
+
+
+def _get_where_clause_for_user_id(_user_settings):
+    """This function defines the WHERE clause syntax for the LiQL query to retrieve the User ID for a user.
+
+    :param _user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type _user_settings: dict
+    :returns: The WHERE clause in string format
+    :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if _user_settings['login']:
+        _where_clause = f'login = "{_user_settings["login"]}"'
+    elif _user_settings['email']:
+        _where_clause = f'email = "{_user_settings["email"]}"'
+    elif _user_settings['first_name'] or _user_settings['last_name']:
+        if _user_settings['first_name'] and _user_settings['last_name']:
+            _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
+                           f'last_name = "{_user_settings["last_name"]}"'
+        elif _user_settings['last_name']:
+            _where_clause = f'last_name = "{_user_settings["last_name"]}"'
+        else:
+            _where_clause = f'first_name = "{_user_settings["first_name"]}"'
+    else:
+        _exc_msg = "Missing requisite information to accurately look up the User ID of the user."
+        raise errors.exceptions.MissingRequiredDataError(_exc_msg)
+    return _where_clause
+
+
+def get_user_id(khoros_object, user_settings=None, login=None, email=None, first_name=None, last_name=None,
+                allow_multiple=False, display_warnings=True):
+    """This function looks up and retrieves the User ID for a user by leveraging supplied user information.
+
+    .. note:: The priority of supplied fields are as follows: login, email, first and last name, last name, first name
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param login: The username of the user
+    :type login: str, NoneType
+    :param email: The email address of the user
+    :type email: str, NoneType
+    :param first_name: The first name (i.e. given name) of the user
+    :type first_name: str, NoneType
+    :param last_name: The last name (i.e. surname) of the user
+    :type last_name: str, NoneType
+    :param allow_multiple: Allows a list of User IDs to be returned if multiple results are found (``False`` by default)
+    :type allow_multiple: bool
+    :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
+    :type display_warnings: bool
+    :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+    """
+    user_settings = process_user_settings(user_settings, login=login, email=email,
+                                          first_name=first_name, last_name=last_name)
+    where_clause = _get_where_clause_for_user_id(user_settings)
+    liql_query = f"select id from users where {where_clause}"
+    query_url = liql.get_query_url(khoros_object.core, liql_query)
+    api_response = liql.perform_query(khoros_object, query_url)
+    if not api.query_successful(api_response):
+        # TODO: Pass the actual failure information to the exception class for a more customized error
+        raise errors.exceptions.GETRequestError
+    num_results = api.get_results_count(api_response)
+    if num_results == 0:
+        raise errors.exceptions.NotFoundResponseError
+    elif num_results > 1:
+        multiple_results_msg = "Multiple results were retrieved when querying for the user in question."
+        if display_warnings:
+            warnings.warn(multiple_results_msg, RuntimeWarning)
+        if not allow_multiple:
+            raise errors.exceptions.TooManyResultsError(multiple_results_msg)
+        user_id = []
+        for user in api_response['data']['items']:
+            user_id.append(int(user['id']))
+    else:
+        user_id = int(api_response['data']['items'][0]['id'])
+    return user_id

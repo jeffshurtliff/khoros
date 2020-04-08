@@ -266,7 +266,7 @@ class HelperFunctionNotFoundError(KhorosError):
 
 
 class InvalidOperatorError(KhorosError):
-    """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
+    """This exception is used when an invalid operator is provided for the LiQL query."""
     def __init__(self, *args, **kwargs):
         default_msg = "An invalid operator was provided for the LiQL query."
         if not (args or kwargs):
@@ -275,7 +275,19 @@ class InvalidOperatorError(KhorosError):
 
 
 class OperatorMismatchError(KhorosError):
-    """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
+    """This exception is used when the number of operators in the LiQL query does not match the number of fields."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class TooManyResultsError(KhorosError):
+    """This exception is used when more results are returned than were expected in a LiQL query.
+
+    .. versionadded:: 2.0.0
+    """
     def __init__(self, *args, **kwargs):
         default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
         if not (args or kwargs):
