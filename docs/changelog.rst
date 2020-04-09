@@ -39,9 +39,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:meth:`khoros.core.Khoros.User.get_topics_count`
     * :py:meth:`khoros.core.Khoros.User.get_replies_count`
     * :py:meth:`khoros.core.Khoros.User.get_videos_count`
-    * :py:meth:`khoros.core.Khoros.User.get_kudos_given`
-    * :py:meth:`khoros.core.Khoros.User.get_kudos_received`
+    * :py:meth:`khoros.core.Khoros.User.get_kudos_given_count`
+    * :py:meth:`khoros.core.Khoros.User.get_kudos_received_count`
     * :py:meth:`khoros.core.Khoros.User.get_online_user_count`
+    * :py:meth:`khoros.core.Khoros.User.get_registration_data`
+    * :py:meth:`khoros.core.Khoros.User.get_registration_timestamp`
+    * :py:meth:`khoros.core.Khoros.User.get_registration_status`
 * Added the :py:func:`khoros.api.query_successful` function.
 * Added the :py:func:`khoros.api.get_results_count` function.
 * Added the :py:func:`khoros.api.get_items_list` function.
@@ -74,9 +77,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.users.get_solutions_authored_count`
     * :py:func:`khoros.objects.users.get_topics_count`
     * :py:func:`khoros.objects.users.get_videos_count`
-    * :py:func:`khoros.objects.users.get_kudos_given`
-    * :py:func:`khoros.objects.users.get_kudos_received`
+    * :py:func:`khoros.objects.users.get_kudos_given_count`
+    * :py:func:`khoros.objects.users.get_kudos_received_count`
     * :py:func:`khoros.objects.users.get_online_user_count`
+    * :py:func:`khoros.objects.users.get_registration_data`
+    * :py:func:`khoros.objects.users.get_registration_timestamp`
+    * :py:func:`khoros.objects.users.get_registration_status`
 
 Supporting Modules
 ------------------

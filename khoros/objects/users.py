@@ -347,7 +347,7 @@ def get_user_id(khoros_object, user_settings=None, login=None, email=None, first
     return user_id
 
 
-def query_users_table_by_id(khoros_object, select_fields, user_id):
+def query_users_table_by_id(khoros_object, select_fields, user_id, first_item=False):
     """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID using LiQL.
 
     :param khoros_object: he core :py:class:`khoros.Khoros` object
@@ -356,6 +356,8 @@ def query_users_table_by_id(khoros_object, select_fields, user_id):
     :type select_fields: str, tuple, list, set
     :param user_id: The User ID associated with the user
     :type user_id: int, str
+    :param first_item: Determines if only the first item should be returned (``False`` by default)
+    :type first_item: bool
     :returns: The API response for the performed LiQL query
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -367,6 +369,8 @@ def query_users_table_by_id(khoros_object, select_fields, user_id):
     if not api.query_successful(api_response):
         # TODO: Pass the actual failure information to the exception class for a more customized error
         raise errors.exceptions.GETRequestError
+    if first_item:
+        api_response = api_response['data']['items'][0]
     return api_response
 
 
@@ -664,7 +668,7 @@ def get_videos_count(khoros_object, user_settings=None, user_id=None, login=None
     return _get_count(khoros_object, user_settings['id'], 'videos')
 
 
-def get_kudos_given(khoros_object, user_settings=None, user_id=None, login=None, email=None):
+def get_kudos_given_count(khoros_object, user_settings=None, user_id=None, login=None, email=None):
     """This function gets the count of kudos a user has given.
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -684,7 +688,7 @@ def get_kudos_given(khoros_object, user_settings=None, user_id=None, login=None,
     return _get_sum_weight(khoros_object, user_settings['id'], 'kudos_given')
 
 
-def get_kudos_received(khoros_object, user_settings=None, user_id=None, login=None, email=None):
+def get_kudos_received_count(khoros_object, user_settings=None, user_id=None, login=None, email=None):
     """This function gets the count of kudos a user has received.
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -719,3 +723,65 @@ def get_online_user_count(khoros_object):
         # TODO: Pass the actual failure information to the exception class for a more customized error
         raise errors.exceptions.GETRequestError
     return int(api_response['data']['count'])
+
+
+def get_registration_data(khoros_object, user_settings=None, user_id=None, login=None, email=None):
+    """This function retrieves the registration data for a given user.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param user_id: The User ID associated with the user
+    :type user_id: int, str, NoneType
+    :param login: The username of the user
+    :type login: str, NoneType
+    :param email: The email address of the user
+    :type email: str, NoneType
+    :returns: A dictionary containing the registration data for the user
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    user_settings = _process_settings_and_user_id(khoros_object, user_settings, user_id, login, email)
+    api_response = query_users_table_by_id(khoros_object, 'registration_data', user_settings['id'], first_item=True)
+    return api_response['registration_data']
+
+
+def get_registration_timestamp(khoros_object, user_settings=None, user_id=None, login=None, email=None):
+    """This function retrieves the timestamp for when a given user registered for an account.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param user_id: The User ID associated with the user
+    :type user_id: int, str, NoneType
+    :param login: The username of the user
+    :type login: str, NoneType
+    :param email: The email address of the user
+    :type email: str, NoneType
+    :returns: The registration timestamp in string format
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    registration_data = get_registration_data(khoros_object, user_settings, user_id, login, email)
+    # TODO: Add the ability to parse the timestamp into a datetime object or change the string format
+    return registration_data['registration_time']
+
+
+def get_registration_status(khoros_object, user_settings=None, user_id=None, login=None, email=None):
+    """This function retrieves the registration status for a given user.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param user_id: The User ID associated with the user
+    :type user_id: int, str, NoneType
+    :param login: The username of the user
+    :type login: str, NoneType
+    :param email: The email address of the user
+    :type email: str, NoneType
+    :returns: The registration status in string format
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    registration_data = get_registration_data(khoros_object, user_settings, user_id, login, email)
+    return registration_data['status']

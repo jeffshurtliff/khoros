@@ -661,7 +661,7 @@ class Khoros(object):
             """
             return users_module.get_videos_count(self.khoros_object, user_settings, user_id, login, email)
 
-        def get_kudos_given(self, user_settings=None, user_id=None, login=None, email=None):
+        def get_kudos_given_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of kudos a user has given.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
@@ -675,9 +675,9 @@ class Khoros(object):
             :returns: The number of kudos given by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_kudos_given(self.khoros_object, user_settings, user_id, login, email)
+            return users_module.get_kudos_given_count(self.khoros_object, user_settings, user_id, login, email)
 
-        def get_kudos_received(self, user_settings=None, user_id=None, login=None, email=None):
+        def get_kudos_received_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of kudos a user has received.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
@@ -691,7 +691,7 @@ class Khoros(object):
             :returns: The number of kudos received by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_kudos_received(self.khoros_object, user_settings, user_id, login, email)
+            return users_module.get_kudos_received_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_online_user_count(self):
             """This function retrieves the number of users currently online.
@@ -700,6 +700,54 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return users_module.get_online_user_count(self.khoros_object)
+
+        def get_registration_data(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function retrieves the registration data for a given user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: A dictionary containing the registration data for the user
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_registration_data(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_registration_timestamp(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function retrieves the timestamp for when a given user registered for an account.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The registration timestamp in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_registration_timestamp(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_registration_status(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function retrieves the registration status for a given user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The registration status in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_registration_status(self.khoros_object, user_settings, user_id, login, email)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""
