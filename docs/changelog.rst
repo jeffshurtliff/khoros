@@ -15,8 +15,36 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
+* Added the :py:meth:`khoros.core.Khoros._import_node_class` and :py:meth:`khoros.core.Khoros._import_user_class`
+  methods within the core :py:class:`khoros.Khoros` object class.
+* Added the :py:class:`khoros.core.Khoros.Node` inner class within the core :py:class:`khoros.Khoros` object class.
+* Added the static methods below within the core :py:class:`khoros.core.Khoros` object class:
+    * :py:meth:`khoros.core.Khoros.Node.get_node_id`
+    * :py:meth:`khoros.core.Khoros.Node.get_node_type_from_url`
+* Added the :py:class:`khoros.core.Khoros.User` inner class within the core :py:class:`khoros.Khoros` object class.
+* Added the methods below within the core :py:class:`khoros.core.Khoros` object class:
+    * :py:meth:`khoros.core.Khoros.User.create`
+    * :py:meth:`khoros.core.Khoros.User.delete`
+    * :py:meth:`khoros.core.Khoros.User.get_user_id`
+    * :py:meth:`khoros.core.Khoros.User.query_users_table_by_id`
+    * :py:meth:`khoros.core.Khoros.User.get_user_data`
+    * :py:meth:`khoros.core.Khoros.User.get_album_count`
+    * :py:meth:`khoros.core.Khoros.User.get_followers_count`
+    * :py:meth:`khoros.core.Khoros.User.get_following_count`
+    * :py:meth:`khoros.core.Khoros.User.get_images_count`
+    * :py:meth:`khoros.core.Khoros.User.get_public_images_count`
+    * :py:meth:`khoros.core.Khoros.User.get_messages_count`
+    * :py:meth:`khoros.core.Khoros.User.get_roles_count`
+    * :py:meth:`khoros.core.Khoros.User.get_solutions_authored_count`
+    * :py:meth:`khoros.core.Khoros.User.get_topics_count`
+    * :py:meth:`khoros.core.Khoros.User.get_replies_count`
+    * :py:meth:`khoros.core.Khoros.User.get_videos_count`
+    * :py:meth:`khoros.core.Khoros.User.get_kudos_given`
+    * :py:meth:`khoros.core.Khoros.User.get_kudos_received`
+    * :py:meth:`khoros.core.Khoros.User.get_online_user_count`
 * Added the :py:func:`khoros.api.query_successful` function.
 * Added the :py:func:`khoros.api.get_results_count` function.
+* Added the :py:func:`khoros.api.get_items_list` function.
 * Added the :py:func:`khoros.api.delete` function.
 * Added the new :py:mod:`khoros.objects` module to contain sub-modules for the various API objects.
 * Added the :py:mod:`khoros.objects.base` module with the following functions and classes:
@@ -29,6 +57,26 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.users.process_user_settings`
     * :py:func:`khoros.objects.users.structure_payload`
     * :py:func:`khoros.objects.users.delete`
+    * :py:func:`khoros.objects.users.query_users_table_by_id`
+    * :py:func:`khoros.objects.users.get_user_id`
+    * :py:func:`khoros.objects.users._get_where_clause_for_user_id`
+    * :py:func:`khoros.objects.users._get_count`
+    * :py:func:`khoros.objects.users._get_sum_weight`
+    * :py:func:`khoros.objects.users.get_user_data`
+    * :py:func:`khoros.objects.users.get_album_count`
+    * :py:func:`khoros.objects.users.get_followers_count`
+    * :py:func:`khoros.objects.users.get_following_count`
+    * :py:func:`khoros.objects.users.get_images_count`
+    * :py:func:`khoros.objects.users.get_public_images_count`
+    * :py:func:`khoros.objects.users.get_messages_count`
+    * :py:func:`khoros.objects.users.get_replies_count`
+    * :py:func:`khoros.objects.users.get_roles_count`
+    * :py:func:`khoros.objects.users.get_solutions_authored_count`
+    * :py:func:`khoros.objects.users.get_topics_count`
+    * :py:func:`khoros.objects.users.get_videos_count`
+    * :py:func:`khoros.objects.users.get_kudos_given`
+    * :py:func:`khoros.objects.users.get_kudos_received`
+    * :py:func:`khoros.objects.users.get_online_user_count`
 
 Supporting Modules
 ------------------
@@ -53,6 +101,7 @@ Documentation
 -------------
 Additions to the documentation.
 
+* Added the :doc:`Core Object Subclasses <primary-modules>` to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.objects` module and the :py:mod:`khoros.objects.base` and :py:mod:`khoros.objects.users`
   sub-modules to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module to the
@@ -94,6 +143,10 @@ Documentation
 Changes to the documentation.
 
 * Updated the docstring in :py:func:`khoros.api.query_successful` indicating the API response should be in JSON format.
+
+General
+-------
+* Changed the **Development Status** in ``setup.py`` to be **3 - Alpha**.
 
 Fixed
 =====

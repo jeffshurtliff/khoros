@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Apr 2020
+:Modified Date:     09 Apr 2020
 """
 
 import sys
@@ -431,8 +431,275 @@ class Khoros(object):
             """
             return users_module.delete(self.khoros_object, user_id, return_json)
 
-        def get_user_id(self, user_settings=None, login=None, email=None, first_name=None, last_name=None):
-            return users_module.get_user_id(self.khoros_object, user_settings, login, email, first_name, last_name)
+        def get_user_id(self, user_settings=None, login=None, email=None, first_name=None, last_name=None,
+                        allow_multiple=False, display_warnings=True):
+            """This function looks up and retrieves the User ID for a user by leveraging supplied user information.
+
+            .. note:: The priority of supplied fields are as follows: login, email, first and last name,
+                      last name, first name
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :param first_name: The first name (i.e. given name) of the user
+            :type first_name: str, NoneType
+            :param last_name: The last name (i.e. surname) of the user
+            :type last_name: str, NoneType
+            :param allow_multiple: Allows a list of User IDs to be returned if multiple results are found
+            :type allow_multiple: bool
+            :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
+            :type display_warnings: bool
+            :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+            """
+            return users_module.get_user_id(self.khoros_object, user_settings, login, email, first_name, last_name,
+                                            allow_multiple, display_warnings)
+
+        def query_users_table_by_id(self, select_fields, user_id):
+            """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID.
+
+            :param select_fields: One or more SELECT field (e.g. ``login``, ``messages.count(*)``, etc.) to query
+            :type select_fields: str, tuple, list, set
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str
+            :returns: The API response for the performed LiQL query
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.query_users_table_by_id(self.khoros_object, select_fields, user_id)
+
+        def get_user_data(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function retrieves all user data for a given user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: A dictionary containing the user data for the user
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_user_data(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_album_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the number of albums for a user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of albums found for the user as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_album_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_followers_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of community members who have added the user as a friend in the community.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of community members who have added the user as a friend in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_followers_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_following_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of community members the user has added as a friend in the community.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of community members the user has added as a friend in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_following_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_images_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of images uploaded by the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of images uploaded by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_images_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_public_images_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of public images uploaded by the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of public images uploaded by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_public_images_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_messages_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of messages (topics and replies) posted by the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of messages (topics and replies) posted by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_messages_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_roles_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of roles applied to the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of roles applied to the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_roles_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_solutions_authored_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of messages created by the user that are marked as accepted solutions.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of messages created by the user that are marked as accepted solutions in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_solutions_authored_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_topics_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of topic messages (excluding replies) posted by the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of topic messages (excluding replies) posted by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_topics_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_replies_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of replies posted by the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of replies posted by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_replies_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_videos_count(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of videos uploaded by the user.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of videos uploaded by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_videos_count(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_kudos_given(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of kudos a user has given.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of kudos given by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_kudos_given(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_kudos_received(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function gets the count of kudos a user has received.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The number of kudos received by the user in integer format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_kudos_received(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_online_user_count(self):
+            """This function retrieves the number of users currently online.
+
+            :returns: The user count for online users as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_online_user_count(self.khoros_object)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""

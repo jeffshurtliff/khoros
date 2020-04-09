@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Mar 2020
+:Modified Date:     09 Apr 2020
 """
 
 import json
@@ -195,6 +195,16 @@ def get_results_count(api_response):
     :returns: The number of results in the API response as an integer
     """
     return api_response['data']['size']
+
+
+def get_items_list(api_response):
+    """This function returns the list of ``items`` dictionaries within a response from the Community API.
+
+    :param api_response: The response to an API query in JSON format
+    :type api_response: dict
+    :returns: List of ``items`` dictionaries from the API response
+    """
+    return api_response['data']['items']
 
 
 # Define function to perform a DELETE request against the API

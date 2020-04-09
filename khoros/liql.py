@@ -17,7 +17,7 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
     """This function formats and URL-encodes a raw LiQL query to be able to use it within a Community v2 API URL.
 
     .. versionchanged:: 2.0.0
-       The double-quote character (``"``) in queries is now properly encoded.
+       Added URL-encoding support for several additional characters.
 
     :param query: The LiQL query to be formatted and url-encoded
     :type query: str
@@ -37,7 +37,10 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
     chars_to_encode = {
         ' ': '+',
         '=': '%3D',
-        '"': '%22'
+        '"': '%22',
+        '\'': '%27',
+        '(': '%28',
+        '}': '%29'
     }
     query_statements = {
         'select': 'SELECT',

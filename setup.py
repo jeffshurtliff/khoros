@@ -20,7 +20,7 @@ setuptools.setup(
     url="https://github.com/jeffshurtliff/khoros",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 3 - Alpha",
         "Environment :: Web Environment",
         "Intended Audience :: Information Technology",
         "Intended Audience :: System Administrators",
