@@ -151,6 +151,24 @@ class APIConnectionError(KhorosError):
         super().__init__(*args)
 
 
+class APIRequestError(KhorosError):
+    """This exception is used for generic API request errors when there isn't a more specific exception."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The DELETE request did not return a successful response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class DELETERequestError(KhorosError):
+    """This exception is used for generic DELETE request errors when there isn't a more specific exception."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The DELETE request did not return a successful response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
 class GETRequestError(KhorosError):
     """This exception is used for generic GET request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):

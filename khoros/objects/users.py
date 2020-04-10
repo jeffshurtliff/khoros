@@ -352,6 +352,7 @@ def _get_where_clause_for_email(_user_settings):
 
 
 def _get_user_identifier(_khoros_object, _identifier, _where_clause, _allow_multiple, _display_warnings):
+    """Retrieves a user identifier (e.g. ``email``, ``last_visit_timer``, etc.) using a LiQL query."""
     _liql_query = f"select {_identifier} from users where {_where_clause}"
     _api_response = liql.perform_query(_khoros_object, liql_query=_liql_query, verify_success=True)
     _num_results = api.get_results_count(_api_response)
@@ -372,7 +373,7 @@ def _get_user_identifier(_khoros_object, _identifier, _where_clause, _allow_mult
 
 
 def get_user_id(khoros_object, user_settings=None, login=None, email=None, first_name=None, last_name=None,
-                allow_multiple=False, display_warnings=True):
+                allow_multiple=False, display_warnings=True, fail_on_no_results=False):
     """This function looks up and retrieves the User ID for a user by leveraging supplied user information.
 
     .. note:: The priority of supplied fields are as follows: login, email, first and last name, last name, first name
@@ -393,16 +394,22 @@ def get_user_id(khoros_object, user_settings=None, login=None, email=None, first
     :type allow_multiple: bool
     :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
     :type display_warnings: bool
+    :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
+    :type fail_on_no_results: bool
     :returns: The username of the user as a string or a list of usernames if ``allow_multiple`` is ``True``
     """
     user_settings = process_user_settings(user_settings, login=login, email=email,
                                           first_name=first_name, last_name=last_name)
     where_clause = _get_where_clause_for_user_id(user_settings)
-    return _get_user_identifier(khoros_object, 'id', where_clause, allow_multiple, display_warnings)
+    if 'email' in where_clause:
+        user_id = get_user_data_with_v1(khoros_object, 'id', user_settings['email'], 'email', fail_on_no_results)
+    else:
+        user_id = _get_user_identifier(khoros_object, 'id', where_clause, allow_multiple, display_warnings)
+    return user_id
 
 
 def get_username(khoros_object, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
-                 allow_multiple=False, display_warnings=True):
+                 allow_multiple=False, display_warnings=True, fail_on_no_results=False):
     """This function looks up and retrieves the username for a user by leveraging supplied user information.
 
     .. note:: The priority of supplied fields are as follows: User ID, email, first and last name, last name, first name
@@ -423,12 +430,18 @@ def get_username(khoros_object, user_settings=None, user_id=None, email=None, fi
     :type allow_multiple: bool
     :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
     :type display_warnings: bool
+    :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
+    :type fail_on_no_results: bool
     :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
     """
     user_settings = process_user_settings(user_settings, user_id=user_id, email=email,
                                           first_name=first_name, last_name=last_name)
     where_clause = _get_where_clause_for_username(user_settings)
-    return _get_user_identifier(khoros_object, 'login', where_clause, allow_multiple, display_warnings)
+    if 'email' in where_clause:
+        username = get_user_data_with_v1(khoros_object, 'login', user_settings['email'], 'email', fail_on_no_results)
+    else:
+        username = _get_user_identifier(khoros_object, 'login', where_clause, allow_multiple, display_warnings)
+    return username
 
 
 def get_login(khoros_object, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
@@ -561,6 +574,31 @@ def get_user_data(khoros_object, user_settings=None, user_id=None, login=None, e
     user_settings = _process_settings_and_user_id(khoros_object, user_settings, user_id, login, email)
     api_response = query_users_table_by_id(khoros_object, '*', user_settings['id'])
     return api_response['data']
+
+
+def get_user_data_with_v1(khoros_object, return_field, filter_value, filter_field='email', fail_on_no_results=False):
+    """This function retrieves user data using a Community API v1 call.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param return_field: The field being retrieved by the function (e.g. ``id``, ``login``, etc.)
+    :type return_field: str
+    :param filter_value: The value for which to filter the user data being queried
+    :type filter_value: str, int
+    :param filter_field: The field by which the API call should be filtered (``email`` by default)
+    :type filter_field: str
+    :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
+    :type fail_on_no_results: bool
+    :returns: The value of the return field for the user being queried
+    """
+    response = api.perform_v1_search(khoros_object, 'users', filter_field, filter_value, return_json=True,
+                                     fail_on_no_results=fail_on_no_results)
+    try:
+        # TODO: Handle situations where more than one user is returned in the API response
+        return_value = response['users']['user'][0][return_field]['$']
+    except IndexError:
+        return_value = ''
+    return return_value
 
 
 def get_album_count(khoros_object, user_settings=None, user_id=None, login=None, email=None):

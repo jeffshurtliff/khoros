@@ -6,13 +6,14 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Apr 2020
+:Modified Date:     10 Apr 2020
 """
 
 import json
 import requests
 
 from . import errors
+from .utils import core_utils
 
 
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None):
@@ -46,7 +47,15 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     return headers
 
 
-# Define function to perform a GET request with retries
+def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
+    _query_strings = {True: 'restapi.response_format=json', False: ''}
+    _prefixes = {True: '&', False: ''}
+    _query_string = ''
+    if _return_json:
+        _query_string = f"{_prefixes.get(_include_ampersand_prefix)}{_query_strings.get(_return_json)}"
+    return _query_string
+
+
 def get_request_with_retries(query_url, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
 
@@ -118,7 +127,6 @@ def __api_request_with_payload(_url, _json_payload, _request_type, headers=None)
     return _response
 
 
-# Define function to perform a POST request with supplied JSON data
 def post_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
@@ -145,7 +153,6 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     return response
 
 
-# Define function to perform a PUT request with supplied JSON data
 def put_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
 
@@ -179,6 +186,7 @@ def query_successful(api_response):
     :type api_response: dict
     :returns: Boolean indicating whether or not the API call was successful
     """
+    print(api_response)
     try:
         success_values = ['successful', 'success']
         successful = True if api_response['status'] in success_values else False
@@ -207,7 +215,6 @@ def get_items_list(api_response):
     return api_response['data']['items']
 
 
-# Define function to perform a DELETE request against the API
 def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a DELETE request against the Core API.
 
@@ -227,4 +234,35 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     response = requests.delete(url, headers=headers)
     if return_json:
         response = response.json()
+    return response
+
+
+def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
+    """This function performs a search for a particular field value using a Community API v1 call.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param endpoint: The API v1 endpoint against which to perform the search query
+    :type endpoint: str
+    :param filter_field: The name of the field being queried within the API v1 endpoint
+    :type filter_field: str
+    :param filter_value: The value associated with the field being queried
+    :type filter_value: str, int
+    :param return_json: Determines if the response should be returned in JSON format (``False`` by default)
+    :type return_json: bool
+    :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
+    :type fail_on_no_results: bool
+    :returns: The API response (optionally in JSON format)
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    headers = define_headers(khoros_object, content_type='application/x-www-form-urlencoded')
+    if type(filter_value) == str:
+        filter_value = core_utils.url_encode(filter_value)
+    uri = f"{khoros_object.core['v1_base']}/search/{endpoint}?q={filter_field}:{filter_value}"
+    uri = f"{uri}{_get_json_query_string(return_json)}"
+    response = requests.get(uri, headers=headers)
+    if return_json:
+        response = response.json()
+        response = response['response'] if 'response' in response else response
+    errors.handlers.verify_v1_response(response, 'get', 'users', fail_on_no_results)
     return response

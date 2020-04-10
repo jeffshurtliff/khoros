@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Apr 2020
+:Modified Date:     10 Apr 2020
 """
 
 from . import api, errors
@@ -40,7 +40,8 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
         '"': '%22',
         '\'': '%27',
         '(': '%28',
-        '}': '%29'
+        '}': '%29',
+        '@': '%40'
     }
     query_statements = {
         'select': 'SELECT',

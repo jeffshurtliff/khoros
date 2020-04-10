@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.0.0
 ******
-**Release Date: 10 Apr 2020**
+**Release Date: 2020-04-10**
 
 Added
 =====
@@ -15,6 +15,7 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
+* Added the :py:meth:`khoros.core.Khoros.perform_v1_search` method.
 * Added the :py:meth:`khoros.core.Khoros._import_node_class` and :py:meth:`khoros.core.Khoros._import_user_class`
   methods within the core :py:class:`khoros.Khoros` object class.
 * Added the :py:class:`khoros.core.Khoros.Node` inner class within the core :py:class:`khoros.Khoros` object class.
@@ -52,6 +53,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.api.query_successful` function.
 * Added the :py:func:`khoros.api.get_results_count` function.
 * Added the :py:func:`khoros.api.get_items_list` function.
+* Added the :py:func:`khoros.api.perform_v1_search` function.
 * Added the :py:func:`khoros.api.delete` function.
 * Added the new :py:mod:`khoros.objects` module to contain sub-modules for the various API objects.
 * Added the :py:mod:`khoros.objects.base` module with the following functions and classes:
@@ -68,6 +70,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.users.get_username`
     * :py:func:`khoros.objects.users.get_login`
     * :py:func:`khoros.objects.users.get_email`
+    * :py:func:`khoros.objects.users.get_user_data_with_v1`
     * :py:func:`khoros.objects.users._get_where_clause_for_user_id`
     * :py:func:`khoros.objects.users._get_where_clause_for_username`
     * :py:func:`khoros.objects.users._get_where_clause_for_email`
@@ -99,13 +102,25 @@ Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
+* Added the :py:func:`khoros.utils.core_utils.decode_html_entities` function.
 * Added the following exception classes:
+    * :py:exc:`khoros.errors.exceptions.APIRequestError`
+    * :py:exc:`khoros.errors.exceptions.DELETERequestError`
     * :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
     * :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     * :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`
     * :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
     * :py:exc:`khoros.errors.exceptions.TooManyResultsError`
     * :py:exc:`khoros.errors.exceptions.UserCreationError`
+* Added the following functions to the :py:mod:`khoros.errors.handlers` module.
+    * :py:func:`khoros.errors.handlers.get_error_from_xml`
+    * :py:func:`khoros.errors.handlers.get_error_from_json`
+    * :py:func:`khoros.errors.handlers._get_v1_error_from_json`
+    * :py:func:`khoros.errors.handlers._get_v2_error_from_json`
+    * :py:func:`khoros.errors.handlers.verify_v1_response`
+    * :py:func:`khoros.errors.handlers._import_exception_classes`
+    * :py:func:`khoros.errors.handlers._exceptions_module_imported`
+    * :py:func:`khoros.errors.handlers._import_exceptions_module`
 * Added the :py:mod:`khoros.utils.tests.test_node_id_extract` module with the following functions:
     * :py:func:`khoros.utils.tests.test_node_id_extract.set_package_path`
     * :py:func:`khoros.utils.tests.test_node_id_extract.get_test_data`
@@ -159,6 +174,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Updated the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception class to allow the respective
   feature to be passed as a string argument for it to be explicitly referenced in the exception message.
+* Updated the :py:func:`khoros.errors.handlers.get_error_from_html` function to have a second ``v1`` argument, which
+  is ``False`` by default.
 
 Documentation
 -------------
@@ -177,7 +194,8 @@ Primary Modules
 ---------------
 Fixes in the :doc:`primary modules <primary-modules>`.
 
-* Updated the :py:func:`khoros.liql.format_query` function to properly encode the double-quote (``"``) character.
+* Updated the :py:func:`khoros.liql.format_query` function to properly encode the double-quote (``"``) character and
+  several other special characters.
 
 
 Documentation

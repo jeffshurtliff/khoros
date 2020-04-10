@@ -13,7 +13,7 @@ import sys
 import copy
 import logging
 
-from . import auth, errors, liql
+from . import auth, errors, liql, api
 from .objects import base as objects_base
 from .objects import users as users_module
 from .utils.helper import get_helper_settings
@@ -344,6 +344,24 @@ class Khoros(object):
         query = liql.parse_query_elements(select_fields, from_source, where_filter, order_by, order_desc, limit)
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
+
+    def perform_v1_search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
+        """This function performs a search for a particular field value using a Community API v1 call.
+
+        :param endpoint: The API v1 endpoint against which to perform the search query
+        :type endpoint: str
+        :param filter_field: The name of the field being queried within the API v1 endpoint
+        :type filter_field: str
+        :param filter_value: The value associated with the field being queried
+        :type filter_value: str, int
+        :param return_json: Determines if the response should be returned in JSON format (``False`` by default)
+        :type return_json: bool
+        :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
+        :type fail_on_no_results: bool
+        :returns: The API response (optionally in JSON format)
+        :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+        """
+        return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
     class Node(object):
         def __init__(self, khoros_object):
