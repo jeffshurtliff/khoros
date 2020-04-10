@@ -6,7 +6,7 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Apr 2020
+:Modified Date:     10 Apr 2020
 """
 
 import warnings
@@ -267,6 +267,8 @@ def delete(khoros_object, user_id, return_json=False):
     :type return_json: bool
     :returns: The API response (optionally in JSON format)
     """
+    # TODO: Allow other identifiers (e.g. login, email, etc.) to be provided instead of just the User ID
+    # TODO: Add a confirmation prompt that can be optionally disabled
     query_url = f"{khoros_object._settings['v2_base']}/users/{user_id}"
     return api.delete(query_url, return_json, auth_dict=khoros_object.auth)
 
@@ -297,6 +299,78 @@ def _get_where_clause_for_user_id(_user_settings):
     return _where_clause
 
 
+def _get_where_clause_for_username(_user_settings):
+    """This function defines the WHERE clause syntax for the LiQL query to retrieve the username for a user.
+
+    :param _user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type _user_settings: dict
+    :returns: The WHERE clause in string format
+    :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if _user_settings['id']:
+        _where_clause = f'id = "{_user_settings["id"]}"'
+    elif _user_settings['email']:
+        _where_clause = f'email = "{_user_settings["email"]}"'
+    elif _user_settings['first_name'] or _user_settings['last_name']:
+        if _user_settings['first_name'] and _user_settings['last_name']:
+            _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
+                           f'last_name = "{_user_settings["last_name"]}"'
+        elif _user_settings['last_name']:
+            _where_clause = f'last_name = "{_user_settings["last_name"]}"'
+        else:
+            _where_clause = f'first_name = "{_user_settings["first_name"]}"'
+    else:
+        _exc_msg = "Missing requisite information to accurately look up the username of the user."
+        raise errors.exceptions.MissingRequiredDataError(_exc_msg)
+    return _where_clause
+
+
+def _get_where_clause_for_email(_user_settings):
+    """This function defines the WHERE clause syntax for the LiQL query to retrieve the email address for a user.
+
+    :param _user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type _user_settings: dict
+    :returns: The WHERE clause in string format
+    :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if _user_settings['id']:
+        _where_clause = f'id = "{_user_settings["id"]}"'
+    elif _user_settings['login']:
+        _where_clause = f'login = "{_user_settings["login"]}"'
+    elif _user_settings['first_name'] or _user_settings['last_name']:
+        if _user_settings['first_name'] and _user_settings['last_name']:
+            _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
+                           f'last_name = "{_user_settings["last_name"]}"'
+        elif _user_settings['last_name']:
+            _where_clause = f'last_name = "{_user_settings["last_name"]}"'
+        else:
+            _where_clause = f'first_name = "{_user_settings["first_name"]}"'
+    else:
+        _exc_msg = "Missing requisite information to accurately look up the email address of the user."
+        raise errors.exceptions.MissingRequiredDataError(_exc_msg)
+    return _where_clause
+
+
+def _get_user_identifier(_khoros_object, _identifier, _where_clause, _allow_multiple, _display_warnings):
+    _liql_query = f"select {_identifier} from users where {_where_clause}"
+    _api_response = liql.perform_query(_khoros_object, liql_query=_liql_query, verify_success=True)
+    _num_results = api.get_results_count(_api_response)
+    if _num_results == 0:
+        raise errors.exceptions.NotFoundResponseError
+    elif _num_results > 1:
+        _multiple_results_msg = "Multiple results were retrieved when querying for the user in question."
+        if _display_warnings:
+            warnings.warn(_multiple_results_msg, RuntimeWarning)
+        if not _allow_multiple:
+            raise errors.exceptions.TooManyResultsError(_multiple_results_msg)
+        _user_identifier = []
+        for _user in _api_response['data']['items']:
+            _user_identifier.append(int(_user[_identifier]))
+    else:
+        _user_identifier = int(_api_response['data']['items'][0][_identifier])
+    return _user_identifier
+
+
 def get_user_id(khoros_object, user_settings=None, login=None, email=None, first_name=None, last_name=None,
                 allow_multiple=False, display_warnings=True):
     """This function looks up and retrieves the User ID for a user by leveraging supplied user information.
@@ -319,32 +393,80 @@ def get_user_id(khoros_object, user_settings=None, login=None, email=None, first
     :type allow_multiple: bool
     :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
     :type display_warnings: bool
-    :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+    :returns: The username of the user as a string or a list of usernames if ``allow_multiple`` is ``True``
     """
     user_settings = process_user_settings(user_settings, login=login, email=email,
                                           first_name=first_name, last_name=last_name)
     where_clause = _get_where_clause_for_user_id(user_settings)
-    liql_query = f"select id from users where {where_clause}"
-    query_url = liql.get_query_url(khoros_object.core, liql_query)
-    api_response = liql.perform_query(khoros_object, query_url)
-    if not api.query_successful(api_response):
-        # TODO: Pass the actual failure information to the exception class for a more customized error
-        raise errors.exceptions.GETRequestError
-    num_results = api.get_results_count(api_response)
-    if num_results == 0:
-        raise errors.exceptions.NotFoundResponseError
-    elif num_results > 1:
-        multiple_results_msg = "Multiple results were retrieved when querying for the user in question."
-        if display_warnings:
-            warnings.warn(multiple_results_msg, RuntimeWarning)
-        if not allow_multiple:
-            raise errors.exceptions.TooManyResultsError(multiple_results_msg)
-        user_id = []
-        for user in api_response['data']['items']:
-            user_id.append(int(user['id']))
-    else:
-        user_id = int(api_response['data']['items'][0]['id'])
-    return user_id
+    return _get_user_identifier(khoros_object, 'id', where_clause, allow_multiple, display_warnings)
+
+
+def get_username(khoros_object, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
+                 allow_multiple=False, display_warnings=True):
+    """This function looks up and retrieves the username for a user by leveraging supplied user information.
+
+    .. note:: The priority of supplied fields are as follows: User ID, email, first and last name, last name, first name
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param user_id: The User ID of the user
+    :type user_id: str, NoneType
+    :param email: The email address of the user
+    :type email: str, NoneType
+    :param first_name: The first name (i.e. given name) of the user
+    :type first_name: str, NoneType
+    :param last_name: The last name (i.e. surname) of the user
+    :type last_name: str, NoneType
+    :param allow_multiple: Allows a list of usernames to be returned if multiple results are found
+    :type allow_multiple: bool
+    :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
+    :type display_warnings: bool
+    :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+    """
+    user_settings = process_user_settings(user_settings, user_id=user_id, email=email,
+                                          first_name=first_name, last_name=last_name)
+    where_clause = _get_where_clause_for_username(user_settings)
+    return _get_user_identifier(khoros_object, 'login', where_clause, allow_multiple, display_warnings)
+
+
+def get_login(khoros_object, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
+              allow_multiple=False, display_warnings=True):
+    """This is an alternative function name for the :py:func:`khoros.objects.users.get_username` function."""
+    return get_username(khoros_object, user_settings, user_id, email, first_name, last_name,
+                        allow_multiple, display_warnings)
+
+
+def get_email(khoros_object, user_settings=None, user_id=None, login=None, first_name=None, last_name=None,
+              allow_multiple=False, display_warnings=True):
+    """This function looks up and retrieves the email address for a user by leveraging supplied user information.
+
+    .. note:: The priority of supplied fields are as follows: User ID, username, first and last name, last name,
+              first name
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param user_id: The User ID of the user
+    :type user_id: str, NoneType
+    :param login: The username of the user
+    :type login: str, NoneType
+    :param first_name: The first name (i.e. given name) of the user
+    :type first_name: str, NoneType
+    :param last_name: The last name (i.e. surname) of the user
+    :type last_name: str, NoneType
+    :param allow_multiple: Allows a list of email addresses to be returned if multiple results are found
+    :type allow_multiple: bool
+    :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
+    :type display_warnings: bool
+    :returns: The email address of the user as a string or a list of email addresses if ``allow_multiple`` is ``True``
+    """
+    user_settings = process_user_settings(user_settings, user_id=user_id, login=login,
+                                          first_name=first_name, last_name=last_name)
+    where_clause = _get_where_clause_for_email(user_settings)
+    return _get_user_identifier(khoros_object, 'email', where_clause, allow_multiple, display_warnings)
 
 
 def query_users_table_by_id(khoros_object, select_fields, user_id, first_item=False):
@@ -364,11 +486,7 @@ def query_users_table_by_id(khoros_object, select_fields, user_id, first_item=Fa
     if type(select_fields) == tuple or type(select_fields) == list or type(select_fields) == set:
         select_fields = ','.join(select_fields)
     liql_query = f"select {select_fields} from users where id = '{user_id}'"
-    query_url = liql.get_query_url(khoros_object.core, liql_query)
-    api_response = liql.perform_query(khoros_object, query_url)
-    if not api.query_successful(api_response):
-        # TODO: Pass the actual failure information to the exception class for a more customized error
-        raise errors.exceptions.GETRequestError
+    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
     if first_item:
         api_response = api_response['data']['items'][0]
     return api_response
@@ -717,11 +835,7 @@ def get_online_user_count(khoros_object):
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     liql_query = "select count(*) from users where online_status = 'online'"
-    query_url = liql.get_query_url(khoros_object.core, liql_query)
-    api_response = liql.perform_query(khoros_object, query_url)
-    if not api.query_successful(api_response):
-        # TODO: Pass the actual failure information to the exception class for a more customized error
-        raise errors.exceptions.GETRequestError
+    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
     return int(api_response['data']['count'])
 
 
@@ -785,3 +899,25 @@ def get_registration_status(khoros_object, user_settings=None, user_id=None, log
     """
     registration_data = get_registration_data(khoros_object, user_settings, user_id, login, email)
     return registration_data['status']
+
+
+def get_last_visit_timestamp(khoros_object, user_settings=None, user_id=None, login=None, email=None):
+    """This function retrieves the timestamp for the last time the user logged into the community.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+    :type user_settings: dict, NoneType
+    :param user_id: The User ID associated with the user
+    :type user_id: int, str, NoneType
+    :param login: The username of the user
+    :type login: str, NoneType
+    :param email: The email address of the user
+    :type email: str, NoneType
+    :returns: The last visit timestamp in string format
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    user_settings = _process_settings_and_user_id(khoros_object, user_settings, user_id, login, email)
+    api_response = query_users_table_by_id(khoros_object, 'last_visit_time', user_settings['id'], first_item=True)
+    # TODO: Add the ability to parse the timestamp into a datetime object or change the string format
+    return api_response['last_visit_time']

@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Apr 2020
+:Modified Date:     10 Apr 2020
 """
 
 import sys
@@ -457,6 +457,64 @@ class Khoros(object):
             return users_module.get_user_id(self.khoros_object, user_settings, login, email, first_name, last_name,
                                             allow_multiple, display_warnings)
 
+        def get_username(self, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
+                         allow_multiple=False, display_warnings=True):
+            """This function looks up and retrieves the username for a user by leveraging supplied user information.
+
+            .. note:: The priority of supplied fields are as follows: User ID, email, first and last name, last name,
+                      first name
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID of the user
+            :type user_id: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :param first_name: The first name (i.e. given name) of the user
+            :type first_name: str, NoneType
+            :param last_name: The last name (i.e. surname) of the user
+            :type last_name: str, NoneType
+            :param allow_multiple: Allows a list of usernames to be returned if multiple results are found
+            :type allow_multiple: bool
+            :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
+            :type display_warnings: bool
+            :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+            """
+            return users_module.get_username(self.khoros_object, user_settings, user_id, email, first_name, last_name,
+                                             allow_multiple, display_warnings)
+
+        def get_login(self, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
+                      allow_multiple=False, display_warnings=True):
+            """This is an alternative method name for the :py:meth:`khoros.core.Khoros.User.get_username` method."""
+            return users_module.get_login(self.khoros_object, user_settings, user_id, email, first_name, last_name,
+                                          allow_multiple, display_warnings)
+
+        def get_email(self, user_settings=None, user_id=None, login=None, first_name=None, last_name=None,
+                      allow_multiple=False, display_warnings=True):
+            """This function retrieves the email address for a user by leveraging supplied user information.
+
+            .. note:: The priority of supplied fields are as follows: User ID, username, first and last name, last name,
+                      first name
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID of the user
+            :type user_id: str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param first_name: The first name (i.e. given name) of the user
+            :type first_name: str, NoneType
+            :param last_name: The last name (i.e. surname) of the user
+            :type last_name: str, NoneType
+            :param allow_multiple: Allows a list of email addresses to be returned if multiple results are found
+            :type allow_multiple: bool
+            :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
+            :type display_warnings: bool
+            :returns: The email address of the user as a string or a list of emails if ``allow_multiple`` is ``True``
+            """
+            return users_module.get_email(self.khoros_object, user_settings, user_id, login, first_name, last_name,
+                                          allow_multiple, display_warnings)
+
         def query_users_table_by_id(self, select_fields, user_id):
             """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID.
 
@@ -748,6 +806,22 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return users_module.get_registration_status(self.khoros_object, user_settings, user_id, login, email)
+
+        def get_last_visit_timestamp(self, user_settings=None, user_id=None, login=None, email=None):
+            """This function retrieves the timestamp for the last time the user logged into the community.
+
+            :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
+            :type user_settings: dict, NoneType
+            :param user_id: The User ID associated with the user
+            :type user_id: int, str, NoneType
+            :param login: The username of the user
+            :type login: str, NoneType
+            :param email: The email address of the user
+            :type email: str, NoneType
+            :returns: The last visit timestamp in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return users_module.get_last_visit_timestamp(self.khoros_object, user_settings, user_id, login, email)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""

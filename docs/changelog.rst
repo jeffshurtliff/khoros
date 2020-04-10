@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.0.0
 ******
-**Release Date: TBD**
+**Release Date: 10 Apr 2020**
 
 Added
 =====
@@ -26,6 +26,9 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:meth:`khoros.core.Khoros.User.create`
     * :py:meth:`khoros.core.Khoros.User.delete`
     * :py:meth:`khoros.core.Khoros.User.get_user_id`
+    * :py:meth:`khoros.core.Khoros.User.get_username`
+    * :py:meth:`khoros.core.Khoros.User.get_login`
+    * :py:meth:`khoros.core.Khoros.User.get_email`
     * :py:meth:`khoros.core.Khoros.User.query_users_table_by_id`
     * :py:meth:`khoros.core.Khoros.User.get_user_data`
     * :py:meth:`khoros.core.Khoros.User.get_album_count`
@@ -45,6 +48,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:meth:`khoros.core.Khoros.User.get_registration_data`
     * :py:meth:`khoros.core.Khoros.User.get_registration_timestamp`
     * :py:meth:`khoros.core.Khoros.User.get_registration_status`
+    * :py:meth:`khoros.core.Khoros.User.get_last_visit_timestamp`
 * Added the :py:func:`khoros.api.query_successful` function.
 * Added the :py:func:`khoros.api.get_results_count` function.
 * Added the :py:func:`khoros.api.get_items_list` function.
@@ -60,9 +64,15 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.users.process_user_settings`
     * :py:func:`khoros.objects.users.structure_payload`
     * :py:func:`khoros.objects.users.delete`
-    * :py:func:`khoros.objects.users.query_users_table_by_id`
     * :py:func:`khoros.objects.users.get_user_id`
+    * :py:func:`khoros.objects.users.get_username`
+    * :py:func:`khoros.objects.users.get_login`
+    * :py:func:`khoros.objects.users.get_email`
     * :py:func:`khoros.objects.users._get_where_clause_for_user_id`
+    * :py:func:`khoros.objects.users._get_where_clause_for_username`
+    * :py:func:`khoros.objects.users._get_where_clause_for_email`
+    * :py:func:`khoros.objects.users._get_user_identifier`
+    * :py:func:`khoros.objects.users.query_users_table_by_id`
     * :py:func:`khoros.objects.users._get_count`
     * :py:func:`khoros.objects.users._get_sum_weight`
     * :py:func:`khoros.objects.users.get_user_data`
@@ -83,6 +93,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.users.get_registration_data`
     * :py:func:`khoros.objects.users.get_registration_timestamp`
     * :py:func:`khoros.objects.users.get_registration_status`
+    * :py:func:`khoros.objects.users.get_last_visit_timestamp`
 
 Supporting Modules
 ------------------
@@ -120,6 +131,11 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
+* Updated the :py:func:`khoros.liql.perform_query` function to allow a raw LiQL query to be passed rather than only
+  pre-formatted query URLs.
+* Updated the :py:func:`khoros.liql.perform_query` function to include an optional ``verify_success`` argument which
+  verifies that the API query was successful and raises the :py:exc:`khoros.errors.exceptions.GETRequestError`
+  exception if not.
 * Removed the unnecessary ``import requests`` line in the :py:mod:`khoros.liql` module.
 * Renamed the :py:meth:`khoros.core.Khoros.__connect_with_session_key` method to be
   :py:meth:`khoros.core.Khoros._connect_with_session_key` (single underscore prefix) instead.
