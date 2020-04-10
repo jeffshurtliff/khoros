@@ -6,12 +6,13 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     10 Apr 2020
 """
 
 import random
 import string
 import urllib.parse
+from html import unescape
 
 
 def url_encode(raw_string):
@@ -32,6 +33,16 @@ def url_decode(encoded_string):
     :returns: The unencoded string
     """
     return urllib.parse.unquote_plus(encoded_string)
+
+
+def decode_html_entities(html_string):
+    """This function converts HTML entities (e.g. ``&amp;``, ``&apos;``, etc.) back to their original characters.
+
+    :param html_string: The string containing HTML entities to be decoded
+    :type html_string: str
+    :returns: The string with decoded HTML entities
+    """
+    return unescape(html_string)
 
 
 def __is_zero_length(_element):

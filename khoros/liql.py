@@ -6,10 +6,8 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     10 Apr 2020
 """
-
-import requests
 
 from . import api, errors
 from .utils.core_utils import convert_set
@@ -17,6 +15,9 @@ from .utils.core_utils import convert_set
 
 def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='', format_statements=True):
     """This function formats and URL-encodes a raw LiQL query to be able to use it within a Community v2 API URL.
+
+    .. versionchanged:: 2.0.0
+       Added URL-encoding support for several additional characters.
 
     :param query: The LiQL query to be formatted and url-encoded
     :type query: str
@@ -35,7 +36,12 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
     """
     chars_to_encode = {
         ' ': '+',
-        '=': '%3D'
+        '=': '%3D',
+        '"': '%22',
+        '\'': '%27',
+        '(': '%28',
+        '}': '%29',
+        '@': '%40'
     }
     query_statements = {
         'select': 'SELECT',
@@ -95,22 +101,39 @@ def get_query_url(core_dict, query, pretty_print=False, track_in_lsi=False, alwa
     return f"{core_dict['v2_base']}/search?q={query}"
 
 
-def perform_query(khoros_object, query_url, return_json=True):
+def perform_query(khoros_object, query_url=None, liql_query=None, return_json=True, verify_success=False):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
+
+    ..versionchanged:: 2.0.0
+      Added the ability for a raw LiQL query to be passed to this function rather than only a formatted query URL,
+      and included the optional ``verify_success`` Boolean argument to verify a successful response.
 
     :param khoros_object: The Khoros object initialized via the :py:mod:`khoros.core` module
     :type khoros_object: class[khoros.Khoros]
     :param query_url: The full Khoros Community API v2 URL for the query
-    :type query_url: str
+    :type query_url: str, NoneType
+    :param liql_query: The LiQL query to be performed, not yet embedded in the query URL
+    :type liql_query: str, NoneType
     :param return_json: Determines if the response should be returned in JSON format (``True`` by default)
     :type return_json: bool
+    :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
+    :type verify_success: bool
     :returns: The API response (in JSON format by default)
-    :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+    :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
+    if not query_url and not liql_query:
+        raise errors.exceptions.MissingRequiredDataError("An API query URL or a raw LiQL query must be provided.")
+    if liql_query:
+        query_url = get_query_url(khoros_object.core, liql_query)
     if 'header' not in khoros_object.auth:
         error_msg = f"Cannot perform the query as an authorization header is not configured."
         raise errors.exceptions.MissingAuthDataError(error_msg)
     response = api.get_request_with_retries(query_url, return_json, auth_dict=khoros_object.auth)
+    if verify_success:
+        if not api.query_successful(response):
+            # TODO: Pass the actual failure information to the exception class for a more customized error
+            raise errors.exceptions.GETRequestError
     if return_json and type(response) != dict:
         response = response.json()
     return response

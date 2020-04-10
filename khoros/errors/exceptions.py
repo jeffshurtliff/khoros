@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     05 Apr 2020
 """
 
 #################
@@ -14,10 +14,51 @@
 #################
 
 
-# Define base exception classes
+# Define base exception class
 class KhorosError(Exception):
     """This is the base class for Khoros exceptions."""
     pass
+
+
+#########################
+# Base Object Exceptions
+#########################
+
+
+class InvalidNodeTypeError(KhorosError):
+    """This exception is used when an invalid node type is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The node type that was provided is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('node type ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class NodeIDNotFoundError(KhorosError):
+    """This exception is used when a valid Node ID could not be found in a provided URL."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "A valid Node ID could not be identified in the given URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class NodeTypeNotFoundError(KhorosError):
+    """This exception is used when a valid node type could not be found in a provided URL."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "A valid node type could not be identified in the given URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            args = (custom_msg,)
+        super().__init__(*args)
 
 
 ############################
@@ -25,7 +66,6 @@ class KhorosError(Exception):
 ############################
 
 
-# Define exception for missing authentication data
 class InvalidCallbackURLError(KhorosError):
     """This exception is used when an invalid Callback URL for OAuth 2.0 was not provided."""
     def __init__(self, *args, **kwargs):
@@ -38,7 +78,6 @@ class InvalidCallbackURLError(KhorosError):
         super().__init__(*args)
 
 
-# Define exception for missing authentication data
 class MissingAuthDataError(KhorosError):
     """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
     def __init__(self, *args, **kwargs):
@@ -48,7 +87,6 @@ class MissingAuthDataError(KhorosError):
         super().__init__(*args)
 
 
-# Define exception for missing authentication data
 class SessionAuthenticationError(KhorosError):
     """This exception is used when the session key authentication attempt failed."""
     def __init__(self, *args, **kwargs):
@@ -65,12 +103,37 @@ class SessionAuthenticationError(KhorosError):
 
 
 class CurrentlyUnsupportedError(KhorosError):
-    """This exception is used when a feature or functionality being used is currently unsupported."""
+    """This exception is used when a feature or functionality being used is currently unsupported.
+
+    .. versionadded:: 2.0.0
+       The unsupported feature can be passed as a string argument to explicitly reference it in the exception.
+    """
     def __init__(self, *args, **kwargs):
-        default_msg = "This function is currently unsupported at this time."
+        default_msg = "This feature is currently unsupported at this time."
         if not (args or kwargs):
             args = (default_msg,)
-        # TODO: Add alternate message if variable is passed to the exception class
+        else:
+            custom_msg = f"The '{args[0]}' {default_msg.split('This ')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class MissingRequiredDataError(KhorosError):
+    """This exception is used when a function or method is missing one or more required arguments.
+
+    .. versionadded:: 2.0.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "Missing one or more required parameters"
+        init_msg = "The object failed to initialize as it is missing one or more required arguments."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'init' in args or 'initialize' in args:
+            if 'object' in kwargs:
+                custom_msg = f"{init_msg.split('object')[0]}'{kwargs['object']}'{init_msg.split('The')[1]}"
+                args = (custom_msg,)
+            else:
+                args = (init_msg,)
         super().__init__(*args)
 
 
@@ -83,6 +146,24 @@ class APIConnectionError(KhorosError):
     """This exception is used when the API query could not be completed due to connection aborts and/or timeouts."""
     def __init__(self, *args, **kwargs):
         default_msg = "The API query could not be completed due to connection aborts and/or timeouts."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class APIRequestError(KhorosError):
+    """This exception is used for generic API request errors when there isn't a more specific exception."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The DELETE request did not return a successful response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class DELETERequestError(KhorosError):
+    """This exception is used for generic DELETE request errors when there isn't a more specific exception."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The DELETE request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
@@ -179,7 +260,7 @@ class InvalidHelperFileTypeError(KhorosError, ValueError):
         super().__init__(*args)
 
 
-class InvalidHelperArgumentsError(KhorosError, ValueError):
+class InvalidHelperArgumentsError(KhorosError):
     """This exception is used when the helper function was supplied arguments instead of keyword arguments."""
     def __init__(self, *args, **kwargs):
         default_msg = "The helper configuration file only accepts basic keyword arguments. (e.g. arg_name='arg_value')"
@@ -188,7 +269,7 @@ class InvalidHelperArgumentsError(KhorosError, ValueError):
         super().__init__(*args)
 
 
-class HelperFunctionNotFoundError(KhorosError, FileNotFoundError):
+class HelperFunctionNotFoundError(KhorosError):
     """This exception is used when a function referenced in the helper config file does not exist."""
     def __init__(self, *args, **kwargs):
         default_msg = "The function referenced in the helper configuration file could not be found."
@@ -202,9 +283,8 @@ class HelperFunctionNotFoundError(KhorosError, FileNotFoundError):
 ##################
 
 
-# Define exception for missing authentication data
 class InvalidOperatorError(KhorosError):
-    """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
+    """This exception is used when an invalid operator is provided for the LiQL query."""
     def __init__(self, *args, **kwargs):
         default_msg = "An invalid operator was provided for the LiQL query."
         if not (args or kwargs):
@@ -212,11 +292,42 @@ class InvalidOperatorError(KhorosError):
         super().__init__(*args)
 
 
-# Define exception for missing authentication data
 class OperatorMismatchError(KhorosError):
-    """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
+    """This exception is used when the number of operators in the LiQL query does not match the number of fields."""
     def __init__(self, *args, **kwargs):
         default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
         if not (args or kwargs):
             args = (default_msg,)
+        super().__init__(*args)
+
+
+class TooManyResultsError(KhorosError):
+    """This exception is used when more results are returned than were expected in a LiQL query.
+
+    .. versionadded:: 2.0.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+##################
+# User Exceptions
+##################
+
+
+class UserCreationError(KhorosError):
+    """This exception is used when an attempt to create a user fails."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The user failed to be created."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'user' in kwargs:
+            custom_msg = f"{default_msg.split('user ')[0]}'{kwargs['user']}'{default_msg.split('user')[1]}"
+            args = (custom_msg,)
+        if 'exc_msg' in kwargs:
+            full_msg = f"{args[0].split('.')[0]} due to the following exception: {kwargs['exc_msg']}"
+            args = (full_msg,)
         super().__init__(*args)

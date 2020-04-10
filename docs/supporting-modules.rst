@@ -16,6 +16,7 @@ which are listed below.
     * `Tests Module (khoros.utils.tests)`_
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
         * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
+        * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
 
 |
 
@@ -137,6 +138,17 @@ Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)
 This module tests parsing the WHERE clause of a LiQL query.
 
 .. automodule:: khoros.utils.tests.test_liql_where_parsing
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)
+---------------------------------------------------------------------
+This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
+
+.. automodule:: khoros.utils.tests.test_node_id_extract
    :members:
 
 :doc:`Return to Top <supporting-modules>`
