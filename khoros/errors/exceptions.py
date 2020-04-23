@@ -62,6 +62,26 @@ class NodeTypeNotFoundError(KhorosError):
 
 
 ############################
+# Base Structure Exceptions
+############################
+
+
+class InvalidStructureTypeError(KhorosError):
+    """This exception is used when an invalid node type is provided.
+
+    .. versionadded:: 2.1.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "The structure type that was provided is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('structure type ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+############################
 # Authentication Exceptions
 ############################
 
@@ -105,7 +125,7 @@ class SessionAuthenticationError(KhorosError):
 class CurrentlyUnsupportedError(KhorosError):
     """This exception is used when a feature or functionality being used is currently unsupported.
 
-    .. versionadded:: 2.0.0
+    .. versionchanged:: 2.0.0
        The unsupported feature can be passed as a string argument to explicitly reference it in the exception.
     """
     def __init__(self, *args, **kwargs):
@@ -114,6 +134,36 @@ class CurrentlyUnsupportedError(KhorosError):
             args = (default_msg,)
         else:
             custom_msg = f"The '{args[0]}' {default_msg.split('This ')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class InvalidFieldError(KhorosError):
+    """This exception is used when an invalid field is provided.
+
+    .. versionadded:: 2.1.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "The field that was provided is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('field ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class InvalidURLError(KhorosError):
+    """This exception is used when a provided URL is invalid.
+
+    .. versionadded:: 2.1.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "The provided URL is invalid"
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'url' in kwargs:
+            custom_msg = f"{default_msg.split('is')[0]}'{kwargs['url']}'{default_msg.split('URL')[1]}"
             args = (custom_msg,)
         super().__init__(*args)
 

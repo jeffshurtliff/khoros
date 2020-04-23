@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Apr 2020
+:Modified Date:     19 Apr 2020
 """
 
 import json
@@ -186,7 +186,6 @@ def query_successful(api_response):
     :type api_response: dict
     :returns: Boolean indicating whether or not the API call was successful
     """
-    print(api_response)
     try:
         success_values = ['successful', 'success']
         successful = True if api_response['status'] in success_values else False

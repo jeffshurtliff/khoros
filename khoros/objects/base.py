@@ -6,16 +6,19 @@
 :Example:           ``node_id = base.get_node_id('https://community.khoros.com/t5/Khoros-Blog/bg-p/relnote', 'blog')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Mar 2020
+:Modified Date:     18 Apr 2020
 """
 
-import re
+import warnings
 
-from .. import errors
+from ..structures import nodes
 
 
 def get_node_id(url, node_type=None):
-    """This function retrieves the Node ID for a given node within a URL.
+    """This **deprecated** function retrieves the Node ID for a given node within a URL.
+
+    .. deprecated:: 2.1.0
+       Use :py:func:`khoros.structures.nodes.get_node_id` instead.
 
     :param url: The URL from which to parse out the Node ID
     :type url: str
@@ -26,74 +29,50 @@ def get_node_id(url, node_type=None):
              :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`,
              :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
     """
-    if not node_type:
-        # Attempt to get the Node Type from the URL
-        node_type = get_node_type_from_url(url)
-    elif node_type not in Mapping.node_url_mapping:
-        node_type = __get_node_type_identifier(node_type)
-    node_url_segment = Mapping.node_url_mapping.get(node_type) + '/'
-    if node_url_segment not in url:
-        raise errors.exceptions.InvalidNodeTypeError(val=node_type)
-    node_id = re.sub(f'/.*$', '', re.sub(r'^.*' + node_url_segment, '', url))
-    if not node_id or len(node_id) == 0:
-        raise errors.exceptions.NodeIDNotFoundError(val=url)
-    return node_id
+    warnings.warn("The 'khoros.objects.base.get_node_id' function has been deprecated. Use " +
+                  "'khoros.structures.nodes.get_node_id' instead.", DeprecationWarning)
+    return nodes.get_node_id(url, node_type)
 
 
 def __get_node_type_identifier(_node_type_lookup):
-    """This function attempts to identify the appropriate node type for a function.
+    """This **deprecated** function attempts to identify the appropriate node type for a function.
+
+    .. deprecated:: 2.1.0
+       Use :py:func:`khoros.structures.nodes._get_node_type_identifier` instead.
 
     :param _node_type_lookup: The value to look up as a node type
     :type _node_type_lookup: str
     :returns: The appropriate node type (if found)
     :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
     """
-    if _node_type_lookup in Mapping.proper_name_mapping:
-        _node_type = Mapping.proper_name_mapping.get(_node_type_lookup)
-    else:
-        raise errors.exceptions.InvalidNodeTypeError(val=_node_type_lookup)
-    return _node_type
+    warnings.warn("The 'khoros.objects.base.__get_node_type_identifier' function has been deprecated. Use " +
+                  "'khoros.structures.nodes._get_node_type_identifier' instead.", DeprecationWarning)
+    return nodes._get_node_type_identifier(_node_type_lookup)
 
 
 def get_node_type_from_url(url):
     """This function attempts to retrieve a node type by analyzing a supplied URL.
+
+    .. deprecated:: 2.1.0
+       Use :py:func:`khoros.structures.nodes.get_node_type_from_url` instead.
 
     :param url: The URL from which to extract the node type
     :type url: str
     :returns: The node type based on the URL provided
     :raises: :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
     """
-    node_type = None
-    for node_type_name, node_url_code in Mapping.node_url_mapping.items():
-        if node_url_code in url:
-            node_type = node_type_name
-            break
-    if not node_type:
-        raise errors.exceptions.NodeTypeNotFoundError(val=url)
-    return node_type
+    warnings.warn("The 'khoros.objects.base.get_node_type_from_url' function has been deprecated. Use " +
+                  "'khoros.structures.nodes.get_node_type_from_url' instead.", DeprecationWarning)
+    return nodes.get_node_type_from_url(url)
 
 
 class Mapping:
-    """This class includes dictionaries that map API fields and values to those used in this SDK."""
-    node_url_mapping = {
-        'category': 'ct-p',
-        'blog': 'bg-p',
-        'contest': 'con-p',
-        'forum': 'bd-p',
-        'group': 'gp-p',
-        'idea': 'idb-p',
-        'message': 'm-p',
-        'qa': 'qa-p',
-        'tkb': 'tkb-p'
-    }
-    proper_name_mapping = {
-        'Category': 'category',
-        'Blog': 'blog',
-        'Contest': 'contest',
-        'Forum': 'forum',
-        'Group': 'group',
-        'Idea Exchange': 'idea',
-        'Message': 'message',
-        'Q&A': 'qa',
-        'TKB': 'tkb'
-    }
+    """This class includes dictionaries that map API fields and values to those used in this SDK.
+
+    .. deprecated:: 2.1.0
+       Use :py:class:`khoros.structures.nodes.Mapping` instead.
+    """
+    warnings.warn("The 'khoros.objects.base.Mapping' class has been deprecated. Use " +
+                  "'khoros.structures.nodes.Mapping' instead.", DeprecationWarning)
+    node_url_mapping = nodes.Mapping.node_url_mapping
+    proper_name_mapping = nodes.Mapping.proper_name_mapping

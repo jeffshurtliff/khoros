@@ -6,14 +6,22 @@ which are listed below.
 
 * `Init Module (khoros)`_
 * `Core Module (khoros.core)`_
-    * `Core Object Subclasses (khoros.core.Khoros)`_
+    * `Core Structure Subclasses (khoros.core.Khoros)`_
+        * `Category Subclass (khoros.core.Khoros.Category)`_
+        * `Community Subclass (khoros.core.Khoros.Community)`_
         * `Node Subclass (khoros.core.Khoros.Node)`_
+    * `Core Object Subclasses (khoros.core.Khoros)`_
         * `User Subclass (khoros.core.Khoros.User)`_
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
 * `LiQL Module (khoros.liql)`_
+* `Structures Module (khoros.structures)`_
+    * `Base Structures Module (khoros.structures.base)`_
+    * `Categories Module (khoros.structures.categories)`_
+    * `Communities Module (khoros.structures.communities)`_
+    * `Nodes Module (khoros.structures.nodes)`_
 * `Objects Module (khoros.objects)`_
-    * `Base Module (khoros.objects.base)`_
+    * `Base Objects Module (khoros.objects.base)`_
     * `Users Module (khoros.objects.users)`_
 
 |
@@ -40,10 +48,39 @@ and leverage it to perform various actions.
 .. automodule:: khoros.core
    :members:
 
-.. autoclass:: khoros.core::Khoros.Node
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Core Structure Subclasses (khoros.core.Khoros)
+==============================================
+The classes below are inner/nested classes within the core :py:class:`khoros.core.Khoros` class.
+
+.. note:: The classes themselves are *CamelCase* format and singular (e.g. ``Node``, ``Category``, etc.) whereas the
+          names used to call the inner class methods are all *lowercase* (or *snake_case*) and plural. (e.g.
+          ``core_object.nodes.get_node_id()``, ``core_object.categories.get_category_id()``, etc.)
+
+Category Subclass (khoros.core.Khoros.Category)
+-----------------------------------------------
+.. autoclass:: khoros.core::Khoros.Category
    :members:
 
-.. autoclass:: khoros.core::Khoros.User
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Community Subclass (khoros.core.Khoros.Community)
+-------------------------------------------------
+.. autoclass:: khoros.core::Khoros.Community
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Node Subclass (khoros.core.Khoros.Node)
+---------------------------------------
+.. autoclass:: khoros.core::Khoros.Node
    :members:
 
 :doc:`Return to Top <primary-modules>`
@@ -54,16 +91,9 @@ Core Object Subclasses (khoros.core.Khoros)
 ===========================================
 The classes below are inner/nested classes within the core :py:class:`khoros.core.Khoros` class.
 
-.. note:: The classes themselves are *CamelCase* format and singular (e.g. ``Node``, ``User``, etc.) whereas the names
+.. note:: The classes themselves are *CamelCase* format and singular (e.g. ``Role``, ``User``, etc.) whereas the names
           used to call the inner class methods are all *lowercase* (or *snake_case*) and plural. (e.g.
-          ``core_object.nodes.get_node_id()``, ``core_object.users.create()``, etc.)
-
-Node Subclass (khoros.core.Khoros.Node)
----------------------------------------
-.. autoclass:: khoros.core::Khoros.Node
-   :members:
-
-:doc:`Return to Top <primary-modules>`
+          ``core_object.roles.get_role_id()``, ``core_object.users.create()``, etc.)
 
 User Subclass (khoros.core.Khoros.User)
 ---------------------------------------
@@ -71,6 +101,8 @@ User Subclass (khoros.core.Khoros.User)
    :members:
 
 :doc:`Return to Top <primary-modules>`
+
+|
 
 ***********************
 API Module (khoros.api)
@@ -108,6 +140,62 @@ This module contains functions that enable API queries using the LiQL syntax.
 
 |
 
+*************************************
+Structures Module (khoros.structures)
+*************************************
+This module contains sub-modules that are specific to the various Community structures.
+
+.. automodule:: khoros.structures
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Base Structures Module (khoros.structures.base)
+===============================================
+This module contains functions relating to structures. (i.e. categories, nodes and tenants/communities)
+
+.. automodule:: khoros.structures.base
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Categories Module (khoros.structures.categories)
+================================================
+This module contains functions specific to categories within the Khoros Community platform.
+
+.. automodule:: khoros.structures.categories
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Communities Module (khoros.structures.communities)
+==================================================
+This module contains functions specific to the high-level community configuration.
+
+.. automodule:: khoros.structures.communities
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Nodes Module (khoros.structures.nodes)
+======================================
+This module contains functions specific to nodes within the Khoros Community platform.
+
+.. automodule:: khoros.structures.nodes
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
 *******************************
 Objects Module (khoros.objects)
 *******************************
@@ -120,8 +208,8 @@ This module contains sub-modules that are specific to the various Community API 
 
 |
 
-Base Module (khoros.objects.base)
-=================================
+Base Objects Module (khoros.objects.base)
+=========================================
 This module contains functions that relate to the various Community API objects but which are object-agnostic.
 
 .. automodule:: khoros.objects.base

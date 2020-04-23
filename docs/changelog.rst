@@ -4,6 +4,222 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.1.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.liql.get_total_count` function.
+* Added the :py:meth:`khoros.core.Khoros.get_total_count` method within the core Khoros object.
+* Added the :py:mod:`khoros.structures` module.
+* Added the :py:mod:`khoros.structures.base` module with the following functions and class:
+    * :py:func:`khoros.structures.base.get_details`
+    * :py:func:`khoros.structures.base._check_url_for_identifier`
+    * :py:func:`khoros.structures.base.get_structure_field`
+    * :py:func:`khoros.structures.base.is_category_url`
+    * :py:func:`khoros.structures.base.is_node_url`
+    * :py:func:`khoros.structures.base.verify_structure_type`
+    * :py:func:`khoros.structures.base.get_structure_type_from_url`
+    * :py:class:`khoros.structures.base.Mapping`
+* Added the :py:mod:`khoros.structures.categories` module with the following functions:
+    * :py:func:`khoros.structures.categories.get_category_id`
+    * :py:func:`khoros.structures.categories.get_total_category_count`
+    * :py:func:`khoros.structures.categories.get_category_details`
+    * :py:func:`khoros.structures.categories.get_category_field`
+    * :py:func:`khoros.structures.categories.get_url`
+    * :py:func:`khoros.structures.categories.get_title`
+    * :py:func:`khoros.structures.categories.get_description`
+    * :py:func:`khoros.structures.categories.get_parent_type`
+    * :py:func:`khoros.structures.categories.get_parent_id`
+    * :py:func:`khoros.structures.categories.get_parent_url`
+    * :py:func:`khoros.structures.categories.get_root_type`
+    * :py:func:`khoros.structures.categories.get_root_id`
+    * :py:func:`khoros.structures.categories.get_root_url`
+    * :py:func:`khoros.structures.categories.get_language`
+    * :py:func:`khoros.structures.categories.is_hidden`
+    * :py:func:`khoros.structures.categories.get_views`
+    * :py:func:`khoros.structures.categories.friendly_date_enabled`
+    * :py:func:`khoros.structures.categories.get_friendly_date_max_age`
+    * :py:func:`khoros.structures.categories.get_active_skin`
+    * :py:func:`khoros.structures.categories.get_depth`
+    * :py:func:`khoros.structures.categories.get_position`
+    * :py:func:`khoros.structures.categories.get_creation_date`
+* Added the :py:mod:`khoros.structures.communities` module with the following functions:
+    * :py:func:`khoros.structures.communities.get_community_details`
+    * :py:func:`khoros.structures.communities._check_for_multiple_tenants`
+    * :py:func:`khoros.structures.communities.get_community_field`
+    * :py:func:`khoros.structures.communities.get_tenant_id`
+    * :py:func:`khoros.structures.communities.get_title`
+    * :py:func:`khoros.structures.communities.get_description`
+    * :py:func:`khoros.structures.communities.get_primary_url`
+    * :py:func:`khoros.structures.communities.get_max_attachments`
+    * :py:func:`khoros.structures.communities.get_permitted_attachment_types`
+    * :py:func:`khoros.structures.communities.email_confirmation_required_to_post`
+    * :py:func:`khoros.structures.communities.get_language`
+    * :py:func:`khoros.structures.communities.get_ooyala_player_branding_id`
+    * :py:func:`khoros.structures.communities.get_date_pattern`
+    * :py:func:`khoros.structures.communities.friendly_date_enabled`
+    * :py:func:`khoros.structures.communities.get_friendly_date_max_age`
+    * :py:func:`khoros.structures.communities.get_active_skin`
+    * :py:func:`khoros.structures.communities.get_sign_out_url`
+    * :py:func:`khoros.structures.communities.get_creation_date`
+    * :py:func:`khoros.structures.communities.top_level_categories_enabled`
+    * :py:func:`khoros.structures.communities.show_community_node_in_breadcrumb`
+    * :py:func:`khoros.structures.communities.show_breadcrumb_at_top_level`
+    * :py:func:`khoros.structures.communities.top_level_categories_on_community_page`
+* Added the :py:mod:`khoros.structures.nodes` module with the following functions and classes:
+    * :py:func:`khoros.structures.nodes.get_node_id`
+    * :py:func:`khoros.structures.nodes.get_node_type_from_url`
+    * :py:func:`khoros.structures.nodes._get_node_type_identifier`
+    * :py:func:`khoros.structures.nodes.get_total_node_count`
+    * :py:func:`khoros.structures.nodes.get_node_details`
+    * :py:func:`khoros.structures.nodes.get_node_field`
+    * :py:func:`khoros.structures.nodes.get_url`
+    * :py:func:`khoros.structures.nodes.get_type`
+    * :py:func:`khoros.structures.nodes.get_discussion_style`
+    * :py:func:`khoros.structures.nodes.get_title`
+    * :py:func:`khoros.structures.nodes.get_description`
+    * :py:func:`khoros.structures.nodes.get_parent_type`
+    * :py:func:`khoros.structures.nodes.get_parent_id`
+    * :py:func:`khoros.structures.nodes.get_parent_url`
+    * :py:func:`khoros.structures.nodes.get_root_type`
+    * :py:func:`khoros.structures.nodes.get_root_id`
+    * :py:func:`khoros.structures.nodes.get_root_url`
+    * :py:func:`khoros.structures.nodes.get_avatar_url`
+    * :py:func:`khoros.structures.nodes.get_creation_date`
+    * :py:func:`khoros.structures.nodes.get_depth`
+    * :py:func:`khoros.structures.nodes.get_position`
+    * :py:func:`khoros.structures.nodes.is_hidden`
+    * :py:func:`khoros.structures.nodes.get_views`
+    * :py:class:`khoros.structures.nodes.Mapping`
+* Added the :py:class:`khoros.core.Khoros.Category` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Category.get_category_id`
+    * :py:meth:`khoros.core.Khoros.Category.get_total_category_count`
+    * :py:meth:`khoros.core.Khoros.Category.get_category_details`
+    * :py:meth:`khoros.core.Khoros.Category.get_category_field`
+    * :py:meth:`khoros.core.Khoros.Category.get_url`
+    * :py:meth:`khoros.core.Khoros.Category.get_title`
+    * :py:meth:`khoros.core.Khoros.Category.get_description`
+    * :py:meth:`khoros.core.Khoros.Category.get_parent_type`
+    * :py:meth:`khoros.core.Khoros.Category.get_parent_id`
+    * :py:meth:`khoros.core.Khoros.Category.get_parent_url`
+    * :py:meth:`khoros.core.Khoros.Category.get_root_type`
+    * :py:meth:`khoros.core.Khoros.Category.get_root_id`
+    * :py:meth:`khoros.core.Khoros.Category.get_root_url`
+    * :py:meth:`khoros.core.Khoros.Category.get_language`
+    * :py:meth:`khoros.core.Khoros.Category.is_hidden`
+    * :py:meth:`khoros.core.Khoros.Category.get_views`
+    * :py:meth:`khoros.core.Khoros.Category.friendly_date_enabled`
+    * :py:meth:`khoros.core.Khoros.Category.get_friendly_date_max_age`
+    * :py:meth:`khoros.core.Khoros.Category.get_active_skin`
+    * :py:meth:`khoros.core.Khoros.Category.get_depth`
+    * :py:meth:`khoros.core.Khoros.Category.get_position`
+    * :py:meth:`khoros.core.Khoros.Category.get_creation_date`
+* Added the :py:class:`khoros.core.Khoros.Community` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Community.get_community_details`
+    * :py:meth:`khoros.core.Khoros.Community.get_tenant_id`
+    * :py:meth:`khoros.core.Khoros.Community.get_title`
+    * :py:meth:`khoros.core.Khoros.Community.get_description`
+    * :py:meth:`khoros.core.Khoros.Community.get_primary_url`
+    * :py:meth:`khoros.core.Khoros.Community.get_max_attachments`
+    * :py:meth:`khoros.core.Khoros.Community.get_permitted_attachment_types`
+    * :py:meth:`khoros.core.Khoros.Community.email_confirmation_required_to_post`
+    * :py:meth:`khoros.core.Khoros.Community.get_language`
+    * :py:meth:`khoros.core.Khoros.Community.get_ooyala_player_branding_id`
+    * :py:meth:`khoros.core.Khoros.Community.get_date_pattern`
+    * :py:meth:`khoros.core.Khoros.Community.friendly_date_enabled`
+    * :py:meth:`khoros.core.Khoros.Community.get_friendly_date_max_age`
+    * :py:meth:`khoros.core.Khoros.Community.get_active_skin`
+    * :py:meth:`khoros.core.Khoros.Community.get_sign_out_url`
+    * :py:meth:`khoros.core.Khoros.Community.get_creation_date`
+    * :py:meth:`khoros.core.Khoros.Community.top_level_categories_enabled`
+    * :py:meth:`khoros.core.Khoros.Community.show_community_node_in_breadcrumb`
+    * :py:meth:`khoros.core.Khoros.Community.show_breadcrumb_at_top_level`
+    * :py:meth:`khoros.core.Khoros.Community.top_level_categories_on_community_page`
+* Added the following methods to the :py:class:`khoros.core.Khoros.Node` inner class:
+    * :py:meth:`khoros.core.Khoros.Node.get_total_node_count`
+    * :py:meth:`khoros.core.Khoros.Node.get_node_details`
+    * :py:meth:`khoros.core.Khoros.Node.get_node_field`
+    * :py:meth:`khoros.core.Khoros.Node.get_url`
+    * :py:meth:`khoros.core.Khoros.Node.get_type`
+    * :py:meth:`khoros.core.Khoros.Node.get_discussion_style`
+    * :py:meth:`khoros.core.Khoros.Node.get_title`
+    * :py:meth:`khoros.core.Khoros.Node.get_description`
+    * :py:meth:`khoros.core.Khoros.Node.get_parent_type`
+    * :py:meth:`khoros.core.Khoros.Node.get_parent_id`
+    * :py:meth:`khoros.core.Khoros.Node.get_parent_url`
+    * :py:meth:`khoros.core.Khoros.Node.get_root_type`
+    * :py:meth:`khoros.core.Khoros.Node.get_root_id`
+    * :py:meth:`khoros.core.Khoros.Node.get_root_url`
+    * :py:meth:`khoros.core.Khoros.Node.get_avatar_url`
+    * :py:meth:`khoros.core.Khoros.Node.get_creation_date`
+    * :py:meth:`khoros.core.Khoros.Node.get_depth`
+    * :py:meth:`khoros.core.Khoros.Node.get_position`
+    * :py:meth:`khoros.core.Khoros.Node.is_hidden`
+    * :py:meth:`khoros.core.Khoros.Node.get_views`
+* Added the :py:meth:`khoros.core.Khoros._import_category_class` method and accompanying method call.
+* Added the :py:meth:`khoros.core.Khoros._import_community_class` method and accompanying method call.
+* Added the :py:const:`khoros.liql.COLLECTIONS` constant.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.core_utils.display_warning` function.
+* Added the following exception classes:
+    * :py:exc:`khoros.errors.exceptions.InvalidFieldError`
+    * :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`
+    * :py:exc:`khoros.errors.exceptions.InvalidURLError`
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.structures` module and its submodules to the :doc:`Primary Modules <primary-modules>` page.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:mod:`khoros.objects` to import all submodules by default.
+* Moved the :py:func:`khoros.objects.base.get_node_id` function to the :py:mod:`khoros.structures.nodes` module
+  and added a :py:exc:`DeprecationWarning`.
+* Moved the :py:func:`khoros.objects.base.get_node_type_from_url` function to the :py:mod:`khoros.structures.nodes`
+  module and added a :py:exc:`DeprecationWarning`.
+* Moved the :py:func:`khoros.objects.base.__get_node_type_identifier` function to the :py:mod:`khoros.structures.nodes`
+  module and added a :py:exc:`DeprecationWarning`.
+* Moved the :py:class:`khoros.objects.base.Mapping` class to the :py:mod:`khoros.structures.nodes` module and added
+  a :py:exc:`DeprecationWarning`.
+* Added the :py:const:`khoros.structures.nodes.Mapping.avatar_size_mapping` dictionary.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Removed some print debugging that hadn't been removed in the :py:func:`khoros.api.query_successful` function.
+
+Documentation
+-------------
+Fixes to the documentation.
+
+* Fixed the module name in the header docstring for the :py:mod:`khoros.objects` module.
+* Fixed a typo in the docstring for the :py:func:`khoros.objects.users.query_users_table_by_id` function.
+
+|
+
+******
 v2.0.0
 ******
 **Release Date: 2020-04-10**

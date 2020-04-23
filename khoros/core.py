@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Apr 2020
+:Modified Date:     22 Apr 2020
 """
 
 import sys
@@ -14,8 +14,8 @@ import copy
 import logging
 
 from . import auth, errors, liql, api
-from .objects import base as objects_base
-from .objects import users as users_module
+from . import objects as objects_module
+from . import structures as structures_module
 from .utils.helper import get_helper_settings
 
 # Initialize logging
@@ -177,6 +177,8 @@ class Khoros(object):
                                        f"'{self._settings['auth_type']}' authentication type.")
 
         # Import inner object classes so their methods can be called from the primary object
+        self.categories = self._import_category_class()
+        self.communities = self._import_community_class()
         self.nodes = self._import_node_class()
         self.users = self._import_user_class()
 
@@ -255,6 +257,16 @@ class Khoros(object):
         self.auth['header'] = self._settings['auth_header']
         self.auth['active'] = True
 
+    def _import_category_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Category` inner class to be utilized in the
+        core object."""
+        return Khoros.Category(self)
+
+    def _import_community_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Community` inner class to be utilized in the
+        core object."""
+        return Khoros.Community(self)
+
     def _import_node_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Node` inner class to be utilized in the core object."""
         return Khoros.Node(self)
@@ -303,7 +315,7 @@ class Khoros(object):
         """
         query_url = liql.get_query_url(self.core, query, pretty_print, track_in_lsi, always_ok,
                                        error_code, format_statements)
-        response = liql.perform_query(self, query_url, return_json)
+        response = liql.perform_query(self, query_url, return_json=return_json)
         return response
 
     def search(self, select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0,
@@ -345,6 +357,20 @@ class Khoros(object):
         response = self.query(query, return_json, pretty_print, track_in_lsi, always_ok, error_code, format_statements)
         return response
 
+    def get_total_count(self, collection, where_filter="", verify_success=True):
+        """This function retrieves the total asset count from a given collection (e.g. ``categories``).
+
+        :param collection: The collection object to use in the FROM clause of the LiQL query (e.g. ``users``)
+        :type collection: str
+        :param where_filter: An optional filter to use as the WHERE clause in the LiQL query
+        :type where_filter: str
+        :param verify_success: Determines if the API query should be verified as successful (``True`` by default)
+        :type verify_success: bool
+        :returns: The total count as an integer
+        :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+        """
+        return liql.get_total_count(self, collection, where_filter, verify_success)
+
     def perform_v1_search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
         """This function performs a search for a particular field value using a Community API v1 call.
 
@@ -363,6 +389,653 @@ class Khoros(object):
         """
         return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
+    class Category(object):
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Category` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        @staticmethod
+        def get_category_id(url):
+            """This function retrieves the Category ID for a given category when provided its URL.
+
+            :param url: The URL from which to parse out the Category ID
+            :type url: str
+            :returns: The Category ID retrieved from the URL
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
+            """
+            return structures_module.categories.get_category_id(url)
+
+        def get_total_category_count(self):
+            """This function returns the total number of categories within the Khoros Community environment.
+
+            :returns: The total number of categories as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.categories.get_total_category_count(self.khoros_object)
+
+        def get_category_details(self, identifier, first_item=True):
+            """This function returns a dictionary of community configuration settings.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str
+            :param first_item: Filters the response data to the first item returned (``True`` by default)
+            :type first_item: bool
+            :returns: The community details within a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_category_details(self.khoros_object, identifier, first_item)
+
+        def get_category_field(self, field, identifier=None, category_details=None):
+            """This function returns a specific community field from the Khoros Community API.
+
+            .. versionadded:: 2.1.0
+
+            :param field: The field whose value to return from the :py:class:`khoros.structures.base.Mapping` class
+            :type field: str
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type category_details: dict, NoneType
+            :returns: The requested field in its native format
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_category_field(self.khoros_object, field, identifier,
+                                                                   category_details)
+
+        def get_url(self, category_id=None, category_details=None):
+            """This function retrieves the URL of a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param category_id: The ID of the category to be evaluated (optional if ``category_details`` provided)
+            :type category_id: str, NoneType
+            :param category_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type category_details: dict, NoneType
+            :returns: The full URL of the category
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_url(self.khoros_object, category_id, category_details)
+
+        def get_title(self, identifier=None, full_title=True, short_title=False, category_details=None):
+            """This function retrieves the full and/or short title of the category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param full_title: Return the full title of the environment (``True`` by default)
+            :type full_title: bool
+            :param short_title: Return the short title of the environment (``False`` by default)
+            :type short_title: bool
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The title(s) of the environment as a string or a tuple of strings
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_title(self.khoros_object, identifier, full_title, short_title,
+                                                          category_details)
+
+        def get_description(self, identifier=None, category_details=None):
+            """This function retrieves the description for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The description in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_description(self.khoros_object, identifier, category_details)
+
+        def get_parent_type(self, identifier=None, category_details=None):
+            """This function retrieves the parent type for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The parent type in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_parent_type(self.khoros_object, identifier, category_details)
+
+        def get_parent_id(self, identifier=None, category_details=None):
+            """This function retrieves the parent ID for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The parent ID in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_parent_id(self.khoros_object, identifier, category_details)
+
+        def get_parent_url(self, identifier=None, category_details=None):
+            """This function retrieves the parent URL for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The parent URL in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_parent_url(self.khoros_object, identifier, category_details)
+
+        def get_root_type(self, identifier=None, category_details=None):
+            """This function retrieves the root category type for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The root category type in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_root_type(self.khoros_object, identifier, category_details)
+
+        def get_root_id(self, identifier=None, category_details=None):
+            """This function retrieves the root category ID for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The root category ID in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_root_id(self.khoros_object, identifier, category_details)
+
+        def get_root_url(self, identifier=None, category_details=None):
+            """This function retrieves the root category URL for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The root category URL in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_root_url(self.khoros_object, identifier, category_details)
+
+        def get_language(self, identifier=None, category_details=None):
+            """This function retrieves the defined language for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The language (e.g. ``en``) in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_language(self.khoros_object, identifier, category_details)
+
+        def is_hidden(self, identifier=None, category_details=None):
+            """This function identifies whether or not a given category is hidden.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: Boolean value indicating if the category is hidden
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.is_hidden(self.khoros_object, identifier, category_details)
+
+        def get_views(self, identifier=None, category_details=None):
+            """This function retrieves the total view count for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The total number of views
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_views(self.khoros_object, identifier, category_details)
+
+        def friendly_date_enabled(self, identifier=None, category_details=None):
+            """This function identifies if friendly dates are enabled for a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: Boolean indicating if friendly dates are enabled
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.friendly_date_enabled(self.khoros_object, identifier, category_details)
+
+        def get_friendly_date_max_age(self, identifier=None, category_details=None):
+            """This function retrieves the maximum age where friendly dates should be used (if enabled) for a category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: Integer representing the number of days the friendly date feature should be leveraged if enabled
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_friendly_date_max_age(self, identifier, category_details)
+
+        def get_active_skin(self, identifier=None, category_details=None):
+            """This function retrieves the skin being used with a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The name of the active skin in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_active_skin(self.khoros_object, identifier, category_details)
+
+        def get_depth(self, identifier=None, category_details=None):
+            """This function retrieves the depth of a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The depth of the category as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_depth(self.khoros_object, identifier, category_details)
+
+        def get_position(self, identifier=None, category_details=None):
+            """This function retrieves the position of a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The position of the category as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.get_position(self.khoros_object, identifier, category_details)
+
+        def get_creation_date(self, identifier=None, category_details=None):
+            """This function retrieves the creation date of a given category.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Category ID or Category URL with which to identify the category
+            :type identifier: str, NoneType
+            :param category_details: Dictionary containing community details (optional)
+            :type category_details: dict, NoneType
+            :returns: The creation of the category in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            # TODO: Allow a format to be specified and the ability to parse as a datetime object if needed
+            return structures_module.categories.get_creation_date(self.khoros_object, identifier, category_details)
+
+    class Community(object):
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Community` inner class object.
+
+            .. versionadded:: 2.1.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+        
+        def get_community_details(self):
+            """This function returns a dictionary of community configuration settings.
+
+            .. versionadded:: 2.1.0
+
+            :returns: The community details within a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_community_details(self.khoros_object)
+
+        def get_community_field(self, field, community_details=None):
+            """This function retrieves a particular field from the community collection in the API.
+
+            .. versionadded:: 2.1.0
+
+            :param field: The field whose value to return from the :py:class:`khoros.structures.base.Mapping` class
+            :type field: str
+            :param community_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type community_details: dict, NoneType
+            :returns: The requested field in its native format
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.communities.get_community_field(self.khoros_object, field, community_details)
+
+        def get_tenant_id(self, community_details=None):
+            """This function retrieves the tenant ID of the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The tenant ID in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_tenant_id(self.khoros_object, community_details)
+
+        def get_title(self, full_title=True, short_title=False, community_details=None):
+            """This function retrieves the full and/or short title of the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param full_title: Return the full title of the environment (``True`` by default)
+            :type full_title: bool
+            :param short_title: Return the short title of the environment (``False`` by default)
+            :type short_title: bool
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The title(s) of the environment as a string or a tuple of strings
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_title(self.khoros_object, full_title, short_title,
+                                                           community_details)
+
+        def get_description(self, community_details=None):
+            """This function retrieves the description of the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The description in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_description(self.khoros_object, community_details)
+
+        def get_primary_url(self, community_details=None):
+            """This function retrieves the primary URL of the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The primary URL in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_primary_url(self.khoros_object, community_details)
+
+        def get_max_attachments(self, community_details=None):
+            """This function retrieves the maximum number of attachments permitted per message within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The value as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_max_attachments(self.khoros_object, community_details)
+
+        def get_permitted_attachment_types(self, community_details=None):
+            """This function retrieves the attachment file types permitted within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The permitted file types within a list
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_permitted_attachment_types(self.khoros_object, community_details)
+
+        def email_confirmation_required_to_post(self, community_details=None):
+            """This function identifies if an email configuration is required before posting in the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if email configuration is required before posting
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.email_confirmation_required_to_post(self.khoros_object, community_details)
+
+        def get_language(self, community_details=None):
+            """This function retrieves the language (e.g. ``en``) utilized in the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The language code as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_language(self.khoros_object, community_details)
+
+        def get_ooyala_player_branding_id(self, community_details=None):
+            """This function retrieves the branding ID for the Ooyala Player utilized within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The branding ID in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_ooyala_player_branding_id(self.khoros_object, community_details)
+
+        def get_date_pattern(self, community_details=None):
+            """This function retrieves the date pattern (e.g. ``yyyy-MM-dd``) utilized within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The date pattern in string format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_date_pattern(self.khoros_object, community_details)
+
+        def friendly_date_enabled(self, community_details=None):
+            """This function if the friendly date functionality is utilized within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if the feature is enabled
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.friendly_date_enabled(self.khoros_object, community_details)
+
+        def get_friendly_date_max_age(self, community_details=None):
+            """This function identifies if the friendly date functionality is utilized within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if the feature is enabled
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_friendly_date_max_age(self.khoros_object, community_details)
+
+        def get_active_skin(self, community_details=None):
+            """This function retrieves the primary active skin that is utilized within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The skin name as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_active_skin(self.khoros_object, community_details)
+
+        def get_sign_out_url(self, community_details=None):
+            """This function retrieves the Sign Out URL for the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The Sign Out URL as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.get_sign_out_url(self.khoros_object, community_details)
+
+        def get_creation_date(self, community_details=None):
+            """This function retrieves the timestamp for the initial creation of the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: The creation date as a string (e.g. ``2020-02-03T22:41:36.408-08:00``)
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            # TODO: Allow a format to be specified and the ability to parse as a datetime object if needed
+            return structures_module.communities.get_creation_date(self.khoros_object, community_details)
+
+        def top_level_categories_enabled(self, community_details=None):
+            """This function identifies if top level categories are enabled within the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if top level categories are enabled
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.top_level_categories_enabled(self.khoros_object, community_details)
+
+        def show_community_node_in_breadcrumb(self, community_details=None):
+            """This function identifies if the community node should be shown in breadcrumbs.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if the community node is displayed in bredcrumbs
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.show_community_node_in_breadcrumb(self.khoros_object,
+                                                                                   community_details)
+
+        def show_breadcrumb_at_top_level(self, community_details=None):
+            """This function identifies if breadcrumbs should be shown at the top level of the environment.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if breadcrumbs are displayed at the top level of the environment
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.show_breadcrumb_at_top_level(self.khoros_object, community_details)
+
+        def top_level_categories_on_community_page(self, community_details=None):
+            """This function identifies if top level categories are enabled on community pages.
+
+            .. versionadded:: 2.1.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, NoneType
+            :returns: Boolean value indicating if top level categories are enabled on community pages
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.communities.top_level_categories_on_community_page(self.khoros_object,
+                                                                                        community_details)
+    
     class Node(object):
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.Node` inner class object.
@@ -385,7 +1058,7 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`,
                      :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
             """
-            return objects_base.get_node_id(url, node_type)
+            return structures_module.nodes.get_node_id(url, node_type)
 
         @staticmethod
         def get_node_type_from_url(url):
@@ -396,7 +1069,361 @@ class Khoros(object):
             :returns: The node type based on the URL provided
             :raises: :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
             """
-            return objects_base.get_node_type_from_url(url)
+            return structures_module.nodes.get_node_type_from_url(url)
+
+        def get_total_node_count(self):
+            """This function returns the total number of nodes within the Khoros Community environment.
+
+            :returns: The total number of nodes as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.nodes.get_total_node_count(self.khoros_object)
+
+        def get_node_details(self, identifier, first_item=True):
+            """This function returns a dictionary of node configuration settings.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str
+            :param first_item: Filters the response data to the first item returned (``True`` by default)
+            :type first_item: bool
+            :returns: The node details within a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_node_details(self.khoros_object, identifier, first_item)
+
+        def get_node_field(self, field, identifier=None, node_details=None):
+            """This function returns a specific node field from the Khoros Community API.
+
+            .. versionadded:: 2.1.0
+
+            :param field: The field to return from the :py:class:`khoros.structures.base.Mapping` class
+            :type field: str
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The requested field in its native format
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_node_field(self.khoros_object, field, identifier, node_details)
+
+        def get_url(self, node_id=None, node_details=None):
+            """This function returns the full URL of a given Node ID.
+
+            .. versionadded:: 2.1.0
+
+            :param node_id: The Node ID with which to identify the node
+            :type node_id: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The node URl as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_url(self.khoros_object, node_id, node_details)
+
+        def get_type(self, identifier, node_details=None):
+            """This function returns the full URL of a given Node ID.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The node URl as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_type(self.khoros_object, identifier, node_details)
+
+        def get_discussion_style(self, identifier, node_details=None):
+            """This function returns the full URL of a given Node ID.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The node URl as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_discussion_style(self.khoros_object, identifier, node_details)
+
+        def get_title(self, identifier=None, full_title=True, short_title=False, node_details=None):
+            """This function retrieves the full and/or short title of the node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param full_title: Determines if the full title of the node should be returned (``True`` by default)
+            :type full_title: bool
+            :param short_title: Determines if the short title of the node should be returned (``False`` by default)
+            :type short_title: bool
+            :param node_details: Dictionary containing node details (optional)
+            :type node_details: dict, NoneType
+            :returns: The node title(s) as a string or a tuple of strings
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_title(self.khoros_object, identifier, full_title,
+                                                     short_title, node_details)
+
+        def get_description(self, identifier, node_details=None):
+            """This function returns the description of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The node description as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_description(self.khoros_object, identifier, node_details)
+
+        def get_parent_type(self, identifier, node_details=None):
+            """This function returns the parent type of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The parent type as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_parent_type(self.khoros_object, identifier, node_details)
+
+        def get_parent_id(self, identifier, node_details=None, include_prefix=False):
+            """This function returns the Parent ID of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (Default: ``False``)
+            :type include_prefix: bool
+            :returns: The Parent ID as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_parent_id(self.khoros_object, identifier, node_details, include_prefix)
+
+        def get_parent_url(self, identifier, node_details=None):
+            """This function returns the parent URL of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The parent URL as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_parent_url(self.khoros_object, identifier, node_details)
+
+        def get_root_type(self, identifier, node_details=None):
+            """This function returns the root category type of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The root category type as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_root_type(self.khoros_object, identifier, node_details)
+
+        def get_root_id(self, identifier, node_details=None, include_prefix=False):
+            """This function returns the Root Category ID of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (``False`` by default)
+            :type include_prefix: bool
+            :returns: The Root Category ID as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_root_id(self.khoros_object, identifier, node_details, include_prefix)
+
+        def get_root_url(self, identifier, node_details=None):
+            """This function returns the root category URL of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The root category URL as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_root_url(self.khoros_object, identifier, node_details)
+
+        def get_avatar_url(self, identifier, node_details=None, original=True, tiny=False, small=False,
+                           medium=False, large=False):
+            """This function retrieves one or more avatar URLs for a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :param original: Indicates if the URL for the original-size image should be returned (``True`` by default)
+            :type original: bool
+            :param tiny: Indicates if the URL for the image in a tiny size should be returned (``False`` by default)
+            :type tiny: bool
+            :param small: Indicates if the URL for the image in a small size should be returned (``False`` by default)
+            :type small: bool
+            :param medium: Indicates if the URL for the image in a medium size should be returned (``False`` by default)
+            :type medium: bool
+            :param large: Indicates if the URL for the image in a large size should be returned (``False`` by default)
+            :type large: bool
+            :returns: A single URL as a string (default) or a dictionary of multiple URLs by size
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_avatar_url(self.khoros_object, identifier, node_details,
+                                                          original, tiny, small, medium, large)
+
+        def get_creation_date(self, identifier, node_details=None, friendly=False):
+            """This function returns the creation date of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :param friendly: Determines whether to return the "friendly" date (e.g. ``Friday``) instead (``False`` by default)
+            :type friendly: bool
+            :returns: The creation date as a string
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_creation_date(self.khoros_object, identifier, node_details, friendly)
+
+        def get_depth(self, identifier, node_details=None):
+            """This function returns the depth of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The depth as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_depth(self.khoros_object, identifier, node_details)
+
+        def get_position(self, identifier, node_details=None):
+            """This function returns the position of a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The position as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_position(self.khoros_object, identifier, node_details)
+
+        def is_hidden(self, identifier, node_details=None):
+            """This function identifies whether or not a given node is hidden.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: Boolean indicating whether or not the node is hidden
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.is_hidden(self.khoros_object, identifier, node_details)
+
+        def get_views(self, identifier, node_details=None):
+            """This function returns the views for a given node.
+
+            .. versionadded:: 2.1.0
+
+            :param identifier: The Node ID or Node URL with which to identify the node
+            :type identifier: str, NoneType
+            :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
+            :type node_details: dict, NoneType
+            :returns: The views as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.get_views(self.khoros_object, identifier, node_details)
 
     class User(object):
         def __init__(self, khoros_object):
@@ -434,8 +1461,8 @@ class Khoros(object):
             :returns: None
             :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
             """
-            users_module.create(self.khoros_object, user_settings, login, email, password, first_name, last_name,
-                                biography, sso_id, web_page_url, cover_image)
+            objects_module.users.create(self.khoros_object, user_settings, login, email, password, first_name,
+                                        last_name, biography, sso_id, web_page_url, cover_image)
             return
 
         def delete(self, user_id, return_json=False):
@@ -447,7 +1474,7 @@ class Khoros(object):
             :type return_json: bool
             :returns: The API response (optionally in JSON format)
             """
-            return users_module.delete(self.khoros_object, user_id, return_json)
+            return objects_module.users.delete(self.khoros_object, user_id, return_json)
 
         def get_user_id(self, user_settings=None, login=None, email=None, first_name=None, last_name=None,
                         allow_multiple=False, display_warnings=True):
@@ -472,8 +1499,8 @@ class Khoros(object):
             :type display_warnings: bool
             :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
             """
-            return users_module.get_user_id(self.khoros_object, user_settings, login, email, first_name, last_name,
-                                            allow_multiple, display_warnings)
+            return objects_module.users.get_user_id(self.khoros_object, user_settings, login, email, first_name,
+                                                    last_name, allow_multiple, display_warnings)
 
         def get_username(self, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
                          allow_multiple=False, display_warnings=True):
@@ -498,14 +1525,14 @@ class Khoros(object):
             :type display_warnings: bool
             :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
             """
-            return users_module.get_username(self.khoros_object, user_settings, user_id, email, first_name, last_name,
-                                             allow_multiple, display_warnings)
+            return objects_module.users.get_username(self.khoros_object, user_settings, user_id, email, first_name,
+                                                     last_name, allow_multiple, display_warnings)
 
         def get_login(self, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
                       allow_multiple=False, display_warnings=True):
             """This is an alternative method name for the :py:meth:`khoros.core.Khoros.User.get_username` method."""
-            return users_module.get_login(self.khoros_object, user_settings, user_id, email, first_name, last_name,
-                                          allow_multiple, display_warnings)
+            return objects_module.users.get_login(self.khoros_object, user_settings, user_id, email, first_name,
+                                                  last_name, allow_multiple, display_warnings)
 
         def get_email(self, user_settings=None, user_id=None, login=None, first_name=None, last_name=None,
                       allow_multiple=False, display_warnings=True):
@@ -530,8 +1557,8 @@ class Khoros(object):
             :type display_warnings: bool
             :returns: The email address of the user as a string or a list of emails if ``allow_multiple`` is ``True``
             """
-            return users_module.get_email(self.khoros_object, user_settings, user_id, login, first_name, last_name,
-                                          allow_multiple, display_warnings)
+            return objects_module.users.get_email(self.khoros_object, user_settings, user_id, login, first_name,
+                                                  last_name, allow_multiple, display_warnings)
 
         def query_users_table_by_id(self, select_fields, user_id):
             """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID.
@@ -543,7 +1570,7 @@ class Khoros(object):
             :returns: The API response for the performed LiQL query
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.query_users_table_by_id(self.khoros_object, select_fields, user_id)
+            return objects_module.users.query_users_table_by_id(self.khoros_object, select_fields, user_id)
 
         def get_user_data(self, user_settings=None, user_id=None, login=None, email=None):
             """This function retrieves all user data for a given user.
@@ -559,7 +1586,7 @@ class Khoros(object):
             :returns: A dictionary containing the user data for the user
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_user_data(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_user_data(self.khoros_object, user_settings, user_id, login, email)
 
         def get_album_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the number of albums for a user.
@@ -575,7 +1602,7 @@ class Khoros(object):
             :returns: The number of albums found for the user as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_album_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_album_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_followers_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of community members who have added the user as a friend in the community.
@@ -591,7 +1618,7 @@ class Khoros(object):
             :returns: The number of community members who have added the user as a friend in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_followers_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_followers_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_following_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of community members the user has added as a friend in the community.
@@ -607,7 +1634,7 @@ class Khoros(object):
             :returns: The number of community members the user has added as a friend in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_following_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_following_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_images_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of images uploaded by the user.
@@ -623,7 +1650,7 @@ class Khoros(object):
             :returns: The number of images uploaded by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_images_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_images_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_public_images_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of public images uploaded by the user.
@@ -639,7 +1666,8 @@ class Khoros(object):
             :returns: The number of public images uploaded by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_public_images_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_public_images_count(self.khoros_object, user_settings, user_id,
+                                                                login, email)
 
         def get_messages_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of messages (topics and replies) posted by the user.
@@ -655,7 +1683,7 @@ class Khoros(object):
             :returns: The number of messages (topics and replies) posted by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_messages_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_messages_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_roles_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of roles applied to the user.
@@ -671,7 +1699,7 @@ class Khoros(object):
             :returns: The number of roles applied to the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_roles_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_roles_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_solutions_authored_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of messages created by the user that are marked as accepted solutions.
@@ -687,7 +1715,8 @@ class Khoros(object):
             :returns: The number of messages created by the user that are marked as accepted solutions in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_solutions_authored_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_solutions_authored_count(self.khoros_object, user_settings, user_id,
+                                                                     login, email)
 
         def get_topics_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of topic messages (excluding replies) posted by the user.
@@ -703,7 +1732,7 @@ class Khoros(object):
             :returns: The number of topic messages (excluding replies) posted by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_topics_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_topics_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_replies_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of replies posted by the user.
@@ -719,7 +1748,7 @@ class Khoros(object):
             :returns: The number of replies posted by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_replies_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_replies_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_videos_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of videos uploaded by the user.
@@ -735,7 +1764,7 @@ class Khoros(object):
             :returns: The number of videos uploaded by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_videos_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_videos_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_kudos_given_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of kudos a user has given.
@@ -751,7 +1780,7 @@ class Khoros(object):
             :returns: The number of kudos given by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_kudos_given_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_kudos_given_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_kudos_received_count(self, user_settings=None, user_id=None, login=None, email=None):
             """This function gets the count of kudos a user has received.
@@ -767,7 +1796,8 @@ class Khoros(object):
             :returns: The number of kudos received by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_kudos_received_count(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_kudos_received_count(self.khoros_object, user_settings, user_id,
+                                                                 login, email)
 
         def get_online_user_count(self):
             """This function retrieves the number of users currently online.
@@ -775,7 +1805,7 @@ class Khoros(object):
             :returns: The user count for online users as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_online_user_count(self.khoros_object)
+            return objects_module.users.get_online_user_count(self.khoros_object)
 
         def get_registration_data(self, user_settings=None, user_id=None, login=None, email=None):
             """This function retrieves the registration data for a given user.
@@ -791,7 +1821,7 @@ class Khoros(object):
             :returns: A dictionary containing the registration data for the user
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_registration_data(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_registration_data(self.khoros_object, user_settings, user_id, login, email)
 
         def get_registration_timestamp(self, user_settings=None, user_id=None, login=None, email=None):
             """This function retrieves the timestamp for when a given user registered for an account.
@@ -807,7 +1837,8 @@ class Khoros(object):
             :returns: The registration timestamp in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_registration_timestamp(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_registration_timestamp(self.khoros_object, user_settings, user_id,
+                                                                   login, email)
 
         def get_registration_status(self, user_settings=None, user_id=None, login=None, email=None):
             """This function retrieves the registration status for a given user.
@@ -823,7 +1854,8 @@ class Khoros(object):
             :returns: The registration status in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_registration_status(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_registration_status(self.khoros_object, user_settings, user_id,
+                                                                login, email)
 
         def get_last_visit_timestamp(self, user_settings=None, user_id=None, login=None, email=None):
             """This function retrieves the timestamp for the last time the user logged into the community.
@@ -839,7 +1871,8 @@ class Khoros(object):
             :returns: The last visit timestamp in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return users_module.get_last_visit_timestamp(self.khoros_object, user_settings, user_id, login, email)
+            return objects_module.users.get_last_visit_timestamp(self.khoros_object, user_settings, user_id,
+                                                                 login, email)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session."""
@@ -855,4 +1888,3 @@ class Khoros(object):
     def close(self):
         """This core method destroys the instance."""
         pass
-

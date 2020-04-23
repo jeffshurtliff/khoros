@@ -6,11 +6,12 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Apr 2020
+:Modified Date:     20 Apr 2020
 """
 
 import random
 import string
+import warnings
 import urllib.parse
 from html import unescape
 
@@ -112,3 +113,16 @@ def get_random_string(length=32, prefix_string=""):
     :returns: The alphanumeric string
     """
     return f"{prefix_string}{''.join([random.choice(string.ascii_letters + string.digits) for _ in range(length)])}"
+
+
+def display_warning(warn_msg):
+    """This function displays a :py:exc:`UserWarning` message via the :py:mod:`warnings` module.
+
+    .. versionadded:: 2.1.0
+
+    :param warn_msg: The message to be displayed
+    :type warn_msg: str
+    :returns: None
+    """
+    warnings.warn(warn_msg, UserWarning)
+    return

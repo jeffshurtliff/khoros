@@ -485,7 +485,7 @@ def get_email(khoros_object, user_settings=None, user_id=None, login=None, first
 def query_users_table_by_id(khoros_object, select_fields, user_id, first_item=False):
     """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID using LiQL.
 
-    :param khoros_object: he core :py:class:`khoros.Khoros` object
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param select_fields: One or more SELECT field (e.g. ``login``, ``messages.count(*)``, etc.) to query
     :type select_fields: str, tuple, list, set

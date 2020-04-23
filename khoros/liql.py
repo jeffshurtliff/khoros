@@ -6,15 +6,25 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Apr 2020
+:Modified Date:     22 Apr 2020
 """
 
 from . import api, errors
 from .utils.core_utils import convert_set
 
+COLLECTIONS = ['albums', 'attachments', 'boards', 'bookmarks', 'categories', 'communities', 'custom_tags',
+               'floated_messages', 'grouphubs', 'images', 'inbox_notes', 'kudos', 'labels', 'me_toos',
+               'membership_requests', 'messages', 'metrics', 'nodes', 'notes_threads', 'notification_feeds',
+               'outbox_notes', 'product_categories', 'products', 'ranks', 'ratings', 'review_comments',
+               'review_dimensions', 'review_ratings', 'reviews', 'roles', 'subscriptions', 'tags', 'threaded_notes',
+               'tkb_helpfulness_ratings', 'users', 'videos']
+
 
 def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='', format_statements=True):
     """This function formats and URL-encodes a raw LiQL query to be able to use it within a Community v2 API URL.
+
+    .. versionchanged:: 2.1.0
+       Queries ending in a semicolon (``;``) will have that character stripped to avoid syntax errors.
 
     .. versionchanged:: 2.0.0
        Added URL-encoding support for several additional characters.
@@ -65,6 +75,8 @@ def format_query(query, pretty_print=False, track_in_lsi=False, always_ok=False,
     for criteria in replacements:
         for orig_string, new_string in criteria.items():
             query = query.replace(orig_string, new_string)
+            if query.endswith(';'):
+                query = query[:-1]
     if pretty_print:
         query = f"{query}{parameters.get('pretty_print')}"
     if track_in_lsi:
@@ -119,7 +131,8 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
     :type verify_success: bool
     :returns: The API response (in JSON format by default)
-    :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
              :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     if not query_url and not liql_query:
@@ -137,6 +150,25 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     if return_json and type(response) != dict:
         response = response.json()
     return response
+
+
+def get_total_count(khoros_object, collection, where_filter="", verify_success=True):
+    """This function retrieves the total asset count from a given collection (e.g. ``categories``).
+
+    :param khoros_object: The Khoros object initialized via the :py:mod:`khoros.core` module
+    :type khoros_object: class[khoros.Khoros]
+    :param collection: The collection object to use in the FROM clause of the LiQL query (e.g. ``users``)
+    :type collection: str
+    :param where_filter: An optional filter to use as the WHERE clause in the LiQL query
+    :type where_filter: str
+    :param verify_success: Determines if the API query should be verified as successful (``True`` by default)
+    :type verify_success: bool
+    :returns: The total count as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    query_syntax = parse_query_elements('count(*)', collection, where_filter)
+    response = perform_query(khoros_object, liql_query=query_syntax, verify_success=verify_success)
+    return response['data']['count']
 
 
 def parse_query_elements(select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0):
