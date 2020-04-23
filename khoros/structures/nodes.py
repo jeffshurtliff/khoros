@@ -7,7 +7,7 @@
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
 :Modified Date:     23 Apr 2020
-:Version:           1.0.0
+:Version:           1.0.1
 """
 
 import re
@@ -133,7 +133,7 @@ def get_node_field(khoros_object, field, identifier=None, node_details=None):
              :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     if field == 'view_href' or field == 'url':
-        field_value = get_node_url(khoros_object, identifier, node_details)
+        field_value = get_url(khoros_object, identifier, node_details)
     elif field == 'id':
         field_value = get_node_id(identifier, node_details=node_details)
     else:
