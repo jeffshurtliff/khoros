@@ -217,6 +217,12 @@ Fixes to the documentation.
 * Fixed the module name in the header docstring for the :py:mod:`khoros.objects` module.
 * Fixed a typo in the docstring for the :py:func:`khoros.objects.users.query_users_table_by_id` function.
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed the :py:mod:`khoros.utils.tests.test_node_id_extract` to use the new :py:mod:`khoros.structures.nodes` module.
+
 |
 
 ******
