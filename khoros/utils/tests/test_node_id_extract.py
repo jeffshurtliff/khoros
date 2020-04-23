@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_node_id_extract
-:Synopsis:       This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Mar 2020
+:Module:            khoros.utils.tests.test_node_id_extract
+:Synopsis:          This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     23 Apr 2020
+:Version:           1.0.1
 """
 
 import os
@@ -49,14 +50,14 @@ def test_with_valid_node_types():
     """
     # Import the base module
     set_package_path()
-    from khoros.objects import base
+    from khoros.structures import nodes
 
     # Get the test data
     test_data = get_test_data()
 
     # Perform the test for each key value pair
     for node_type, url in test_data.items():
-        node_id = base.get_node_id(url, node_type)
+        node_id = nodes.get_node_id(url, node_type)
         assert (node_id is not False) and (len(node_id) != 0)
     return
 
@@ -69,7 +70,7 @@ def test_with_invalid_node_types():
     """
     # Import the base and exceptions modules
     set_package_path()
-    from khoros.objects import base
+    from khoros.structures import nodes
     from khoros.errors import exceptions
 
     # Get the test data
@@ -77,11 +78,11 @@ def test_with_invalid_node_types():
 
     # Test passing a made-up node type
     with pytest.raises(exceptions.InvalidNodeTypeError):
-        base.get_node_id('gonnabreak', test_data.get('blog'))
+        nodes.get_node_id(test_data.get('blog'), 'gonna_break')
 
     # Test passing the wrong node type for a given URL
     with pytest.raises(exceptions.InvalidNodeTypeError):
-        base.get_node_id('tkb', test_data.get('group'))
+        nodes.get_node_id(test_data.get('group'), 'tkb')
 
     # Return when finished
     return
@@ -95,14 +96,14 @@ def test_with_only_url():
     """
     # Import the base module
     set_package_path()
-    from khoros.objects import base
+    from khoros.structures import nodes
 
     # Get the test data
     test_data = get_test_data().values()
 
     # Test getting the Node ID for each URL type
     for url in test_data:
-        node_id = base.get_node_id(url)
+        node_id = nodes.get_node_id(url)
         assert (node_id is not False) and (len(node_id) != 0)
     return
 
@@ -115,10 +116,10 @@ def test_url_without_node():
     """
     # Import the base and exceptions modules
     set_package_path()
-    from khoros.objects import base
+    from khoros.structures import nodes
     from khoros.errors import exceptions
 
     # Test passing a URL that does not have a node within it
     with pytest.raises(exceptions.NodeTypeNotFoundError):
-        base.get_node_id('https://community.khoros.com/this-is-a-test-url')
+        nodes.get_node_id('https://community.khoros.com/this-is-a-test-url')
     return
