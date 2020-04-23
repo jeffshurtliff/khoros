@@ -5,7 +5,7 @@
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
 :Modified Date:     23 Apr 2020
-:Version:           1.0.1
+:Version:           1.0.2
 """
 
 import os
@@ -28,9 +28,9 @@ def get_test_data():
     base_test_url = "https://community.khoros.com/t5"
     test_data = {
         'blog': f'{base_test_url}/Khoros-Now-Blog/bg-p/relnote',
+        'board': f'{base_test_url}/Growing-Successful-Communities/bd-p/growingcommunities',
         'category': f'{base_test_url}/Forums/ct-p/Forums',
         'contest': f'{base_test_url}/Concert-Photo-Contest/con-p/vacationPhotoContest',
-        'forum': f'{base_test_url}/Growing-Successful-Communities/bd-p/growingcommunities',
         'group': f'{base_test_url}/Khoros-Rockstars/gp-p/khorosRockstars',
         'idea': f'{base_test_url}/Big-Ideas/idb-p/bigIdeas',
         'message': f'{base_test_url}/Womens-Running-Shoes/Looking-for-an-idea-on-which-of-these-to-choose/m-p/997#M78',
