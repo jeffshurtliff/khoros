@@ -100,6 +100,7 @@ class Khoros(object):
         self._settings.update(Khoros.DEFAULT_AUTH)
 
         # Capture any relevant environmental variables if defined
+        environment.update_env_variable_names(env_variables)
         self._env_settings = environment.get_env_variables()
         self._parse_env_settings()
 
@@ -227,8 +228,8 @@ class Khoros(object):
     def _parse_env_settings(self):
         """This method parses the settings identified from environmental variables."""
         for env_var_name, env_var_value in self._env_settings.items():
-            if env_var_name in environment.ENV_SETTINGS_MAPPING:
-                settings_fields = environment.ENV_SETTINGS_MAPPING.get(env_var_name)
+            if env_var_name in environment.env_settings_mapping:
+                settings_fields = environment.env_settings_mapping.get(env_var_name)
                 if len(settings_fields) == 1:
                     self._settings[settings_fields[0]] = env_var_value
                 elif len(settings_fields) == 2:
