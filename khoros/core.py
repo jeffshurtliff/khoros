@@ -226,7 +226,10 @@ class Khoros(object):
             self.construct['response_format'] = return_formats.get(self._settings['prefer_json'])
 
     def _parse_env_settings(self):
-        """This method parses the settings identified from environmental variables."""
+        """This method parses the settings identified from environmental variables.
+
+        .. versionadded:: 2.2.0
+        """
         for env_var_name, env_var_value in self._env_settings.items():
             if env_var_name in environment.env_settings_mapping:
                 settings_fields = environment.env_settings_mapping.get(env_var_name)
@@ -274,7 +277,10 @@ class Khoros(object):
         self._settings['v2_base'] = f"{self._settings['base_url']}/api/2.0"
 
     def _session_auth_credentials_defined(self):
-        """This method checks to see if session authentication credentials have been defined."""
+        """This method checks to see if session authentication credentials have been defined.
+
+        .. versionadded:: 2.2.0
+        """
         _defined = False
         if 'session_auth' in self._settings:
             _defined = True if ('username' in self._settings['session_auth'] and
@@ -294,20 +300,32 @@ class Khoros(object):
 
     def _import_category_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Category` inner class to be utilized in the
-        core object."""
+        core object.
+
+        .. versionadded:: 2.1.0
+        """
         return Khoros.Category(self)
 
     def _import_community_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Community` inner class to be utilized in the
-        core object."""
+        core object.
+
+        .. versionadded:: 2.1.0
+        """
         return Khoros.Community(self)
 
     def _import_node_class(self):
-        """This method allows the :py:class:`khoros.core.Khoros.Node` inner class to be utilized in the core object."""
+        """This method allows the :py:class:`khoros.core.Khoros.Node` inner class to be utilized in the core object.
+
+        .. versionadded:: 2.1.0
+        """
         return Khoros.Node(self)
 
     def _import_user_class(self):
-        """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object."""
+        """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
+
+        .. versionadded:: 2.0.0
+        """
         return Khoros.User(self)
 
     # The public functions below provide ways to interact with the Khoros object
