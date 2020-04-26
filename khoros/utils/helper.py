@@ -6,7 +6,7 @@
 :Example:           ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Mar 2020
+:Modified Date:     26 Apr 2020
 """
 
 import yaml
@@ -24,7 +24,7 @@ def import_yaml_file(file_path):
     :raises: :py:exc:`FileNotFoundError`
     """
     with open(file_path, 'r') as yml_file:
-        helper_cfg = yaml.load(yml_file, Loader=yaml.BaseLoader)
+        helper_cfg = yaml.safe_load(yml_file)
     return helper_cfg
 
 
