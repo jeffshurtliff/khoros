@@ -9,11 +9,14 @@
 :Modified Date:     26 Apr 2020
 """
 
+import os
 import random
 import string
 import warnings
 import urllib.parse
 from html import unescape
+
+from .. import errors
 
 
 def url_encode(raw_string):
@@ -126,3 +129,36 @@ def display_warning(warn_msg):
     """
     warnings.warn(warn_msg, UserWarning)
     return
+
+
+def get_file_type(file_path):
+    """This function attempts to identify if a given file path is for a YAML or JSON file.
+
+    .. versionadded:: 2.2.0
+
+    :param file_path: The full path to the file
+    :type file_path: str
+    :returns: The file type in string format (e.g. ``yaml`` or ``json``)
+    :raises: :py:exc:`FileNotFoundError`, :py:exc:`khoros.errors.exceptions.UnknownFileTypeError`
+    """
+    file_type = 'unknown'
+    if os.path.isfile(file_path):
+        if file_path.endswith('.json'):
+            file_type = 'json'
+        elif file_path.endswith('.yml') or file_path.endswith('.yaml'):
+            file_type = 'yaml'
+        else:
+            display_warning(f"Unable to recognize the file type of '{file_path}' by its extension.")
+            with open(file_path) as cfg_file:
+                for line in cfg_file:
+                    if line.startswith('#'):
+                        continue
+                    else:
+                        if '{' in line:
+                            file_type = 'json'
+                            break
+        if file_type == 'unknown':
+            raise errors.exceptions.UnknownFileTypeError(file=file_path)
+    else:
+        raise FileNotFoundError(f"Unable to locate the following file: {file_path}")
+    return file_type
