@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Apr 2020
+:Modified Date:     26 Apr 2020
 """
 
 import sys
@@ -16,6 +16,7 @@ import logging
 from . import auth, errors, liql, api
 from . import objects as objects_module
 from . import structures as structures_module
+from .utils import environment
 from .utils.helper import get_helper_settings
 
 # Initialize logging
@@ -36,28 +37,30 @@ class Khoros(object):
 
     # Define the function that initializes the object instance
     def __init__(self, settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
-                 session_auth=None, oauth2=None, sso=None, helper=None, auto_connect=True, use_community_name=False,
-                 prefer_json=True):
+                 session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
+                 use_community_name=False, prefer_json=True):
         """This method initializes the Khoros object.
 
         :param settings: Predefined settings that the object should use
-        :type settings: dict, NoneType
+        :type settings: dict, None
         :param community_url: The base URL of the Khoros community instance (e.g. ``community.khoros.com``)
-        :type community_url: str, NoneType
+        :type community_url: str, None
         :param tenant_id: The tenant ID for the Khoros community instance (e.g. ``lithosphere``)
-        :type tenant_id: str, NoneType
+        :type tenant_id: str, None
         :param community_name: The community name (e.g. ``community-name``) for the Khoros community instance
-        :type community_name: str, NoneType
+        :type community_name: str, None
         :param auth_type: The authentication type to use when connecting to the instance (``session_auth`` by default)
-        :type auth_type: str, NoneType
+        :type auth_type: str, None
         :param session_auth: The ``username`` and ``password`` values for session key authentication
-        :type session_auth: dict, NoneType
+        :type session_auth: dict, None
         :param oauth2: The ``client_id``, ``client_secret`` and ``redirect_url`` values for OAuth 2.0 authentication
-        :type oauth2: dict, NoneType
+        :type oauth2: dict, None
         :param sso: The values for single sign-on (SSO) authentication
-        :type sso: dict, NoneType
+        :type sso: dict, None
         :param helper: The path (and optional file type) to the YAML or JSON helper configuration file
-        :type helper: str, tuple, list, dict, NoneType
+        :type helper: str, tuple, list, dict, None
+        :param env_variables: A dictionary (or file path to a YAML or JSON file) that maps environmental variable names
+        :type env_variables: dict, str, None
         :param auto_connect: Determines if a connection should be established when initialized (``True`` by default)
         :type auto_connect: bool
         :param use_community_name: Defines if the community name should be used in the API URLs (``False`` by default)
@@ -73,6 +76,7 @@ class Khoros(object):
         self.auth = {}
         self.core = {}
         self.construct = {}
+        self._helper_settings = {}
 
         # Add supplied elements to the settings dictionary
         _individual_arguments = {
@@ -94,10 +98,18 @@ class Khoros(object):
         # Creates the private _settings attribute using the default settings as a base
         self._settings = copy.copy(Khoros.DEFAULT_SETTINGS)
         self._settings.update(Khoros.DEFAULT_AUTH)
+
+        # Capture any relevant environmental variables if defined
+        self._env_settings = environment.get_env_variables()
+        self._parse_env_settings()
+
+        # Overwrite any settings with any that were passed in the settings argument
         self._settings.update(settings)
 
         # Capture the helper settings if applicable
-        if helper is not None:
+        if helper is None:
+            self._helper_settings['connection'] = {}
+        else:
             self._settings['helper'] = helper
             if type(helper) == tuple or type(helper) == list:
                 file_path, file_type = helper
@@ -144,6 +156,8 @@ class Khoros(object):
             self.auth['type'] = self._settings['auth_type']
         else:
             if session_auth is not None:
+                self._settings['auth_type'] = 'session_auth'
+            elif self._session_auth_credentials_defined():
                 self._settings['auth_type'] = 'session_auth'
             elif 'session_auth' not in self._helper_settings['connection']:
                 error_msg = f"No data was found for the default '{auth_type}' authentication type."
@@ -210,6 +224,18 @@ class Khoros(object):
             return_formats = {True: '&restapi.response_format=json', False: ''}
             self.construct['response_format'] = return_formats.get(self._settings['prefer_json'])
 
+    def _parse_env_settings(self):
+        """This method parses the settings identified from environmental variables."""
+        for env_var_name, env_var_value in self._env_settings.items():
+            if env_var_name in environment.ENV_SETTINGS_MAPPING:
+                settings_fields = environment.ENV_SETTINGS_MAPPING.get(env_var_name)
+                if len(settings_fields) == 1:
+                    self._settings[settings_fields[0]] = env_var_value
+                elif len(settings_fields) == 2:
+                    if settings_fields[0] not in self._settings:
+                        self._settings[settings_fields[0]] = {}
+                    self._settings[settings_fields[0]][settings_fields[1]] = env_var_value
+
     def _parse_helper_settings(self):
         """This method parses the settings in the helper configuration file when provided."""
         # Parse the helper settings and add them to the primary settings
@@ -245,6 +271,14 @@ class Khoros(object):
             self._settings['base_url'] = self._settings['community_url']
         self._settings['v1_base'] = f"{self._settings['community_url']}/restapi/vc"
         self._settings['v2_base'] = f"{self._settings['base_url']}/api/2.0"
+
+    def _session_auth_credentials_defined(self):
+        """This method checks to see if session authentication credentials have been defined."""
+        _defined = False
+        if 'session_auth' in self._settings:
+            _defined = True if ('username' in self._settings['session_auth'] and
+                                'password' in self._settings['session_auth']) else _defined
+        return _defined
 
     def _connect_with_session_key(self):
         """This method establishes a connection to the Khoros environment using basic / session key authentication."""
@@ -441,9 +475,9 @@ class Khoros(object):
             :param field: The field whose value to return from the :py:class:`khoros.structures.base.Mapping` class
             :type field: str
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The requested field in its native format
             :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
                      :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -458,9 +492,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param category_id: The ID of the category to be evaluated (optional if ``category_details`` provided)
-            :type category_id: str, NoneType
+            :type category_id: str, None
             :param category_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The full URL of the category
             :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
                      :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -474,13 +508,13 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param full_title: Return the full title of the environment (``True`` by default)
             :type full_title: bool
             :param short_title: Return the short title of the environment (``False`` by default)
             :type short_title: bool
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The title(s) of the environment as a string or a tuple of strings
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -496,9 +530,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The description in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -513,9 +547,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The parent type in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -530,9 +564,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The parent ID in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -547,9 +581,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The parent URL in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -564,9 +598,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The root category type in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -581,9 +615,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The root category ID in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -598,9 +632,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The root category URL in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -615,9 +649,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The language (e.g. ``en``) in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -632,9 +666,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: Boolean value indicating if the category is hidden
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -649,9 +683,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The total number of views
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -666,9 +700,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: Boolean indicating if friendly dates are enabled
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -683,9 +717,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: Integer representing the number of days the friendly date feature should be leveraged if enabled
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -700,9 +734,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The name of the active skin in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -717,9 +751,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The depth of the category as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -734,9 +768,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The position of the category as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -751,9 +785,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Category ID or Category URL with which to identify the category
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param category_details: Dictionary containing community details (optional)
-            :type category_details: dict, NoneType
+            :type category_details: dict, None
             :returns: The creation of the category in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -792,7 +826,7 @@ class Khoros(object):
             :param field: The field whose value to return from the :py:class:`khoros.structures.base.Mapping` class
             :type field: str
             :param community_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The requested field in its native format
             :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
                      :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -806,7 +840,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The tenant ID in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -822,7 +856,7 @@ class Khoros(object):
             :param short_title: Return the short title of the environment (``False`` by default)
             :type short_title: bool
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The title(s) of the environment as a string or a tuple of strings
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -835,7 +869,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The description in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -847,7 +881,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The primary URL in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -859,7 +893,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The value as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -871,7 +905,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The permitted file types within a list
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -883,7 +917,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if email configuration is required before posting
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -895,7 +929,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The language code as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -907,7 +941,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The branding ID in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -919,7 +953,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The date pattern in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -931,7 +965,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if the feature is enabled
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -943,7 +977,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if the feature is enabled
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -955,7 +989,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The skin name as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -967,7 +1001,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The Sign Out URL as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -979,7 +1013,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: The creation date as a string (e.g. ``2020-02-03T22:41:36.408-08:00``)
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -992,7 +1026,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if top level categories are enabled
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1004,7 +1038,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if the community node is displayed in bredcrumbs
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1017,7 +1051,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if breadcrumbs are displayed at the top level of the environment
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1029,7 +1063,7 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param community_details: Dictionary containing community details (optional)
-            :type community_details: dict, NoneType
+            :type community_details: dict, None
             :returns: Boolean value indicating if top level categories are enabled on community pages
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1052,7 +1086,7 @@ class Khoros(object):
             :param url: The URL from which to parse out the Node ID
             :type url: str
             :param node_type: The node type (e.g. ``blog``, ``tkb``, ``message``, etc.) for the object in the URL
-            :type node_type: str, NoneType
+            :type node_type: str, None
             :returns: The Node ID retrieved from the URL
             :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
                      :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`,
@@ -1103,9 +1137,9 @@ class Khoros(object):
             :param field: The field to return from the :py:class:`khoros.structures.base.Mapping` class
             :type field: str
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The requested field in its native format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1120,9 +1154,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param node_id: The Node ID with which to identify the node
-            :type node_id: str, NoneType
+            :type node_id: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The node URl as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -1136,9 +1170,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The node URl as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1153,9 +1187,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The node URl as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1170,13 +1204,13 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param full_title: Determines if the full title of the node should be returned (``True`` by default)
             :type full_title: bool
             :param short_title: Determines if the short title of the node should be returned (``False`` by default)
             :type short_title: bool
             :param node_details: Dictionary containing node details (optional)
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The node title(s) as a string or a tuple of strings
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1192,9 +1226,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The node description as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1209,9 +1243,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The parent type as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1226,9 +1260,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (Default: ``False``)
             :type include_prefix: bool
             :returns: The Parent ID as a string
@@ -1245,9 +1279,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The parent URL as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1262,9 +1296,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The root category type as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1279,9 +1313,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (``False`` by default)
             :type include_prefix: bool
             :returns: The Root Category ID as a string
@@ -1298,9 +1332,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The root category URL as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1316,9 +1350,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :param original: Indicates if the URL for the original-size image should be returned (``True`` by default)
             :type original: bool
             :param tiny: Indicates if the URL for the image in a tiny size should be returned (``False`` by default)
@@ -1344,9 +1378,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :param friendly: Determines whether to return the "friendly" date (e.g. ``Friday``) instead (``False`` by default)
             :type friendly: bool
             :returns: The creation date as a string
@@ -1363,9 +1397,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The depth as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1380,9 +1414,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The position as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1397,9 +1431,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: Boolean indicating whether or not the node is hidden
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1414,9 +1448,9 @@ class Khoros(object):
             .. versionadded:: 2.1.0
 
             :param identifier: The Node ID or Node URL with which to identify the node
-            :type identifier: str, NoneType
+            :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-            :type node_details: dict, NoneType
+            :type node_details: dict, None
             :returns: The views as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -1439,25 +1473,25 @@ class Khoros(object):
             """This function creates a new user in the Khoros Community environment.
 
             :param user_settings: Allows all user settings to be passed to the function within a single dictionary
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param login: The username (i.e. ``login``) for the user (**required**)
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address for the user (**required**)
-            :type email: str, NoneType
+            :type email: str, None
             :param password: The password for the user
-            :type password: str, NoneType
+            :type password: str, None
             :param first_name: The user's first name (i.e. given name)
-            :type first_name: str, NoneType
+            :type first_name: str, None
             :param last_name: The user's last name (i.e. surname)
-            :type last_name: str, NoneType
+            :type last_name: str, None
             :param biography: The user's biography for their profile
-            :type biography: str, NoneType
+            :type biography: str, None
             :param sso_id: The Single Sign-On (SSO) ID for the user
-            :type sso_id: str, NoneType
+            :type sso_id: str, None
             :param web_page_url: The URL to the user's website
-            :type web_page_url: str, NoneType
+            :type web_page_url: str, None
             :param cover_image: The cover image to be used on the user's profile
-            :type cover_image: str, NoneType
+            :type cover_image: str, None
             :returns: None
             :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
             """
@@ -1484,15 +1518,15 @@ class Khoros(object):
                       last name, first name
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :param first_name: The first name (i.e. given name) of the user
-            :type first_name: str, NoneType
+            :type first_name: str, None
             :param last_name: The last name (i.e. surname) of the user
-            :type last_name: str, NoneType
+            :type last_name: str, None
             :param allow_multiple: Allows a list of User IDs to be returned if multiple results are found
             :type allow_multiple: bool
             :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
@@ -1510,15 +1544,15 @@ class Khoros(object):
                       first name
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID of the user
-            :type user_id: str, NoneType
+            :type user_id: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :param first_name: The first name (i.e. given name) of the user
-            :type first_name: str, NoneType
+            :type first_name: str, None
             :param last_name: The last name (i.e. surname) of the user
-            :type last_name: str, NoneType
+            :type last_name: str, None
             :param allow_multiple: Allows a list of usernames to be returned if multiple results are found
             :type allow_multiple: bool
             :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
@@ -1542,15 +1576,15 @@ class Khoros(object):
                       first name
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID of the user
-            :type user_id: str, NoneType
+            :type user_id: str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param first_name: The first name (i.e. given name) of the user
-            :type first_name: str, NoneType
+            :type first_name: str, None
             :param last_name: The last name (i.e. surname) of the user
-            :type last_name: str, NoneType
+            :type last_name: str, None
             :param allow_multiple: Allows a list of email addresses to be returned if multiple results are found
             :type allow_multiple: bool
             :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
@@ -1576,13 +1610,13 @@ class Khoros(object):
             """This function retrieves all user data for a given user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: A dictionary containing the user data for the user
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1592,13 +1626,13 @@ class Khoros(object):
             """This function gets the number of albums for a user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of albums found for the user as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1608,13 +1642,13 @@ class Khoros(object):
             """This function gets the count of community members who have added the user as a friend in the community.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of community members who have added the user as a friend in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1624,13 +1658,13 @@ class Khoros(object):
             """This function gets the count of community members the user has added as a friend in the community.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of community members the user has added as a friend in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1640,13 +1674,13 @@ class Khoros(object):
             """This function gets the count of images uploaded by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of images uploaded by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1656,13 +1690,13 @@ class Khoros(object):
             """This function gets the count of public images uploaded by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of public images uploaded by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1673,13 +1707,13 @@ class Khoros(object):
             """This function gets the count of messages (topics and replies) posted by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of messages (topics and replies) posted by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1689,13 +1723,13 @@ class Khoros(object):
             """This function gets the count of roles applied to the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of roles applied to the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1705,13 +1739,13 @@ class Khoros(object):
             """This function gets the count of messages created by the user that are marked as accepted solutions.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of messages created by the user that are marked as accepted solutions in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1722,13 +1756,13 @@ class Khoros(object):
             """This function gets the count of topic messages (excluding replies) posted by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of topic messages (excluding replies) posted by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1738,13 +1772,13 @@ class Khoros(object):
             """This function gets the count of replies posted by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of replies posted by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1754,13 +1788,13 @@ class Khoros(object):
             """This function gets the count of videos uploaded by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of videos uploaded by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1770,13 +1804,13 @@ class Khoros(object):
             """This function gets the count of kudos a user has given.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of kudos given by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1786,13 +1820,13 @@ class Khoros(object):
             """This function gets the count of kudos a user has received.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The number of kudos received by the user in integer format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1811,13 +1845,13 @@ class Khoros(object):
             """This function retrieves the registration data for a given user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: A dictionary containing the registration data for the user
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1827,13 +1861,13 @@ class Khoros(object):
             """This function retrieves the timestamp for when a given user registered for an account.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The registration timestamp in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1844,13 +1878,13 @@ class Khoros(object):
             """This function retrieves the registration status for a given user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The registration status in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
@@ -1861,13 +1895,13 @@ class Khoros(object):
             """This function retrieves the timestamp for the last time the user logged into the community.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-            :type user_settings: dict, NoneType
+            :type user_settings: dict, None
             :param user_id: The User ID associated with the user
-            :type user_id: int, str, NoneType
+            :type user_id: int, str, None
             :param login: The username of the user
-            :type login: str, NoneType
+            :type login: str, None
             :param email: The email address of the user
-            :type email: str, NoneType
+            :type email: str, None
             :returns: The last visit timestamp in string format
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """

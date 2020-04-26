@@ -6,8 +6,7 @@
 :Example:           ``node_id = nodes.get_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Apr 2020
-:Version:           1.0.1
+:Modified Date:     26 Apr 2020
 """
 
 import re
@@ -20,11 +19,11 @@ def get_node_id(url=None, node_type=None, node_details=None):
     """This function retrieves the Node ID for a given node within a URL.
 
     :param url: The URL from which to parse out the Node ID
-    :type url: str, NoneType
+    :type url: str, None
     :param node_type: The node type (e.g. ``blog``, ``tkb``, ``message``, etc.) for the object in the URL
-    :type node_type: str, NoneType
+    :type node_type: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The Node ID retrieved from the URL
     :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -123,9 +122,9 @@ def get_node_field(khoros_object, field, identifier=None, node_details=None):
     :param field: The field from the :py:class:`khoros.structures.base.Mapping` class whose value should be returned
     :type field: str
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The requested field in its native format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -150,9 +149,9 @@ def get_url(khoros_object, node_id=None, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param node_id: The Node ID with which to identify the node
-    :type node_id: str, NoneType
+    :type node_id: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The node URl as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -175,9 +174,9 @@ def get_type(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The node URl as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -195,9 +194,9 @@ def get_discussion_style(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The node URl as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -215,13 +214,13 @@ def get_title(khoros_object, identifier=None, full_title=True, short_title=False
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param full_title: Determines if the full title of the node should be returned (``True`` by default)
     :type full_title: bool
     :param short_title: Determines if the short title of the node should be returned (``False`` by default)
     :type short_title: bool
     :param node_details: Dictionary containing node details (optional)
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The node title(s) as a string or a tuple of strings
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -249,9 +248,9 @@ def get_description(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The node description as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -269,9 +268,9 @@ def get_parent_type(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The parent type as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -289,9 +288,9 @@ def get_parent_id(khoros_object, identifier, node_details=None, include_prefix=F
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (``False`` by default)
     :type include_prefix: bool
     :returns: The Parent ID as a string
@@ -314,9 +313,9 @@ def get_parent_url(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The parent URL as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -335,9 +334,9 @@ def get_root_type(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The root category type as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -355,9 +354,9 @@ def get_root_id(khoros_object, identifier, node_details=None, include_prefix=Fal
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (``False`` by default)
     :type include_prefix: bool
     :returns: The Root Category ID as a string
@@ -380,9 +379,9 @@ def get_root_url(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The root category URL as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -403,9 +402,9 @@ def get_avatar_url(khoros_object, identifier, node_details=None, original=True, 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :param original: Indicates if the URL for the image in its original size should be returned (``True`` by default)
     :type original: bool
     :param tiny: Indicates if the URL for the image in a tiny size should be returned (``False`` by default)
@@ -444,9 +443,9 @@ def get_creation_date(khoros_object, identifier, node_details=None, friendly=Fal
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :param friendly: Determines whether to return the "friendly" date (e.g. ``Friday``) instead (``False`` by default)
     :type friendly: bool
     :returns: The creation date as a string
@@ -471,9 +470,9 @@ def get_depth(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The depth as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -491,9 +490,9 @@ def get_position(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The position as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -511,9 +510,9 @@ def is_hidden(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: Boolean indicating whether or not the node is hidden
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -531,9 +530,9 @@ def get_views(khoros_object, identifier, node_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Node ID or Node URL with which to identify the node
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type node_details: dict, NoneType
+    :type node_details: dict, None
     :returns: The views as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,

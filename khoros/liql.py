@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Apr 2020
+:Modified Date:     26 Apr 2020
 """
 
 from . import api, errors
@@ -123,9 +123,9 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     :param khoros_object: The Khoros object initialized via the :py:mod:`khoros.core` module
     :type khoros_object: class[khoros.Khoros]
     :param query_url: The full Khoros Community API v2 URL for the query
-    :type query_url: str, NoneType
+    :type query_url: str, None
     :param liql_query: The LiQL query to be performed, not yet embedded in the query URL
-    :type liql_query: str, NoneType
+    :type liql_query: str, None
     :param return_json: Determines if the response should be returned in JSON format (``True`` by default)
     :type return_json: bool
     :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)

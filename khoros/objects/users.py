@@ -6,7 +6,7 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Apr 2020
+:Modified Date:     26 Apr 2020
 """
 
 import warnings
@@ -21,25 +21,25 @@ def create(khoros_object, user_settings=None, login=None, email=None, password=N
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: Allows all user settings to be passed to the function within a single dictionary
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param login: The username (i.e. ``login``) for the user (**required**)
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address for the user (**required**)
-    :type email: str, NoneType
+    :type email: str, None
     :param password: The password for the user
-    :type password: str, NoneType
+    :type password: str, None
     :param first_name: The user's first name (i.e. given name)
-    :type first_name: str, NoneType
+    :type first_name: str, None
     :param last_name: The user's last name (i.e. surname)
-    :type last_name: str, NoneType
+    :type last_name: str, None
     :param biography: The user's biography for their profile
-    :type biography: str, NoneType
+    :type biography: str, None
     :param sso_id: The Single Sign-On (SSO) ID for the user
-    :type sso_id: str, NoneType
+    :type sso_id: str, None
     :param web_page_url: The URL to the user's website
-    :type web_page_url: str, NoneType
+    :type web_page_url: str, None
     :param cover_image: The cover image to be used on the user's profile
-    :type cover_image: str, NoneType
+    :type cover_image: str, None
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
     """
@@ -66,87 +66,87 @@ def process_user_settings(user_settings=None, user_id=None, albums=None, avatar=
     """This function processes the ``user_settings`` for functions and formats them into a normalized dictionary.
 
     :param user_settings: Allows all user settings to be passed to the function within a single dictionary
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The unique User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param albums: The image albums associated with the user's profile
-    :type albums: dict, NoneType
+    :type albums: dict, None
     :param avatar: The avatar (profile image) of the user
-    :type avatar: str, NoneType
+    :type avatar: str, None
     :param banned: Defines whether or not the user is banned (``True`` if banned)
-    :type banned: bool, NoneType
+    :type banned: bool, None
     :param biography: The user's biography for their profile
-    :type biography: str, NoneType
+    :type biography: str, None
     :param bonus_points: Bonus points that an admin has assigned to the user
-    :type bonus_points: int, NoneType
+    :type bonus_points: int, None
     :param cover_image: The cover image to be used on the user's profile
-    :type cover_image: str, NoneType
+    :type cover_image: str, None
     :param deleted: Defines whether or not the user's account is deleted. (``True`` if deleted)
-    :type deleted: bool, NoneType
+    :type deleted: bool, None
     :param email: The email address for the user
-    :type email: str, NoneType
+    :type email: str, None
     :param email_excluded: Defines whether or not the user has selected the "don't send me any community emails" option
-    :type email_excluded: bool, NoneType
+    :type email_excluded: bool, None
     :param first_name: The user's first name (i.e. given name)
-    :type first_name: str, NoneType
+    :type first_name: str, None
     :param followers: The community members who are subscribed to the user (i.e. "friends")
-    :type followers: dict, NoneType
+    :type followers: dict, None
     :param following: The community members who the user follows (i.e. "friends")
-    :type following: dict, NoneType
+    :type following: dict, None
     :param href: Relative href to the user resource (i.e. canonical path to the resource relative to the API root)
-    :type href: str, NoneType
+    :type href: str, None
     :param images: Images uploaded by the user
-    :type images: dict, NoneType
+    :type images: dict, None
     :param kudos_given: The kudos given to the user by other community members
-    :type kudos_given: dict, NoneType
+    :type kudos_given: dict, None
     :param kudos_received: The kudos received by the user from other community members
-    :type kudos_received: dict, NoneType
+    :type kudos_received: dict, None
     :param kudos_weight: The weight of the kudos awarded
-    :type kudos_weight: int, NoneType
+    :type kudos_weight: int, None
     :param language: The default language selected by the user
-    :type language: str, NoneType
+    :type language: str, None
     :param last_name: The user's last name (i.e. surname)
-    :type last_name: str, NoneType
+    :type last_name: str, None
     :param last_visit_time: The date/time the user was last active on the community
-    :type last_visit_time: type[datetime.datetime], NoneType
+    :type last_visit_time: type[datetime.datetime], None
     :param location: The user's location
-    :type location: str, NoneType
+    :type location: str, None
     :param login: The username (i.e. ``login``) for the user
-    :type login: str, NoneType
+    :type login: str, None
     :param messages: The messages (topics and replies) posted by the user
-    :type messages: dict, NoneType
+    :type messages: dict, None
     :param metrics: The metrics of the user activity
     :param online_status: The status of the user (``ONLINE`` or ``OFFLINE``)
-    :type online_status: str, NoneType
+    :type online_status: str, None
     :param password: The password for the user
-    :type password: str, NoneType
+    :type password: str, None
     :param personal_data: The ``personal_data`` object associated with the user account containing PII about the user
     :param public_images: Images uploaded by the user that the user has made public
-    :type public_images: dict, NoneType
+    :type public_images: dict, None
     :param rank: The rank of the user in the community (Value is ``-1`` if no rank has been achieved)
-    :type rank: dict, NoneType
+    :type rank: dict, None
     :param registration_data: Registration information about the user
-    :type registration_data: dict, NoneType
+    :type registration_data: dict, None
     :param reviews: Product reviews written by the user
-    :type reviews: dict, NoneType
+    :type reviews: dict, None
     :param roles: The roles that have been assigned to the user
-    :type roles: dict, NoneType
+    :type roles: dict, None
     :param signature_topics: Topics of interest associated with this user account that the user has selected to display
     :param solutions_authored: The solutions authored by the user (i.e posts selected as an accepted solutions)
-    :type solutions_authored: dict, NoneType
+    :type solutions_authored: dict, None
     :param sso_id: The Single Sign-On (SSO) ID for the user
-    :type sso_id: str, NoneType
+    :type sso_id: str, None
     :param threads_participated: The topic IDs of message threads in which the user has participated
-    :type threads_participated: list, NoneType
+    :type threads_participated: list, None
     :param topics: Topic messages (i.e the root message of a conversation) authored by the user
-    :type topics: dict, NoneType
+    :type topics: dict, None
     :param user_badges: Badges earned by the user (as well as visible but unearned badges depending on admin settings)
     :param videos: Videos uploaded by the user
-    :type videos: dict, NoneType
+    :type videos: dict, None
     :param view_href: The fully-qualified href to the user resource in the Web UI (i.e. the URI of the ViewProfile page)
-    :type view_href: str, NoneType
+    :type view_href: str, None
     :param web_page_url: The URL to the user's website
-    :type web_page_url: str, NoneType
+    :type web_page_url: str, None
     :returns: The dictionary containing the user settings
     """
     default_settings = {
@@ -214,25 +214,25 @@ def structure_payload(user_settings=None, login=None, email=None, password=None,
     """This function properly structures the payload to be passed when creating or manipulating users via the API.
 
     :param user_settings: Allows all user settings to be passed to the function within a single dictionary
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param login: The username (i.e. ``login``) for the user (**required**)
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address for the user (**required**)
-    :type email: str, NoneType
+    :type email: str, None
     :param password: The password for the user
-    :type password: str, NoneType
+    :type password: str, None
     :param first_name: The user's first name (i.e. given name)
-    :type first_name: str, NoneType
+    :type first_name: str, None
     :param last_name: The user's last name (i.e. surname)
-    :type last_name: str, NoneType
+    :type last_name: str, None
     :param biography: The user's biography for their profile
-    :type biography: str, NoneType
+    :type biography: str, None
     :param sso_id: The Single Sign-On (SSO) ID for the user
-    :type sso_id: str, NoneType
+    :type sso_id: str, None
     :param web_page_url: The URL to the user's website
-    :type web_page_url: str, NoneType
+    :type web_page_url: str, None
     :param cover_image: The cover image to be used on the user's profile
-    :type cover_image: str, NoneType
+    :type cover_image: str, None
     :returns: The properly formatted payload within a dictionary
     """
     payload_mapping = {
@@ -381,15 +381,15 @@ def get_user_id(khoros_object, user_settings=None, login=None, email=None, first
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :param first_name: The first name (i.e. given name) of the user
-    :type first_name: str, NoneType
+    :type first_name: str, None
     :param last_name: The last name (i.e. surname) of the user
-    :type last_name: str, NoneType
+    :type last_name: str, None
     :param allow_multiple: Allows a list of User IDs to be returned if multiple results are found (``False`` by default)
     :type allow_multiple: bool
     :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
@@ -417,15 +417,15 @@ def get_username(khoros_object, user_settings=None, user_id=None, email=None, fi
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID of the user
-    :type user_id: str, NoneType
+    :type user_id: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :param first_name: The first name (i.e. given name) of the user
-    :type first_name: str, NoneType
+    :type first_name: str, None
     :param last_name: The last name (i.e. surname) of the user
-    :type last_name: str, NoneType
+    :type last_name: str, None
     :param allow_multiple: Allows a list of usernames to be returned if multiple results are found
     :type allow_multiple: bool
     :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
@@ -461,15 +461,15 @@ def get_email(khoros_object, user_settings=None, user_id=None, login=None, first
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID of the user
-    :type user_id: str, NoneType
+    :type user_id: str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param first_name: The first name (i.e. given name) of the user
-    :type first_name: str, NoneType
+    :type first_name: str, None
     :param last_name: The last name (i.e. surname) of the user
-    :type last_name: str, NoneType
+    :type last_name: str, None
     :param allow_multiple: Allows a list of email addresses to be returned if multiple results are found
     :type allow_multiple: bool
     :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
@@ -541,11 +541,11 @@ def _process_settings_and_user_id(_khoros_object, _user_settings, _user_id, _log
     :param _khoros_object: The core :py:class:`khoros.Khoros` object
     :type _khoros_object: class[khoros.Khoros]
     :param _user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type _user_settings: dict, NoneType
+    :type _user_settings: dict, None
     :param _user_id: The User ID associated with the user
-    :type _user_id: int, str, NoneType
+    :type _user_id: int, str, None
     :param _login: The username associated with the user
-    :type _login: str, NoneType
+    :type _login: str, None
     :param _email: The email address associated with the user
     :returns: An updated user settings dictionary
     """
@@ -561,13 +561,13 @@ def get_user_data(khoros_object, user_settings=None, user_id=None, login=None, e
     :param khoros_object: he core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: A dictionary containing the user data for the user
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -607,13 +607,13 @@ def get_album_count(khoros_object, user_settings=None, user_id=None, login=None,
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of albums found for the user as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -627,13 +627,13 @@ def get_followers_count(khoros_object, user_settings=None, user_id=None, login=N
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of community members who have added the user as a friend in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -647,13 +647,13 @@ def get_following_count(khoros_object, user_settings=None, user_id=None, login=N
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of community members the user has added as a friend in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -667,13 +667,13 @@ def get_images_count(khoros_object, user_settings=None, user_id=None, login=None
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of images uploaded by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -687,13 +687,13 @@ def get_public_images_count(khoros_object, user_settings=None, user_id=None, log
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of public images uploaded by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -707,13 +707,13 @@ def get_messages_count(khoros_object, user_settings=None, user_id=None, login=No
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of messages (topics and replies) posted by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -727,13 +727,13 @@ def get_roles_count(khoros_object, user_settings=None, user_id=None, login=None,
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of roles applied to the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -747,13 +747,13 @@ def get_solutions_authored_count(khoros_object, user_settings=None, user_id=None
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of messages created by the user that are marked as accepted solutions in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -767,13 +767,13 @@ def get_topics_count(khoros_object, user_settings=None, user_id=None, login=None
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of topic messages (excluding replies) posted by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -787,13 +787,13 @@ def get_replies_count(khoros_object, user_settings=None, user_id=None, login=Non
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of replies posted by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -810,13 +810,13 @@ def get_videos_count(khoros_object, user_settings=None, user_id=None, login=None
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of videos uploaded by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -830,13 +830,13 @@ def get_kudos_given_count(khoros_object, user_settings=None, user_id=None, login
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of kudos given by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -850,13 +850,13 @@ def get_kudos_received_count(khoros_object, user_settings=None, user_id=None, lo
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The number of kudos received by the user in integer format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -883,13 +883,13 @@ def get_registration_data(khoros_object, user_settings=None, user_id=None, login
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: A dictionary containing the registration data for the user
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -904,13 +904,13 @@ def get_registration_timestamp(khoros_object, user_settings=None, user_id=None, 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The registration timestamp in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -925,13 +925,13 @@ def get_registration_status(khoros_object, user_settings=None, user_id=None, log
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The registration status in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -945,13 +945,13 @@ def get_last_visit_timestamp(khoros_object, user_settings=None, user_id=None, lo
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
-    :type user_settings: dict, NoneType
+    :type user_settings: dict, None
     :param user_id: The User ID associated with the user
-    :type user_id: int, str, NoneType
+    :type user_id: int, str, None
     :param login: The username of the user
-    :type login: str, NoneType
+    :type login: str, None
     :param email: The email address of the user
-    :type email: str, NoneType
+    :type email: str, None
     :returns: The last visit timestamp in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """

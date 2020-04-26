@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 Apr 2020
+:Modified Date:     26 Apr 2020
 """
 
 import random
@@ -56,7 +56,7 @@ def __structure_query_string(_url_dict, _no_encode):
     :param _url_dict: Dictionary of URL query string keys and values
     :type _url_dict: dict
     :param _no_encode: Designates any dictionary keys (i.e. field names) whose values should not be URL-encoded
-    :type _no_encode: list, tuple, set, str, NoneType
+    :type _no_encode: list, tuple, set, str, None
     :returns: The URL query string in string format
     """
     if type(_no_encode) == str:
@@ -77,7 +77,7 @@ def encode_query_string(url_dict, no_encode=None):
     :param url_dict: Dictionary of URL query string keys and values
     :type url_dict: dict
     :param no_encode: Designates any dictionary keys (i.e. field names) whose values should not be URL-encoded
-    :type no_encode: list, tuple, set, str, NoneType
+    :type no_encode: list, tuple, set, str, None
     :returns: The URL query string in string format
     """
     if no_encode:

@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Mar 2020
+:Modified Date:     26 Apr 2020
 """
 
 import requests
@@ -61,9 +61,9 @@ def invalidate_session(khoros_object, user_id=None, sso_id=None):
     :param khoros_object: The core Khoros object
     :type khoros_object: class[khoros.Khoros]
     :param user_id: The User ID of the service account (Lithium Registration)
-    :type user_id: str, int, NoneType
+    :type user_id: str, int, None
     :param sso_id: The SSO ID of the service account (Single Sign-On)
-    :type sso_id: str, int, NoneType
+    :type sso_id: str, int, None
     :returns: Boolean value defining if the session was invalidated successfully
     """
     session_terminated = False

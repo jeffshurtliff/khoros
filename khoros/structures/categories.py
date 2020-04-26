@@ -6,8 +6,7 @@
 :Example:           ``category_id = categories.get_category_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Apr 2020
-:Version:           1.0.0
+:Modified Date:     26 Apr 2020
 """
 
 from . import base
@@ -67,9 +66,9 @@ def get_category_field(khoros_object, field, identifier=None, category_details=N
     :param field: The field from the :py:class:`khoros.structures.base.Mapping` class whose value should be returned
     :type field: str
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The requested field in its native format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -88,9 +87,9 @@ def get_url(khoros_object, category_id=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param category_id: The ID of the category to be evaluated (optional if ``category_details`` dictionary is provided)
-    :type category_id: str, NoneType
+    :type category_id: str, None
     :param category_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The full URL of the category
     :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
              :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -111,13 +110,13 @@ def get_title(khoros_object, identifier=None, full_title=True, short_title=False
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param full_title: Return the full title of the category (``True`` by default)
     :type full_title: bool
     :param short_title: Return the short title of the category (``False`` by default)
     :type short_title: bool
     :param category_details: Dictionary containing category details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The category title(s) as a string or a tuple of strings
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -145,9 +144,9 @@ def get_description(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The description in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -165,9 +164,9 @@ def get_parent_type(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The parent type in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -185,9 +184,9 @@ def get_parent_id(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The parent ID in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -205,9 +204,9 @@ def get_parent_url(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The parent URL in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -225,9 +224,9 @@ def get_root_type(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The root category type in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -245,9 +244,9 @@ def get_root_id(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The root category ID in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -265,9 +264,9 @@ def get_root_url(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The root category URL in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -285,9 +284,9 @@ def get_language(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The language (e.g. ``en``) in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -305,9 +304,9 @@ def is_hidden(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: Boolean value indicating if the category is hidden
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -325,9 +324,9 @@ def get_views(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The total number of views
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -345,9 +344,9 @@ def friendly_date_enabled(khoros_object, identifier=None, category_details=None)
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: Boolean indicating if friendly dates are enabled
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -365,9 +364,9 @@ def get_friendly_date_max_age(khoros_object, identifier=None, category_details=N
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: Integer representing the number of days the friendly date feature should be leveraged if enabled
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -385,9 +384,9 @@ def get_active_skin(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The name of the active skin in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -405,9 +404,9 @@ def get_depth(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The depth of the category as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -425,9 +424,9 @@ def get_position(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The position of the category as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
@@ -445,9 +444,9 @@ def get_creation_date(khoros_object, identifier=None, category_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param identifier: The Category ID or Category URL with which to identify the category
-    :type identifier: str, NoneType
+    :type identifier: str, None
     :param category_details: Dictionary containing community details (optional)
-    :type category_details: dict, NoneType
+    :type category_details: dict, None
     :returns: The creation of the category in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
