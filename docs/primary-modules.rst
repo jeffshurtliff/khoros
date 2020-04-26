@@ -34,6 +34,7 @@ This module (being the primary ``__init__.py`` file for the library) provides a
 
 .. automodule:: khoros
    :members: Khoros
+   :special-members: __init__
 
 :doc:`Return to Top <primary-modules>`
 
@@ -47,6 +48,7 @@ and leverage it to perform various actions.
 
 .. automodule:: khoros.core
    :members:
+   :special-members: __init__
 
 :doc:`Return to Top <primary-modules>`
 
