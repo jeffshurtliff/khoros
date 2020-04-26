@@ -29,7 +29,20 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.environment.get_env_variables`
     * :py:func:`khoros.utils.environment._env_variable_exists`
     * :py:func:`khoros.utils.environment._get_env_variable_value`
+    * :py:func:`khoros.utils.environment.update_env_variable_names`
+    * :py:func:`khoros.utils.environment._update_env_list`
+    * :py:func:`khoros.utils.environment._update_env_mapping`
+    * :py:func:`khoros.utils.environment._import_custom_names_file`
     * :py:const:`khoros.utils.environment.ENV_VARIABLE_NAMES`
+* Added the :py:func:`khoros.utils.core_utils.get_file_type` function.
+* Added the :py:exc:`khoros.errors.exceptions.UnknownFileTypeError` exception class.
+
+Examples
+--------
+New additions to the example files for the library.
+
+* Added the ``custom_env_variables.json`` file.
+* Added the ``custom_env_variables.yml`` file.
 
 Documentation
 -------------
@@ -50,6 +63,15 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Added :py:mod:`khoros.structures.base` to the ``__all__`` special variable in :py:mod:`khoros.structures`.
 * Added :py:mod:`khoros.objects.messages` to the ``__all__`` special variable in :py:mod:`khoros.objects` and added
   an ``import`` statement to import the module by default.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Replaced the ``yaml.load()`` function call with ``yaml.safe_load()`` in
+  :py:func:`khoros.utils.helper.import_yaml_file` as it is a better security practice.
+* Introduced support for JSON formatted helper configuration files in :py:mod:`khoros.utils.helper`.
+* Removed the extra preceding underscore in private functions within :py:mod:`khoros.utils.helper`.
 
 Documentation
 -------------
