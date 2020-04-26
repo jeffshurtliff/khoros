@@ -10,6 +10,7 @@ which are listed below.
         * `Handlers Module (khoros.errors.handlers)`_
 * `Tools & Utilities`_
     * `Core Utilities Module (khoros.utils.core_utils)`_
+    * `Environment Module (khoros.utils.environment)`_
     * `Helper Module (khoros.utils.helper)`_
     * `Version Module (khoros.utils.version)`_
 * `Unit Testing`_
@@ -79,9 +80,21 @@ formatting timestamps, etc.
 
 |
 
+Environment Module (khoros.utils.environment)
+=============================================
+This module identifies any environmental variables that have been defined for use within
+the :py:mod:`khoros` library.
+
+.. automodule:: khoros.utils.environment
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Helper Module (khoros.utils.helper)
 ===================================
-This module includes allows a "helper" configuration file to be imported and parsed to
+This module allows a "helper" configuration file to be imported and parsed to
 facilitate the use of the library (e.g. defining the base URL and API credentials) and
 defining additional settings.
 
