@@ -4,9 +4,65 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
-v2.1.0
+v2.2.0
 ******
 **Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the ability to use environmental variables to initialize the :py:mod:`khoros.core.Khoros` object.
+    * Added the :py:meth:`khoros.core.Khoros._parse_env_settings` method to parse the environmental variables.
+* Added the :py:meth:`khoros.core.Khoros._session_auth_credentials_defined` method to automatically set the
+  ``auth_type`` value in the ``_settings`` attribute to be ``session_auth`` if a session authentication username
+  and password have been defined.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:mod:`khoros.utils.environment` module with the following functions and constants:
+    * :py:func:`khoros.utils.environment.get_env_variables`
+    * :py:func:`khoros.utils.environment._env_variable_exists`
+    * :py:func:`khoros.utils.environment._get_env_variable_value`
+    * :py:const:`khoros.utils.environment.ENV_VARIABLE_NAMES`
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.utils.environment` module to the :doc:`Supporting Modules <supporting-modules>` page.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Made an adjustment to the :py:class:`khoros.core.Khoros` object class so that any values explicitly passed via
+  the ``settings`` argument will overwrite any existing settings defined by default values and/or
+  environmental variables.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added ``:special-members: __init__`` to the :py:mod:`khoros` and :py:mod:`khoros.core` modules to display the
+  docstrings for the ``__init__`` method in the :py:class:`khoros.core.Khoros` object class.
+* Replaced ``NoneType`` with ``None`` in function and method docstrings to use proper syntax and to comply with
+  `PEP 287 <https://www.python.org/dev/peps/pep-0287/>`_.
+
+|
+
+******
+v2.1.0
+******
+**Release Date: 2020-04-23**
 
 Added
 =====
