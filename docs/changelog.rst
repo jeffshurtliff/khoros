@@ -47,6 +47,9 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Made an adjustment to the :py:class:`khoros.core.Khoros` object class so that any values explicitly passed via
   the ``settings`` argument will overwrite any existing settings defined by default values and/or
   environmental variables.
+* Added :py:mod:`khoros.structures.base` to the ``__all__`` special variable in :py:mod:`khoros.structures`.
+* Added :py:mod:`khoros.objects.messages` to the ``__all__`` special variable in :py:mod:`khoros.objects` and added
+  an ``import`` statement to import the module by default.
 
 Documentation
 -------------
