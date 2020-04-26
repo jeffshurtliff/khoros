@@ -9,27 +9,40 @@
 :Modified Date:     26 Apr 2020
 """
 
+import json
+
 import yaml
 
 from .. import errors
+from .core_utils import get_file_type
 
 
 # Define function to import a YAML helper file
-def import_yaml_file(file_path):
-    """This function imports a YAML (.yml) helper config file.
+def import_helper_file(file_path, file_type):
+    """This function imports a YAML (.yml) or JSON (.json) helper config file.
+
+    .. versionchanged:: 2.2.0
+       Changed the name and replaced the ``yaml.load`` function call with ``yaml.safe_load`` to be more secure.
 
     :param file_path: The file path to the YAML file
     :type file_path: str
+    :param file_type: Defines the file type as either ``yaml`` or ``json``
+    :type file_type: str
     :returns: The parsed configuration data
-    :raises: :py:exc:`FileNotFoundError`
+    :raises: :py:exc:`FileNotFoundError`, :py:exc:`khoros.errors.exceptions.InvalidHelperFileTypeError`
     """
-    with open(file_path, 'r') as yml_file:
-        helper_cfg = yaml.safe_load(yml_file)
+    with open(file_path, 'r') as cfg_file:
+        if file_type == 'yaml':
+            helper_cfg = yaml.safe_load(cfg_file)
+        elif file_type == 'json':
+            helper_cfg = json.load(cfg_file)
+        else:
+            raise errors.exceptions.InvalidHelperFileTypeError
     return helper_cfg
 
 
 # Define function to covert a YAML Boolean value to a Python Boolean value
-def __convert_yaml_to_bool(_yaml_bool_value):
+def _convert_yaml_to_bool(_yaml_bool_value):
     """This function converts the 'yes' and 'no' YAML values to traditional Boolean values."""
     true_values = ['yes', 'true']
     if _yaml_bool_value.lower() in true_values:
@@ -40,8 +53,12 @@ def __convert_yaml_to_bool(_yaml_bool_value):
 
 
 # Define function to get the connection information
-def __get_connection_info(_helper_cfg):
-    """This function parses any connection information found in the helper file."""
+def _get_connection_info(_helper_cfg):
+    """This function parses any connection information found in the helper file.
+
+    .. versionchanged:: 2.2.0
+       Removed one of the preceding underscores in the function name
+    """
     _connection_info = {}
     _connection_keys = ['community_url', 'tenant_id', 'default_auth_type']
     for _key in _connection_keys:
@@ -50,16 +67,20 @@ def __get_connection_info(_helper_cfg):
 
     # Parse OAuth 2.0 information if found
     if 'oauth2' in _helper_cfg['connection']:
-        _connection_info['oauth2'] = __get_oauth2_info(_helper_cfg)
+        _connection_info['oauth2'] = _get_oauth2_info(_helper_cfg)
 
     # Parse session authentication information if found
     if 'session_auth' in _helper_cfg['connection']:
-        _connection_info['session_auth'] = __get_session_auth_info(_helper_cfg)
+        _connection_info['session_auth'] = _get_session_auth_info(_helper_cfg)
     return _connection_info
 
 
-def __get_oauth2_info(_helper_cfg):
-    """This function parses OAuth 2.0 information if found in the helper file."""
+def _get_oauth2_info(_helper_cfg):
+    """This function parses OAuth 2.0 information if found in the helper file.
+
+    .. versionchanged:: 2.2.0
+       Removed one of the preceding underscores in the function name
+    """
     _oauth2 = {}
     _oauth2_keys = ['client_id', 'client_secret', 'redirect_url']
     for _key in _oauth2_keys:
@@ -70,8 +91,12 @@ def __get_oauth2_info(_helper_cfg):
     return _oauth2
 
 
-def __get_session_auth_info(_helper_cfg):
-    """This function parses session authentication information if found in the helper file."""
+def _get_session_auth_info(_helper_cfg):
+    """This function parses session authentication information if found in the helper file.
+
+    .. versionchanged:: 2.2.0
+       Removed one of the preceding underscores in the function name
+    """
     _session_auth = {}
     _session_info = ['username', 'password']
     for _key in _session_info:
@@ -82,8 +107,12 @@ def __get_session_auth_info(_helper_cfg):
     return _session_auth
 
 
-def __get_construct_info(_helper_cfg):
-    """This function parses settings that can be leveraged in constructing API responses and similar tasks."""
+def _get_construct_info(_helper_cfg):
+    """This function parses settings that can be leveraged in constructing API responses and similar tasks.
+
+    .. versionchanged:: 2.2.0
+       Removed one of the preceding underscores in the function name
+    """
     _construct_info = {}
     _top_level_keys = ['prefer_json']
     for _key in _top_level_keys:
@@ -101,6 +130,9 @@ def __get_construct_info(_helper_cfg):
 def get_helper_settings(file_path, file_type='yaml'):
     """This function returns a dictionary of the defined helper settings.
 
+    .. versionchanged:: 2.2.0
+       Added support for JSON formatted helper configuration files
+
     :param file_path: The file path to the helper configuration file
     :type file_path: str
     :param file_type: Defines the helper configuration file as a ``yaml`` file (default) or a ``json`` file
@@ -111,18 +143,21 @@ def get_helper_settings(file_path, file_type='yaml'):
     # Initialize the helper_settings dictionary
     helper_settings = {}
 
+    if file_type != 'yaml' and file_type != 'json':
+        file_type = get_file_type(file_path)
+
     # Import the helper configuration file
     if file_type == 'yaml':
-        helper_cfg = import_yaml_file(file_path)
+        helper_cfg = import_helper_file(file_path)
     else:
         raise errors.exceptions.InvalidHelperFileTypeError
 
     # Populate the connection information in the helper dictionary
     if 'connection' in helper_cfg:
-        helper_settings['connection'] = __get_connection_info(helper_cfg)
+        helper_settings['connection'] = _get_connection_info(helper_cfg)
 
     # Populate the construct information in the helper dictionary
-    helper_settings['construct'] = __get_construct_info(helper_cfg)
+    helper_settings['construct'] = _get_construct_info(helper_cfg)
 
     # Return the helper_settings dictionary
     return helper_settings
