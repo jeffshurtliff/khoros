@@ -10,4 +10,4 @@
 # Decrypt the file
 mkdir $HOME/secrets
 gpg --quiet --batch --yes --decrypt --passphrase="$HELPER_DECRYPT_PASSPHRASE" \
---output $HOME/secrets/khoros_helper.yml ../encrypted/khoros_helper.yml.gpg
+--output $HOME/secrets/khoros_helper.yml ./.github/encrypted/khoros_helper.yml.gpg
