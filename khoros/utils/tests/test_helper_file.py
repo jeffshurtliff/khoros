@@ -37,7 +37,7 @@ def test_yaml_file():
     yaml_file = f"{helper_path}khoros_helper.yml"
 
     # Initialize the core object using the helper file
-    khoros = Khoros(helper=yaml_file)
+    khoros = Khoros(helper=yaml_file, auto_connect=False)
 
     # Verify that the helper configuration was imported successfully
     assert 'connection' in khoros._helper_settings
