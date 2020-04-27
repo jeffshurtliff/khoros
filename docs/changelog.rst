@@ -36,6 +36,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:const:`khoros.utils.environment.ENV_VARIABLE_NAMES`
 * Added the :py:func:`khoros.utils.core_utils.get_file_type` function.
 * Added the :py:exc:`khoros.errors.exceptions.UnknownFileTypeError` exception class.
+* Added the :py:mod:`khoros.utils.tests.test_helper_file` unit test module.
 
 Examples
 --------
@@ -49,6 +50,17 @@ Documentation
 Additions to the documentation.
 
 * Added the :py:mod:`khoros.utils.environment` module to the :doc:`Supporting Modules <supporting-modules>` page.
+* Added the :py:mod:`khoros.utils.tests.test_helper_file` module to the
+  :doc:`Supporting Modules <supporting-modules>` page.
+
+General
+-------
+* Added the encrypted YAML Helper configuration file ``khoros_helper.yml.gpg`` in the
+  ``khoros/utils/tests/`` directory for use with :py:mod:`pytest`.
+* Added the shell script ``decrypt_helper.sh`` in the ``.github/scripts/`` directory per
+  `GitHub guidelines <https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets>`_.
+* Updated the ``pythonpackage.yml`` workflow for GitHub Actions to decrypt the helper configuration file (YAML)
+  and utilize environment variables.
 
 Changed
 =======
@@ -63,6 +75,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Added :py:mod:`khoros.structures.base` to the ``__all__`` special variable in :py:mod:`khoros.structures`.
 * Added :py:mod:`khoros.objects.messages` to the ``__all__`` special variable in :py:mod:`khoros.objects` and added
   an ``import`` statement to import the module by default.
+* Removed :py:mod:`khoros.objects.base` from the ``__all__`` special variable in :py:mod:`khoros.objects` and removed
+  the ``import`` statement to prevent the module from being imported by default.
 
 Supporting Modules
 ------------------
