@@ -59,7 +59,7 @@ class Khoros(object):
         :type sso: dict, None
         :param helper: The path (and optional file type) to the YAML or JSON helper configuration file
         :type helper: str, tuple, list, dict, None
-        :param env_variables: A dictionary (or file path to a YAML or JSON file) that maps environmental variable names
+        :param env_variables: A dictionary (or file path to a YAML or JSON file) that maps environment variable names
         :type env_variables: dict, str, None
         :param auto_connect: Determines if a connection should be established when initialized (``True`` by default)
         :type auto_connect: bool
@@ -99,7 +99,7 @@ class Khoros(object):
         self._settings = copy.copy(Khoros.DEFAULT_SETTINGS)
         self._settings.update(Khoros.DEFAULT_AUTH)
 
-        # Capture any relevant environmental variables if defined
+        # Capture any relevant environment variables if defined
         environment.update_env_variable_names(env_variables)
         self._env_settings = environment.get_env_variables()
         self._parse_env_settings()
@@ -226,7 +226,7 @@ class Khoros(object):
             self.construct['response_format'] = return_formats.get(self._settings['prefer_json'])
 
     def _parse_env_settings(self):
-        """This method parses the settings identified from environmental variables.
+        """This method parses the settings identified from environment variables.
 
         .. versionadded:: 2.2.0
         """

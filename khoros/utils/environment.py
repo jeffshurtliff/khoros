@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 :Module:            khoros.objects.messages
-:Synopsis:          This module includes functions that identify environmental variables for the khoros library
+:Synopsis:          This module includes functions that identify environment variables for the khoros library
 :Usage:             ``from khoros.utils import environment``
 :Example:           TBD
 :Created By:        Jeff Shurtliff
@@ -31,7 +31,7 @@ ENV_SETTINGS_MAPPING = {
     'KHOROS_SESSION_USER': ('session_auth', 'username'),
     'KHOROS_SESSION_PW': ('session_auth', 'password'),
     'KHOROS_PREFER_JSON': ('prefer_json',),
-    # TODO: Add LiQL environmental variables
+    # TODO: Add LiQL environment variables
 }
 
 # Define global variables for the variable names and mapping that can be overwritten by custom values
@@ -40,13 +40,13 @@ env_settings_mapping = ENV_SETTINGS_MAPPING
 
 
 def _env_variable_exists(env_variable):
-    """This function checks to see if an environmental variable is already defined.
+    """This function checks to see if an environment variable is already defined.
 
     .. versionadded:: 2.2.0
 
-    :param env_variable: The name of the environmental variable for which to check
+    :param env_variable: The name of the environment variable for which to check
     :type env_variable: str
-    :returns: Boolean value indicating if the environmental variable already exists
+    :returns: Boolean value indicating if the environment variable already exists
     """
     found = False
     try:
@@ -57,23 +57,23 @@ def _env_variable_exists(env_variable):
 
 
 def _get_env_variable_value(env_variable):
-    """This function returns the value of a given environmental variable name.
+    """This function returns the value of a given environment variable name.
 
     .. versionadded:: 2.2.0
 
-    :param env_variable: The name of the environmental variable to return
+    :param env_variable: The name of the environment variable to return
     :type env_variable: str
-    :returns: The value of the environmental variable or ``None`` if the variable name does not exist
+    :returns: The value of the environment variable or ``None`` if the variable name does not exist
     """
     return os.getenv(env_variable)
 
 
 def get_env_variables():
-    """This function retrieves any defined environmental variables associate with the khoros library.
+    """This function retrieves any defined environment variables associate with the khoros library.
 
     .. versionadded:: 2.2.0
 
-    :returns: A dictionary with any relevant, defined environmental variables
+    :returns: A dictionary with any relevant, defined environment variables
     """
     env_settings = {}
     for var_name in env_variable_names:
@@ -116,7 +116,7 @@ def _update_env_mapping(_orig_name, _custom_name):
 
 
 def update_env_variable_names(custom_names):
-    """This function updates the original environmental variable names with custom names when applicable.
+    """This function updates the original environment variable names with custom names when applicable.
 
     .. versionadded:: 2.2.0
 
