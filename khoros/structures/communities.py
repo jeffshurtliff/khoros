@@ -6,8 +6,7 @@
 :Example:           ``details = get_community_details(khoros_object)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Apr 2020
-:Version:           1.0.0
+:Modified Date:     26 Apr 2020
 """
 
 from . import base
@@ -55,7 +54,7 @@ def get_community_field(khoros_object, field, community_details=None):
     :param field: The field from the :py:class:`khoros.structures.base.Mapping` class whose value should be returned
     :type field: str
     :param community_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The requested field in its native format
     :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
              :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -72,7 +71,7 @@ def get_tenant_id(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The tenant ID in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -91,7 +90,7 @@ def get_title(khoros_object, full_title=True, short_title=False, community_detai
     :param short_title: Return the short title of the environment (``False`` by default)
     :type short_title: bool
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The title(s) of the environment as a string or a tuple of strings
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -116,7 +115,7 @@ def get_description(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The description in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -131,7 +130,7 @@ def get_primary_url(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The primary URL in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -146,7 +145,7 @@ def get_max_attachments(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The value as an integer
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -161,7 +160,7 @@ def get_permitted_attachment_types(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The permitted file types within a list
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -176,7 +175,7 @@ def email_confirmation_required_to_post(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if email configuration is required before posting
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -191,7 +190,7 @@ def get_language(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The language code as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -206,7 +205,7 @@ def get_ooyala_player_branding_id(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The branding ID in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -227,7 +226,7 @@ def get_date_pattern(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The date pattern in string format
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -242,7 +241,7 @@ def friendly_date_enabled(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if the feature is enabled
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -257,7 +256,7 @@ def get_friendly_date_max_age(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if the feature is enabled
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -272,7 +271,7 @@ def get_active_skin(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The skin name as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -287,7 +286,7 @@ def get_sign_out_url(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The Sign Out URL as a string
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -302,7 +301,7 @@ def get_creation_date(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: The creation date as a string (e.g. ``2020-02-03T22:41:36.408-08:00``)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -318,7 +317,7 @@ def top_level_categories_enabled(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if top level categories are enabled
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -333,7 +332,7 @@ def show_community_node_in_breadcrumb(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if the community node is displayed in bredcrumbs
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -348,7 +347,7 @@ def show_breadcrumb_at_top_level(khoros_object, community_details=None):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if breadcrumbs are displayed at the top level of the environment
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -363,7 +362,7 @@ def top_level_categories_on_community_page(khoros_object, community_details=None
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param community_details: Dictionary containing community details (optional)
-    :type community_details: dict, NoneType
+    :type community_details: dict, None
     :returns: Boolean value indicating if top level categories are enabled on community pages
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """

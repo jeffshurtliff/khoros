@@ -6,14 +6,17 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 Apr 2020
+:Modified Date:     26 Apr 2020
 """
 
+import os
 import random
 import string
 import warnings
 import urllib.parse
 from html import unescape
+
+from .. import errors
 
 
 def url_encode(raw_string):
@@ -56,7 +59,7 @@ def __structure_query_string(_url_dict, _no_encode):
     :param _url_dict: Dictionary of URL query string keys and values
     :type _url_dict: dict
     :param _no_encode: Designates any dictionary keys (i.e. field names) whose values should not be URL-encoded
-    :type _no_encode: list, tuple, set, str, NoneType
+    :type _no_encode: list, tuple, set, str, None
     :returns: The URL query string in string format
     """
     if type(_no_encode) == str:
@@ -77,7 +80,7 @@ def encode_query_string(url_dict, no_encode=None):
     :param url_dict: Dictionary of URL query string keys and values
     :type url_dict: dict
     :param no_encode: Designates any dictionary keys (i.e. field names) whose values should not be URL-encoded
-    :type no_encode: list, tuple, set, str, NoneType
+    :type no_encode: list, tuple, set, str, None
     :returns: The URL query string in string format
     """
     if no_encode:
@@ -126,3 +129,36 @@ def display_warning(warn_msg):
     """
     warnings.warn(warn_msg, UserWarning)
     return
+
+
+def get_file_type(file_path):
+    """This function attempts to identify if a given file path is for a YAML or JSON file.
+
+    .. versionadded:: 2.2.0
+
+    :param file_path: The full path to the file
+    :type file_path: str
+    :returns: The file type in string format (e.g. ``yaml`` or ``json``)
+    :raises: :py:exc:`FileNotFoundError`, :py:exc:`khoros.errors.exceptions.UnknownFileTypeError`
+    """
+    file_type = 'unknown'
+    if os.path.isfile(file_path):
+        if file_path.endswith('.json'):
+            file_type = 'json'
+        elif file_path.endswith('.yml') or file_path.endswith('.yaml'):
+            file_type = 'yaml'
+        else:
+            display_warning(f"Unable to recognize the file type of '{file_path}' by its extension.")
+            with open(file_path) as cfg_file:
+                for line in cfg_file:
+                    if line.startswith('#'):
+                        continue
+                    else:
+                        if '{' in line:
+                            file_type = 'json'
+                            break
+        if file_type == 'unknown':
+            raise errors.exceptions.UnknownFileTypeError(file=file_path)
+    else:
+        raise FileNotFoundError(f"Unable to locate the following file: {file_path}")
+    return file_type

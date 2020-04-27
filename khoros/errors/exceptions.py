@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     05 Apr 2020
+:Modified Date:     26 Apr 2020
 """
 
 #################
@@ -184,6 +184,21 @@ class MissingRequiredDataError(KhorosError):
                 args = (custom_msg,)
             else:
                 args = (init_msg,)
+        super().__init__(*args)
+
+
+class UnknownFileTypeError(KhorosError):
+    """This exception is used when a file type of a given file cannot be identified.
+
+    .. versionadded:: 2.2.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "The file type of the given file path cannot be identified."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'file' in kwargs:
+            custom_msg = f"{default_msg.split('path')[0]}'{kwargs['file']}'{default_msg.split('path')[1]}"
+            args = (custom_msg,)
         super().__init__(*args)
 
 

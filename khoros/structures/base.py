@@ -6,8 +6,7 @@
 :Example:           ``details = base.get_details(khoros_object, 'category', 'category-id')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Apr 2020
-:Version:           1.0.0
+:Modified Date:     26 Apr 2020
 """
 
 from .. import liql, errors
@@ -146,12 +145,12 @@ def get_structure_field(khoros_object, field, identifier='', details=None,
     :param identifier: The identifier (Category/Node ID or URL) by which to filter the results in the ``WHERE`` clause.
     :type identifier: str
     :type details: The data captured from the :py:func:`khoros.structures.base.get_details` function
-    :type details: dict, NoneType
+    :type details: dict, None
     :param structure_type: Designates the structure as a ``category``, ``node`` or ``community``
 
                            .. note:: Optional if the ``identifier`` is a URL or the ``community`` Boolean is ``True``
 
-    :type structure_type: str, NoneType
+    :type structure_type: str, None
     :param first_item: Filters the response data to the first item returned (``True`` by default)
     :type first_item: bool
     :param community: Alternate way of defining the structure type as a ``community`` (``False`` by default)
