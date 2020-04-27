@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.2.0
 ******
-**Release Date: 2020-04-23**
+**Release Date: 2020-04-26**
 
 Added
 =====
