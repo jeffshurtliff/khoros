@@ -147,10 +147,7 @@ def get_helper_settings(file_path, file_type='yaml'):
         file_type = get_file_type(file_path)
 
     # Import the helper configuration file
-    if file_type == 'yaml':
-        helper_cfg = import_helper_file(file_path)
-    else:
-        raise errors.exceptions.InvalidHelperFileTypeError
+    helper_cfg = import_helper_file(file_path, file_type)
 
     # Populate the connection information in the helper dictionary
     if 'connection' in helper_cfg:
