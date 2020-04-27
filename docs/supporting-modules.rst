@@ -15,6 +15,7 @@ which are listed below.
     * `Version Module (khoros.utils.version)`_
 * `Unit Testing`_
     * `Tests Module (khoros.utils.tests)`_
+        * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
         * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
@@ -129,6 +130,17 @@ Tests Module (khoros.utils.tests)
 This module includes unit tests for the package that are performed using pytest.
 
 .. automodule:: khoros.utils.tests
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Helper File Module (khoros.utils.tests.test_helper_file)
+-------------------------------------------------------------
+This module is used by pytest to verify that the helper configuration files work properly.
+
+.. automodule:: khoros.utils.tests.test_helper_file
    :members:
 
 :doc:`Return to Top <supporting-modules>`
