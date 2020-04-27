@@ -23,9 +23,8 @@ jobs:
         pip install -r requirements.txt
 
     - name: Decrypt the helper configuration file
-      run: |
-        ./.github/scripts/decrypt_helper.sh
-      env: |
+      run: ./.github/scripts/decrypt_helper.sh
+      env:
         HELPER_DECRYPT_PASSPHRASE: ${{ secrets.HELPER_DECRYPT_PASSPHRASE }}
 
     - name: Lint with flake8
@@ -40,7 +39,7 @@ jobs:
       run: |
         pip install pytest
         pytest
-      env: |
+      env:
         KHOROS_URL: ${{ secrets.KHOROS_STAGE_URL }}
         KHOROS_TENANT_ID: ${{ secrets.KHOROS_STAGE_TENANT_ID }}
         KHOROS_DEFAULT_AUTH: ${{ secrets.KHOROS_STAGE_DEFAULT_AUTH }}
