@@ -22,7 +22,7 @@ def get_helper_path():
     if os.getenv('USERNAME') == 'shurtj' and sys.platform == 'win32':
         helper_path = f"{os.getenv('USERPROFILE')}\\Development\\khoros\\local\\"
     else:
-        helper_path = f"{os.getenv('HOME')}/"
+        helper_path = f"{os.getenv('HOME')}/secrets/"
     return helper_path
 
 
