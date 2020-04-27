@@ -9,9 +9,8 @@
 :Modified Date:     26 Apr 2020
 """
 
-__all__ = ['base', 'messages', 'users']
+__all__ = ['messages', 'users']
 
 # Import all submodules by default
-from . import base
 from . import messages
 from . import users
