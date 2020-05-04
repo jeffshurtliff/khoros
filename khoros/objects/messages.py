@@ -23,8 +23,7 @@ def create_message(khoros_object, subject=None, body=None, node=None, node_id=No
                    canonical_url=None, context_id=None, context_url=None, cover_image=None, images=None,
                    is_answer=None, is_draft=None, labels=None, product_category=None, products=None,
                    read_only=None, seo_title=None, seo_description=None, tags=None, teaser=None, topic=None,
-                   videos=None, attachment_info=None, attachment_titles=None, attachment_file_paths=None,
-                   full_response=False):
+                   videos=None, attachment_file_paths=None, full_response=False):
     """This function creates a new message within a given node.
 
     .. versionadded:: 2.3.0
@@ -78,10 +77,6 @@ def create_message(khoros_object, subject=None, body=None, node=None, node_id=No
     :type topic: dict, None
     :param videos: The query to retrieve videos uploaded to the message
     :type videos: dict, None
-    :param attachment_info: A consolidated dictionary mapping attachment titles to file paths
-    :type attachment_info: dict, None
-    :param attachment_titles: One or more attachment titles (e.g. ``User Guide``, ``Config File``, etc.)
-    :type attachment_titles: str, tuple, list, set, None
     :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
     :type attachment_file_paths: str, tuple, list, set, None
     :param full_response: Defines if the full response should be returned instead of the outcome (``False`` by default)
@@ -94,10 +89,9 @@ def create_message(khoros_object, subject=None, body=None, node=None, node_id=No
     payload = construct_payload(subject, body, node, node_id, node_url, canonical_url, context_id, context_url,
                                 is_answer, is_draft, read_only, seo_title, seo_description, teaser, tags, cover_image,
                                 images, labels, product_category, products, topic, videos)
-    multipart = True if (attachment_info or attachment_titles or attachment_file_paths) else False
+    multipart = True if attachment_file_paths else False
     if multipart:
-        payload = attachments.construct_multipart_payload(payload, attachment_titles, attachment_file_paths,
-                                                          attachment_info)
+        payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
     outcome = api.query_successful(response)
     return response if full_response else outcome

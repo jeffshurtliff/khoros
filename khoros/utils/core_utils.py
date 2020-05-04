@@ -109,9 +109,24 @@ def convert_set(iterable, convert_to='list'):
 def convert_single_value_to_tuple(value):
     """This function converts a single value of nearly any type into a tuple.
 
+    .. versionadded:: 2.3.0
+
     :param value: The value to convert into a tuple
     """
     return (value, )
+
+
+def convert_string_to_tuple(value):
+    """THis function converts a value to a tuple if in string format.
+
+    .. versionadded:: 2.3.0
+
+    :param value: The potential string to convert
+    :returns: The tuple (if original value was in string format) or the original value/type
+    """
+    if type(value) == str:
+        value = convert_single_value_to_tuple(value)
+    return value
 
 
 def get_random_string(length=32, prefix_string=""):

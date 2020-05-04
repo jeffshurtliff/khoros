@@ -142,7 +142,7 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
             elif _request_type.lower() == "post":
                 if _multipart:
                     _response = requests.post(_url, data=json.dumps(_message_json, default=str),
-                                             files=_files_payload, headers=_headers)
+                                              files=_files_payload, headers=_headers)
                 else:
                     _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
             else:
@@ -151,7 +151,7 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
         except Exception as _exc_msg:
             _exc_name = type(_exc_msg).__name__
             if 'connect' not in _exc_name.lower():
-                raise errors.exceptions.KhorosError(f"{_exc_name}: {_exc_msg}")
+                raise Exception(f"{_exc_name}: {_exc_msg}")
             _current_attempt = f"(Attempt {_retries} of 5)"
             _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
                          f"{_exc_name}: {_exc_msg} {_current_attempt}"

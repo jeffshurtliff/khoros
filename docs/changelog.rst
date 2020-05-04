@@ -26,9 +26,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.attachments.format_attachment_payload`
     * :py:func:`khoros.objects.attachments.get_list_items`
     * :py:func:`khoros.objects.attachments.get_file_upload_info`
-    * :py:func:`khoros.objects.attachments._consolidate_attachment_data`
-    * :py:func:`khoros.objects.attachments._check_for_mismatch`
-    * :py:func:`khoros.objects.attachments._convert_strings_to_tuple`
+    * :py:func:`khoros.objects.attachments._format_single_file`
+    * :py:func:`khoros.objects.attachments._format_multiple_files`
 * Created the :py:mod:`khoros.objects.albums` module with the following functions:
     * :py:func:`khoros.objects.albums.create_album`
     * :py:func:`khoros.objects.albums.format_album_json`
@@ -39,6 +38,7 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.utils.core_utils.convert_single_value_to_tuple` function.
+* Added the :py:func:`khoros.utils.core_utils.convert_string_to_tuple` function.
 * Added the :py:exc:`khoros.errors.exceptions.DataMismatchError` exception class.
 
 Documentation
