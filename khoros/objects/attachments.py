@@ -36,9 +36,13 @@ def construct_multipart_payload(message_json, file_paths):
     attachments_json = format_attachment_payload(file_paths)
     message_json['attachments'] = attachments_json
     files_payload = get_file_upload_info(file_paths)
-    message_json = {'api.request': message_json}
-    print(f"MESSAGE JSON:\n{message_json}\n\nFILES PAYLOAD:\n{files_payload}")
-    return message_json, files_payload
+    # message_json = {'api.request': message_json}
+    full_payload = [('json', ('api.request', json.dumps(message_json), 'application/json'))]
+    full_payload.extend(files_payload)
+    # print(f"MESSAGE JSON:\n{message_json}\n\nFILES PAYLOAD:\n{files_payload}")    # TODO: Remove print debugging
+    # return message_json, files_payload
+    print(f"FULL PAYLOAD: {full_payload}")
+    return full_payload
 
 
 def format_attachment_payload(file_paths):
@@ -96,10 +100,7 @@ def get_file_upload_info(file_paths):
     """
     file_paths = core_utils.convert_string_to_tuple(file_paths)
     print(f"FILE PATHS:\n{file_paths}")     # TODO: Remove print debugging
-    if len(file_paths) == 1:
-        files = _format_single_file(file_paths[0])
-    else:
-        files = _format_multiple_files(file_paths)
+    files = _format_multiple_files(file_paths)
     return files
 
 
@@ -125,7 +126,7 @@ def _format_multiple_files(_file_paths):
     :returns: List of 2-tuples that have been properly formatted as API payload
     :raises: :py:exc:`FileNotFoundError`
     """
-    file_paths = core_utils.convert_string_to_tuple(_file_paths)
+    _file_paths = core_utils.convert_string_to_tuple(_file_paths)
     _files, _count = [], 1
     for _path in _file_paths:
         _files.append(('file', (f'attachment{_count}', open(_path, 'rb'))))

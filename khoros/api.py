@@ -126,23 +126,21 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
     _headers = {} if not _headers else _headers
     if _multipart:
         _headers['Content-Type'] = 'multipart/form-data'
-        _message_json, _files_payload = _payload
-    else:
-        _message_json, _files_payload = _payload, None
+    #     _message_json, _files_payload = _payload
+    # else:
+    #     _message_json, _files_payload = _payload, None
     print(f"HEADERS:\n{_headers}")      # TODO: Remove print debugging
     _retries = 0
     while _retries <= 5:
         try:
             if _request_type.lower() == "put":
                 if _multipart:
-                    _response = requests.put(_url, data=json.dumps(_message_json, default=str),
-                                             files=_files_payload, headers=_headers)
+                    _response = requests.put(_url, files=_payload, headers=_headers)
                 else:
                     _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
             elif _request_type.lower() == "post":
                 if _multipart:
-                    _response = requests.post(_url, data=json.dumps(_message_json, default=str),
-                                              files=_files_payload, headers=_headers)
+                    _response = requests.post(_url, files=_payload, headers=_headers)
                 else:
                     _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
             else:
@@ -190,7 +188,10 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
     response = _api_request_with_payload(url, json_payload, 'post', headers, multipart)
     if return_json and type(response) != dict:
-        response = response.json()
+        try:
+            response = response.json()
+        except Exception as exc_msg:
+            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {exc_msg}")
     return response
 
 
