@@ -106,6 +106,14 @@ def convert_set(iterable, convert_to='list'):
     return iterable
 
 
+def convert_single_value_to_tuple(value):
+    """This function converts a single value of nearly any type into a tuple.
+
+    :param value: The value to convert into a tuple
+    """
+    return (value, )
+
+
 def get_random_string(length=32, prefix_string=""):
     """This function returns a random alphanumeric string to use as a salt or password.
 

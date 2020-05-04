@@ -22,6 +22,9 @@ which are listed below.
     * `Nodes Module (khoros.structures.nodes)`_
 * `Objects Module (khoros.objects)`_
     * `Base Objects Module (khoros.objects.base)`_
+    * `Albums Module (khoros.objects.albums)`_
+    * `Attachments Module (khoros.objects.attachments)`_
+    * `Messages Module (khoros.objects.messages)`_
     * `Users Module (khoros.objects.users)`_
 
 |
@@ -215,6 +218,39 @@ Base Objects Module (khoros.objects.base)
 This module contains functions that relate to the various Community API objects but which are object-agnostic.
 
 .. automodule:: khoros.objects.base
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Albums Module (khoros.objects.albums)
+=====================================
+This module includes functions that handle albums that contain images.
+
+.. automodule:: khoros.objects.albums
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Attachments Module (khoros.objects.attachments)
+===============================================
+This module includes functions that handle attachments for messages.
+
+.. automodule:: khoros.objects.attachments
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Messages Module (khoros.objects.messages)
+=========================================
+This module includes functions that handle messages within a Khoros Community environment.
+
+.. automodule:: khoros.objects.messages
    :members:
 
 :doc:`Return to Top <primary-modules>`

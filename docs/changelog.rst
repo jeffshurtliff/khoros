@@ -4,6 +4,95 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.3.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.objects.messages` module:
+    * :py:func:`khoros.objects.messages.create_message`
+    * :py:func:`khoros.objects.messages.construct_payload`
+    * :py:func:`khoros.objects.messages._verify_required_fields`
+    * :py:func:`khoros.objects.messages.parse_v2_response`
+    * :py:func:`khoros.objects.messages._confirm_field_supplied`
+* Created the :py:mod:`khoros.objects.attachments` module with the following functions:
+    * :py:func:`khoros.objects.attachments.construct_multipart_payload`
+    * :py:func:`khoros.objects.attachments.format_attachment_payload`
+    * :py:func:`khoros.objects.attachments.get_list_items`
+    * :py:func:`khoros.objects.attachments.get_file_upload_info`
+    * :py:func:`khoros.objects.attachments._consolidate_attachment_data`
+    * :py:func:`khoros.objects.attachments._check_for_mismatch`
+    * :py:func:`khoros.objects.attachments._convert_strings_to_tuple`
+* Created the :py:mod:`khoros.objects.albums` module with the following functions:
+    * :py:func:`khoros.objects.albums.create_album`
+    * :py:func:`khoros.objects.albums.format_album_json`
+    * :py:func:`khoros.objects.albums._null_to_blank`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.core_utils.convert_single_value_to_tuple` function.
+* Added the :py:exc:`khoros.errors.exceptions.DataMismatchError` exception class.
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.objects.messages` module to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.objects.albums` module to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.objects.attachments` module to the :doc:`Primary Modules <primary-modules>` page.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:class:`khoros.core.Khoros` class so that environment variables are ignored if a Helper
+  configuration file is supplied when instantiating the core object.
+* Added the ability to perform ``multipart/form-data`` API calls in functions below.
+    * :py:func:`khoros.api.post_request_with_retries`
+    * :py:func:`khoros.api.put_request_with_retries`
+    * :py:func:`khoros.api._api_request_with_payload`
+* Added the exception type (e.g. ``ValueError``) to the failure messages in
+  :py:func:`khoros.api.get_request_with_retries` and :py:func:`khoros.api._api_request_with_payload`.
+* Updated the :py:func:`khoros.api.get_request_with_retries` to use the
+  :py:exc:`khoros.errors.exceptions.APIConnectionError` exception class rather than :py:exc:`ConnectionError`.
+* Updated the :py:func:`khoros.api.get_request_with_retries` and :py:func:`khoros.api._api_request_with_payload`
+  functions to only retry if relevant exception classes are raised in the try/except.
+* Renamed the :py:func:`khoros.api.__api_request_with_payload` function to be
+  :py:func:`khoros.api._api_request_with_payload` instead.
+* Replaced :py:func:`print` statements in the :py:func:`khoros.api.get_request_with_retries` and
+  :py:func:`khoros.api._api_request_with_payload` functions with :py:func:`khoros.errors.handlers.eprint`
+  function calls.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added a full docstring to the :py:func:`khoros.api._api_request_with_payload` function.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Removed the Aurea reference from the failure message in :py:exc:`khoros.api._api_request_with_payload`.
+
+
+|
+
+******
 v2.2.0
 ******
 **Release Date: 2020-04-26**

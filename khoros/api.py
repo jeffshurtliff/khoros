@@ -70,7 +70,8 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
     :returns: The API response from the GET request (optionally in JSON format)
-    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`, :py:exc:`ConnectionError`
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
     # Define the request headers
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
@@ -81,16 +82,19 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
         try:
             response = requests.get(query_url, headers=headers)
             break
-        except Exception as e:
+        except Exception as exc_msg:
+            exc_name = type(exc_msg).__name__
+            if 'connect' not in exc_name.lower():
+                raise Exception(f"{exc_name}: {exc_msg}")
             current_attempt = f"(Attempt {retries} of 5)"
             error_msg = f"The GET request failed with the exception below. {current_attempt}"
-            print(f"{error_msg}\n{e}\n")
+            errors.handlers.eprint(f"{error_msg}\n{exc_name}: {exc_msg}\n")
             retries += 1
             pass
     if retries == 6:
         failure_msg = "The API call was unable to complete successfully after five consecutive API timeouts " + \
                       "and/or failures. Please call the function again or contact Khoros Support."
-        raise ConnectionError(failure_msg)
+        raise errors.exceptions.APIConnectionError(failure_msg)
 
     # Convert to JSON if specified
     if return_json and type(response) != dict:
@@ -99,35 +103,70 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
 
 
 # Define internal function to perform API requests (PUT or POST) with JSON payload
-def __api_request_with_payload(_url, _json_payload, _request_type, headers=None):
-    """This function performs an API request while supplying a JSON payload."""
-    if not headers:
-        headers = {}
+def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _multipart=False):
+    """This function performs an API request while supplying a JSON payload.
+
+    .. versionchanged:: 2.3.0
+       Added the ability to perform multipart/form-data queries
+
+    :param _url: The URI to be queried
+    :type _url: str
+    :param _payload: The payload that accompanies the API call
+    :type _payload: dict, str
+    :param _request_type: Define the type of API call (e.g. ``get``, ``post`` or ``put``)
+    :type _request_type: str
+    :param _headers: Any predefined headers to be passed with the API call (optional)
+    :type _headers: dict
+    :param _multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :type _multipart: bool
+    :returns: The API response
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`
+    """
+    _headers = {} if not _headers else _headers
+    if _multipart:
+        _headers['Content-Type'] = 'multipart/form-data'
+        _message_json, _files_payload = _payload
+    else:
+        _message_json, _files_payload = _payload, None
+    print(f"HEADERS:\n{_headers}")      # TODO: Remove print debugging
     _retries = 0
     while _retries <= 5:
         try:
             if _request_type.lower() == "put":
-                _response = requests.put(_url, data=json.dumps(_json_payload, default=str), headers=headers)
+                if _multipart:
+                    _response = requests.put(_url, data=json.dumps(_message_json, default=str),
+                                             files=_files_payload, headers=_headers)
+                else:
+                    _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
             elif _request_type.lower() == "post":
-                _response = requests.post(_url, data=json.dumps(_json_payload, default=str), headers=headers)
+                if _multipart:
+                    _response = requests.post(_url, data=json.dumps(_message_json, default=str),
+                                             files=_files_payload, headers=_headers)
+                else:
+                    _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
             else:
                 raise errors.exceptions.InvalidRequestTypeError
             break
-        except Exception as _api_exception:
+        except Exception as _exc_msg:
+            _exc_name = type(_exc_msg).__name__
+            if 'connect' not in _exc_name.lower():
+                raise errors.exceptions.KhorosError(f"{_exc_name}: {_exc_msg}")
             _current_attempt = f"(Attempt {_retries} of 5)"
             _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
-                         f"{_api_exception} {_current_attempt}"
-            print(_error_msg)
+                         f"{_exc_name}: {_exc_msg} {_current_attempt}"
+            errors.handlers.eprint(f"{_error_msg}\n{_exc_name}: {_exc_msg}\n")
             _retries += 1
             pass
     if _retries == 6:
         _failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
-                       "Please run the script again or contact Khoros or Aurea Support for further assistance."
+                       "Please run the script again or contact Khoros Support for further assistance."
         raise errors.exceptions.APIConnectionError(_failure_msg)
     return _response
 
 
-def post_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None, headers=None):
+def post_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None,
+                              headers=None, multipart=False):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
     :param url: The URI to be queried
@@ -142,18 +181,21 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
+    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :type multipart: bool
     :returns: The API response from the POST request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
-    response = __api_request_with_payload(url, json_payload, 'post', headers)
+    response = _api_request_with_payload(url, json_payload, 'post', headers, multipart)
     if return_json and type(response) != dict:
         response = response.json()
     return response
 
 
-def put_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None, headers=None):
+def put_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None,
+                             headers=None, multipart=False):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
 
     :param url: The URI to be queried
@@ -168,12 +210,14 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
+    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :type multipart: bool
     :returns: The API response from the PUT request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
-    response = __api_request_with_payload(url, json_payload, 'put', headers)
+    response = _api_request_with_payload(url, json_payload, 'put', headers, multipart)
     if return_json and type(response) != dict:
         response = response.json()
     return response

@@ -100,9 +100,13 @@ class Khoros(object):
         self._settings.update(Khoros.DEFAULT_AUTH)
 
         # Capture any relevant environment variables if defined
-        environment.update_env_variable_names(env_variables)
-        self._env_settings = environment.get_env_variables()
-        self._parse_env_settings()
+        if not helper:
+            # Only define the environment variables if a helper file was not supplied as the file takes precedence
+            environment.update_env_variable_names(env_variables)
+            self._env_settings = environment.get_env_variables()
+            self._parse_env_settings()
+        else:
+            self._env_settings = {}
 
         # Overwrite any settings with any that were passed in the settings argument
         self._settings.update(settings)

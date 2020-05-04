@@ -138,6 +138,28 @@ class CurrentlyUnsupportedError(KhorosError):
         super().__init__(*args)
 
 
+class DataMismatchError(KhorosError):
+    """This exception is used when there is a mismatch between two data sources.
+
+    .. versionadded:: 2.3.0
+    """
+    def __init__(self, *args, **kwargs):
+        default_msg = "A data mismatch was found with the data sources."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'data' in kwargs:
+            multi_types = [list, tuple, set]
+            if type(kwargs['data']) == str:
+                custom_msg = f"{default_msg.split('data')[0]}'{kwargs['val']}'{default_msg.split('with the')[1]}"
+                custom_msg = custom_msg.replace('sources', 'source')
+                args = (custom_msg,)
+            elif type(kwargs['data']) in multi_types and len(kwargs['data']) == 2:
+                custom_section = f"'{kwargs['data'][0]}' and '{kwargs['data'][1]}'"
+                custom_msg = f"{default_msg.split('data sources')[0]}{custom_section}{default_msg.split('with the')[1]}"
+                args = (custom_msg,)
+        super().__init__(*args)
+
+
 class InvalidFieldError(KhorosError):
     """This exception is used when an invalid field is provided.
 
