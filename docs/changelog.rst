@@ -15,6 +15,7 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
+* Added the :py:func:`khoros.api.encode_multipart_data` function.
 * Added the following functions to the :py:mod:`khoros.objects.messages` module:
     * :py:func:`khoros.objects.messages.create_message`
     * :py:func:`khoros.objects.messages.construct_payload`
@@ -49,6 +50,10 @@ Additions to the documentation.
 * Added the :py:mod:`khoros.objects.albums` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.objects.attachments` module to the :doc:`Primary Modules <primary-modules>` page.
 
+General
+-------
+* Added ``requests-toolbelt==0.9.1`` to the ``requirements.txt`` file.
+
 Changed
 =======
 
@@ -62,12 +67,15 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.api.post_request_with_retries`
     * :py:func:`khoros.api.put_request_with_retries`
     * :py:func:`khoros.api._api_request_with_payload`
-* Added the exception type (e.g. ``ValueError``) to the failure messages in
+* Added the associated exception type (e.g. ``ValueError``) to the failure messages in
   :py:func:`khoros.api.get_request_with_retries` and :py:func:`khoros.api._api_request_with_payload`.
 * Updated the :py:func:`khoros.api.get_request_with_retries` to use the
   :py:exc:`khoros.errors.exceptions.APIConnectionError` exception class rather than :py:exc:`ConnectionError`.
 * Updated the :py:func:`khoros.api.get_request_with_retries` and :py:func:`khoros.api._api_request_with_payload`
   functions to only retry if relevant exception classes are raised in the try/except.
+* Added functionality to :py:func:`khoros.api.post_request_with_retries` and
+  :py:func:`khoros.api.put_request_with_retries` to display an error but still return the API response if unable
+  to convert the response to JSON format when requested.
 * Renamed the :py:func:`khoros.api.__api_request_with_payload` function to be
   :py:func:`khoros.api._api_request_with_payload` instead.
 * Replaced :py:func:`print` statements in the :py:func:`khoros.api.get_request_with_retries` and

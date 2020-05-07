@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 May 2020
+:Modified Date:     07 May 2020
 """
 
 from . import attachments
@@ -92,6 +92,7 @@ def create_message(khoros_object, subject=None, body=None, node=None, node_id=No
     multipart = True if attachment_file_paths else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
+        payload = api.encode_multipart_data(payload)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
     outcome = api.query_successful(response)
     return response if full_response else outcome

@@ -6,11 +6,13 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     07 May 2020
 """
 
 import json
+
 import requests
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from . import errors
 from .utils import core_utils
@@ -124,23 +126,17 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
              :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
     _headers = {} if not _headers else _headers
-    if _multipart:
-        _headers['Content-Type'] = 'multipart/form-data'
-    #     _message_json, _files_payload = _payload
-    # else:
-    #     _message_json, _files_payload = _payload, None
-    print(f"HEADERS:\n{_headers}")      # TODO: Remove print debugging
     _retries = 0
     while _retries <= 5:
         try:
             if _request_type.lower() == "put":
                 if _multipart:
-                    _response = requests.put(_url, files=_payload, headers=_headers)
+                    _response = requests.put(_url, data=_payload, headers=_headers)
                 else:
                     _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
             elif _request_type.lower() == "post":
                 if _multipart:
-                    _response = requests.post(_url, files=_payload, headers=_headers)
+                    _response = requests.post(_url, data=_payload, headers=_headers)
                 else:
                     _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
             else:
@@ -191,7 +187,8 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
         try:
             response = response.json()
         except Exception as exc_msg:
-            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {exc_msg}")
+            exc_name = type(exc_msg).__name__
+            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {exc_name}: {exc_msg}")
     return response
 
 
@@ -220,7 +217,11 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
     response = _api_request_with_payload(url, json_payload, 'put', headers, multipart)
     if return_json and type(response) != dict:
-        response = response.json()
+        try:
+            response = response.json()
+        except Exception as exc_msg:
+            exc_name = type(exc_msg).__name__
+            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {exc_name}: {exc_msg}")
     return response
 
 
@@ -310,3 +311,17 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
         response = response['response'] if 'response' in response else response
     errors.handlers.verify_v1_response(response, 'get', 'users', fail_on_no_results)
     return response
+
+
+def encode_multipart_data(data_fields):
+    """This function uses the Streaming Multipart Data Encoder to encode the payload for a multipart/form-data API call.
+
+    .. versionadded:: 2.3.0
+
+    .. seealso:: This function follows the `requests_toolbelt <https://rsa.im/3dg7QiZ>`_ documentation.
+
+    :param data_fields: A dictionary with the data to be encoded
+    :type data_fields: dict
+    :returns: The encoded data for use by the :py:mod:`requests` library
+    """
+    return MultipartEncoder(fields=data_fields)
