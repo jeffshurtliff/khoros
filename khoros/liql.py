@@ -113,12 +113,17 @@ def get_query_url(core_dict, query, pretty_print=False, track_in_lsi=False, alwa
     return f"{core_dict['v2_base']}/search?q={query}"
 
 
-def perform_query(khoros_object, query_url=None, liql_query=None, return_json=True, verify_success=False):
+def perform_query(khoros_object, query_url=None, liql_query=None, return_json=True, verify_success=False,
+                  allow_exceptions=True):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
 
-    ..versionchanged:: 2.0.0
-      Added the ability for a raw LiQL query to be passed to this function rather than only a formatted query URL,
-      and included the optional ``verify_success`` Boolean argument to verify a successful response.
+    .. versionchanged:: 2.3.0
+       Added the ``allow_exceptions`` argument (``True`` by default) to allow exceptions to be disabled
+       and updated the error/exception message to be more specific.
+
+    .. versionchanged:: 2.0.0
+       Added the ability for a raw LiQL query to be passed to this function rather than only a formatted query URL,
+       and included the optional ``verify_success`` Boolean argument to verify a successful response.
 
     :param khoros_object: The Khoros object initialized via the :py:mod:`khoros.core` module
     :type khoros_object: class[khoros.Khoros]
@@ -130,6 +135,11 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     :type return_json: bool
     :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
     :type verify_success: bool
+    :param allow_exceptions: Defines whether or not exceptions can be raised for responses returning errors
+
+                             .. caution:: This does not apply to exceptions for missing required data.
+
+    :type allow_exceptions: bool
     :returns: The API response (in JSON format by default)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
@@ -145,8 +155,10 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     response = api.get_request_with_retries(query_url, return_json, auth_dict=khoros_object.auth)
     if verify_success:
         if not api.query_successful(response):
-            # TODO: Pass the actual failure information to the exception class for a more customized error
-            raise errors.exceptions.GETRequestError
+            error_msg = errors.handlers.get_error_from_json(response, include_error_bool=False)[2]
+            if allow_exceptions:
+                raise errors.exceptions.GETRequestError(error_msg)
+            errors.handlers.eprint(error_msg)
     if return_json and type(response) != dict:
         response = response.json()
     return response

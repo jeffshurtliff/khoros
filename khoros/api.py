@@ -18,8 +18,11 @@ from . import errors
 from .utils import core_utils
 
 
-def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None):
+def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False):
     """This function defines the headers to use in an API call.
+
+    .. versionchanged:: 2.3.0
+       Added the ``multipart`` Boolean argument to remove the ``Content-Type`` key value pair when appropriate.
 
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -31,6 +34,8 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :type accept: str, None
     :param content_type: The ``Content-Type`` header value (e.g. ``application/json``)
     :type content_type: str, None
+    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :type multipart: bool
     :returns: A dictionary with the header fields and associated values
     """
     if not khoros_object and not auth_dict:
@@ -46,10 +51,13 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
         headers['Accept'] = accept
     if content_type:
         headers['Content-Type'] = content_type
+    if multipart and 'Content-Type' in headers:
+        del headers['Content-Type']
     return headers
 
 
 def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
+    # TODO: Add a docstring for the function
     _query_strings = {True: 'restapi.response_format=json', False: ''}
     _prefixes = {True: '&', False: ''}
     _query_string = ''
@@ -104,12 +112,11 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     return response
 
 
-# Define internal function to perform API requests (PUT or POST) with JSON payload
 def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _multipart=False):
     """This function performs an API request while supplying a JSON payload.
 
     .. versionchanged:: 2.3.0
-       Added the ability to perform multipart/form-data queries
+       Added the ability to perform multipart/form-data queries.
 
     :param _url: The URI to be queried
     :type _url: str
@@ -131,12 +138,12 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
         try:
             if _request_type.lower() == "put":
                 if _multipart:
-                    _response = requests.put(_url, data=_payload, headers=_headers)
+                    _response = requests.put(_url, files=_payload, headers=_headers)
                 else:
                     _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
             elif _request_type.lower() == "post":
                 if _multipart:
-                    _response = requests.post(_url, data=_payload, headers=_headers)
+                    _response = requests.post(_url, files=_payload, headers=_headers)
                 else:
                     _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
             else:
@@ -163,6 +170,9 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
                               headers=None, multipart=False):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
+    .. versionchanged:: 2.3.0
+       Added the ability to perform multipart/form-data queries.
+
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the POST request in JSON format
@@ -181,7 +191,7 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
-    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
+    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
     response = _api_request_with_payload(url, json_payload, 'post', headers, multipart)
     if return_json and type(response) != dict:
         try:
@@ -195,6 +205,9 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
 def put_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None,
                              headers=None, multipart=False):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.3.0
+       Added the ability to perform multipart/form-data queries.
 
     :param url: The URI to be queried
     :type url: str
@@ -214,7 +227,7 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`
     """
-    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
+    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
     response = _api_request_with_payload(url, json_payload, 'put', headers, multipart)
     if return_json and type(response) != dict:
         try:

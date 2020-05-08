@@ -90,6 +90,18 @@ def encode_query_string(url_dict, no_encode=None):
     return query_string
 
 
+def is_numeric(value):
+    """This function checks whether or not a value is numeric either as an integer or a numeric string.
+
+    .. versionadded:: 2.3.0
+
+    :param value: The value to be examined
+    :type value: str, int
+    :returns: Boolean value indicating if the examined value is numeric
+    """
+    return True if type(value) == int or (type(value) == str and value.isnumeric()) else False
+
+
 def convert_set(iterable, convert_to='list'):
     """This function casts a ``set`` variable to be a ``list`` instead so that it can be scriptable.
 

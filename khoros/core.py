@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     07 May 2020
 """
 
 import sys
@@ -302,6 +302,14 @@ class Khoros(object):
         self.auth['header'] = self._settings['auth_header']
         self.auth['active'] = True
 
+    def _import_album_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Album` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 2.3.0
+        """
+        return Khoros.Album(self)
+
     def _import_category_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Category` inner class to be utilized in the
         core object.
@@ -317,6 +325,13 @@ class Khoros(object):
         .. versionadded:: 2.1.0
         """
         return Khoros.Community(self)
+
+    def _import_message_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Message` inner class to be utilized in the core object.
+
+        .. versionadded:: 2.3.0
+        """
+        return Khoros.Message(self)
 
     def _import_node_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Node` inner class to be utilized in the core object.
@@ -446,7 +461,73 @@ class Khoros(object):
         """
         return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
+    class Album(object):
+        """This class includes methods for interacting with the `albums <https://rsa.im/2WAewBP>`_ collection."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Album` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def create(self, title=None, description=None, owner_id=None, hidden=False, default=False, full_response=False):
+            """This function creates a new image album for a user.
+
+            .. versionadded:: 2.3.0
+
+            :param title: The title of the album to be created
+            :type title: str, None
+            :param description: The description of the album
+            :type description: str, None
+            :param owner_id: The User ID of the album owner
+
+                             .. note:: If not defined, the owner will be the user performing the API call.
+
+            :type owner_id: str, int, None
+            :param hidden: Defines if the album should be public (default) or hidden
+            :type hidden: bool
+            :param default: Defines if this will be the default album for the user (``False`` by default)
+            :type default: bool
+            :param full_response: Defines if the full response should be returned instead of the outcome
+                                  (``False`` by default)
+            :type full_response: bool
+            :returns: Boolean value indicating a successful outcome (default) or the full API response
+            """
+            return objects_module.albums.create(self.khoros_object, title, description, owner_id, hidden,
+                                                default, full_response)
+
+        def get_albums_for_user(self, user_id=None, login=None, public=None, private=None, verify_success=False,
+                                allow_exceptions=True):
+            """This function returns data for the albums owned by a given user.
+
+            .. versionadded:: 2.3.0
+
+            :param user_id: The User ID for the album owner
+            :type user_id: str, int
+            :param login: The username of the album owner
+            :type login: str
+            :param public: Indicates that **public** albums should be returned (all albums returned by default)
+            :type public: bool
+            :param private: Indicates that **private** albums should be returned (all albums returned by default)
+            :type private: bool
+            :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
+            :type verify_success: bool
+            :param allow_exceptions: Defines whether or not exceptions can be raised for responses returning errors
+
+                                     .. caution:: This does not apply to exceptions for missing required data.
+
+            :type allow_exceptions: bool
+            :returns: A list of dictionaries representing each album
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return objects_module.albums.get_albums_for_user(self.khoros_object, user_id, login, public, private,
+                                                             verify_success, allow_exceptions)
+
     class Category(object):
+        """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.Category` inner class object.
 
@@ -821,6 +902,7 @@ class Khoros(object):
             return structures_module.categories.get_creation_date(self.khoros_object, identifier, category_details)
 
     class Community(object):
+        """This class includes methods for interacting with the overall Khoros Community."""
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.Community` inner class object.
 
@@ -1093,7 +1175,140 @@ class Khoros(object):
             return structures_module.communities.top_level_categories_on_community_page(self.khoros_object,
                                                                                         community_details)
     
+    class Message(object):
+        """This class includes methods for interacting with messages."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Message` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def create(self, subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
+                   context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
+                   labels=None, product_category=None, products=None, read_only=None, seo_title=None,
+                   seo_description=None, tags=None, teaser=None, topic=None, videos=None, attachment_file_paths=None,
+                   full_response=False, return_id=False, return_url=False, return_api_url=False,
+                   return_http_code=False):
+            """This function creates a new message within a given node.
+
+            .. versionadded:: 2.3.0
+
+            :param subject: The title or subject of the message
+            :type subject: str, None
+            :param body: The body of the message in HTML format
+            :type body: str, None
+            :param node: A dictionary containing the ``id`` key and its associated value indicating the destination
+            :type node: dict, None
+            :param node_id: The ID of the node in which the message will be published
+            :type node_id: str, None
+            :param node_url: The URL of the node in which the message will be published
+
+                             .. note:: This argument is necessary in the absence of the ``node`` and ``node_id``
+                                       arguments.
+
+            :type node_url: str, None
+            :param canonical_url: The search engine-friendly URL to the message
+            :type canonical_url: str, None
+            :param context_id: Metadata on a message to identify the message with an external identifier of your choice
+            :type context_id: str, None
+            :param context_url: Metadata on a message representing a URL to associate with the message
+                                (external identifier)
+            :type context_url: str, None
+            :param cover_image: The cover image set for the message
+            :type cover_image: dict, None
+            :param images: The query to retrieve images uploaded to the message
+            :type images: dict, None
+            :param is_answer: Designates the message as an answer on a Q&A board
+            :type is_answer: bool, None
+            :param is_draft: Indicates whether or not the message is still a draft (i.e. unpublished)
+            :type is_draft: bool, None
+            :param labels: The query to retrieve labels applied to the message
+            :type labels: dict, None
+            :param product_category: The product category (i.e. container for ``products``) associated with the message
+            :type product_category: dict, None
+            :param products: The product in a product catalog associated with the message
+            :type products: dict, None
+            :param read_only: Indicates whether or not the message should be read-only or have replies/comments blocked
+            :type read_only: bool, None
+            :param seo_title: The title of the message used for SEO purposes
+            :type seo_title: str, None
+            :param seo_description: A description of the message used for SEO purposes
+            :type seo_description: str, None
+            :param tags: The query to retrieve tags applied to the message
+            :type tags: dict, None
+            :param teaser: The message teaser (used with blog articles)
+            :type teaser: str, None
+            :param topic: The root message of the conversation in which the message appears
+            :type topic: dict, None
+            :param videos: The query to retrieve videos uploaded to the message
+            :type videos: dict, None
+            :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
+            :type attachment_file_paths: str, tuple, list, set, None
+            :param full_response: Defines if the full response should be returned instead of the outcome
+                                  (``False`` by default)
+
+                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
+                                               ``return_api_url`` and ``return_http_code`` arguments.
+
+            :type full_response: bool
+            :param return_id: Indicates that the **Message ID** should be returned (``False`` by default)
+            :type return_id: bool
+            :param return_url: Indicates that the **Message URL** should be returned (``False`` by default)
+            :type return_url: bool
+            :param return_api_url: Indicates that the **API URL** of the message should be returned
+                                   (``False`` by default)
+            :type return_api_url: bool
+            :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
+                                     (``False`` by default)
+            :type return_http_code: bool
+            :returns: Boolean value indicating a successful outcome (default) or the full API response
+            :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.DataMismatchError`
+            """
+            return objects_module.messages.create(self.khoros_object, subject, body, node, node_id, node_url,
+                                                  canonical_url, context_id, context_url, cover_image, images,
+                                                  is_answer, is_draft, labels, product_category, products, read_only,
+                                                  seo_title, seo_description, tags, teaser, topic, videos,
+                                                  attachment_file_paths, full_response, return_id, return_url,
+                                                  return_api_url, return_http_code)
+
+        @staticmethod
+        def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,
+                              message_id=False, message_url=False, message_api_uri=False, v2_base=''):
+            """This function parses an API response for a message operation (e.g. creating a message) and returns data.
+
+            .. versionadded:: 2.3.0
+
+            :param json_response: The API response in JSON format
+            :type json_response: dict
+            :param return_dict: Defines if the parsed data should be returned within a dictionary
+            :type return_dict: bool
+            :param status: Defines if the **status** value should be returned
+            :type status: bool
+            :param response_msg: Defines if the **developer response** message should be returned
+            :type response_msg: bool
+            :param http_code: Defines if the **HTTP status code** should be returned
+            :type http_code: bool
+            :param message_id: Defines if the **message ID** should be returned
+            :type message_id: bool
+            :param message_url: Defines if the **message URL** should be returned
+            :type message_url: bool
+            :param message_api_uri: Defines if the ** message API URI** should be returned
+            :type message_api_uri: bool
+            :param v2_base: The base URL for the API v2
+            :type v2_base: str
+            :returns: A string, tuple or dictionary with the parsed data
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return objects_module.messages.parse_v2_response(json_response, return_dict, status, response_msg,
+                                                             http_code, message_id, message_url, message_api_uri,
+                                                             v2_base)
+
     class Node(object):
+        """This class includes methods for interacting with nodes."""
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.Node` inner class object.
 
@@ -1483,6 +1698,7 @@ class Khoros(object):
             return structures_module.nodes.get_views(self.khoros_object, identifier, node_details)
 
     class User(object):
+        """This class includes methods for interacting with users."""
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.User` inner class object.
 

@@ -19,11 +19,11 @@ CONTEXT_KEYS = ['id', 'url']
 SEO_KEYS = ['title', 'description', 'canonical_url']
 
 
-def create_message(khoros_object, subject=None, body=None, node=None, node_id=None, node_url=None,
-                   canonical_url=None, context_id=None, context_url=None, cover_image=None, images=None,
-                   is_answer=None, is_draft=None, labels=None, product_category=None, products=None,
-                   read_only=None, seo_title=None, seo_description=None, tags=None, teaser=None, topic=None,
-                   videos=None, attachment_file_paths=None, full_response=False):
+def create(khoros_object, subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
+           context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
+           labels=None, product_category=None, products=None, read_only=None, seo_title=None, seo_description=None,
+           tags=None, teaser=None, topic=None, videos=None, attachment_file_paths=None, full_response=False,
+           return_id=False, return_url=False, return_api_url=False, return_http_code=False):
     """This function creates a new message within a given node.
 
     .. versionadded:: 2.3.0
@@ -80,7 +80,20 @@ def create_message(khoros_object, subject=None, body=None, node=None, node_id=No
     :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
     :type attachment_file_paths: str, tuple, list, set, None
     :param full_response: Defines if the full response should be returned instead of the outcome (``False`` by default)
+
+                          .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``
+                                       and ``return_http_code`` arguments.
+
     :type full_response: bool
+    :param return_id: Indicates that the **Message ID** should be returned (``False`` by default)
+    :type return_id: bool
+    :param return_url: Indicates that the **Message URL** should be returned (``False`` by default)
+    :type return_url: bool
+    :param return_api_url: Indicates that the **API URL** of the message should be returned (``False`` by default)
+    :type return_api_url: bool
+    :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
+                             (``False`` by default)
+    :type return_http_code: bool
     :returns: Boolean value indicating a successful outcome (default) or the full API response
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
@@ -92,9 +105,24 @@ def create_message(khoros_object, subject=None, body=None, node=None, node_id=No
     multipart = True if attachment_file_paths else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
-        payload = api.encode_multipart_data(payload)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
     outcome = api.query_successful(response)
+    if return_id or return_url or return_api_url or return_http_code:
+        return_values = {
+            'return_id': parse_v2_response(response, message_id=True),
+            'return_url': parse_v2_response(response, message_url=True),
+            'return_api_url': parse_v2_response(response, message_api_uri=True),
+            'return_http_code': parse_v2_response(response, http_code=True)
+        }
+        data_to_return = []
+        return_booleans = {'return_id': return_id, 'return_url': return_url,
+                           'return_http_code': return_http_code, 'return_api_url': return_api_url}
+        for return_key, return_value in return_booleans.items():
+            if return_value:
+                data_to_return.append(return_values.get(return_key))
+        outcome = tuple(data_to_return)
+        if len(data_to_return) == 1:
+            outcome = outcome[0]
     return response if full_response else outcome
 
 

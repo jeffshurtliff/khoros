@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.3.0
 ******
-**Release Date: TBD**
+**Release Date: 2020-05-08**
 
 Added
 =====
@@ -17,7 +17,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.api.encode_multipart_data` function.
 * Added the following functions to the :py:mod:`khoros.objects.messages` module:
-    * :py:func:`khoros.objects.messages.create_message`
+    * :py:func:`khoros.objects.messages.create`
     * :py:func:`khoros.objects.messages.construct_payload`
     * :py:func:`khoros.objects.messages._verify_required_fields`
     * :py:func:`khoros.objects.messages.parse_v2_response`
@@ -30,9 +30,20 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.attachments._format_single_file`
     * :py:func:`khoros.objects.attachments._format_multiple_files`
 * Created the :py:mod:`khoros.objects.albums` module with the following functions:
-    * :py:func:`khoros.objects.albums.create_album`
+    * :py:func:`khoros.objects.albums.create`
     * :py:func:`khoros.objects.albums.format_album_json`
+    * :py:func:`khoros.objects.albums.get_albums_for_user`
     * :py:func:`khoros.objects.albums._null_to_blank`
+* Added the following methods to the :py:class:`khoros.core.Khoros` class:
+    * :py:meth:`khoros.core.Khoros._import_album_class`
+    * :py:meth:`khoros.core.Khoros._import_message_class`
+* Added the :py:class:`khoros.core.Khoros.Album` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Album.create`
+    * :py:meth:`khoros.core.Khoros.Album.get_albums_for_user`
+* Added the :py:class:`khoros.core.Khoros.Message` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Message.create`
+    * :py:meth:`khoros.core.Khoros.Message.parse_v2_response`
+* Added an import statement for :py:mod:`khoros.objects.albums` to the :py:mod:`khoros.objects` module.
 
 Supporting Modules
 ------------------
@@ -40,15 +51,19 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.utils.core_utils.convert_single_value_to_tuple` function.
 * Added the :py:func:`khoros.utils.core_utils.convert_string_to_tuple` function.
+* Added the :py:func:`khoros.utils.core_utils.is_numeric` function.
 * Added the :py:exc:`khoros.errors.exceptions.DataMismatchError` exception class.
 
 Documentation
 -------------
 Additions to the documentation.
 
+* Added the :ref:`introduction:Utilizing environment variables` section to the :doc:`introduction` page.
 * Added the :py:mod:`khoros.objects.messages` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.objects.albums` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.objects.attachments` module to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:class:`khoros.core.Khoros.Album` class to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:class:`khoros.core.Khoros.Message` class to the :doc:`Primary Modules <primary-modules>` page.
 
 General
 -------
@@ -81,6 +96,12 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Replaced :py:func:`print` statements in the :py:func:`khoros.api.get_request_with_retries` and
   :py:func:`khoros.api._api_request_with_payload` functions with :py:func:`khoros.errors.handlers.eprint`
   function calls.
+* Added the ``multipart`` Boolean argument to the :py:func:`khoros.api.define_headers` which will remove the
+  ``Content-Type`` header key and value if the API call is for a ``multipart/form-data`` query.
+* Added the ``allow_exceptions`` argument (``True`` by default) to the :py:func:`khoros.liql.perform_query`
+  function to allow the :py:exc:`khoros.errors.exceptions.GETRequestError` exception to be disabled if an
+  error response is returned.
+* Updated the error/exception message in the :py:func:`khoros.liql.perform_query` to be more specific.
 
 Documentation
 -------------
@@ -97,6 +118,12 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 
 * Removed the Aurea reference from the failure message in :py:exc:`khoros.api._api_request_with_payload`.
 
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
+* Changed "v1" to "v2" in the full error message string within the
+  :py:func:`khoros.errors.handlers._get_v2_error_from_json` function.
 
 |
 

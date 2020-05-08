@@ -11,6 +11,8 @@ which are listed below.
         * `Community Subclass (khoros.core.Khoros.Community)`_
         * `Node Subclass (khoros.core.Khoros.Node)`_
     * `Core Object Subclasses (khoros.core.Khoros)`_
+        * `Album Subclass (khoros.core.Khoros.Album)`_
+        * `Message Subclass (khoros.core.Khoros.Message)`_
         * `User Subclass (khoros.core.Khoros.User)`_
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
@@ -99,6 +101,24 @@ The classes below are inner/nested classes within the core :py:class:`khoros.cor
 .. note:: The classes themselves are *CamelCase* format and singular (e.g. ``Role``, ``User``, etc.) whereas the names
           used to call the inner class methods are all *lowercase* (or *snake_case*) and plural. (e.g.
           ``core_object.roles.get_role_id()``, ``core_object.users.create()``, etc.)
+
+Album Subclass (khoros.core.Khoros.Album)
+-----------------------------------------
+.. autoclass:: khoros.core::Khoros.Album
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Message Subclass (khoros.core.Khoros.Message)
+---------------------------------------------
+.. autoclass:: khoros.core::Khoros.Message
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
 
 User Subclass (khoros.core.Khoros.User)
 ---------------------------------------

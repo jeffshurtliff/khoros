@@ -6,14 +6,15 @@
 :Example:           ``response = albums.create_album(khoros_obj, title='My Album', hidden=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 May 2020
+:Modified Date:     07 May 2020
 """
 
-from .. import api, errors
+from .. import api, liql, errors
+from ..utils import core_utils
 
 
-def create_album(khoros_object, title=None, description=None, owner_id=None, hidden=False, default=False,
-                 full_response=False):
+def create(khoros_object, title=None, description=None, owner_id=None, hidden=False, default=False,
+           full_response=False):
     """This function creates a new image album for a user.
 
     .. versionadded:: 2.3.0
@@ -66,7 +67,7 @@ def format_album_json(title=None, description=None, owner_id=None, hidden=None, 
     :returns: The JSON payload for the album API call
     """
     # TODO: Add functionality for "cover" field with "image" datatype
-    privacy_level = {True: "hidden", False: "public"}
+    privacy_level = {True: "private", False: "public"}
     album_json = {
         "data": {
             "type": "album",
@@ -88,3 +89,50 @@ def _null_to_blank(_value):
     .. versionadded:: 2.3.0
     """
     return "" if _value is None else _value
+
+
+def get_albums_for_user(khoros_object, user_id=None, login=None, public=None, private=None, verify_success=False,
+                        allow_exceptions=True):
+    """This function returns data for the albums owned by a given user.
+
+    .. versionadded:: 2.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_id: The User ID for the album owner
+    :type user_id: str, int
+    :param login: The username of the album owner
+    :type login: str
+    :param public: Indicates that **public** albums should be returned (all albums returned by default)
+    :type public: bool
+    :param private: Indicates that **private** albums should be returned (all albums returned by default)
+    :type private: bool
+    :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
+    :type verify_success: bool
+    :param allow_exceptions: Defines whether or not exceptions can be raised for responses returning errors
+
+                             .. caution:: This does not apply to exceptions for missing required data.
+
+    :type allow_exceptions: bool
+    :returns: A list of dictionaries representing each album
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not user_id and not login:
+        raise errors.exceptions.MissingRequiredDataError("A 'user_id' or 'login' is required to retrieve data")
+    query = "SELECT * FROM albums WHERE"
+    if user_id:
+        if not core_utils.is_numeric(user_id) and not login:
+            raise errors.exceptions.MissingRequiredDataError("The 'user_id' must be numeric or a 'login' is needed")
+        query = f"{query} owner.id = '{user_id}'"
+    else:
+        query = f"{query} owner.login = '{login}'"
+    if not public or not private:
+        if public:
+            query = f"{query} AND privacy_level = 'public'"
+        else:
+            query = f"{query} AND privacy_level = 'hidden'"
+    response = liql.perform_query(khoros_object, liql_query=query, verify_success=verify_success,
+                                  allow_exceptions=allow_exceptions)
+    return response

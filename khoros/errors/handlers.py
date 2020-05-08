@@ -146,7 +146,7 @@ def _get_v2_error_from_json(_json_error):
         _error_code = _json_error['data']['code']
         _error_type = _json_error['data']['type']
         _error_msg = f"{_json_error['message']} (Error Type: {_error_type})"
-        _exc_msg = f"The Community API v1 call failed with the error code '{_error_code}' and the following " + \
+        _exc_msg = f"The Community API v2 call failed with the error code '{_error_code}' and the following " + \
                    f"message: {_error_msg}"
     return _error_found, (_error_code, _error_msg, _exc_msg)
 
