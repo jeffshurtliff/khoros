@@ -59,11 +59,16 @@ Documentation
 Additions to the documentation.
 
 * Added the :ref:`introduction:Utilizing environment variables` section to the :doc:`introduction` page.
+* Updated the `README.md <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ file to match
+  the :doc:`introduction` page.
 * Added the :py:mod:`khoros.objects.messages` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.objects.albums` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.objects.attachments` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:class:`khoros.core.Khoros.Album` class to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:class:`khoros.core.Khoros.Message` class to the :doc:`Primary Modules <primary-modules>` page.
+* Added the `SECURITY.md <https://github.com/jeffshurtliff/khoros/blob/master/SECURITY.md>`_ and
+  `CODE_OF_CONDUCT.md <https://github.com/jeffshurtliff/khoros/blob/master/CODE_OF_CONDUCT.md>`_ files to the
+  source repository.
 
 General
 -------

@@ -175,6 +175,77 @@ HELPER_FILE = "/path/to/helper.yml"
 khoros = Khoros(helper=HELPER_FILE)
 ```
 
+#### Utilizing environment variables
+This third method of initializing a Khoros object instance is definitely the easiest, as it allows you to call
+upon the `Khoros` class without passing any arguments, as shown below.
+
+```python
+from khoros import Khoros
+khoros = Khoros()
+```
+
+This is accomplished by defining environment variables within your Operating System, either through the
+[graphical UI](https://www.techjunkie.com/environment-variables-windows-10/), the command-line or within the Python
+IDE using the `os` module and
+[adding entries](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5) to the
+`os.environ` dictionary, as shown below.
+
+```python
+import os
+os.environ['KHOROS_URL'] = 'https://community.example.com'
+```
+
+| Environment Variable      | Description                                                                                                                                                | Example                                                |
+|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| KHOROS_URL                | The base URL of the environment                                                                                                                            | `https://community.example.com`                        |
+| KHOROS_TENANT_ID          | The [Tenant ID](https://developer.khoros.com/khoroscommunitydevdocs/docs/oauth-authorization-grant) associated with your environment                       | `abcde12345`                                           |
+| KHOROS_DEFAULT_AUTH       | The default authentication method you wish to use                                                                                                          | `session_auth`                                         |
+| KHOROS_OAUTH_ID           | The Client ID utilized by the [OAuth 2.0](https://developer.khoros.com/khoroscommunitydevdocs/docs/oauth-authorization-grant) authorization grant flow     | `FXXXXXXb7owXXXXXXo+jFlPXXXXXXjZcWQXXXXXX6bo=`         |
+| KHOROS_OAUTH_SECRET       | The Client Secret utilized by the [OAuth 2.0](https://developer.khoros.com/khoroscommunitydevdocs/docs/oauth-authorization-grant) authorization grant flow | `1XXXXXX+/kZXXXXXXZZ9u1B5+1uXXXXXXfJCeOszYw=`          |
+| KHOROS_OAUTH_REDIRECT_URL | The Redirect URL utilized by the [OAuth 2.0](https://developer.khoros.com/khoroscommunitydevdocs/docs/oauth-authorization-grant) authorization grant flow  | `http://redirect.community.example.com/getAccessToken` |
+| KHOROS_SESSION_USER       | The username to use with [Session Key](https://developer.khoros.com/khoroscommunitydevdocs/docs/session-key) authentication                                | `apiuser`                                              |
+| KHOROS_SESSION_PW         | The password to use with [Session Key](https://developer.khoros.com/khoroscommunitydevdocs/docs/session-key) authentication                                | `Ch@ng3M3!`                                            |
+| KHOROS_PREFER_JSON        | Boolean string indicating if JSON responses are preferred                                                                                                  | `True`                                                 |
+| KHOROS_LIQL_PRETTY        | Boolean string indicating if reader-friendly formatting should be used                                                                                     | `False`                                                |
+| KHOROS_LIQL_TRACK_LSI     | Boolean string indicating if queries should be captured in Community Analytics search reports                                                              | `False`                                                |
+| KHOROS_LIQL_ALWAYS_OK     | Boolean string indicating if all responses should return a `200 OK` status code                                                                            | `False`                                                |
+
+If you are leveraging this library on a macOS or Linux operating system (e.g. Ubuntu Server) then you can simply
+add the environment variables you wish to define to either the `/etc/environment` file if you wish to apply
+them to all users, or to your user's `~/.bashrc` file for them to only apply to your user.
+
+```shell script
+# Define environment variables for Khoros
+KHOROS_URL='https://community.example.com'
+```
+
+>**Note:**
+>You will generally need to log out and log back in for the changes to take effect.
+
+If you are leveraging this library on a Windows operating system (e.g. Windows 10) then you can add environment
+variables for your user via the Command Prompt (i.e. `cmd.exe`) or  PowerShell.
+
+>**Note:**
+>Using either of these two methods, you can add the environment variables using an interactive terminal
+>window or using a batch/script file.  (Files should use the `.bat` or `.cmd` extension for the
+>Command Prompt and `.ps1` for PowerShell.)
+
+**Command Prompt**
+
+```batch
+@echo off
+echo Defining the KHOROS_URL environment variable...
+setx KHOROS_URL https://community.example.com
+echo.
+```
+
+**PowerShell**
+
+```powershell
+"Defining the KHOROS_URL environment variable..."
+[Environment]::SetEnvironmentVariable("KHOROS_URL", "https://community.example.com/", "User")
+```
+
 ### Interacting with the Community APIs
 Once the `Khoros` object instance has been initialized, it can be leveraged to interact with a Khoros Community
 environment in many ways, which will be fully documented shortly in the 
