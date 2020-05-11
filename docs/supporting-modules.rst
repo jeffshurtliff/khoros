@@ -18,6 +18,7 @@ which are listed below.
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
         * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
+        * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
 
 |
@@ -163,6 +164,17 @@ Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)
 This module tests parsing the WHERE clause of a LiQL query.
 
 .. automodule:: khoros.utils.tests.test_liql_where_parsing
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Mentions Module (khoros.utils.tests.test_mentions)
+-------------------------------------------------------
+This module is used by pytest to verify that user and content mentions work properly.
+
+.. automodule:: khoros.utils.tests.test_mentions
    :members:
 
 :doc:`Return to Top <supporting-modules>`

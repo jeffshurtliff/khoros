@@ -4,6 +4,76 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.4.0
+******
+**Release Date: 2020-05-11**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.objects.messages` module:
+    * :py:func:`khoros.objects.messages.format_user_mention`
+    * :py:func:`khoros.objects.messages._get_required_user_mention_data`
+* Added the :py:mod:`khoros.objects.roles` module with the following functions:
+    * :py:func:`khoros.objects.roles.get_total_role_count`
+    * :py:func:`khoros.objects.roles.count_role_types`
+    * :py:func:`khoros.objects.roles.get_roles_for_user`
+* Added the :py:const:`khoros.objects.messages.MESSAGE_SEO_URLS` dictionary constant.
+* Added the following methods to the :py:class:`khoros.core.Khoros` class:
+    * :py:meth:`khoros.core.Khoros.Message.format_content_mention`
+    * :py:meth:`khoros.core.Khoros.Message.format_user_mention`
+* Added the ``from . import roles`` statement to the :py:mod:`khoros.objects` module and added ``roles``
+  to the ``__all__`` special variable.
+* Added the :py:class:`khoros.core.Khoros.Role` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Role.get_total_role_count`
+    * :py:meth:`khoros.core.Khoros.Role.get_total_role_count`
+* Added the method :py:meth:`khoros.core.Khoros._import_role_class` to the core object and
+  added the method call in the initialization method.
+
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the following exception classes:
+    * :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`
+    * :py:exc:`khoros.errors.exceptions.InvalidRoleError`
+    * :py:exc:`khoros.errors.exceptions.InvalidRoleTypeError`
+* Added the :py:mod:`khoros.utils.tests.test_mentions` unit test module.
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added :py:mod:`khoros.utils.tests.test_mentions` to the :doc:`Support Modules <supporting-modules>` page.
+* Added :py:mod:`khoros.objects.roles` to the :doc:`Primary Modules <primary-modules>` page.
+* Added :py:mod:`khoros.core.Khoros.Role` to the :doc:`Primary Modules <primary-modules>` page.
+
+Changed
+=======
+
+General
+-------
+* Changed the PyPI Development Status in ``setup.py`` to be ``Development Status :: 4 - Beta``.
+
+Fixed
+=====
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed how and when values are cast to integers in :py:func:`khoros.objects.users._get_user_identifier`.
+* Added missing method calls for the :py:meth:`khoros.core.Khoros._import_message_class` and
+  :py:meth:`khoros.core.Khoros._import_album_class` methods in the initialization method for the
+  :py:class:`khoros.core.Khoros` class.
+
+|
+
+******
 v2.3.0
 ******
 **Release Date: 2020-05-08**

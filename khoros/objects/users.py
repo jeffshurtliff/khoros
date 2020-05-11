@@ -6,7 +6,7 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     11 May 2020
 """
 
 import warnings
@@ -352,7 +352,11 @@ def _get_where_clause_for_email(_user_settings):
 
 
 def _get_user_identifier(_khoros_object, _identifier, _where_clause, _allow_multiple, _display_warnings):
-    """Retrieves a user identifier (e.g. ``email``, ``last_visit_timer``, etc.) using a LiQL query."""
+    """Retrieves a user identifier (e.g. ``email``, ``last_visit_timer``, etc.) using a LiQL query.
+
+    .. versionchanged:: 2.4.0
+       Fixed how and when values should be cast to integers.
+    """
     _liql_query = f"select {_identifier} from users where {_where_clause}"
     _api_response = liql.perform_query(_khoros_object, liql_query=_liql_query, verify_success=True)
     _num_results = api.get_results_count(_api_response)
@@ -366,9 +370,11 @@ def _get_user_identifier(_khoros_object, _identifier, _where_clause, _allow_mult
             raise errors.exceptions.TooManyResultsError(_multiple_results_msg)
         _user_identifier = []
         for _user in _api_response['data']['items']:
-            _user_identifier.append(int(_user[_identifier]))
+            _item_val = int(_user[_identifier]) if _user[_identifier].isnumeric() else _user[_identifier]
+            _user_identifier.append(_item_val)
     else:
-        _user_identifier = int(_api_response['data']['items'][0][_identifier])
+        _item_val = _api_response['data']['items'][0][_identifier]
+        _user_identifier = int(_item_val) if _item_val.isnumeric() else _item_val
     return _user_identifier
 
 

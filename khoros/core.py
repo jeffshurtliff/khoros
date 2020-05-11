@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 May 2020
+:Modified Date:     11 May 2020
 """
 
 import sys
@@ -196,9 +196,12 @@ class Khoros(object):
                                        f"'{self._settings['auth_type']}' authentication type.")
 
         # Import inner object classes so their methods can be called from the primary object
+        self.albums = self._import_album_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
+        self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
+        self.roles = self._import_role_class()
         self.users = self._import_user_class()
 
     def _populate_core_settings(self):
@@ -339,6 +342,13 @@ class Khoros(object):
         .. versionadded:: 2.1.0
         """
         return Khoros.Node(self)
+
+    def _import_role_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Role` inner class to be utilized in the core object.
+
+        .. versionadded:: 2.4.0
+        """
+        return Khoros.Role(self)
 
     def _import_user_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
@@ -1307,6 +1317,56 @@ class Khoros(object):
                                                              http_code, message_id, message_url, message_api_uri,
                                                              v2_base)
 
+        def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
+            """This function formats the ``<li-message>`` HTML tag for a content @mention.
+
+            .. versionadded:: 2.4.0
+
+            :param content_info: A dictionary containing the ``'id'`` and/or ``'login'`` key(s) with the user data
+
+                                 .. note:: This argument is necessary if the Title and URL are not explicitly passed
+                                           using the ``title`` and ``url`` function arguments.
+
+            :type content_info: dict, None
+            :param content_id: The Message ID (aka Content ID) associated with the content mention
+
+                               .. note:: This is an optional argument as the ID can be retrieved from the URL.
+
+            :type content_id: str, int, None
+            :param title: The display title for the content mention (e.g. ``"Click Here"``)
+            :type title: str, None
+            :param url: The fully-qualified URL of the message being mentioned
+            :type url: str, None
+            :returns: The properly formatted ``<li-message>`` HTML tag in string format
+            :raises: :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidURLError`
+            """
+            return objects_module.messages.format_content_mention(self.khoros_object, content_info, content_id,
+                                                                  title, url)
+
+        def format_user_mention(self, user_info=None, user_id=None, login=None):
+            """This function formats the ``<li-user>`` HTML tag for a user @mention.
+
+            .. versionadded:: 2.4.0
+
+            :param user_info: A dictionary containing the ``'id'`` and/or ``'login'`` key(s) with the user information
+
+                              .. note:: This argument is necessary if the User ID and/or Login are not explicitly passed
+                                        using the ``user_id`` and/or ``login`` function arguments.
+
+            :type user_info: dict, None
+            :param user_id: The unique user identifier (i.e. User ID) for the user
+            :type user_id: str, int, None
+            :param login: The login (i.e. username) for the user
+            :type login: str, None
+            :returns: The properly formatted ``<li-user>`` HTML tag in string format
+            :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return objects_module.messages.format_user_mention(self.khoros_object, user_info, user_id, login)
+
     class Node(object):
         """This class includes methods for interacting with nodes."""
         def __init__(self, khoros_object):
@@ -1696,6 +1756,55 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return structures_module.nodes.get_views(self.khoros_object, identifier, node_details)
+
+    class Role(object):
+        """This class includes methods relating to roles and permissions."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Role` inner class object.
+
+            .. versionadded:: 2.4.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get_total_role_count(self, return_dict=False, total=True, top_level=False, board=False,
+                                 category=False, group_hub=False):
+            """This function retrieves the total role count for one or more role type(s).
+
+            .. versionadded:: 2.4.0
+
+            :param return_dict: Determines if the data should be returned as a dictionary (``False`` by default)
+            :type return_dict: bool
+            :param total: Indicates that the total overall role count should be returned (``True`` by default)
+            :type total: bool
+            :param top_level: Indicates that the total top-level role count should be returned (``False`` by default)
+            :type top_level: bool
+            :param board: Indicates that the total board-level role count should be returned (``False`` by default)
+            :type board: bool
+            :param category: Indicates that the total category-level role count should be returned
+                             (``False`` by default)
+            :type category: bool
+            :param group_hub: Indicates that the total group hub-level role count should be returned
+                              (``False`` by default)
+            :type group_hub: bool
+            :returns: The role count(s) as an integer, tuple or dictionary, depending on the arguments supplied
+            :raises: :py:exc:`khoros.objects.roles.InvalidRoleTypeError`
+            """
+            return objects_module.roles.get_total_role_count(self.khoros_object, return_dict, total, top_level, board,
+                                                             category, group_hub)
+
+        def get_roles_for_user(self, user_id):
+            """This function returns all roles associated with a given User ID.
+
+            .. versionadded:: 2.4.0
+
+            :param user_id: The User ID for which to retrieve the roles data
+            :returns: A dictionary with data for each role associated with the given User ID
+            :raises: :py:exc:`khoros.errors.exceptions.GETResponseError`
+            """
+            return objects_module.roles.get_roles_for_user(self.khoros_object, user_id)
 
     class User(object):
         """This class includes methods for interacting with users."""

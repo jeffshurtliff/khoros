@@ -7,16 +7,28 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 May 2020
+:Modified Date:     09 May 2020
 """
 
-from . import attachments
+import warnings
+
+from . import attachments, users
 from .. import api, liql, errors
 from ..structures import nodes
 
 REQUIRED_FIELDS = ['board', 'subject']
 CONTEXT_KEYS = ['id', 'url']
 SEO_KEYS = ['title', 'description', 'canonical_url']
+MESSAGE_SEO_URLS = {
+    'Blog Article': 'ba-p',
+    'Blog Comment': 'bc-p',
+    'Contest Item': 'cns-p',
+    'Idea': 'idi-p',
+    'Message': 'm-p',
+    'Question': 'qaq-p',
+    'TKB Article': 'ta-p',
+    'Topic': 'td-p'
+}
 
 
 def create(khoros_object, subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
@@ -324,3 +336,169 @@ def parse_v2_response(json_response, return_dict=False, status=False, response_m
         if len(parsed_data) == 1:
             parsed_data = parsed_data[0]
     return parsed_data
+
+
+def get_id_from_url(url):
+    """This function retrieves the message ID from a given URL.
+
+    .. versionadded:: 2.4.0
+
+    :param url: The URL from which the ID will be parsed
+    :type url: str
+    :returns: The ID associated with the message in string format
+    :raises: :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`
+    """
+    for msg_type in MESSAGE_SEO_URLS.values():
+        if msg_type in url:
+            return (url.split(f'{msg_type}/')[1]).split('#')[0]
+    raise errors.exceptions.MessageTypeNotFoundError(url=url)
+
+
+def _get_required_user_mention_data(_khoros_object, _user_info, _user_id, _login):
+    _missing_data_error = "A User ID or login must be supplied to construct an user @mention"
+    _info_fields = ['id', 'login']
+    if not any((_user_info, _user_id, _login)):
+        raise errors.exceptions.MissingRequiredDataError(_missing_data_error)
+    elif not _user_id and not _login:
+        if not any(_field in _info_fields for _field in _user_info):
+            raise errors.exceptions.MissingRequiredDataError(_missing_data_error)
+        else:
+            if 'id' in _user_info:
+                _user_id = _user_info.get('id')
+            if 'login' in _user_info:
+                _login = _user_info.get('login')
+    if not _user_id or not _login:
+        if not _khoros_object:
+            raise errors.exceptions.MissingAuthDataError()
+        if not _user_id:
+            _user_id = users.get_user_id(_khoros_object, login=_login)
+        elif not _login:
+            _login = users.get_login(_khoros_object, user_id=_user_id)
+    return _user_id, _login
+
+
+def format_user_mention(khoros_object=None, user_info=None, user_id=None, login=None):
+    """This function formats the ``<li-user>`` HTML tag for a user @mention.
+
+    .. versionadded:: 2.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+
+                          .. note:: This argument is necessary if only one of the user values (i.e. ``user_id`` or
+                                    ``login``) are passed in the function, as a lookup will need to be performed to
+                                    define the missing value.
+
+    :type khoros_object: class[khoros.Khoros], None
+    :param user_info: A dictionary containing the ``'id'`` and/or ``'login'`` key(s) with the user information
+
+                      .. note:: This argument is necessary if the User ID and/or Login are not explicitly passed
+                                using the ``user_id`` and/or ``login`` function arguments.
+
+    :type user_info: dict, None
+    :param user_id: The unique user identifier (i.e. User ID) for the user
+    :type user_id: str, int, None
+    :param login: The login (i.e. username) for the user
+    :type login: str, None
+    :returns: The properly formatted ``<li-user>`` HTML tag in string format
+    :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    user_id, login = _get_required_user_mention_data(khoros_object, user_info, user_id, login)
+    mention_tag = f'<li-user uid="{user_id}" login="@{login}"></li-user>'
+    return mention_tag
+
+
+def _report_missing_id_and_retrieve(_content_id, _url):
+    """This function displays a ``UserWarning`` message if needed and then retrieves the correct ID from the URL.
+
+    .. versionadded:: 2.4.0
+
+    :param _content_id: The missing or incorrect ID of the message
+    :type _content_id: str, int, None
+    :param _url: The full URL of the message
+    :type _url: str
+    :returns: The appropriate ID of the message where possible
+    :raises: :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`
+    """
+    if _content_id is not None:
+        warnings.warn(f"The given ID '{_content_id}' is not found in the URL {_url} and will be verified.",
+                      UserWarning)
+    return get_id_from_url(_url)
+
+
+def _check_for_bad_content_id(_content_id, _url):
+    """This function confirms that a supplied Content ID is found within the provided URL.
+
+    .. versionadded:: 2.4.0
+
+    :param _content_id: The ID of the message
+    :type _content_id: str, int, None
+    :param _url: The full URL of the message
+    :type _url: str
+    :returns: The appropriate ID of the message where possible
+    :raises: :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`
+    """
+    if _content_id is None or str(_content_id) not in _url:
+        _content_id = _report_missing_id_and_retrieve(_content_id, _url)
+    return _content_id
+
+
+def _get_required_content_mention_data(_khoros_object, _content_info, _content_id, _title, _url):
+    _missing_data_error = "A title and URL must be supplied to construct an user @mention"
+    _content_info = {} if _content_info is None else _content_info
+    _info_fields = ['title', 'url']
+    _info_arguments = (_content_info, _content_id, _title, _url)
+    _required_fields_in_dict = all(_field in _content_info for _field in _info_fields)
+    _required_fields_in_args = all((_title, _url))
+    if not _required_fields_in_dict and not _required_fields_in_args:
+        raise errors.exceptions.MissingRequiredDataError(_missing_data_error)
+    elif _required_fields_in_dict:
+        _title = _content_info.get('title')
+        _url = _content_info.get('url')
+        _content_id = _content_info.get('id') if 'id' in _content_info else _content_id
+    else:
+        _content_id = _content_info.get('id') if not _content_id else _content_id
+    _content_id = _check_for_bad_content_id(_content_id, _url)
+    return _content_id, _title, _url
+
+
+def format_content_mention(khoros_object=None, content_info=None, content_id=None, title=None, url=None):
+    """This function formats the ``<li-message>`` HTML tag for a content @mention.
+
+    .. versionadded:: 2.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+
+                          .. note:: This argument is necessary if the URL (i.e. ``url`` argument) is not an absolute
+                                    URL, as the base community URL will need to be retrieved from the object.
+
+    :type khoros_object: class[khoros.Khoros], None
+    :param content_info: A dictionary containing the ``'id'`` and/or ``'login'`` key(s) with the user information
+
+                         .. note:: This argument is necessary if the Title and URL are not explicitly passed
+                                   using the ``title`` and ``url`` function arguments.
+
+    :type content_info: dict, None
+    :param content_id: The Message ID (aka Content ID) associated with the content mention
+
+                       .. note:: This is an optional argument as the ID can be retrieved from the URL.
+
+    :type content_id: str, int, None
+    :param title: The display title for the content mention (e.g. ``"Click Here"``)
+    :type title: str, None
+    :param url: The fully-qualified URL of the message being mentioned
+    :type url: str, None
+    :returns: The properly formatted ``<li-message>`` HTML tag in string format
+    :raises: :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`,
+             :py:exc:`khoros.errors.exceptions.InvalidURLError`
+    """
+    content_id, title, url = _get_required_content_mention_data(khoros_object, content_info, content_id, title, url)
+    if url.startswith('/t5'):
+        if not khoros_object:
+            raise errors.exceptions.MissingRequiredDataError('The core Khoros object is required when a '
+                                                             'fully-qualified URL is not provided.')
+        url = f"{khoros_object.core['base_url']}{url}"
+    mention_tag = f'<li-message title="{title}" uid="{content_id}" url="{url}"></li-message>'
+    return mention_tag

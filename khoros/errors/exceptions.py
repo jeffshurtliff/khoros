@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     11 May 2020
 """
 
 #################
@@ -397,6 +397,56 @@ class TooManyResultsError(KhorosError):
         default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
         if not (args or kwargs):
             args = (default_msg,)
+        super().__init__(*args)
+
+
+#####################
+# Message Exceptions
+#####################
+
+
+class MessageTypeNotFoundError(KhorosError):
+    """This exception is used when a message type cannot be identified from a given URL."""
+
+    def __init__(self, *args, **kwargs):
+        default_msg = "The message type could not be identified in the provided URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'msg_type' in kwargs:
+            custom_msg = f"{default_msg.split('message type ')[0]}'{kwargs['msg_type']}'{default_msg.split('type')[1]}"
+            args = (custom_msg,)
+        elif 'url' in kwargs:
+            custom_msg = f"{default_msg.split('provided')[0]}following URL: {kwargs['url']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+##################
+# Role Exceptions
+##################
+
+
+class InvalidRoleError(KhorosError):
+    """This exception is used when an invalid role is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The role is invalid"
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'role' in kwargs:
+            custom_msg = f"{default_msg.split('role ')[0]}'{kwargs['role']}'{default_msg.split('role')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class InvalidRoleTypeError(KhorosError):
+    """This exception is used when an invalid role type is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The role type is invalid"
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'role_type' in kwargs:
+            custom_msg = f"{default_msg.split('type ')[0]}'{kwargs['role_type']}'{default_msg.split('type ')[1]}"
+            args = (custom_msg,)
         super().__init__(*args)
 
 

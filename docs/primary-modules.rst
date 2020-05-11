@@ -13,6 +13,7 @@ which are listed below.
     * `Core Object Subclasses (khoros.core.Khoros)`_
         * `Album Subclass (khoros.core.Khoros.Album)`_
         * `Message Subclass (khoros.core.Khoros.Message)`_
+        * `Role Subclass (khoros.core.Khoros.Role)`_
         * `User Subclass (khoros.core.Khoros.User)`_
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
@@ -27,6 +28,7 @@ which are listed below.
     * `Albums Module (khoros.objects.albums)`_
     * `Attachments Module (khoros.objects.attachments)`_
     * `Messages Module (khoros.objects.messages)`_
+    * `Roles Module (khoros.objects.roles)`_
     * `Users Module (khoros.objects.users)`_
 
 |
@@ -114,6 +116,15 @@ Album Subclass (khoros.core.Khoros.Album)
 Message Subclass (khoros.core.Khoros.Message)
 ---------------------------------------------
 .. autoclass:: khoros.core::Khoros.Message
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Role Subclass (khoros.core.Khoros.Role)
+---------------------------------------
+.. autoclass:: khoros.core::Khoros.Role
    :members:
 
 :doc:`Return to Top <primary-modules>`
@@ -271,6 +282,17 @@ Messages Module (khoros.objects.messages)
 This module includes functions that handle messages within a Khoros Community environment.
 
 .. automodule:: khoros.objects.messages
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Roles Module (khoros.objects.roles)
+===================================
+This module includes functions that handle roles and permissions.
+
+.. automodule:: khoros.objects.roles
    :members:
 
 :doc:`Return to Top <primary-modules>`
