@@ -237,6 +237,7 @@ def test_relative_content_url_without_object():
     return
 
 
+@pytest.mark.skip(reason="Session key doesn't work in GitHub Actions CI.")
 def test_relative_content_url_with_object():
     """This function tests creating a content mention with a relative content URL but with a Khoros object.
 
@@ -337,6 +338,7 @@ def test_user_mention_with_dictionary_no_object():
     return
 
 
+@pytest.mark.skip(reason="Session key doesn't work in GitHub Actions CI.")
 def test_user_mention_with_dict_and_object():
     """This function tests creating a user mention with one key value pair and with a Khoros object.
 

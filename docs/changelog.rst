@@ -53,6 +53,10 @@ Additions to the documentation.
 * Added :py:mod:`khoros.objects.roles` to the :doc:`Primary Modules <primary-modules>` page.
 * Added :py:mod:`khoros.core.Khoros.Role` to the :doc:`Primary Modules <primary-modules>` page.
 
+General
+-------
+* Added a code coverage section to the ``pythonpackage.yml`` file.
+
 Changed
 =======
 
