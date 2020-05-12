@@ -46,5 +46,10 @@ jobs:
         KHOROS_SESSION_USER: ${{ secrets.KHOROS_SESSION_USER }}
         KHOROS_SESSION_PW: ${{ secrets.KHOROS_SESSION_PW }}
 
+    - name: Code coverage
+      run: |
+        pip install codecov
+        codecov -t cf4db87f-2b53-498c-92a6-1eb55d00a8a7
+
     - name: PyCharm Python Security Scanner
       uses: tonybaloney/pycharm-security@1.14.0
