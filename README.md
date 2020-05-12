@@ -29,6 +29,14 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         </td>
     </tr>
     <tr>
+        <td>Code Coverage</td>
+        <td>
+            <a href="https://codecov.io/gh/jeffshurtliff/khoros">
+                <img src="https://codecov.io/gh/jeffshurtliff/khoros/branch/master/graph/badge.svg" />
+            </a>
+        </td>
+    </tr>
+    <tr>
         <td>Documentation</td>
         <td>
             <a href='https://khoros.readthedocs.io/en/latest/?badge=latest'>

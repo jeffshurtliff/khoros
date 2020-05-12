@@ -52,10 +52,12 @@ Additions to the documentation.
 * Added :py:mod:`khoros.utils.tests.test_mentions` to the :doc:`Support Modules <supporting-modules>` page.
 * Added :py:mod:`khoros.objects.roles` to the :doc:`Primary Modules <primary-modules>` page.
 * Added :py:mod:`khoros.core.Khoros.Role` to the :doc:`Primary Modules <primary-modules>` page.
+* Added a code coverage badge to the `README.md <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ file.
 
 General
 -------
 * Added a code coverage section to the ``pythonpackage.yml`` file.
+* Added the `codecov.yml <https://github.com/jeffshurtliff/khoros/blob/master/codecov.yml>`_ file for coverage reports.
 
 Changed
 =======
