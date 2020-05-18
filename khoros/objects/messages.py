@@ -118,24 +118,7 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
-    outcome = api.query_successful(response)
-    if return_id or return_url or return_api_url or return_http_code:
-        return_values = {
-            'return_id': parse_v2_response(response, message_id=True),
-            'return_url': parse_v2_response(response, message_url=True),
-            'return_api_url': parse_v2_response(response, message_api_uri=True),
-            'return_http_code': parse_v2_response(response, http_code=True)
-        }
-        data_to_return = []
-        return_booleans = {'return_id': return_id, 'return_url': return_url,
-                           'return_http_code': return_http_code, 'return_api_url': return_api_url}
-        for return_key, return_value in return_booleans.items():
-            if return_value:
-                data_to_return.append(return_values.get(return_key))
-        outcome = tuple(data_to_return)
-        if len(data_to_return) == 1:
-            outcome = outcome[0]
-    return response if full_response else outcome
+    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code)
 
 
 def construct_payload(subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
@@ -288,6 +271,9 @@ def parse_v2_response(json_response, return_dict=False, status=False, response_m
                       message_id=False, message_url=False, message_api_uri=False, v2_base=''):
     """This function parses an API response for a message operation (e.g. creating a message) and returns parsed data.
 
+    .. deprecated:: 2.5.0
+       Use the :py:func:`khoros.api.parse_v2_response` function instead.
+
     .. versionadded:: 2.3.0
 
     :param json_response: The API response in JSON format
@@ -311,31 +297,9 @@ def parse_v2_response(json_response, return_dict=False, status=False, response_m
     :returns: A string, tuple or dictionary with the parsed data
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
-    parsed_data = {}
-    fields = {
-        'status': (status, ('status',)),
-        'response_msg': (response_msg, ('message',)),
-        'http_code': (http_code, ('http_code',)),
-        'message_id': (message_id, ('data', 'id')),
-        'message_url': (message_url, ('data', 'view_href')),
-        'message_api_uri': (message_api_uri, ('data', 'href'))
-    }
-    _confirm_field_supplied(fields)
-    for field, info in fields.items():
-        requested, json_path = info[0], info[1]
-        if requested:
-            if len(json_path) == 1:
-                value = json_response[json_path[0]]
-            else:
-                value = json_response[json_path[0]][json_path[1]]
-            parsed_data[field] = value
-    if 'message_api_uri' in parsed_data and v2_base != '':
-        parsed_data['message_api_uri'] = f"{v2_base}/{parsed_data.get('message_api_uri')}"
-    if not return_dict:
-        parsed_data = tuple(list(parsed_data.values()))
-        if len(parsed_data) == 1:
-            parsed_data = parsed_data[0]
-    return parsed_data
+    warnings.warn(f"This function is deprecated and 'khoros.api.parse_v2_response' should be used.", DeprecationWarning)
+    return api.parse_v2_response(json_response, return_dict, status, response_msg, http_code, message_id, message_url,
+                                 message_api_uri, v2_base)
 
 
 def get_id_from_url(url):

@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     17 May 2020
 """
 
 import os
@@ -197,3 +197,79 @@ def get_file_type(file_path):
     else:
         raise FileNotFoundError(f"Unable to locate the following file: {file_path}")
     return file_type
+
+
+def convert_dict_id_values_to_strings(dict_list):
+    """This function ensures that the ``id`` keys in a list of dictionaries use string values.
+
+    :param dict_list: List (or tuple) of dictionaries (or a single dictionary) containing API object data
+    :type dict_list: list, tuple, dict, None
+    :returns: A new dictionary list with properly formatted ``id`` values
+    :raises: :py:exc:`TypeError`
+    """
+    dict_list = [dict_list] if isinstance(dict_list, dict) else dict_list
+    new_dict_list = []
+    for single_dict in dict_list:
+        if not isinstance(single_dict, dict):
+            raise TypeError("The 'dict_list' argument must be a dictionary or a list of dictionaries.")
+        if 'id' in single_dict and not isinstance(single_dict.get('id'), str):
+            single_dict['id'] = str(single_dict.get('id'))
+        new_dict_list.append(single_dict)
+    return new_dict_list
+
+
+def convert_list_values(values_list, convert_to='str', split_values=False, split_delimiter=','):
+    """This function converts the values in a list to a different type.
+
+    :param values_list: The list of values to be converted
+    :type values_list: list, tuple, set
+    :param convert_to: One of the following types: ``str`` (Default), ``int``, ``float``, ``tuple`` or ``set``
+    :param split_values: Determines if the values should be split with a specific delimiter (``False`` by default)
+
+                         .. note:: This only applies when converting to the ``tuple`` or ``set`` types.
+
+    :type split_values: bool
+    :param split_delimiter: The delimiter for which to split the values when applicable (comma by default)
+    :type split_delimiter: str
+    :returns: A new list of converted values
+    :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
+    """
+    new_list = []
+    for value in values_list:
+        if convert_to == 'str':
+            new_list.append(str(value))
+        elif convert_to == 'int':
+            new_list.append(int(value))
+        elif convert_to == 'float':
+            new_list.append(float(value))
+        elif convert_to == 'tuple':
+            value = tuple(value.split(split_delimiter)) if split_values else (value, )
+            new_list.append(value)
+        elif convert_to == 'set':
+            value = set(value.split(split_delimiter)) if split_values else {value}
+            new_list.append(value)
+    return new_list
+
+
+def extract_key_values_from_dict_list(key_name, dict_list, exclude_if_present=None, convert_to_string=True):
+    """This function extracts values for a specific key from a list of dictionaries.
+
+    :param key_name: The name of the dictionary key from which to extract the value(s)
+    :type key_name: str
+    :param dict_list: The list of dictionaries (or single dictionary) from which to extract the value(s)
+    :type dict_list: list, dict
+    :param exclude_if_present: Will skip extracting the key value if this given key is also present (Optional)
+    :type exclude_if_present: str, None
+    :param convert_to_string: Determines if the values should be converted to string format (``True`` by default)
+    :type convert_to_string: bool
+    :returns: A list of values extracted from the dictionary list for the given key
+    :raises: :py:exc:`TypeError`
+    """
+    value_list, dict_list = [], [dict_list] if isinstance(dict_list, dict) else dict_list
+    for single_dict in dict_list:
+        if key_name in single_dict:
+            skip_dict = True if exclude_if_present and exclude_if_present in single_dict else False
+            if not skip_dict:
+                key_value = str(single_dict.get(key_name)) if convert_to_string else single_dict.get(key_name)
+                value_list.append(key_value)
+    return value_list

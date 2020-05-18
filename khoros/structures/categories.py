@@ -6,11 +6,39 @@
 :Example:           ``category_id = categories.get_category_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     16 May 2020
 """
 
 from . import base
-from .. import liql, errors
+from .. import api, liql, errors
+
+
+def create(khoros_object, category_id, category_title, parent_id=None, return_json=True):
+    """This function creates a new category.
+
+    .. versionadded:: 2.5.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param category_id: The Category ID of the new category (e.g. ``video-games``)
+    :type category_id: str
+    :param category_title: The title of the new category (e.g. ``Video Games``)
+    :type category_title: str
+    :param parent_id: The Category ID of the parent category (optional)
+    :type parent_id: str, None
+    :param return_json: Determines whether or not the response should be returned in JSON format (``True`` by default)
+    :type return_json: bool
+    :returns: The response from the API call
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`
+    """
+    parent_url = f"categories/id/{parent_id}/" if parent_id else ""
+    endpoint = f"{parent_url}categories/add"
+    query_params = {
+        'category.id': category_id,
+        'category.title': category_title
+    }
+    return api.make_v1_request(khoros_object, endpoint, query_params, 'POST', return_json)
 
 
 def get_category_id(url):

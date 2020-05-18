@@ -6,7 +6,7 @@
 :Example:           ``node_id = nodes.get_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     16 May 2020
 """
 
 import re

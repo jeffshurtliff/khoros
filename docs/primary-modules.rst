@@ -20,6 +20,7 @@ which are listed below.
 * `LiQL Module (khoros.liql)`_
 * `Structures Module (khoros.structures)`_
     * `Base Structures Module (khoros.structures.base)`_
+    * `Boards Module (khoros.structures.boards)`_
     * `Categories Module (khoros.structures.categories)`_
     * `Communities Module (khoros.structures.communities)`_
     * `Nodes Module (khoros.structures.nodes)`_
@@ -193,6 +194,17 @@ Base Structures Module (khoros.structures.base)
 This module contains functions relating to structures. (i.e. categories, nodes and tenants/communities)
 
 .. automodule:: khoros.structures.base
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Boards Module (khoros.structures.boards)
+========================================
+This module contains functions specific to boards within the Khoros Community platform.
+
+.. automodule:: khoros.structures.boards
    :members:
 
 :doc:`Return to Top <primary-modules>`

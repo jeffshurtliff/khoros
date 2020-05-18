@@ -4,6 +4,110 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.5.0
+******
+**Release Date: 2020-05-18**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.api` module:
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.api.encode_v1_query_string`
+    * :py:func:`khoros.api.deliver_v2_results`
+    * :py:func:`khoros.api.parse_v2_response`
+    * :py:func:`khoros.api._api_request_without_payload`
+    * :py:func:`khoros.api._report_failed_attempt`
+    * :py:func:`khoros.api._raise_exception_for_repeated_timeouts`
+    * :py:func:`khoros.api._attempt_json_conversion`
+* Added the following functions to the :py:mod:`khoros.objects.users` module:
+    * :py:func:`khoros.objects.users.structure_user_dict_list`
+    * :py:func:`khoros.objects.users.get_ids_from_login_list`
+* Added the new :py:mod:`khoros.structures.boards` module with the following functions:
+    * :py:func:`khoros.structures.boards.create`
+    * :py:func:`khoros.structures.boards.structure_payload`
+    * :py:func:`khoros.structures.boards._structure_id_and_title`
+    * :py:func:`khoros.structures.boards._structure_discussion_style`
+    * :py:func:`khoros.structures.boards._structure_parent_category`
+    * :py:func:`khoros.structures.boards._structure_simple_fields`
+    * :py:func:`khoros.structures.boards._structure_label_settings`
+    * :py:func:`khoros.structures.boards._structure_blog_settings`
+    * :py:func:`khoros.structures.boards._structure_contest_settings`
+    * :py:func:`khoros.structures.boards._warn_about_ignored_settings`
+* Added the :py:func:`khoros.structures.categories.create` function.
+* Added :py:meth:`khoros.core.Khoros.Category.create` method.
+* Added the :py:meth:`khoros.core.Khoros.User.get_ids_from_login_list` method.
+* Added the :py:class:`khoros.core.Khoros.Board` class with the
+  :py:meth:`khoros.core.Khoros.Board.create` method.
+* Added the :py:meth:`khoros.core.Khoros._import_board_class` method and accompanying method call.
+
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.core_utils.convert_dict_id_values_to_strings` function.
+* Added the :py:func:`khoros.utils.core_utils.extract_key_values_from_dict_list` function.
+* Added the :py:func:`khoros.utils.core_utils.convert_list_values` function.
+* Added the :py:mod:`khoros.utils.tests.test_core_utils` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_core_utils.set_package_path`
+    * :py:func:`khoros.utils.tests.test_core_utils.import_core_utils`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_url_encoding`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_query_string_encoding`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_numeric_eval`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_convert_set`
+    * :py:func:`khoros.utils.tests.test_core_utils._check_type_and_items`
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.structures.boards` module to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.utils.tests.test_core_utils` module to the
+  :doc:`Supporting Modules <supporting-modules>` page.
+* Added a docstring to the :py:func:`khoros.api._get_json_query_string` function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api.post_request_with_retries`, :py:func:`khoros.api.put_request_with_retries` and
+  :py:func:`khoros.api._api_request_with_payload` functions to perform the API requests even if no JSON payload is
+  provided, and to leverage the new :py:func:`khoros.api._report_failed_attempt` and
+  :py:func:`khoros.api._raise_exception_for_repeated_timeouts` functions.
+* Updated the :py:func:`khoros.api.get_request_with_retries` function to leverage the new
+  :py:func:`khoros.api._report_failed_attempt` and :py:func:`khoros.api._raise_exception_for_repeated_timeouts`
+  functions.
+* Updated the :py:func:`khoros.api.get_request_with_retries`, :py:func:`khoros.api.post_request_with_retries` and
+  :py:func:`khoros.api.put_request_with_retries` functions to utilize the
+  :py:func:`khoros.api._attempt_json_conversion` function.
+* Updated the :py:func:`khoros.objects.messages.create` to leverage the :py:func:`khoros.api.parse_v2_response`
+  function.
+* Added the :py:mod:`khoros.structures.boards` module to the ``__all__`` special variable in the
+  :py:mod:`khoros.structures` (i.e. ``__init__.py``) module and imported it by default.
+
+Deprecated
+==========
+
+Primary Modules
+---------------
+Deprecations in the :doc:`primary modules <primary-modules>`.
+
+* Deprecated the :py:func:`khoros.core.Khoros.Message.parse_v2_response` function as it was replaced with the
+  :py:func:`khoros.core.Khoros.parse_v2_response` function which is a bit more generalized.
+* Deprecated the :py:func:`khoros.objects.messages.parse_v2_response` function as it was replaced with the
+  :py:func:`khoros.api.parse_v2_response` function which is a bit more generalized.
+
+|
+
+******
 v2.4.0
 ******
 **Release Date: 2020-05-11**

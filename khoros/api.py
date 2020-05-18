@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 May 2020
+:Modified Date:     16 May 2020
 """
 
 import json
@@ -39,7 +39,7 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :returns: A dictionary with the header fields and associated values
     """
     if not khoros_object and not auth_dict:
-        raise errors.exceptions.MissingAuthDataError
+        raise errors.exceptions.MissingAuthDataError()
     else:
         if auth_dict:
             headers = auth_dict['header']
@@ -57,7 +57,14 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
 
 
 def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
-    # TODO: Add a docstring for the function
+    """This function constructs a query string for a Community API v1 query that should return JSON responses.
+
+    :param _return_json: Indicates whether or not API responses should be in JSON format
+    :type _return_json: bool
+    :param _include_ampersand_prefix: Determines if an ampersand (``&``) prefix should be included in the string
+    :type _include_ampersand_prefix: bool
+    :returns: The formatted query string
+    """
     _query_strings = {True: 'restapi.response_format=json', False: ''}
     _prefixes = {True: '&', False: ''}
     _query_string = ''
@@ -68,6 +75,9 @@ def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
 
 def get_request_with_retries(query_url, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.5.0
+       Leverages new private functions and has improved error handling of JSON conversion attempts.
 
     :param query_url: The URI to be queried
     :type query_url: str
@@ -83,37 +93,26 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
-    # Define the request headers
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
-
-    # Perform the GET request
     retries = 0
     while retries <= 5:
         try:
             response = requests.get(query_url, headers=headers)
             break
         except Exception as exc_msg:
-            exc_name = type(exc_msg).__name__
-            if 'connect' not in exc_name.lower():
-                raise Exception(f"{exc_name}: {exc_msg}")
-            current_attempt = f"(Attempt {retries} of 5)"
-            error_msg = f"The GET request failed with the exception below. {current_attempt}"
-            errors.handlers.eprint(f"{error_msg}\n{exc_name}: {exc_msg}\n")
+            _report_failed_attempt(exc_msg, 'get', retries)
             retries += 1
             pass
     if retries == 6:
-        failure_msg = "The API call was unable to complete successfully after five consecutive API timeouts " + \
-                      "and/or failures. Please call the function again or contact Khoros Support."
-        raise errors.exceptions.APIConnectionError(failure_msg)
-
-    # Convert to JSON if specified
-    if return_json and type(response) != dict:
-        response = response.json()
-    return response
+        _raise_exception_for_repeated_timeouts()
+    return _attempt_json_conversion(response, return_json)
 
 
-def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _multipart=False):
+def _api_request_with_payload(_url, _payload=None, _request_type='post', _headers=None, _multipart=False):
     """This function performs an API request while supplying a JSON payload.
+
+    .. versionchanged:: 2.5.0
+       The function can now be called without supplying a JSON payload.
 
     .. versionchanged:: 2.3.0
        Added the ability to perform multipart/form-data queries.
@@ -121,7 +120,7 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
     :param _url: The URI to be queried
     :type _url: str
     :param _payload: The payload that accompanies the API call
-    :type _payload: dict, str
+    :type _payload: dict, str, None
     :param _request_type: Define the type of API call (e.g. ``get``, ``post`` or ``put``)
     :type _request_type: str
     :param _headers: Any predefined headers to be passed with the API call (optional)
@@ -134,41 +133,102 @@ def _api_request_with_payload(_url, _payload, _request_type, _headers=None, _mul
     """
     _headers = {} if not _headers else _headers
     _retries = 0
-    while _retries <= 5:
-        try:
-            if _request_type.lower() == "put":
-                if _multipart:
-                    _response = requests.put(_url, files=_payload, headers=_headers)
+    if not _payload:
+        _response = _api_request_without_payload(_url, _request_type, _headers)
+    else:
+        while _retries <= 5:
+            try:
+                if _request_type.lower() == "put":
+                    if _multipart:
+                        _response = requests.put(_url, files=_payload, headers=_headers)
+                    else:
+                        _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
+                elif _request_type.lower() == "post":
+                    if _multipart:
+                        _response = requests.post(_url, files=_payload, headers=_headers)
+                    else:
+                        _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
                 else:
-                    _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
-            elif _request_type.lower() == "post":
-                if _multipart:
-                    _response = requests.post(_url, files=_payload, headers=_headers)
-                else:
-                    _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
-            else:
-                raise errors.exceptions.InvalidRequestTypeError
-            break
-        except Exception as _exc_msg:
-            _exc_name = type(_exc_msg).__name__
-            if 'connect' not in _exc_name.lower():
-                raise Exception(f"{_exc_name}: {_exc_msg}")
-            _current_attempt = f"(Attempt {_retries} of 5)"
-            _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
-                         f"{_exc_name}: {_exc_msg} {_current_attempt}"
-            errors.handlers.eprint(f"{_error_msg}\n{_exc_name}: {_exc_msg}\n")
-            _retries += 1
-            pass
-    if _retries == 6:
-        _failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
-                       "Please run the script again or contact Khoros Support for further assistance."
-        raise errors.exceptions.APIConnectionError(_failure_msg)
+                    raise errors.exceptions.InvalidRequestTypeError()
+                break
+            except Exception as _exc_msg:
+                _report_failed_attempt(_exc_msg, _request_type, _retries)
+                _retries += 1
+                pass
+        if _retries == 6:
+            _raise_exception_for_repeated_timeouts()
     return _response
 
 
-def post_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None,
+def _api_request_without_payload(_url, _request_type, _headers):
+    """This function performs a ``POST`` or ``PUT`` request without an accompanying JSON payload.
+
+    :param _url: The URL for the API request
+    :type _url: str
+    :param _request_type: The request type (e.g. ``post`` or ``put``)
+    :type _request_type: str
+    :param _headers: The headers associated with the API request
+    :type _headers: dict
+    :returns: The API response
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`
+    """
+    _retries = 0
+    while _retries <= 5:
+        try:
+            if _request_type.lower() == "post":
+                _response = requests.post(_url, headers=_headers)
+            elif _request_type.lower() == "put":
+                _response = requests.put(_url, headers=_headers)
+            else:
+                raise errors.exceptions.InvalidRequestTypeError()
+            break
+        except Exception as _exc_msg:
+            _report_failed_attempt(_exc_msg, _request_type, _retries)
+            _retries += 1
+            pass
+    if _retries == 6:
+        _raise_exception_for_repeated_timeouts()
+    return _response
+
+
+def _report_failed_attempt(_exc_msg, _request_type, _retries):
+    """This function reports a failed API call that will be retried.
+
+    :param _exc_msg: The exception that was raised can captured within a try/except clause
+    :param _request_type: The type of API request (e.g. ``post``, ``put`` or ``get``)
+    :type _request_type: str
+    :param _retries: The attempt number for the API request
+    :type _retries: int
+    :returns: None
+    """
+    _exc_name = type(_exc_msg).__name__
+    if 'connect' not in _exc_name.lower():
+        raise Exception(f"{_exc_name}: {_exc_msg}")
+    _current_attempt = f"(Attempt {_retries} of 5)"
+    _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
+                 f"{_exc_name}: {_exc_msg} {_current_attempt}"
+    errors.handlers.eprint(f"{_error_msg}\n{_exc_name}: {_exc_msg}\n")
+    return
+
+
+def _raise_exception_for_repeated_timeouts():
+    """This function raises an exception when all API attempts (including) retries resulted in a timeout.
+
+    :returns: None
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`
+    """
+    _failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
+                   "Please run the script again or contact Khoros Support for further assistance."
+    raise errors.exceptions.APIConnectionError(_failure_msg)
+
+
+def post_request_with_retries(url, json_payload=None, return_json=True, khoros_object=None, auth_dict=None,
                               headers=None, multipart=False):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.5.0
+       The function can now be called without supplying a JSON payload.
 
     .. versionchanged:: 2.3.0
        Added the ability to perform multipart/form-data queries.
@@ -176,7 +236,7 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the POST request in JSON format
-    :type json_payload: dict
+    :type json_payload: dict, None
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -193,18 +253,15 @@ def post_request_with_retries(url, json_payload, return_json=True, khoros_object
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
     response = _api_request_with_payload(url, json_payload, 'post', headers, multipart)
-    if return_json and type(response) != dict:
-        try:
-            response = response.json()
-        except Exception as exc_msg:
-            exc_name = type(exc_msg).__name__
-            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {exc_name}: {exc_msg}")
-    return response
+    return _attempt_json_conversion(response, return_json)
 
 
-def put_request_with_retries(url, json_payload, return_json=True, khoros_object=None, auth_dict=None,
+def put_request_with_retries(url, json_payload=None, return_json=True, khoros_object=None, auth_dict=None,
                              headers=None, multipart=False):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.5.0
+       The function can now be called without supplying a JSON payload.
 
     .. versionchanged:: 2.3.0
        Added the ability to perform multipart/form-data queries.
@@ -212,7 +269,7 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the PUT request in JSON format
-    :type json_payload: dict
+    :type json_payload: dict, None
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -229,13 +286,26 @@ def put_request_with_retries(url, json_payload, return_json=True, khoros_object=
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
     response = _api_request_with_payload(url, json_payload, 'put', headers, multipart)
-    if return_json and type(response) != dict:
+    return _attempt_json_conversion(response, return_json)
+
+
+def _attempt_json_conversion(_response, _return_json):
+    """This function attempts to convert an API response to JSON if requested.
+
+    .. versionadded:: 2.5.0
+
+    :param _response: The API response to be converted
+    :param _return_json: Indicates whether or not the API response should be converted
+    :type _return_json: bool
+    :returns: The API response that has been converted to JSON or in its original format if unable to convert
+    """
+    if _return_json and not isinstance(_response, dict):
         try:
-            response = response.json()
-        except Exception as exc_msg:
-            exc_name = type(exc_msg).__name__
-            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {exc_name}: {exc_msg}")
-    return response
+            _response = _response.json()
+        except Exception as _exc_msg:
+            _exc_name = type(_exc_msg).__name__
+            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {_exc_name}: {_exc_msg}")
+    return _response
 
 
 def query_successful(api_response):
@@ -338,3 +408,188 @@ def encode_multipart_data(data_fields):
     :returns: The encoded data for use by the :py:mod:`requests` library
     """
     return MultipartEncoder(fields=data_fields)
+
+
+def encode_v1_query_string(query_dict, return_json=True):
+    """This function formats and URL-encodes a Community API v1 quey string.
+
+    .. versionadded:: 2.5.0
+
+    :param query_dict: A dictionary with the query fields and associated values
+    :type query_dict: dict
+    :param return_json: Determines if JSON should be returned rather than XML (default: ``True``)
+    :type return_json: bool
+    :returns: The properly formatted and encoded query string
+    """
+    if return_json:
+        query_dict['restapi.response_format'] = 'json'
+    return core_utils.encode_query_string(query_dict)
+
+
+def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', return_json=True):
+    """This function makes a Community API v1 request.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param endpoint: The API endpoint to be queried
+    :type endpoint: str
+    :param query_params: The field and associated values to be leveraged in the query string
+    :type query_params: dict
+    :param request_type: Determines which type of API request to perform (e.g. ``GET``, ``POST``, ``PUT``, etc.)
+    :type request_type: str
+    :param return_json: Determines if the response should be returned in JSON format rather than the default
+    :type return_json: bool
+    :returns: The API response
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+             :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+    """
+    currently_unsupported_types = ['UPDATE', 'PATCH', 'DELETE']
+    query_string = encode_v1_query_string(query_params, return_json)
+    header = {"Content-Type": "application/x-www-form-urlencoded"}
+    url = f"{khoros_object.core['v1_base']}/{endpoint}?{query_string}"
+    print(url)
+    if request_type.upper() == 'GET':
+        response = get_request_with_retries(url, return_json, khoros_object, headers=header)
+    elif request_type.upper() == 'POST':
+        response = post_request_with_retries(url, return_json=return_json, khoros_object=khoros_object, headers=header)
+    elif request_type.upper() == 'PUT':
+        response = put_request_with_retries(url, return_json=return_json, khoros_object=khoros_object, headers=header)
+    elif request_type.upper() in currently_unsupported_types:
+        errors.exceptions.CurrentlyUnsupportedError()
+    else:
+        raise errors.exceptions.InvalidRequestTypeError()
+    # TODO: Verify successful response
+    return response
+
+
+def deliver_v2_results(response, full_response=None, return_id=None, return_url=None, return_api_url=None,
+                       return_http_code=None, return_status=None, return_developer_message=None):
+    """This function parses a Community API v2 response and returned specific data based on the function arguments.
+
+    .. versionadded:: 2.5.0
+       The code for this function was extracted from the :py:func:`khoros.objects.messages.create` function.
+
+    :param response: The API response to be parsed
+    :param full_response: Determines if the full raw API response should be returned
+    :type full_response: bool, None
+    :param return_id: Determines if the ``id`` field value should be returned
+    :type return_id: bool, None
+    :param return_url: Determines if the ``view_href`` field value should be returned
+    :type return_url: bool, None
+    :param return_api_url: Determines if the ``href`` field value should be returned
+    :type return_api_url: bool, None
+    :param return_http_code: Determines if the ``http_code`` field value should be returned
+    :type return_http_code: bool, None
+    :param return_status: Determines if the ``http_code`` field value should be returned
+    :type return_status: bool, None
+    :param return_developer_message: Determines if the ``http_code`` field value should be returned
+    :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
+              fields defined by function arguments
+    """
+    outcome = query_successful(response)
+    if any((return_id, return_url, return_api_url, return_http_code, return_status, return_developer_message)):
+        return_values = {
+            'return_id': parse_v2_response(response, data_id=True),
+            'return_url': parse_v2_response(response, data_url=True),
+            'return_api_url': parse_v2_response(response, data_api_uri=True),
+            'return_http_code': parse_v2_response(response, http_code=True),
+            'return_status': parse_v2_response(response, status=True),
+            'return_developer_message': parse_v2_response(response, developer_msg=True),
+        }
+        data_to_return = []
+        return_booleans = {
+            'return_id': return_id,
+            'return_url': return_url,
+            'return_http_code': return_http_code,
+            'return_api_url': return_api_url,
+            'return_status': return_status,
+            'return_developer_message': return_developer_message,
+        }
+        for return_key, return_value in return_booleans.items():
+            if return_value:
+                data_to_return.append(return_values.get(return_key))
+        outcome = tuple(data_to_return)
+        if len(data_to_return) == 1:
+            outcome = outcome[0]
+    return response if full_response else outcome
+
+
+def parse_v2_response(json_response, return_dict=False, status=False, developer_msg=False, http_code=False,
+                      data_id=False, data_url=False, data_api_uri=False, v2_base=''):
+    """This function parses an API response for a Community API v2 operation and returns parsed data.
+
+    .. versionchanged:: 2.5.0
+       Moved from the :py:mod:`khoros.objects.messages` module to :py:mod:`khoros.api` and expanded the scope to
+       apply to most Community API v2 API responses.
+
+    .. versionadded:: 2.3.0
+
+    :param json_response: The API response in JSON format
+    :type json_response: dict
+    :param return_dict: Defines if the parsed data should be returned within a dictionary
+    :type return_dict: bool
+    :param status: Defines if the **status** value should be returned
+    :type status: bool
+    :param developer_msg: Defines if the **developer response** message should be returned
+    :type developer_msg: bool
+    :param http_code: Defines if the **HTTP status code** should be returned
+    :type http_code: bool
+    :param data_id: Defines if the **ID** should be returned
+    :type data_id: bool
+    :param data_url: Defines if the **URL** should be returned
+    :type data_url: bool
+    :param data_api_uri: Defines if the **API URI** should be returned
+    :type data_api_uri: bool
+    :param v2_base: The base URL for the API v2
+    :type v2_base: str
+    :returns: A string, tuple or dictionary with the parsed data
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    parsed_data = {}
+    fields = {
+        'status': (status, ('status',)),
+        'developer_msg': (developer_msg, ('message',)),
+        'http_code': (http_code, ('http_code',)),
+        'data_id': (data_id, ('data', 'id')),
+        'data_url': (data_url, ('data', 'view_href')),
+        'data_api_uri': (data_api_uri, ('data', 'href')),
+    }
+    _confirm_field_supplied(fields)
+    for field, info in fields.items():
+        requested, json_path = info[0], info[1]
+        if requested:
+            if len(json_path) == 1:
+                value = json_response[json_path[0]]
+            else:
+                value = json_response[json_path[0]][json_path[1]]
+            parsed_data[field] = value
+    if 'data_api_uri' in parsed_data and v2_base != '':
+        parsed_data['data_api_uri'] = f"{v2_base}/{parsed_data.get('data_api_uri')}"
+    if not return_dict:
+        parsed_data = tuple(list(parsed_data.values()))
+        if len(parsed_data) == 1:
+            parsed_data = parsed_data[0]
+    return parsed_data
+
+
+def _confirm_field_supplied(_fields_dict):
+    """This function checks to ensure that at least one field has been enabled to retrieve.
+
+    .. versionchanged:: 2.5.0
+       Moved from the :py:mod:`khoros.objects.messages` module to :py:mod:`khoros.api`.
+
+    .. versionadded:: 2.3.0
+    """
+    _field_supplied = False
+    for _field_value in _fields_dict.values():
+        if _field_value[0]:
+            _field_supplied = True
+            break
+    if not _field_supplied:
+        raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
+    return

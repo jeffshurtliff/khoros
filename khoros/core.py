@@ -6,12 +6,13 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 May 2020
+:Modified Date:     18 May 2020
 """
 
 import sys
 import copy
 import logging
+import warnings
 
 from . import auth, errors, liql, api
 from . import objects as objects_module
@@ -197,6 +198,7 @@ class Khoros(object):
 
         # Import inner object classes so their methods can be called from the primary object
         self.albums = self._import_album_class()
+        self.boards = self._import_board_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
         self.messages = self._import_message_class()
@@ -312,6 +314,14 @@ class Khoros(object):
         .. versionadded:: 2.3.0
         """
         return Khoros.Album(self)
+
+    def _import_board_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Board` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 2.5.0
+        """
+        return Khoros.Board(self)
 
     def _import_category_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Category` inner class to be utilized in the
@@ -471,6 +481,37 @@ class Khoros(object):
         """
         return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
+    @staticmethod
+    def parse_v2_response(json_response, return_dict=False, status=False, developer_msg=False, http_code=False,
+                          data_id=False, data_url=False, data_api_uri=False, v2_base=''):
+        """This function parses an API response for a Community API v2 operation and returns parsed data.
+
+        .. versionadded:: 2.5.0
+
+        :param json_response: The API response in JSON format
+        :type json_response: dict
+        :param return_dict: Defines if the parsed data should be returned within a dictionary
+        :type return_dict: bool
+        :param status: Defines if the **status** value should be returned
+        :type status: bool
+        :param developer_msg: Defines if the **developer response** message should be returned
+        :type developer_msg: bool
+        :param http_code: Defines if the **HTTP status code** should be returned
+        :type http_code: bool
+        :param data_id: Defines if the **ID** should be returned
+        :type data_id: bool
+        :param data_url: Defines if the **URL** should be returned
+        :type data_url: bool
+        :param data_api_uri: Defines if the **API URI** should be returned
+        :type data_api_uri: bool
+        :param v2_base: The base URL for the API v2
+        :type v2_base: str
+        :returns: A string, tuple or dictionary with the parsed data
+        :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+        """
+        return api.parse_v2_response(json_response, return_dict, status, developer_msg, http_code, data_id, data_url,
+                                     data_api_uri, v2_base)
+
     class Album(object):
         """This class includes methods for interacting with the `albums <https://rsa.im/2WAewBP>`_ collection."""
         def __init__(self, khoros_object):
@@ -536,6 +577,121 @@ class Khoros(object):
             return objects_module.albums.get_albums_for_user(self.khoros_object, user_id, login, public, private,
                                                              verify_success, allow_exceptions)
 
+    class Board(object):
+        """This class includes methods for interacting with boards."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Board` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def create(self, board_id, board_title, discussion_style, description=None, parent_category_id=None,
+                   hidden=None, allowed_labels=None, use_freeform_labels=None, use_predefined_labels=None,
+                   predefined_labels=None, media_type=None, blog_authors=None, blog_author_ids=None,
+                   blog_author_logins=None, blog_comments_enabled=None, blog_moderators=None, blog_moderator_ids=None,
+                   blog_moderator_logins=None, one_entry_per_contest=None, one_kudo_per_contest=None,
+                   posting_date_end=None, posting_date_start=None, voting_date_end=None, voting_date_start=None,
+                   winner_announced_date=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
+                   return_http_code=None, return_status=None, return_developer_message=None):
+            """This function creates a new board within a Khoros Community environment.
+
+            :param board_id: The unique identifier (i.e. ``id`` field) for the new board **(Required)**
+            :type board_id: str
+            :param board_title: The title of the new board **(Required)**
+            :type board_title: str
+            :param discussion_style: Defines the board as a ``blog``, ``contest``, ``forum``, ``idea``, ``qanda``
+                                     or ``tkb`` **(Required)**
+            :type discussion_style: str
+            :param description: A brief description of the board
+            :type description: str, None
+            :param parent_category_id: The ID of the parent category (if applicable)
+            :type parent_category_id: str, None
+            :param hidden: Defines whether or not the new board should be hidden from lists and menus
+                           (disabled by default)
+            :type hidden: bool, None
+            :param allowed_labels: The type of labels allowed on the board (``freeform-only``, ``predefined-only`` or
+                                   ``freeform and pre-defined``)
+            :type allowed_labels: str, None
+            :param use_freeform_labels: Determines if freeform labels should be utilized
+            :type use_freeform_labels: bool, None
+            :param use_predefined_labels: Determines if pre-defined labels should be utilized
+            :type use_predefined_labels: bool, None
+            :param predefined_labels: The pre-defined labels to utilized on the board as a list of dictionaries
+
+                                      .. todo:: The ability to provide labels as a simple list and optionally
+                                                standardize their format (e.g. Pascal Case, etc.) will be available
+                                                in a future release.
+
+            :type predefined_labels: list, None
+            :param media_type: The media type associated with a contest. (``image``, ``video`` or ``story``
+                               meaning text)
+            :type media_type: str, None
+            :param blog_authors: The approved blog authors in a blog board as a list of user data dictionaries
+            :type blog_authors: list, None
+            :param blog_author_ids: A list of User IDs representing the approved blog authors in a blog board
+            :type blog_author_ids: list, None
+            :param blog_author_logins: A list of User Logins (i.e. usernames) representing approved blog authors
+                                       in a blog board
+            :type blog_author_logins: list, None
+            :param blog_comments_enabled: Determines if comments should be enabled on blog posts within a blog board
+            :type blog_comments_enabled: bool, None
+            :param blog_moderators: The designated blog moderators in a blog board as a list of user data dictionaries
+            :type blog_moderators: list, None
+            :param blog_moderator_ids: A list of User IDs representing the blog moderators in a blog board
+            :type blog_moderator_ids: list, None
+            :param blog_moderator_logins: A list of User Logins (i.e. usernames) representing blog moderators in a
+                                          blog board
+            :type blog_moderator_logins: list, None
+            :param one_entry_per_contest: Defines whether a user can submit only one entry to a single contest
+            :type one_entry_per_contest: bool, None
+            :param one_kudo_per_contest: Defines whether a user can vote only once per contest
+            :type one_kudo_per_contest: bool, None
+            :param posting_date_end: The date/time when the contest is closed to submissions
+            :type posting_date_end: type[datetime.datetime], None
+            :param posting_date_start: The date/time when the voting period for a contest begins
+            :type posting_date_start: type[datetime.datetime], None
+            :param voting_date_end: The date/time when the voting period for a contest ends
+            :type voting_date_end: type[datetime.datetime], None
+            :param voting_date_start: The date/time when the voting period for a contest begins
+            :type voting_date_start: type[datetime.datetime], None
+            :param winner_announced_date: The date/time the contest winner will be announced
+            :type winner_announced_date: type[datetime.datetime], None
+            :param full_response: Determines whether the full, raw API response should be returned by the function
+            :type full_response: bool, None
+            :param return_id: Determines if the **ID** of the new board should be returned by the function
+            :type return_id: bool, None
+            :param return_url: Determines if the **URL** of the new board should be returned by the function
+            :type return_url: bool, None
+            :param return_api_url: Determines if the **API URL** of the new board should be returned by the function
+            :type return_api_url: bool, None
+            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned by
+                                     the function
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_developer_message: Determines if the **Developer Response Message** (if any) associated with
+                   the API response should be returned by the function
+            :type return_developer_message: bool, None
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+                     :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return structures_module.boards.create(self.khoros_object, board_id, board_title, discussion_style,
+                                                   description, parent_category_id, hidden, allowed_labels,
+                                                   use_freeform_labels, use_predefined_labels, predefined_labels,
+                                                   media_type, blog_authors, blog_author_ids, blog_author_logins,
+                                                   blog_comments_enabled, blog_moderators, blog_moderator_ids,
+                                                   blog_moderator_logins, one_entry_per_contest, one_kudo_per_contest,
+                                                   posting_date_end, posting_date_start, voting_date_end,
+                                                   voting_date_start, winner_announced_date, full_response, return_id,
+                                                   return_url, return_api_url, return_http_code, return_status,
+                                                   return_developer_message)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):
@@ -545,6 +701,27 @@ class Khoros(object):
             :type khoros_object: class[khoros.Khoros]
             """
             self.khoros_object = khoros_object
+
+        def create(self, category_id, category_title, parent_id=None, return_json=True):
+            """This function creates a new category.
+
+            .. versionadded:: 2.5.0
+
+            :param category_id: The Category ID of the new category (e.g. ``video-games``)
+            :type category_id: str
+            :param category_title: The title of the new category (e.g. ``Video Games``)
+            :type category_title: str
+            :param parent_id: The Category ID of the parent category (optional)
+            :type parent_id: str, None
+            :param return_json: Determines whether or not the response should be returned in JSON format
+                                (``True`` by default)
+            :type return_json: bool
+            :returns: The response from the API call
+            :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`
+            """
+            return structures_module.categories.create(self.khoros_object, category_id, category_title, parent_id,
+                                                       return_json)
 
         @staticmethod
         def get_category_id(url):
@@ -1290,6 +1467,9 @@ class Khoros(object):
                               message_id=False, message_url=False, message_api_uri=False, v2_base=''):
             """This function parses an API response for a message operation (e.g. creating a message) and returns data.
 
+            .. deprecated:: 2.5.0
+               Use the :py:func:`khoros.core.Khoros.parse_v2_response` function instead.
+
             .. versionadded:: 2.3.0
 
             :param json_response: The API response in JSON format
@@ -1313,9 +1493,10 @@ class Khoros(object):
             :returns: A string, tuple or dictionary with the parsed data
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
-            return objects_module.messages.parse_v2_response(json_response, return_dict, status, response_msg,
-                                                             http_code, message_id, message_url, message_api_uri,
-                                                             v2_base)
+            warnings.warn(f"This function is deprecated and 'khoros.core.Khoros.parse_v2_response' should be used.",
+                          DeprecationWarning)
+            return api.parse_v2_response(json_response, return_dict, status, response_msg, http_code, message_id,
+                                         message_url, message_api_uri, v2_base)
 
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This function formats the ``<li-message>`` HTML tag for a content @mention.
@@ -1941,6 +2122,18 @@ class Khoros(object):
             """
             return objects_module.users.get_email(self.khoros_object, user_settings, user_id, login, first_name,
                                                   last_name, allow_multiple, display_warnings)
+
+        def get_ids_from_login_list(self, login_list, return_type='list'):
+            """This function identifies the User IDs associated with a list of user logins. (i.e. usernames)
+
+            :param login_list: List of user login (i.e. username) values in string format
+            :type login_list: list, tuple
+            :param return_type: Determines if the data should be returned as a ``list`` (default) or a ``dict``
+            :type return_type: str
+            :returns: A list or dictionary with the User IDs
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.users.get_ids_from_login_list(self.khoros_object, login_list, return_type)
 
         def query_users_table_by_id(self, select_fields, user_id):
             """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID.

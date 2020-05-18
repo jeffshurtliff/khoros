@@ -6,12 +6,13 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 May 2020
+:Modified Date:     17 May 2020
 """
 
 import warnings
 
 from .. import api, liql, errors
+from ..utils import core_utils
 
 
 def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
@@ -965,3 +966,71 @@ def get_last_visit_timestamp(khoros_object, user_settings=None, user_id=None, lo
     api_response = query_users_table_by_id(khoros_object, 'last_visit_time', user_settings['id'], first_item=True)
     # TODO: Add the ability to parse the timestamp into a datetime object or change the string format
     return api_response['last_visit_time']
+
+
+def structure_user_dict_list(khoros_object=None, user_dicts=None, id_list=None, login_list=None):
+    """This function structures a list of user data dictionaries for use in various API request payloads.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user_dicts: A list of dictionaries (or single dictionary) containing user data (``id`` at a minimum)
+    :type user_dicts: list, dict, None
+    :param id_list: A list of user IDs to be converted into user data dictionaries
+    :type id_list: list, tuple, set, None
+    :param login_list: A list of usernames (i.e. logins) to be converted into user data dictionaries
+    :type login_list: list, tuple, set, None
+    :returns: The properly formatted list of user data dictionaries for the supplied users
+    :raises: :py:exc:`TypeError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not any((user_dicts, id_list, login_list)):
+        raise errors.exceptions.MissingRequiredDataError("At least one of the required function arguments (i.e. "
+                                                         "'user_dicts', 'id_list' or 'login_list') must be provided.")
+
+    # Ensure that the user dictionary list is in the correct format
+    user_dicts = [] if not user_dicts else user_dicts
+    ids_from_dicts, logins_from_dicts = [], []
+    if user_dicts:
+        if isinstance(user_dicts, tuple):
+            user_dicts = list(user_dicts)
+        elif isinstance(user_dicts, dict):
+            user_dicts = [user_dicts]
+        user_dicts = core_utils.convert_dict_id_values_to_strings(user_dicts)
+        ids_from_dicts = core_utils.extract_key_values_from_dict_list('id', user_dicts)
+        logins_from_dicts = core_utils.extract_key_values_from_dict_list('login', user_dicts, exclude_if_present='id')
+
+    # Retrieve the IDs from the list of logins if applicable
+    ids_from_dicts.append(get_ids_from_login_list(khoros_object, logins_from_dicts))
+
+    # Ensure that the supplied ID and login lists are in the correct format
+    id_list = [] if not id_list else list(id_list)
+    id_list = core_utils.convert_list_values(id_list, convert_to='str')
+    login_list = [] if not login_list else list(login_list)
+
+    # Add the IDs from the login list to the existing IDs list
+    id_list.extend(get_ids_from_login_list(khoros_object, login_list))
+
+    # Populate and return the final user dictionary list
+    final_dict_list = []
+    for user_id in id_list:
+        final_dict_list.append({"id": str(user_id)})
+    return final_dict_list
+
+
+def get_ids_from_login_list(khoros_object, login_list, return_type='list'):
+    """This function identifies the User IDs associated with a list of user logins. (i.e. usernames)
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param login_list: List of user login (i.e. username) values in string format
+    :type login_list: list, tuple
+    :param return_type: Determines if the data should be returned as a ``list`` (default) or a ``dict``
+    :type return_type: str
+    :returns: A list or dictionary with the User IDs
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    id_list, id_dict = [], {}
+    for login in login_list:
+        user_id = get_user_id(khoros_object, login=login)
+        id_list.append(user_id)
+        id_dict[login] = user_id
+    return id_list if return_type == 'list' else id_dict
