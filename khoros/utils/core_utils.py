@@ -6,13 +6,14 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 May 2020
+:Modified Date:     19 May 2020
 """
 
 import os
 import random
 import string
 import warnings
+import subprocess
 import urllib.parse
 from html import unescape
 
@@ -47,6 +48,34 @@ def decode_html_entities(html_string):
     :returns: The string with decoded HTML entities
     """
     return unescape(html_string)
+
+
+def decode_binary(binary):
+    """This function decodes a binary into a UTF-8 encoded string.
+
+    .. versionadded:: 2.6.0
+
+    :param binary: The binary to be decoded
+    :type binary: bytes
+    :returns: The properly decoded string
+    :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
+    """
+    return binary.decode('utf-8')
+
+
+def run_cmd(cmd, shell=True):
+    """This function executes a command and returns its output.
+
+    .. versionadded:: 2.6.0
+
+    :param cmd: The command to be executed
+    :type cmd: str
+    :param shell: Defines if the command should be run as a shell command (``Tru`` by default)
+    :type shell: bool
+    :returns: The output as a :py:class:`subprocess.CompletedProcess` class object
+    :raises: :py:exc:`FileNotFoundError`
+    """
+    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
 
 
 def __is_zero_length(_element):
