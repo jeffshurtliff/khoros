@@ -7,6 +7,7 @@ which are listed below.
 * `Init Module (khoros)`_
 * `Core Module (khoros.core)`_
     * `Core Structure Subclasses (khoros.core.Khoros)`_
+        * `Board Subclass (khoros.core.Khoros.Board)`_
         * `Category Subclass (khoros.core.Khoros.Category)`_
         * `Community Subclass (khoros.core.Khoros.Community)`_
         * `Node Subclass (khoros.core.Khoros.Node)`_
@@ -18,12 +19,6 @@ which are listed below.
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
 * `LiQL Module (khoros.liql)`_
-* `Structures Module (khoros.structures)`_
-    * `Base Structures Module (khoros.structures.base)`_
-    * `Boards Module (khoros.structures.boards)`_
-    * `Categories Module (khoros.structures.categories)`_
-    * `Communities Module (khoros.structures.communities)`_
-    * `Nodes Module (khoros.structures.nodes)`_
 * `Objects Module (khoros.objects)`_
     * `Base Objects Module (khoros.objects.base)`_
     * `Albums Module (khoros.objects.albums)`_
@@ -31,6 +26,14 @@ which are listed below.
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
     * `Users Module (khoros.objects.users)`_
+* `Structures Module (khoros.structures)`_
+    * `Base Structures Module (khoros.structures.base)`_
+    * `Boards Module (khoros.structures.boards)`_
+    * `Categories Module (khoros.structures.categories)`_
+    * `Communities Module (khoros.structures.communities)`_
+    * `Nodes Module (khoros.structures.nodes)`_
+* `Studio Module (khoros.studio)`_
+    * `Base Studio Module (khoros.studio.base)`_
 
 |
 
@@ -69,6 +72,15 @@ The classes below are inner/nested classes within the core :py:class:`khoros.cor
 .. note:: The classes themselves are *CamelCase* format and singular (e.g. ``Node``, ``Category``, etc.) whereas the
           names used to call the inner class methods are all *lowercase* (or *snake_case*) and plural. (e.g.
           ``core_object.nodes.get_node_id()``, ``core_object.categories.get_category_id()``, etc.)
+
+Board Subclass (khoros.core.Khoros.Board)
+-----------------------------------------
+.. autoclass:: khoros.core::Khoros.Board
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
 
 Category Subclass (khoros.core.Khoros.Category)
 -----------------------------------------------
@@ -177,73 +189,6 @@ This module contains functions that enable API queries using the LiQL syntax.
 
 |
 
-*************************************
-Structures Module (khoros.structures)
-*************************************
-This module contains sub-modules that are specific to the various Community structures.
-
-.. automodule:: khoros.structures
-   :members:
-
-:doc:`Return to Top <primary-modules>`
-
-|
-
-Base Structures Module (khoros.structures.base)
-===============================================
-This module contains functions relating to structures. (i.e. categories, nodes and tenants/communities)
-
-.. automodule:: khoros.structures.base
-   :members:
-
-:doc:`Return to Top <primary-modules>`
-
-|
-
-Boards Module (khoros.structures.boards)
-========================================
-This module contains functions specific to boards within the Khoros Community platform.
-
-.. automodule:: khoros.structures.boards
-   :members:
-
-:doc:`Return to Top <primary-modules>`
-
-|
-
-Categories Module (khoros.structures.categories)
-================================================
-This module contains functions specific to categories within the Khoros Community platform.
-
-.. automodule:: khoros.structures.categories
-   :members:
-
-:doc:`Return to Top <primary-modules>`
-
-|
-
-Communities Module (khoros.structures.communities)
-==================================================
-This module contains functions specific to the high-level community configuration.
-
-.. automodule:: khoros.structures.communities
-   :members:
-
-:doc:`Return to Top <primary-modules>`
-
-|
-
-Nodes Module (khoros.structures.nodes)
-======================================
-This module contains functions specific to nodes within the Khoros Community platform.
-
-.. automodule:: khoros.structures.nodes
-   :members:
-
-:doc:`Return to Top <primary-modules>`
-
-|
-
 *******************************
 Objects Module (khoros.objects)
 *******************************
@@ -316,6 +261,96 @@ Users Module (khoros.objects.users)
 This module includes functions that handle user-related operations.
 
 .. automodule:: khoros.objects.users
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+*************************************
+Structures Module (khoros.structures)
+*************************************
+This module contains sub-modules that are specific to the various Community structures.
+
+.. automodule:: khoros.structures
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Base Structures Module (khoros.structures.base)
+===============================================
+This module contains functions relating to structures. (i.e. categories, nodes and tenants/communities)
+
+.. automodule:: khoros.structures.base
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Boards Module (khoros.structures.boards)
+========================================
+This module contains functions specific to boards within the Khoros Community platform.
+
+.. automodule:: khoros.structures.boards
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Categories Module (khoros.structures.categories)
+================================================
+This module contains functions specific to categories within the Khoros Community platform.
+
+.. automodule:: khoros.structures.categories
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Communities Module (khoros.structures.communities)
+==================================================
+This module contains functions specific to the high-level community configuration.
+
+.. automodule:: khoros.structures.communities
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Nodes Module (khoros.structures.nodes)
+======================================
+This module contains functions specific to nodes within the Khoros Community platform.
+
+.. automodule:: khoros.structures.nodes
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+*****************************
+Studio Module (khoros.studio)
+*****************************
+This module contains sub-modules that relate to the Lithium SDK and the Khoros Community Studio Plugin.
+
+.. automodule:: khoros.studio
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Base Studio Module (khoros.studio.base)
+=======================================
+This module contains functions that handle the base functionality of the :py:mod:`khoros.studio` module.
+
+.. automodule:: khoros.studio.base
    :members:
 
 :doc:`Return to Top <primary-modules>`

@@ -56,26 +56,63 @@ def decode_binary(binary):
     .. versionadded:: 2.6.0
 
     :param binary: The binary to be decoded
-    :type binary: bytes
     :returns: The properly decoded string
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
     """
     return binary.decode('utf-8')
 
 
-def run_cmd(cmd, shell=True):
-    """This function executes a command and returns its output.
+def run_cmd(cmd, return_type='dict', shell=True, decode_output=True, strip_output=False,
+            exclude_stdout=False, exclude_stderr=False, exclude_return_code=False):
+    """This function executes a shell command on the operating system.
 
-    .. versionadded:: 2.6.0
+    .. versionadded:: 2.5.1
 
     :param cmd: The command to be executed
     :type cmd: str
-    :param shell: Defines if the command should be run as a shell command (``Tru`` by default)
+    :param return_type: Determines the format in which the results should be returned (``dict`` by default)
+    :type return_type: str
+    :param shell: Determines if the ``shell`` argument in the :py:func:`subprocess.run` function should be ``True``
     :type shell: bool
-    :returns: The output as a :py:class:`subprocess.CompletedProcess` class object
-    :raises: :py:exc:`FileNotFoundError`
+    :param decode_output: Determines if the binary output should be decoded as a UTF-8 string (``True`` by default)
+    :type decode_output: bool
+    :param strip_output: Determines if the escape character(s) should be stripped from the output (``False`` by default)
+    :type strip_output: bool
+    :param exclude_stdout: Determines if the ``stdout`` output should be excluded (``False`` by default)
+    :type exclude_stdout: bool
+    :param exclude_stderr: Determines if the ``stderr`` output should be excluded (``False`` by default)
+    :type exclude_stderr: bool
+    :param exclude_return_code: Determines if the return code from the command should be excluded (``False`` by default)
+    :type exclude_return_code: bool
+    :returns: The results from the executed script
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
-    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
+    if exclude_stdout and exclude_stderr and exclude_return_code:
+        raise errors.exceptions.MissingRequiredDataError("At least one output type must be enabled.")
+    output = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
+    stdout, stderr, return_code = output.stdout, output.stderr, output.returncode
+    results = {
+        'stdout': stdout,
+        'stderr': stderr,
+        'return_code': return_code
+    }
+    for stream in ('stdout', 'stderr'):
+        if decode_output:
+            results[stream] = decode_binary(results.get(stream))
+        if strip_output:
+            results[stream] = results.get(stream).strip()
+    output_types = {'stdout': exclude_stdout, 'stderr': exclude_stderr, 'return_code': exclude_return_code}
+    for output_type, excluded in output_types.items():
+        if excluded:
+            del results[output_type]
+    if return_type == 'list':
+        results = list(results.values())
+    elif return_type == 'tuple':
+        results = tuple(results.values())
+    else:
+        if return_type != 'dict':
+            raise ValueError(f"'{return_type}' is not a valid return type.")
+    return results
 
 
 def __is_zero_length(_element):

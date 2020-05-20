@@ -4,6 +4,53 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.5.1
+******
+**Release Date: 2020-05-20**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:mod:`khoros.studio` module with the :py:mod:`khoros.studio.base` sub-module.
+* Added the following functions to the :py:mod:`khoros.studio.base` module:
+    * :py:func:`khoros.studio.base.sdk_installed`
+    * :py:func:`khoros.studio.base.get_sdk_version`
+    * :py:func:`khoros.studio.base.node_installed`
+    * :py:func:`khoros.studio.base.get_node_version`
+    * :py:func:`khoros.studio.base.npm_installed`
+    * :py:func:`khoros.studio.base.get_npm_version`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.core_utils.run_cmd` function.
+* Added the :py:func:`khoros.utils.core_utils.decode_binary` function.
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:class:`khoros.core.Khoros.Board` subclass to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.studio` module to the :doc:`Primary Modules <primary-modules>` page.
+
+Changed
+=======
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Swapped the :ref:`primary-modules:Objects Module (khoros.objects)` section with the
+  :ref:`primary-modules:Structures Module (khoros.structures)` section on the
+  :doc:`Primary Modules <primary-modules>` page.
+
+
+******
 v2.5.0
 ******
 **Release Date: 2020-05-18**
