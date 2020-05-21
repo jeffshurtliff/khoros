@@ -23,6 +23,14 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.studio.base.get_node_version`
     * :py:func:`khoros.studio.base.npm_installed`
     * :py:func:`khoros.studio.base.get_npm_version`
+* Added the :py:class:`khoros.core.Khoros.Studio` subclass with the following functions:
+    * :py:func:`khoros.core.Khoros.Studio.sdk_installed`
+    * :py:func:`khoros.core.Khoros.Studio.get_sdk_version`
+    * :py:func:`khoros.core.Khoros.Studio.node_installed`
+    * :py:func:`khoros.core.Khoros.Studio.get_node_version`
+    * :py:func:`khoros.core.Khoros.Studio.npm_installed`
+    * :py:func:`khoros.core.Khoros.Studio.get_npm_version`
+* Added the :py:func:`khoros.core.Khoros._import_studio_class` function and associated function call.
 
 Supporting Modules
 ------------------

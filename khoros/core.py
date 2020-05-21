@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 May 2020
+:Modified Date:     20 May 2020
 """
 
 import sys
@@ -15,6 +15,7 @@ import logging
 import warnings
 
 from . import auth, errors, liql, api
+from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
 from .utils import environment
@@ -204,6 +205,7 @@ class Khoros(object):
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
+        self.studio = self._import_studio_class()
         self.users = self._import_user_class()
 
     def _populate_core_settings(self):
@@ -359,6 +361,13 @@ class Khoros(object):
         .. versionadded:: 2.4.0
         """
         return Khoros.Role(self)
+
+    def _import_studio_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Studio` inner class to be utilized in the core object.
+
+        .. versionadded:: 2.5.1
+        """
+        return Khoros.Studio(self)
 
     def _import_user_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
@@ -1986,6 +1995,76 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETResponseError`
             """
             return objects_module.roles.get_roles_for_user(self.khoros_object, user_id)
+
+    class Studio(object):
+        """This class includes methods relating to the Lithium SDK and Studio Plugin."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Studio` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        @staticmethod
+        def sdk_installed():
+            """This function checks to see if the Lithium SDK is installed.
+
+            .. versionadded:: 2.5.1
+
+            :returns: Boolean value indicating whether or not the Lithium SDK is installed
+            """
+            return studio_module.base.sdk_installed()
+
+        @staticmethod
+        def get_sdk_version():
+            """This function identifies the currently installed version of the Lithium SDK.
+
+            .. versionadded:: 2.5.1
+
+            :returns: The SDK version in string format or ``None`` if not installed
+            """
+            return studio_module.base.get_sdk_version()
+
+        @staticmethod
+        def node_installed():
+            """This function checks whether or not Node.js is installed.
+
+            .. versionadded:: 2.5.1
+
+            :returns: Boolean value indicating whether or not Node.js is installed
+            """
+            return studio_module.base.node_installed()
+
+        @staticmethod
+        def get_node_version():
+            """This function identifies and returns the installed Node.js version.
+
+            .. versionadded:: 2.5.1
+
+            :returns: The version as a string or ``None`` if not installed
+            """
+            return studio_module.base.get_node_version()
+
+        @staticmethod
+        def npm_installed():
+            """This function checks whether or not npm is installed.
+
+            .. versionadded:: 2.5.1
+
+            :returns: Boolean value indicating whether or not npm is installed
+            """
+            return studio_module.base.npm_installed()
+
+        @staticmethod
+        def get_npm_version():
+            """This function identifies and returns the installed npm version.
+
+            .. versionadded:: 2.5.1
+
+            :returns: The version as a string or ``None`` if not installed
+            """
+            return studio_module.base.get_npm_version()
 
     class User(object):
         """This class includes methods for interacting with users."""
