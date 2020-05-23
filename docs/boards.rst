@@ -171,13 +171,23 @@ argument as ``True`` will return the URL of the newly created board, as shown be
 
 Return the Board API URL
 ------------------------
-.. todo:: Coming Soon!
+If additional API calls will be immediately performed following the creation of a board,
+it may be useful to return the API URL (i.e. URI) for the new board by defining the
+``return_api_url`` argument as ``True``, as shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', 'blog', return_api_url=True)
+   '/boards/python-lovers'
 
 |
 
 Return the API Response HTTP Code
 ---------------------------------
-.. todo:: Coming Soon!
+Another potentially useful return option is to define the ``return_http_code``
+argument as ``True``, which will return the
+`HTTP status code <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>`_
+for the API response.
 
 |
 
