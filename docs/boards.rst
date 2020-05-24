@@ -22,6 +22,11 @@ APIs to harness these boards.
         * `Return Multiple Types`_
     * `Creating a New Forum`_
     * `Creating a New Blog`_
+    * `Creating a New Tribal Knowledge Base (TKB)`_
+    * `Creating a New Q&A Board`_
+    * `Creating a New Idea Exchange`_
+    * `Creating a New Contest`_
+    * `Optional Configuration Items`_
 
 ********
 Overview
@@ -51,12 +56,12 @@ as demonstrated below.
 The table below lists the arguments that can/must be used in the function, which leverages
 the :py:func:`khoros.structures.boards.create` function.
 
-===================== ======== ================================================================================================
+===================== ======== ====================================================================================================
 Argument              Type     Description
-===================== ======== ================================================================================================
+===================== ======== ====================================================================================================
 board_id*             string   The board ID
 board_title*          string   The board title/name
-discussion_style*     string   The type of discussion style
+discussion_style*     string   The type of discussion style (e.g. ``blog``, ``contest``, ``forum``, ``idea``, ``qanda`` or ``tkb``)
 description           string   The description of the board
 parent_category_id    string   The ID of the parent category (if applicable)
 hidden                boolean  Defines whether or not the new board should be hidden from lists and menus
@@ -86,7 +91,7 @@ return_api_url        boolean  Indicates whether the API URL (i.e. URI) of the b
 return_http_code      boolean  Indicates whether the HTTP Code of the API response should be returned
 return_status         boolean  Indicates whether the status of the API response should be returned
 return_error_messages boolean  Indicates whether the Developer Response Message (if any) should be returned
-===================== ======== ================================================================================================
+===================== ======== ====================================================================================================
 
 .. note:: The fields labeled with an asterisk (*) are required.
 
@@ -209,11 +214,11 @@ by Khoros in the JSON response) by defining the ``return_status`` argument as
 .. code-block:: python
 
    >>> khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
-   ... return_http_code=True)
+   ... return_status=True)
    'success'
 
    >>> khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
-   ... return_http_code=True)
+   ... return_status=True)
    'error'
 
 |
@@ -313,7 +318,7 @@ This example shows how to define authors and moderators using the user login val
    >>> mods = ['Hermione Granger']
    >>> board_id, board_title, discussion_style = 'my-first-blog', 'My First Blog', 'blog'
    >>> khoros.boards.create(board_id, board_title, discussion_style, \
-                            blog_author_logins=authors, blog_moderator_logins=mods)
+   ...                      blog_author_logins=authors, blog_moderator_logins=mods)
 
 Alternatively, if you happen to already have the fully formatted ``authors`` and ``moderators`` fields
 for the API request, which would be a list of dictionaries containing user data, then they can be used
@@ -325,8 +330,79 @@ instead via the ``blog_authors`` and ``blog_moderators`` function arguments, as 
    >>> mods = [{"id": "12"}]
    >>> board_id, board_title, discussion_style = 'my-first-blog', 'My First Blog', 'blog'
    >>> khoros.boards.create(board_id, board_title, discussion_style, \
-                            blog_authors=authors, blog_moderators=mods)
+   ...                      blog_authors=authors, blog_moderators=mods)
 
+|
+
+Creating a New Tribal Knowledge Base (TKB)
+==========================================
+Creating a new Tribal Knowledge Base, or TKB, is very similar to creating a
+forum, except that the ``discussion_style`` argument will be defined as ``tkb``
+as shown in the example below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('product-knowledge-base', 'Product Knowledge Base', \
+   ...                      'tkb', return_status=True)
+   'success'
+
+|
+
+Creating a New Q&A Board
+========================
+Creating a new Q&A board is also similar to creatinga forum, except that the
+``discussion_style`` argument will be defined as ``qanda`` sa shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('product-questions', 'Product Questions', \
+   ...                      'qanda', return_status=True)
+   'success'
+
+|
+
+Creating a New Idea Exchange
+============================
+Idea Exchange boards (used for
+`ideation <https://community.khoros.com/t5/Ideas/Fostering-a-flourishing-ideation-process/ta-p/404636>`_)
+can be created by defining the ``discussion_style`` argument as ``idea``, as shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('product-idea-exchange', 'Product Idea Exchange', \
+   ...                      'idea', one_entry_per_contest=False, \
+   ...                      one_kudo_per_contest=True, return_status=True)
+   'success'
+
+|
+
+Creating a New Contest
+======================
+Contest boards can be created by defining the ``discussion_style`` argument as
+``contest``. Contests also have several unique optional arguments that can be
+used, which are listed in the :ref:`table <boards:Creating a New Board>` earlier
+in this tutorial and again below.
+
+===================== ======== =========================================================================================
+Argument              Type     Description
+===================== ======== =========================================================================================
+media_type            string   The media type associated with a contest (``image``, ``video`` or ``story`` meaning text)
+one_entry_per_contest boolean  Indicates whether or not a user can only submit one entry to a single contest
+one_kudo_per_contest  boolean  Indicates whether or not a user can vote only once per contest
+posting_date_end      datetime The date/time a contest is closed to submissions
+posting_date_start    datetime The date/time when the submission period for a contest begins
+voting_date_end       datetime The date/time when the voting period for a contest ends
+voting_date_start     datetime The date/time when the voting period for a contest begins
+winner_announced_date datetime The date/time the contest winner will be announced
+
+
+|
+
+Optional Configuration Items
+============================
+Coming Soon!
+
+|
 
 
 
