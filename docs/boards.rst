@@ -27,6 +27,10 @@ APIs to harness these boards.
     * `Creating a New Idea Exchange`_
     * `Creating a New Contest`_
     * `Optional Configuration Items`_
+        * `Adding a Description`_
+        * `Defining the Parent Category`_
+        * `Creating a Hidden Board`_
+        * `Configuring Label Settings`_
 
 ********
 Overview
@@ -41,6 +45,8 @@ the functions covered in the following sections can be leveraged for board-relat
 
 .. caution:: This tutorial assumes that the core object has been initialized as ``khoros`` per
              the naming convention best practices defined on the :doc:`introduction` page.
+
+:doc:`Return to Top <boards>`
 
 ********************
 Creating a New Board
@@ -95,6 +101,8 @@ return_error_messages boolean  Indicates whether the Developer Response Message 
 
 .. note:: The fields labeled with an asterisk (*) are required.
 
+:doc:`Return to Top <boards>`
+
 Return Options
 ==============
 There are multiple ways to return data when creating a board, which can be explicitly
@@ -109,6 +117,8 @@ defined using one or more of the following function arguments:
 * :ref:`return_error_messages <boards:Return Any Error Messages>`
 
 These arguments are explained in more detail within the sub-sections below.
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -128,6 +138,8 @@ Unless explicitly defined, the function will return a simple Boolean response
    >>> create_and_check()
    'It worked!'
 
+:doc:`Return to Top <boards>`
+
 |
 
 Full API Response
@@ -143,6 +155,8 @@ argument to ``True`` in the function call as shown below.
    ...     response = response.json()
    ...     print(response['status'])
    'success'
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -161,6 +175,8 @@ you can do so by defining the ``return_id`` argument as ``True`` as seen below.
    'Forum Created: first-board'
    'Forum Created: second-board'
 
+:doc:`Return to Top <boards>`
+
 |
 
 Return the Board URL
@@ -173,6 +189,8 @@ argument as ``True`` will return the URL of the newly created board, as shown be
    >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', \
    ... 'blog', return_url=True)
    'https://stage.example.com/t5/The-Python-Lovers-Blog/bg-p/python-lovers'
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -188,6 +206,8 @@ it may be useful to return the API URL (i.e. URI) for the new board by defining 
    ... 'blog', return_api_url=True)
    '/boards/python-lovers'
 
+:doc:`Return to Top <boards>`
+
 |
 
 Return the API Response HTTP Code
@@ -202,6 +222,8 @@ for the API response, as demonstrated below.
    >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', \
    ... 'blog', return_http_code=True)
    200
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -220,6 +242,8 @@ by Khoros in the JSON response) by defining the ``return_status`` argument as
    >>> khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
    ... return_status=True)
    'error'
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -251,6 +275,8 @@ below.
    ... return_error_messages=True, split_errors=True)
    ("An object of type blog-board already exists with the 'id' property value 'my-first-blog'", "An object of type blog-board already exists with the 'id' property value 'my-first-blog'")
 
+:doc:`Return to Top <boards>`
+
 |
 
 Return Multiple Types
@@ -274,6 +300,8 @@ in the example below.
 
 .. note:: The tuple will return the values in the order they are listed as function arguments.
 
+:doc:`Return to Top <boards>`
+
 |
 
 Creating a New Forum
@@ -285,6 +313,8 @@ exception of the ``board_id`` and ``board_title`` arguments, are optional.
 .. code-block:: python
 
    >>> khoros.boards.create('my-new-forum', 'My New Forum', 'forum')
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -332,6 +362,8 @@ instead via the ``blog_authors`` and ``blog_moderators`` function arguments, as 
    >>> khoros.boards.create(board_id, board_title, discussion_style, \
    ...                      blog_authors=authors, blog_moderators=mods)
 
+:doc:`Return to Top <boards>`
+
 |
 
 Creating a New Tribal Knowledge Base (TKB)
@@ -346,6 +378,8 @@ as shown in the example below.
    ...                      'tkb', return_status=True)
    'success'
 
+:doc:`Return to Top <boards>`
+
 |
 
 Creating a New Q&A Board
@@ -358,6 +392,8 @@ Creating a new Q&A board is also similar to creatinga forum, except that the
    >>> khoros.boards.create('product-questions', 'Product Questions', \
    ...                      'qanda', return_status=True)
    'success'
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -373,6 +409,8 @@ can be created by defining the ``discussion_style`` argument as ``idea``, as sho
    ...                      'idea', one_entry_per_contest=False, \
    ...                      one_kudo_per_contest=True, return_status=True)
    'success'
+
+:doc:`Return to Top <boards>`
 
 |
 
@@ -394,16 +432,117 @@ posting_date_start    datetime The date/time when the submission period for a co
 voting_date_end       datetime The date/time when the voting period for a contest ends
 voting_date_start     datetime The date/time when the voting period for a contest begins
 winner_announced_date datetime The date/time the contest winner will be announced
+===================== ======== =========================================================================================
 
+A function call using some of these arguments is shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('product-innovation-contest', 'Product Innovation Contest', \
+   ...                      'contest', one_entry_per_contest=False, \
+   ...                      one_kudo_per_contest=True, media_type='story', return_status=True)
+   'success'
+
+:doc:`Return to Top <boards>`
 
 |
 
 Optional Configuration Items
 ============================
-Coming Soon!
+There are several other optional arguments that may also be passed in the function call
+to define other elements of the new board, which are addressed in the sub-sections below.
+
+:doc:`Return to Top <boards>`
 
 |
 
+Adding a Description
+--------------------
+As it is an SEO best practice to include a description when creating a new board, it is
+recommended that you define the optional ``description`` argument whenever using the
+:py:func:`khoros.structures.boards.create` function, as demonstrated below.
 
+.. code-block:: python
 
-.. todo:: Finish this tutorial
+   >>> khoros.boards.create('upcoming-events', 'Upcoming Events', 'blog', \
+   ...                      'Get the details on our upcoming events and product releases.')
+   True
+
+.. note:: As the ``description`` argument immediately follows the three required arguments
+          in the function call, it is not necessary to define it using a keyword argument.
+          (e.g. ``description='Get the details...'``)
+
+:doc:`Return to Top <boards>`
+
+|
+
+Defining the Parent Category
+----------------------------
+By default, a new board will be created at the top-most level of the community environment.
+However, if you intend to create the board below a specific category then this can
+easily be done by supplying the ID of said category via the ``parent_category_id`` argument,
+as demonstrated below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('upcoming-events', 'Upcoming Events', 'blog', \
+   ...                      'Get the details on our upcoming events and product releases.', \
+   ...                      parent_category_id='products')
+   True
+
+:doc:`Return to Top <boards>`
+
+|
+
+Creating a Hidden Board
+-----------------------
+If you do not want your new board to appear in lists or menus then you can flag it as a
+"hidden" board by defining the ``hidden`` argument as ``True`` in the function call,
+as shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('tkb-archive', 'Archived TKB Articles', 'tkb', hidden=True)
+   True
+
+:doc:`Return to Top <boards>`
+
+|
+
+Configuring Label Settings
+--------------------------
+While creating a board, you can configure the label settings up front via the function
+call if desired, rather than configuring them later in the Community Admin UI or via
+separate API requests.
+
+The first setting you can configure is whether or not the board will allow **freeform**
+labels (i.e. where users can create their own labels), **predefined** labels (i.e.
+where community managers define the labels and users can only select them) or both.
+
+There are two ways to do this:
+
+* The first method is to define the ``allowed_labels`` argument as either ``freeform-only``,
+  ``predefined-only`` or ``freeform or pre-defined``.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('product-discussions', 'Product Discussions', 'forum', \
+   ...                      allowed_labels='freeform-only')
+   True
+
+* The second method is to define the Boolean arguments ``use_freeform_labels`` and/or
+  ``use_predefined_labels`` as ``True``.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('product-discussions', 'Product Discussions', 'forum', \
+   ...                      use_freeform_labels=True)
+   True
+
+.. note:: Defining both ``use_freeform_labels`` and ``use_predefined_labels`` as ``True``
+          is the equivalent of defining the ``allowed_labels`` argument as
+          ``freeform or pre-defined``.
+
+:doc:`Return to Top <boards>`
+
+|
