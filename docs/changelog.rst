@@ -4,6 +4,54 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.5.2
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the private function :py:func:`khoros.api._get_v2_return_values` to address possible
+  :py:exc:`KeyError` exceptions in the :py:func:`khoros.api.deliver_v2_results` function.
+
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :doc:`boards` document as a tutorial for managing boards.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api.parse_v2_response` function so that the ``http_code``
+  value returns as an integer rather than a string.
+* Replaced the ``return_developer_message`` argument with ``return_error_messages`` in the
+  :py:func:`khoros.api.parse_v2_response`, :py:func:`khoros.api.deliver_v2_results`,
+  :py:func:`khoros.structures.boards.create` and :py:func:`khoros.core.Khoros.Board.create` functions.
+* Updated the :py:func:`khoros.api.parse_v2_response` function to merge the ``message`` and
+  ``developer_message`` response values into the ``error_msg`` field in the dictionary, and included
+  the ``split_errors`` argument which determines if they should be split within a tuple or consolidated
+  into a single string separated by a hyphen. (e.g. ``Invalid query syntax - An invalid value was passed...``)
+* Included the ``split_errors`` argument in the :py:func:`khoros.api.deliver_v2_results`,
+  :py:func:`khoros.structures.boards.create` and :py:func:`khoros.core.Khoros.Board.create` functions.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added the :doc:`boards` page to the :doc:`index` home page.
+
+
+******
 v2.5.1
 ******
 **Release Date: 2020-05-20**

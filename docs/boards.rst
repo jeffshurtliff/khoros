@@ -18,6 +18,7 @@ APIs to harness these boards.
         * `Return the Board API URL`_
         * `Return the API response HTTP Code`_
         * `Return the API response status`_
+        * `Return Any Error Messages`_
         * `Return Multiple Types`_
     * `Creating a New Forum`_
     * `Creating a New Blog`_
@@ -50,42 +51,42 @@ as demonstrated below.
 The table below lists the arguments that can/must be used in the function, which leverages
 the :py:func:`khoros.structures.boards.create` function.
 
-======================== ======== ================================================================================================
-Argument                 Type     Description
-======================== ======== ================================================================================================
-board_id*                string   The board ID
-board_title*             string   The board title/name
-discussion_style*        string   The type of discussion style
-description              string   The description of the board
-parent_category_id       string   The ID of the parent category (if applicable)
-hidden                   boolean  Defines whether or not the new board should be hidden from lists and menus
-allowed_labels           string   Type of labels permitted (``freeform-only``, ``predefined-only`` or ``freeform or pre-defined``)
-use_freeform_labels      boolean  Indicates that only freeform labels should be permitted
-use_predefined_labels    boolean  Indicates that only predefined labels should be permitted
-predefined_labels        list     The list of predefined labels that are permitted
-media_type               string   The media type associated with a contest (``image``, ``video`` or ``story`` meaning text)
-blog_authors             list     The approved blog authors in a blog board as a list of user data dictionaries
-blog_author_ids          list     A list of User IDs representing the approved blog authors in a blog board
-blog_author_logins       list     A list of logins (i.e. usernames) representing the approved blog authors in a blog board
-blog_comments_enabled    boolean  Indicates that comments should be enabled on blog posts within a blog board
-blog_moderators          list     The designated moderators in a blog board as a list of user data dictionaries
-blog_moderator_ids       list     A list of User IDs representing the blog moderators in a blog board
-blog_moderator_logins    list     A list of logins (i.e. usernames) representing the moderators in a blog board
-one_entry_per_contest    boolean  Indicates whether or not a user can only submit one entry to a single contest
-one_kudo_per_contest     boolean  Indicates whether or not a user can vote only once per contest
-posting_date_end         datetime The date/time a contest is closed to submissions
-posting_date_start       datetime The date/time when the submission period for a contest begins
-voting_date_end          datetime The date/time when the voting period for a contest ends
-voting_date_start        datetime The date/time when the voting period for a contest begins
-winner_announced_date    datetime The date/time the contest winner will be announced
-full_response            boolean  Indicates whether the full, raw API response should be returned
-return_id                boolean  Indicates whether the Board ID should be returned
-return_url               boolean  Indicates whether the Board URL should be returned
-return_api_url           boolean  Indicates whether the API URL (i.e. URI) of the board should be returned
-return_http_code         boolean  Indicates whether the HTTP Code of the API response should be returned
-return_status            boolean  Indicates whether the status of the API response should be returned
-return_developer_message boolean  Indicates whether the Developer Response Message (if any) should be returned
-======================== ======== ================================================================================================
+===================== ======== ================================================================================================
+Argument              Type     Description
+===================== ======== ================================================================================================
+board_id*             string   The board ID
+board_title*          string   The board title/name
+discussion_style*     string   The type of discussion style
+description           string   The description of the board
+parent_category_id    string   The ID of the parent category (if applicable)
+hidden                boolean  Defines whether or not the new board should be hidden from lists and menus
+allowed_labels        string   Type of labels permitted (``freeform-only``, ``predefined-only`` or ``freeform or pre-defined``)
+use_freeform_labels   boolean  Indicates that only freeform labels should be permitted
+use_predefined_labels boolean  Indicates that only predefined labels should be permitted
+predefined_labels     list     The list of predefined labels that are permitted
+media_type            string   The media type associated with a contest (``image``, ``video`` or ``story`` meaning text)
+blog_authors          list     The approved blog authors in a blog board as a list of user data dictionaries
+blog_author_ids       list     A list of User IDs representing the approved blog authors in a blog board
+blog_author_logins    list     A list of logins (i.e. usernames) representing the approved blog authors in a blog board
+blog_comments_enabled boolean  Indicates that comments should be enabled on blog posts within a blog board
+blog_moderators       list     The designated moderators in a blog board as a list of user data dictionaries
+blog_moderator_ids    list     A list of User IDs representing the blog moderators in a blog board
+blog_moderator_logins list     A list of logins (i.e. usernames) representing the moderators in a blog board
+one_entry_per_contest boolean  Indicates whether or not a user can only submit one entry to a single contest
+one_kudo_per_contest  boolean  Indicates whether or not a user can vote only once per contest
+posting_date_end      datetime The date/time a contest is closed to submissions
+posting_date_start    datetime The date/time when the submission period for a contest begins
+voting_date_end       datetime The date/time when the voting period for a contest ends
+voting_date_start     datetime The date/time when the voting period for a contest begins
+winner_announced_date datetime The date/time the contest winner will be announced
+full_response         boolean  Indicates whether the full, raw API response should be returned
+return_id             boolean  Indicates whether the Board ID should be returned
+return_url            boolean  Indicates whether the Board URL should be returned
+return_api_url        boolean  Indicates whether the API URL (i.e. URI) of the board should be returned
+return_http_code      boolean  Indicates whether the HTTP Code of the API response should be returned
+return_status         boolean  Indicates whether the status of the API response should be returned
+return_error_messages boolean  Indicates whether the Developer Response Message (if any) should be returned
+===================== ======== ================================================================================================
 
 .. note:: The fields labeled with an asterisk (*) are required.
 
@@ -100,7 +101,7 @@ defined using one or more of the following function arguments:
 * :ref:`return_api_url <boards:Return the Board API URL>`
 * :ref:`return_http_code <boards:Return the API Response HTTP Code>`
 * :ref:`return_status <boards:Return the API Response Status>`
-* :ref:`return_developer_message <boards:Return the Developer Response Message>`
+* :ref:`return_error_messages <boards:Return Any Error Messages>`
 
 These arguments are explained in more detail within the sub-sections below.
 
@@ -164,7 +165,8 @@ argument as ``True`` will return the URL of the newly created board, as shown be
 
 .. code-block:: python
 
-   >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', 'blog', return_url=True)
+   >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', \
+   ... 'blog', return_url=True)
    'https://stage.example.com/t5/The-Python-Lovers-Blog/bg-p/python-lovers'
 
 |
@@ -177,7 +179,8 @@ it may be useful to return the API URL (i.e. URI) for the new board by defining 
 
 .. code-block:: python
 
-   >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', 'blog', return_api_url=True)
+   >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', \
+   ... 'blog', return_api_url=True)
    '/boards/python-lovers'
 
 |
@@ -187,25 +190,84 @@ Return the API Response HTTP Code
 Another potentially useful return option is to define the ``return_http_code``
 argument as ``True``, which will return the
 `HTTP status code <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>`_
-for the API response.
+for the API response, as demonstrated below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('python-lovers', 'The Python Lovers Blog', \
+   ... 'blog', return_http_code=True)
+   200
 
 |
 
 Return the API Response Status
 ------------------------------
-.. todo:: Coming Soon!
+Alternatively, it is possible to return the status of the API response (as defined
+by Khoros in the JSON response) by defining the ``return_status`` argument as
+``True``, as shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
+   ... return_http_code=True)
+   'success'
+
+   >>> khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
+   ... return_http_code=True)
+   'error'
 
 |
 
-Return the Developer Response Message
--------------------------------------
-.. todo:: Coming Soon!
+Return Any Error Messages
+-------------------------
+If you want to ensure that you see any error messages when applicable but don't want to
+return the full API response, you can define the ``return_error_messages`` argument as
+``True``, as shown below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('my-first-blog', 'My First Blog', \
+   ... 'blog', return_error_messages=True)
+   "An object of type blog-board already exists with the 'id' property value 'my-first-blog'"
+
+This argument captures both the ``message`` value and the occasionally populated
+``developer_message`` value. If one of the values is blank or if they are exactly the same, such
+as in the example above, then only one of the values will be displayed. Otherwise, if both values
+are defined and do not match then they will be returned in the ``{message} - {developer_message}``
+format.  (i.e. The two values will be separated by spaces and a hyphen.)
+
+If you wish to return both fields regardless of their values then you can define the optional
+``split_errors`` argument as ``True`` as well to return a tuple containing both values, as shown
+below.
+
+.. code-block:: python
+
+   >>> khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
+   ... return_error_messages=True, split_errors=True)
+   ("An object of type blog-board already exists with the 'id' property value 'my-first-blog'", "An object of type blog-board already exists with the 'id' property value 'my-first-blog'")
 
 |
 
 Return Multiple Types
 ---------------------
-.. todo:: Coming Soon!
+You are not restricted to choosing only one of the return options. You can enable as many options as needed and if
+multiple types are detected by the function then they will be returned as a tuple with those values, as demonstrated
+in the example below.
+
+.. code-block:: python
+
+   >>> response = khoros.boards.create('my-first-blog', 'My First Blog', 'blog', \
+   ... return_http_code=True, return_status=True, return_error_messages=True)
+
+   >>> if response[1] == 'success':
+   ...     print(f"The board creation was successful with the HTTP code {response[0]}.")
+   ... else:
+   ...     print(f"The board creation failed with the following error:\n{response[2]}")
+   ...
+   The board creation failed with the following error:
+   An object of type blog-board already exists with the 'id' property value 'my-first-blog'
+
+.. note:: The tuple will return the values in the order they are listed as function arguments.
 
 |
 

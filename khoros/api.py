@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 May 2020
+:Modified Date:     23 May 2020
 """
 
 import json
@@ -468,8 +468,11 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
 
 
 def deliver_v2_results(response, full_response=None, return_id=None, return_url=None, return_api_url=None,
-                       return_http_code=None, return_status=None, return_developer_message=None):
+                       return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
     """This function parses a Community API v2 response and returned specific data based on the function arguments.
+
+    .. versionchanged:: 2.5.2
+       Replaced the ``return_developer_message`` argument with ``return_error_messages``.
 
     .. versionadded:: 2.5.0
        The code for this function was extracted from the :py:func:`khoros.objects.messages.create` function.
@@ -487,20 +490,15 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
     :type return_http_code: bool, None
     :param return_status: Determines if the ``http_code`` field value should be returned
     :type return_status: bool, None
-    :param return_developer_message: Determines if the ``http_code`` field value should be returned
+    :param return_error_messages: Determines if error messages should be returned when applicable
+    :type return_error_messages: bool, None
+    :param split_errors: Determines if error messages should be split into separate values or merged when applicable
+    :type split_errors: bool
     :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
               fields defined by function arguments
     """
     outcome = query_successful(response)
-    if any((return_id, return_url, return_api_url, return_http_code, return_status, return_developer_message)):
-        return_values = {
-            'return_id': parse_v2_response(response, data_id=True),
-            'return_url': parse_v2_response(response, data_url=True),
-            'return_api_url': parse_v2_response(response, data_api_uri=True),
-            'return_http_code': parse_v2_response(response, http_code=True),
-            'return_status': parse_v2_response(response, status=True),
-            'return_developer_message': parse_v2_response(response, developer_msg=True),
-        }
+    if any((return_id, return_url, return_api_url, return_http_code, return_status, return_error_messages)):
         data_to_return = []
         return_booleans = {
             'return_id': return_id,
@@ -508,8 +506,9 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
             'return_http_code': return_http_code,
             'return_api_url': return_api_url,
             'return_status': return_status,
-            'return_developer_message': return_developer_message,
+            'return_error_messages': return_error_messages,
         }
+        return_values = _get_v2_return_values(return_booleans, response, split_errors)
         for return_key, return_value in return_booleans.items():
             if return_value:
                 data_to_return.append(return_values.get(return_key))
@@ -519,9 +518,14 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
     return response if full_response else outcome
 
 
-def parse_v2_response(json_response, return_dict=False, status=False, developer_msg=False, http_code=False,
-                      data_id=False, data_url=False, data_api_uri=False, v2_base=''):
+def parse_v2_response(json_response, return_dict=False, status=False, error_msg=False, dev_msg=False,
+                      split_errors=False, http_code=False, data_id=False, data_url=False,
+                      data_api_uri=False, v2_base=''):
     """This function parses an API response for a Community API v2 operation and returns parsed data.
+
+    .. versionchanged:: 2.5.2
+       Replaced the ``developer_msg`` argument with ``error_msg`` and added the ``dev_msg`` and ``split_error``
+       arguments with their accompanying functionality. (See :doc:`changelog` for more details.)
 
     .. versionchanged:: 2.5.0
        Moved from the :py:mod:`khoros.objects.messages` module to :py:mod:`khoros.api` and expanded the scope to
@@ -535,8 +539,12 @@ def parse_v2_response(json_response, return_dict=False, status=False, developer_
     :type return_dict: bool
     :param status: Defines if the **status** value should be returned
     :type status: bool
-    :param developer_msg: Defines if the **developer response** message should be returned
-    :type developer_msg: bool
+    :param error_msg: Defines if any **error messages** should be returned when applicable
+    :type error_msg: bool
+    :param dev_msg: Defines if the **developer message** should be returned when applicable
+    :type dev_msg: bool
+    :param split_errors: Defines if error messages should be returned as separate values when applicable
+    :type split_errors: bool
     :param http_code: Defines if the **HTTP status code** should be returned
     :type http_code: bool
     :param data_id: Defines if the **ID** should be returned
@@ -551,9 +559,11 @@ def parse_v2_response(json_response, return_dict=False, status=False, developer_
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     parsed_data = {}
+    dev_msg = True if error_msg or dev_msg else False
     fields = {
         'status': (status, ('status',)),
-        'developer_msg': (developer_msg, ('message',)),
+        'error_msg': (error_msg, ('message',)),
+        'dev_msg': (dev_msg, ('data', 'developer_message')),
         'http_code': (http_code, ('http_code',)),
         'data_id': (data_id, ('data', 'id')),
         'data_url': (data_url, ('data', 'view_href')),
@@ -570,11 +580,56 @@ def parse_v2_response(json_response, return_dict=False, status=False, developer_
             parsed_data[field] = value
     if 'data_api_uri' in parsed_data and v2_base != '':
         parsed_data['data_api_uri'] = f"{v2_base}/{parsed_data.get('data_api_uri')}"
+    if 'http_code' in parsed_data:
+        try:
+            parsed_data['http_code'] = int(parsed_data.get('http_code'))
+        except (TypeError, ValueError):
+            pass
+    if 'error_msg' in parsed_data:
+        if split_errors:
+            parsed_data['error_msg'] = (parsed_data.get('error_msg'), parsed_data.get('dev_msg'))
+        else:
+            if len(parsed_data.get('dev_msg')) > 0 and parsed_data.get('error_msg') != parsed_data.get('dev_msg'):
+                parsed_data['error_msg'] = f"{parsed_data.get('error_msg')} - {parsed_data.get('dev_msg')}"
+        del parsed_data['dev_msg']
     if not return_dict:
         parsed_data = tuple(list(parsed_data.values()))
         if len(parsed_data) == 1:
             parsed_data = parsed_data[0]
     return parsed_data
+
+
+def _get_v2_return_values(_return_booleans, _api_response, _split_errors):
+    """This function collects the relevant return values to be delivered for certain functions.
+
+    :param _return_booleans: Dictionary of the return types with their associated Boolean value
+    :type _return_booleans: dict
+    :param _api_response: The Khoros Community API v2 response
+    :type _api_response: dict
+    :param _split_errors: Defines whether or not error messages should be merged when applicable
+    :type _split_errors: bool
+    :returns: A dictionary of the parsed return values for return types whose Boolean values are ``True``
+    """
+    _return_values = {}
+    for _return_type, _return_boolean in _return_booleans.items():
+        if _return_boolean:
+            try:
+                if _return_type == 'return_id':
+                    _return_values[_return_type] = parse_v2_response(_api_response, data_id=True)
+                elif _return_type == 'return_url':
+                    _return_values[_return_type] = parse_v2_response(_api_response, data_url=True)
+                elif _return_type == 'return_api_url':
+                    _return_values[_return_type] = parse_v2_response(_api_response, data_api_uri=True)
+                elif _return_type == 'return_http_code':
+                    _return_values[_return_type] = parse_v2_response(_api_response, http_code=True)
+                elif _return_type == 'return_status':
+                    _return_values[_return_type] = parse_v2_response(_api_response, status=True)
+                else:
+                    _return_values[_return_type] = parse_v2_response(_api_response, error_msg=True,
+                                                                     split_errors=_split_errors)
+            except KeyError:
+                pass
+    return _return_values
 
 
 def _confirm_field_supplied(_fields_dict):

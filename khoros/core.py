@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 May 2020
+:Modified Date:     23 May 2020
 """
 
 import sys
@@ -603,7 +603,7 @@ class Khoros(object):
                    blog_moderator_logins=None, one_entry_per_contest=None, one_kudo_per_contest=None,
                    posting_date_end=None, posting_date_start=None, voting_date_end=None, voting_date_start=None,
                    winner_announced_date=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
-                   return_http_code=None, return_status=None, return_developer_message=None):
+                   return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
             """This function creates a new board within a Khoros Community environment.
 
             :param board_id: The unique identifier (i.e. ``id`` field) for the new board **(Required)**
@@ -680,9 +680,11 @@ class Khoros(object):
             :type return_http_code: bool, None
             :param return_status: Determines if the **Status** of the API response should be returned by the function
             :type return_status: bool, None
-            :param return_developer_message: Determines if the **Developer Response Message** (if any) associated with
+            :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with
                    the API response should be returned by the function
-            :type return_developer_message: bool, None
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
             :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
                       specific fields defined by function arguments
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -699,7 +701,7 @@ class Khoros(object):
                                                    posting_date_end, posting_date_start, voting_date_end,
                                                    voting_date_start, winner_announced_date, full_response, return_id,
                                                    return_url, return_api_url, return_http_code, return_status,
-                                                   return_developer_message)
+                                                   return_error_messages, split_errors)
 
     class Category(object):
         """This class includes methods for interacting with categories."""
