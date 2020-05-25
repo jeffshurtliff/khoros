@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2020
+:Modified Date:     25 May 2020
 """
 
 import sys
@@ -586,9 +586,14 @@ class Khoros(object):
                                                              verify_success, allow_exceptions)
 
     class Board(object):
-        """This class includes methods for interacting with boards."""
+        """This class includes methods for interacting with boards.
+
+        .. versionadded:: 2.5.0
+        """
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.Board` inner class object.
+
+            .. versionadded:: 2.5.0
 
             :param khoros_object: The core :py:class:`khoros.Khoros` object
             :type khoros_object: class[khoros.Khoros]
@@ -604,6 +609,12 @@ class Khoros(object):
                    winner_announced_date=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
                    return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
             """This function creates a new board within a Khoros Community environment.
+
+            .. versionchanged:: 2.5.2
+               Changed the functionality around the ``return_error_messages`` argument and added the ``split_errors``
+               argument.
+
+            .. versionadded:: 2.5.0
 
             :param board_id: The unique identifier (i.e. ``id`` field) for the new board **(Required)**
             :type board_id: str

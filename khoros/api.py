@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2020
+:Modified Date:     25 May 2020
 """
 
 import json
@@ -601,6 +601,8 @@ def parse_v2_response(json_response, return_dict=False, status=False, error_msg=
 
 def _get_v2_return_values(_return_booleans, _api_response, _split_errors):
     """This function collects the relevant return values to be delivered for certain functions.
+
+    .. versionadded:: 2.5.2
 
     :param _return_booleans: Dictionary of the return types with their associated Boolean value
     :type _return_booleans: dict

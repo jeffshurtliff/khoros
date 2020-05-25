@@ -6,7 +6,7 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2020
+:Modified Date:     25 May 2020
 """
 
 import warnings
@@ -26,6 +26,11 @@ def create(khoros_object, board_id, board_title, discussion_style, description=N
            return_url=None, return_api_url=None, return_http_code=None, return_status=None,
            return_error_messages=None, split_errors=False):
     """This function creates a new board within a Khoros Community environment.
+
+    .. versionchanged:: 2.5.2
+       Changed the functionality around the ``return_error_messages`` argument and added the ``split_errors`` argument.
+
+    .. versionadded:: 2.5.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -131,6 +136,8 @@ def structure_payload(khoros_object, board_id, board_title, discussion_style, de
                       one_kudo_per_contest=None, posting_date_end=None, posting_date_start=None, voting_date_end=None,
                       voting_date_start=None, winner_announced_date=None):
     """This function structures the payload to use in a Community API v2 request involving a board.
+
+    .. versionadded:: 2.5.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -253,6 +260,8 @@ def structure_payload(khoros_object, board_id, board_title, discussion_style, de
 def _structure_id_and_title(_board_id, _board_title, _payload, _missing_error):
     """This function structures the portion of the payload for the Board ID and Board Title.
 
+    .. versionadded:: 2.5.0
+
     :param _board_id: The unique identifier (i.e. ``id`` field) for the new board **(Required)**
     :type _board_id: str
     :param _board_title: The title of the new board **(Required)**
@@ -274,6 +283,8 @@ def _structure_id_and_title(_board_id, _board_title, _payload, _missing_error):
 
 def _structure_discussion_style(_discussion_style, _payload, _missing_error):
     """This function structures the portion of the payload for the Discussion Style. (i.e. board type)
+
+    .. versionadded:: 2.5.0
 
     :param _discussion_style: Defines the board as a ``blog``, ``contest``, ``forum``, ``idea``, ``qanda`` or ``tkb``
                               **(Required)**
@@ -298,6 +309,8 @@ def _structure_discussion_style(_discussion_style, _payload, _missing_error):
 def _structure_parent_category(_parent_id, _payload):
     """This function structures the portion of the payload for the parent category.
 
+    .. versionadded:: 2.5.0
+
     :param _parent_id: The ID of the parent category (if applicable)
     :type _parent_id: str, None
     :param _payload: The partially constructed payload for the API request
@@ -314,6 +327,8 @@ def _structure_parent_category(_parent_id, _payload):
 def _structure_simple_fields(_simple_fields, _payload):
     """This function structures the portion of the payload for the simple string and Boolean fields.
 
+    .. versionadded:: 2.5.0
+
     :param _simple_fields: A dictionary containing the simple string and Boolean fields for the API payload
     :type _simple_fields: dict
     :param _payload: The partially constructed payload for the API request
@@ -328,6 +343,8 @@ def _structure_simple_fields(_simple_fields, _payload):
 
 def _structure_label_settings(_label_settings, _payload):
     """This function structures the portion of the payload for the setting fields relating to labels.
+
+    .. versionadded:: 2.5.0
 
     :param _label_settings: A dictionary containing the settings involving labels
     :type _label_settings: dict
@@ -378,6 +395,8 @@ def _structure_label_settings(_label_settings, _payload):
 def _structure_blog_settings(_khoros_object, _blog_settings, _payload, _discussion_style):
     """This function structures the portion of the payload for the setting fields relating to blogs.
 
+    .. versionadded:: 2.5.0
+
     :param _khoros_object:
     :param _blog_settings: A dictionary containing the settings involving labels
     :type _blog_settings: dict
@@ -412,6 +431,8 @@ def _structure_blog_settings(_khoros_object, _blog_settings, _payload, _discussi
 def _structure_contest_settings(_contest_settings, _payload, _discussion_style):
     """This function structures the portion of the payload for the setting fields relating to contests.
 
+    .. versionadded:: 2.5.0
+
     :param _contest_settings: A dictionary containing the settings involving contests
     :type _contest_settings: dict
     :param _payload: The partially constructed payload for the API request
@@ -433,6 +454,8 @@ def _structure_contest_settings(_contest_settings, _payload, _discussion_style):
 def _warn_about_ignored_settings(_settings_type, _discussion_style):
     """This function displays a ``UserWarning`` that provided fields will be ignored if the discussion style does not
        match the style for which the field are specific.
+
+    .. versionadded:: 2.5.0
 
     :param _settings_type: The discussion style relating to the supplied fields and values
     :type _settings_type: str
