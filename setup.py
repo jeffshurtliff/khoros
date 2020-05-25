@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""This script is the primary configuration file for the khoros project."""
 
 import setuptools
 
