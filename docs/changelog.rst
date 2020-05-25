@@ -97,6 +97,14 @@ Additions to the documentation.
 Changed
 =======
 
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Renamed the :py:func:`khoros.utils.core_utils.__is_zero_length` function to be
+  :py:func:`khoros.utils.core_utils._is_zero_length` instead.
+* Renamed the :py:func:`khoros.utils.core_utils.__structure_query_string` function to be
+  :py:func:`khoros.utils.core_utils._structure_query_string` instead.
 Documentation
 -------------
 Changes to the documentation.

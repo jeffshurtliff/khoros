@@ -115,11 +115,11 @@ def run_cmd(cmd, return_type='dict', shell=True, decode_output=True, strip_outpu
     return results
 
 
-def __is_zero_length(_element):
+def _is_zero_length(_element):
     return True if len(_element) == 0 else False
 
 
-def __structure_query_string(_url_dict, _no_encode):
+def _structure_query_string(_url_dict, _no_encode):
     """This function constructs a query string where one or more fields must not be URL-encoded.
 
     :param _url_dict: Dictionary of URL query string keys and values
@@ -135,7 +135,7 @@ def __structure_query_string(_url_dict, _no_encode):
     for _field_name, _field_value in _url_dict.items():
         if _field_name not in _no_encode:
             _field_value = url_encode(_field_value)
-        _delimiter = _delimiters.get(__is_zero_length(_query_string))
+        _delimiter = _delimiters.get(_is_zero_length(_query_string))
         _query_string = f"{_query_string}{_delimiter}{_field_name}={_field_value}"
     return _query_string
 
@@ -150,7 +150,7 @@ def encode_query_string(url_dict, no_encode=None):
     :returns: The URL query string in string format
     """
     if no_encode:
-        query_string = __structure_query_string(url_dict, no_encode)
+        query_string = _structure_query_string(url_dict, no_encode)
     else:
         query_string = urllib.parse.urlencode(url_dict)
     return query_string
