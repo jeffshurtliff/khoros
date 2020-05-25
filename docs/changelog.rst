@@ -32,6 +32,7 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
+* Removed the ``assert`` function call from the :py:meth:`khoros.core.Khoros._populate_construct_settings` method.
 * Updated the :py:func:`khoros.api.parse_v2_response` function so that the ``http_code``
   value returns as an integer rather than a string.
 * Replaced the ``return_developer_message`` argument with ``return_error_messages`` in the

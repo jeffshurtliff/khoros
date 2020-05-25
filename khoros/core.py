@@ -231,7 +231,6 @@ class Khoros(object):
 
     def _populate_construct_settings(self):
         """This method populates the khoros.construct dictionary to assist in constructing API queries and responses."""
-        assert 'prefer_json' in self._settings
         if 'prefer_json' in self._settings:
             return_formats = {True: '&restapi.response_format=json', False: ''}
             self.construct['response_format'] = return_formats.get(self._settings['prefer_json'])
