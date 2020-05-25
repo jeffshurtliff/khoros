@@ -40,7 +40,8 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         <td>Documentation</td>
         <td>
             <a href='https://khoros.readthedocs.io/en/latest/?badge=latest'>
-                <img src='https://readthedocs.org/projects/khoros/badge/?version=latest' alt='Documentation Status' />
+                <img src='https://readthedocs.org/projects/khoros/badge/?version=latest' alt='Documentation Status' /><br />
+                <img src="https://raw.githubusercontent.com/jeffshurtliff/khoros/master/docs/_static/interrogate_badge.svg">
             </a>
         </td>
     </tr>
