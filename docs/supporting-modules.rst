@@ -138,6 +138,17 @@ This module includes unit tests for the package that are performed using pytest.
 
 |
 
+Test Board Creation Module (khoros.utils.tests.test_board_creation)
+-------------------------------------------------------------------
+This module is used by pytest to verify that that the board creation works properly.
+
+.. automodule:: khoros.utils.tests.test_board_creation
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Core Utilities Module (khoros.utils.tests.test_core_utils)
 ---------------------------------------------------------------
 This module is used by pytest to verify that the core package utilities work properly.

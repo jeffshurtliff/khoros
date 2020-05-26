@@ -4,6 +4,39 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.6.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:mod:`khoros.utils.tests.test_board_creation` unit test module with the following functions:
+    * :py:func:`khoros.utils.tests.test_board_creation.set_package_path`
+    * :py:func:`khoros.utils.tests.test_board_creation.import_boards_module`
+    * :py:func:`khoros.utils.tests.test_board_creation.import_exceptions_module`
+    * :py:func:`khoros.utils.tests.test_board_creation.initialize_khoros_object`
+    * :py:func:`khoros.utils.tests.test_board_creation.get_required_fields`
+    * :py:func:`khoros.utils.tests.test_board_creation.get_dict_for_required_fields`
+    * :py:func:`khoros.utils.tests.test_board_creation.verify_data_fields`
+    * :py:func:`khoros.utils.tests.test_board_creation.test_required_fields`
+    * :py:func:`khoros.utils.tests.test_board_creation.test_valid_board_types`
+    * :py:func:`khoros.utils.tests.test_board_creation.test_no_arguments`
+    * :py:func:`khoros.utils.tests.test_board_creation.test_invalid_board_type`
+    * :py:func:`khoros.utils.tests.test_board_creation.test_description`
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.utils.tests.test_board_creation` module to the
+  :doc:`Supporting Modules <supporting-modules>` page.
+
+******
 v2.5.2
 ******
 **Release Date: 2020-05-25**
