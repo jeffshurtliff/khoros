@@ -91,6 +91,10 @@ def create(khoros_object, board_id, board_title, discussion_style, description=N
     :param winner_announced_date: The date/time the contest winner will be announced
     :type winner_announced_date: type[datetime.datetime], None
     :param full_response: Determines whether the full, raw API response should be returned by the function
+
+                          .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``,
+                                       ``return_http_code``, ``return_status`` and ``return_error_messages`` arguments.
+
     :type full_response: bool, None
     :param return_id: Determines if the **ID** of the new board should be returned by the function
     :type return_id: bool, None

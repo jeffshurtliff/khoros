@@ -10,6 +10,7 @@ which are listed below.
         * `Board Subclass (khoros.core.Khoros.Board)`_
         * `Category Subclass (khoros.core.Khoros.Category)`_
         * `Community Subclass (khoros.core.Khoros.Community)`_
+        * Group Hub Subclass (khoros.core.Khoros.GroupHub)
         * `Node Subclass (khoros.core.Khoros.Node)`_
     * `Core Object Subclasses (khoros.core.Khoros)`_
         * `Album Subclass (khoros.core.Khoros.Album)`_
@@ -31,6 +32,7 @@ which are listed below.
     * `Boards Module (khoros.structures.boards)`_
     * `Categories Module (khoros.structures.categories)`_
     * `Communities Module (khoros.structures.communities)`_
+    * `Group Hubs Module (khoros.structures.grouphubs)`_
     * `Nodes Module (khoros.structures.nodes)`_
 * `Studio Module (khoros.studio)`_
     * `Base Studio Module (khoros.studio.base)`_
@@ -317,6 +319,17 @@ Communities Module (khoros.structures.communities)
 This module contains functions specific to the high-level community configuration.
 
 .. automodule:: khoros.structures.communities
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Group Hubs Module (khoros.structures.grouphubs)
+===============================================
+This module contains functions specific to group hubs within the Khoros Community platform.
+
+.. automodule:: khoros.structures.grouphubs
    :members:
 
 :doc:`Return to Top <primary-modules>`

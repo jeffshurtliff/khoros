@@ -116,6 +116,11 @@ def run_cmd(cmd, return_type='dict', shell=True, decode_output=True, strip_outpu
 
 
 def _is_zero_length(_element):
+    """This function checks to see if an element has a zero length.
+
+    :param _element: The element of which the length will be checked
+    :returns: Boolean value stating whether or not the length of the element is zero
+    """
     return True if len(_element) == 0 else False
 
 

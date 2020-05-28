@@ -11,6 +11,22 @@ v2.6.0
 Added
 =====
 
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.api.format_avatar_payload` function.
+* Added the :py:func:`khoros.api.combine_json_and_avatar_payload` function.
+* Added the :py:mod:`khoros.structures.grouphubs` module with the following functions:
+    * :py:func:`khoros.structures.grouphubs.create`
+    * :py:func:`khoros.structures.grouphubs._create_group_hub_with_avatar`
+    * :py:func:`khoros.structures.grouphubs._create_group_hub_without_avatar`
+    * :py:func:`khoros.structures.grouphubs.structure_payload`
+    * :py:func:`khoros.structures.grouphubs._structure_simple_string_fields`
+    * :py:func:`khoros.structures.grouphubs._structure_membership_type`
+    * :py:func:`khoros.structures.grouphubs._structure_discussion_styles`
+    * :py:func:`khoros.structures.grouphubs._structure_parent_category`
+
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
@@ -28,13 +44,25 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_board_creation.test_no_arguments`
     * :py:func:`khoros.utils.tests.test_board_creation.test_invalid_board_type`
     * :py:func:`khoros.utils.tests.test_board_creation.test_description`
+* Added the :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError` exception class.
 
 Documentation
 -------------
 Additions to the documentation.
 
+* Added the :py:mod:`khoros.structures.grouphubs` module to the :doc:`Primary Modules <primary-modules>` page.
 * Added the :py:mod:`khoros.utils.tests.test_board_creation` module to the
   :doc:`Supporting Modules <supporting-modules>` page.
+* Added a docstring for :py:func:`khoros.utils.core_utils._is_zero_length`.
+
+Changed
+=======
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added a caution message to the docstring for :py:func:`khoros.structures.boards.create`.
 
 ******
 v2.5.2

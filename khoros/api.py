@@ -6,10 +6,11 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 May 2020
+:Modified Date:     27 May 2020
 """
 
 import json
+import os.path
 
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
@@ -190,6 +191,37 @@ def _api_request_without_payload(_url, _request_type, _headers):
     if _retries == 6:
         _raise_exception_for_repeated_timeouts()
     return _response
+
+
+def combine_json_and_avatar_payload(json_payload, avatar_image_path):
+    """This function combines JSON payload with an uploaded avatar image (binary file) for a multipart API request.
+
+    .. versionadded:: 2.6.0
+
+    :param json_payload: The JSON payload for the API request
+    :type json_payload: dict
+    :param avatar_image_path: The full path to the avatar image to use
+    :type avatar_image_path: str
+    :returns: The full multipart payload for the API request
+    :raises: :py:exc:`FileNotFoundError`
+    """
+    files_payload = format_avatar_payload(avatar_image_path)
+    full_payload = {'api.request': (None, json.dumps(json_payload, default=str), 'application/json')}
+    full_payload.update(files_payload)
+    return full_payload
+
+
+def format_avatar_payload(avatar_image_path):
+    """This function structures and formats the avatar payload to be used in a multipart API request.
+
+    .. versionadded:: 2.6.0
+
+    :param avatar_image_path: The file path to the avatar image to use
+    :type avatar_image_path: str
+    :returns: The payload dictionary containing the binary file
+    :raises: :py:exc:`FileNotFoundError`
+    """
+    return {'avatar': (f'{os.path.basename(avatar_image_path)}', open(avatar_image_path, 'rb'))}
 
 
 def _report_failed_attempt(_exc_msg, _request_type, _retries):

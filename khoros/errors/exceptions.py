@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 May 2020
+:Modified Date:     26 May 2020
 """
 
 #################
@@ -28,6 +28,7 @@ class KhorosError(Exception):
 class InvalidNodeTypeError(KhorosError):
     """This exception is used when an invalid node type is provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The node type that was provided is invalid."
         if not (args or kwargs):
             args = (default_msg,)
@@ -40,6 +41,7 @@ class InvalidNodeTypeError(KhorosError):
 class NodeIDNotFoundError(KhorosError):
     """This exception is used when a valid Node ID could not be found in a provided URL."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "A valid Node ID could not be identified in the given URL."
         if not (args or kwargs):
             args = (default_msg,)
@@ -52,6 +54,7 @@ class NodeIDNotFoundError(KhorosError):
 class NodeTypeNotFoundError(KhorosError):
     """This exception is used when a valid node type could not be found in a provided URL."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "A valid node type could not be identified in the given URL."
         if not (args or kwargs):
             args = (default_msg,)
@@ -72,6 +75,7 @@ class InvalidStructureTypeError(KhorosError):
     .. versionadded:: 2.1.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The structure type that was provided is invalid."
         if not (args or kwargs):
             args = (default_msg,)
@@ -89,6 +93,7 @@ class InvalidStructureTypeError(KhorosError):
 class InvalidCallbackURLError(KhorosError):
     """This exception is used when an invalid Callback URL for OAuth 2.0 was not provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The OAuth 2.0 callback URL that was provided is invalid. The entire URL must be provided."
         if not (args or kwargs):
             args = (default_msg,)
@@ -129,6 +134,7 @@ class CurrentlyUnsupportedError(KhorosError):
        The unsupported feature can be passed as a string argument to explicitly reference it in the exception.
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "This feature is currently unsupported at this time."
         if not (args or kwargs):
             args = (default_msg,)
@@ -144,6 +150,7 @@ class DataMismatchError(KhorosError):
     .. versionadded:: 2.3.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "A data mismatch was found with the data sources."
         if not (args or kwargs):
             args = (default_msg,)
@@ -166,6 +173,7 @@ class InvalidFieldError(KhorosError):
     .. versionadded:: 2.1.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The field that was provided is invalid."
         if not (args or kwargs):
             args = (default_msg,)
@@ -181,6 +189,7 @@ class InvalidURLError(KhorosError):
     .. versionadded:: 2.1.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The provided URL is invalid"
         if not (args or kwargs):
             args = (default_msg,)
@@ -196,6 +205,7 @@ class MissingRequiredDataError(KhorosError):
     .. versionadded:: 2.0.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "Missing one or more required parameters"
         init_msg = "The object failed to initialize as it is missing one or more required arguments."
         if not (args or kwargs):
@@ -215,6 +225,7 @@ class UnknownFileTypeError(KhorosError):
     .. versionadded:: 2.2.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The file type of the given file path cannot be identified."
         if not (args or kwargs):
             args = (default_msg,)
@@ -277,7 +288,6 @@ class InvalidEndpointError(KhorosError):
 
 class InvalidLookupTypeError(KhorosError):
     """This exception is used when an invalid API lookup type is provided."""
-
     def __init__(self, *args, **kwargs):
         default_msg = "The supplied lookup type for the API is not recognized. (Examples of valid " + \
                       "lookup types include 'id' and 'email')"
@@ -286,9 +296,28 @@ class InvalidLookupTypeError(KhorosError):
         super().__init__(*args)
 
 
+class InvalidPayloadValueError(KhorosError):
+    """This exception is used when an invalid value is provided for a payload field.
+
+    .. versionadded:: 2.6.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "An invalid payload value was provided."
+        custom_msg = "The invalid payload value 'X' was provided for the 'Y' field."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'value' in kwargs:
+            if 'field' in kwargs:
+                custom_msg = custom_msg.replace('X', kwargs['value']).replace('Y', kwargs['field'])
+            else:
+                custom_msg = f"{custom_msg.replace('X', kwargs['value']).split(' for the')[0]}."
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
 class InvalidRequestTypeError(KhorosError):
     """This exception is used when an invalid API request type is provided."""
-
     def __init__(self, *args, **kwargs):
         default_msg = "The supplied request type for the API is not recognized. (Examples of valid " + \
                       "request types include 'POST' and 'PUT')"
@@ -407,8 +436,8 @@ class TooManyResultsError(KhorosError):
 
 class MessageTypeNotFoundError(KhorosError):
     """This exception is used when a message type cannot be identified from a given URL."""
-
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The message type could not be identified in the provided URL."
         if not (args or kwargs):
             args = (default_msg,)
@@ -429,6 +458,7 @@ class MessageTypeNotFoundError(KhorosError):
 class InvalidRoleError(KhorosError):
     """This exception is used when an invalid role is provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The role is invalid"
         if not (args or kwargs):
             args = (default_msg,)
@@ -441,6 +471,7 @@ class InvalidRoleError(KhorosError):
 class InvalidRoleTypeError(KhorosError):
     """This exception is used when an invalid role type is provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The role type is invalid"
         if not (args or kwargs):
             args = (default_msg,)
@@ -458,6 +489,7 @@ class InvalidRoleTypeError(KhorosError):
 class UserCreationError(KhorosError):
     """This exception is used when an attempt to create a user fails."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The user failed to be created."
         if not (args or kwargs):
             args = (default_msg,)
