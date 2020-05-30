@@ -133,3 +133,4 @@ dmypy.json
 
 # Local directory
 local/
+!local/.gitkeep
