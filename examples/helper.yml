@@ -1,0 +1,32 @@
+# Helper configuration file for the khoros package
+
+# Define how to obtain the connection information
+connection:
+    community_url: https://community.example.com/
+    tenant_id: example12345
+
+    # Define the default authentication type to use
+    default_auth_type: session_auth
+
+    # Define the OAuth 2.0 credentials
+    oauth2:
+        client_id: FLFeNYob7XXXXXXXXXXXXXXXXXXXXZcWQEQHR5T6bo=
+        client_secret: 1n0AIXXXXXXXXXXXXXXXXXXXX1udOtNaYnfJCeOszYw=
+        redirect_url: http://redirect.community.example.com/getAccessToken
+
+    # Define the session key authorization information
+    session_auth:
+        username: serviceaccount
+        password: Ch@ng3ME!
+
+# Define the preferred format for API responses
+prefer_json: yes
+
+# List the enabled discussion styles in the environment (blog, contest, forum, idea, qanda, tkb)
+discussion_styles:
+    - blog
+    - contest
+    - forum
+    - idea
+    - qanda
+    - tkb
