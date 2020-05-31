@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 May 2020
+:Modified Date:     29 May 2020
 """
 
 import sys
@@ -116,6 +116,7 @@ class Khoros(object):
         # Capture the helper settings if applicable
         if helper is None:
             self._helper_settings['connection'] = {}
+            self._helper_settings['discussion_styles'] = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
         else:
             self._settings['helper'] = helper
             if type(helper) == tuple or type(helper) == list:
@@ -202,6 +203,7 @@ class Khoros(object):
         self.boards = self._import_board_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
+        self.grouphubs = self._import_grouphub_class()
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
@@ -269,6 +271,9 @@ class Khoros(object):
                     for _construct_key in _construct_keys:
                         if _construct_key in self._helper_settings['construct']:
                             self._settings[_construct_key] = self._helper_settings['construct'][_construct_key]
+        if 'discussion_styles' in self._helper_settings:
+            if isinstance(self._helper_settings.get('discussion_styles'), list):
+                self._settings['discussion_styles'] = self._helper_settings.get('discussion_styles')
 
     def _validate_base_url(self):
         """This method ensures that the Community URL is defined appropriately."""
@@ -339,6 +344,14 @@ class Khoros(object):
         .. versionadded:: 2.1.0
         """
         return Khoros.Community(self)
+
+    def _import_grouphub_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.GroupHub` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 2.6.0
+        """
+        return Khoros.GroupHub(self)
 
     def _import_message_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Message` inner class to be utilized in the core object.
@@ -713,6 +726,105 @@ class Khoros(object):
                                                    return_url, return_api_url, return_http_code, return_status,
                                                    return_error_messages, split_errors)
 
+        def structure_payload(self, board_id, board_title, discussion_style, description=None, parent_category_id=None,
+                              hidden=None, allowed_labels=None, use_freeform_labels=None, use_predefined_labels=None,
+                              predefined_labels=None, media_type=None, blog_authors=None, blog_author_ids=None,
+                              blog_author_logins=None, blog_comments_enabled=None, blog_moderators=None,
+                              blog_moderator_ids=None, blog_moderator_logins=None, one_entry_per_contest=None,
+                              one_kudo_per_contest=None, posting_date_end=None, posting_date_start=None,
+                              voting_date_end=None, voting_date_start=None, winner_announced_date=None):
+            """This function structures the payload to use in a Community API v2 request involving a board.
+
+            .. versionadded:: 2.6.0
+
+            :param board_id: The unique identifier (i.e. ``id`` field) for the new board **(Required)**
+            :type board_id: str
+            :param board_title: The title of the new board **(Required)**
+            :type board_title: str
+            :param discussion_style: Defines the board as a ``blog``, ``contest``, ``forum``, ``idea``, ``qanda`` or
+                                     ``tkb`` **(Required)**
+            :type discussion_style: str
+            :param description: A brief description of the board
+            :type description: str, None
+            :param parent_category_id: The ID of the parent category (if applicable)
+            :type parent_category_id: str, None
+            :param hidden: Defines whether or not the new board should be hidden from lists and menus
+                           (disabled by default)
+            :type hidden: bool, None
+            :param allowed_labels: The type of labels allowed on the board (``freeform-only``, ``predefined-only`` or
+                                   ``freeform and pre-defined``)
+            :type allowed_labels: str, None
+            :param use_freeform_labels: Determines if freeform labels should be utilized
+            :type use_freeform_labels: bool, None
+            :param use_predefined_labels: Determines if pre-defined labels should be utilized
+            :type use_predefined_labels: bool, None
+            :param predefined_labels: The pre-defined labels to utilized on the board as a list of dictionaries
+
+                                      .. todo:: The ability to provide labels as a simple list and optionally
+                                                standardize their format (e.g. Pascal Case, etc.) will be available
+                                                in a future release.
+
+            :type predefined_labels: list, None
+            :param media_type: The media type associated with a contest. (``image``, ``video`` or ``story`` i.e. text)
+            :type media_type: str, None
+            :param blog_authors: The approved blog authors in a blog board as a list of user data dictionaries
+            :type blog_authors: list, None
+            :param blog_author_ids: A list of User IDs representing the approved blog authors in a blog board
+            :type blog_author_ids: list, None
+            :param blog_author_logins: A list of User Logins (i.e. usernames) representing approved blog authors
+                                       in a blog board
+            :type blog_author_logins: list, None
+            :param blog_comments_enabled: Determines if comments should be enabled on blog posts within a blog board
+            :type blog_comments_enabled: bool, None
+            :param blog_moderators: The designated blog moderators in a blog board as a list of user data dictionaries
+            :type blog_moderators: list, None
+            :param blog_moderator_ids: A list of User IDs representing the blog moderators in a blog board
+            :type blog_moderator_ids: list, None
+            :param blog_moderator_logins: A list of User Logins (i.e. usernames) representing blog moderators
+                                          in a blog board
+            :type blog_moderator_logins: list, None
+            :param one_entry_per_contest: Defines whether a user can submit only one entry to a single contest
+            :type one_entry_per_contest: bool, None
+            :param one_kudo_per_contest: Defines whether a user can vote only once per contest
+            :type one_kudo_per_contest: bool, None
+            :param posting_date_end: The date/time when the contest is closed to submissions
+            :type posting_date_end: type[datetime.datetime], None
+            :param posting_date_start: The date/time when the voting period for a contest begins
+            :type posting_date_start: type[datetime.datetime], None
+            :param voting_date_end: The date/time when the voting period for a contest ends
+            :type voting_date_end: type[datetime.datetime], None
+            :param voting_date_start: The date/time when the voting period for a contest begins
+            :type voting_date_start: type[datetime.datetime], None
+            :param winner_announced_date: The date/time the contest winner will be announced
+            :type winner_announced_date: type[datetime.datetime], None
+            :returns: The full and properly formatted payload for the API request
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+            """
+            return structures_module.boards.structure_payload(self.khoros_object, board_id, board_title,
+                                                              discussion_style, description, parent_category_id, hidden,
+                                                              allowed_labels, use_freeform_labels,
+                                                              use_predefined_labels, predefined_labels, media_type,
+                                                              blog_authors, blog_author_ids, blog_author_logins,
+                                                              blog_comments_enabled, blog_moderators,
+                                                              blog_moderator_ids, blog_moderator_logins,
+                                                              one_entry_per_contest, one_kudo_per_contest,
+                                                              posting_date_end, posting_date_start, voting_date_end,
+                                                              voting_date_start, winner_announced_date)
+
+        @staticmethod
+        def get_board_id(url):
+            """This function retrieves the Board ID for a given board when provided its URL.
+
+            .. versionadded:: 2.6.0
+
+            :param url: The URL from which to parse out the Board ID
+            :type url: str
+            :returns: The Board ID retrieved from the URL
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
+            """
+            return structures_module.boards.get_board_id(url)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):
@@ -755,13 +867,29 @@ class Khoros(object):
             """
             return structures_module.categories.get_category_id(url)
 
-        def get_total_category_count(self):
+        def get_total_count(self):
             """This function returns the total number of categories within the Khoros Community environment.
+
+            .. versionadded:: 2.6.0
 
             :returns: The total number of categories as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return structures_module.categories.get_total_category_count(self.khoros_object)
+            return structures_module.categories.get_total_count(self.khoros_object)
+
+        def get_total_category_count(self):
+            """This function returns the total number of categories within the Khoros Community environment.
+
+            .. deprecated:: 2.6.0
+               Use the :py:meth:`khoros.core.Khoros.Category.get_total_count` method instead.
+
+            :returns: The total number of categories as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            warnings.warn("The 'khoros.core.Khoros.Category.get_total_category_count' method has been replaced"
+                          "with the 'khoros.core.Khoros.Category.get_total_count' method and will be removed in"
+                          "a future release.", DeprecationWarning)
+            return self.get_total_count()
 
         def get_category_details(self, identifier, first_item=True):
             """This function returns a dictionary of community configuration settings.
@@ -1382,7 +1510,209 @@ class Khoros(object):
             """
             return structures_module.communities.top_level_categories_on_community_page(self.khoros_object,
                                                                                         community_details)
-    
+
+    class GroupHub(object):
+        """This class includes methods for interacting with group hubs."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.GroupHub` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def create(self, group_id, group_title, description=None, membership_type=None, open_group=None,
+                   closed_group=None, hidden_group=None, discussion_styles=None, enable_blog=None, enable_contest=None,
+                   enable_forum=None, enable_idea=None, enable_qanda=None, enable_tkb=None, all_styles_default=True,
+                   parent_category_id=None, avatar_image_path=None, full_response=None, return_id=None, return_url=None,
+                   return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
+                   split_errors=False):
+            """This function creates a new group hub within a Khoros Community environment.
+
+            .. versionadded:: 2.6.0
+
+            :param group_id: The unique identifier (i.e. ``id`` field) for the new group hub **(Required)**
+            :type group_id: str, int
+            :param group_title: The title of the group hub **(Required)**
+            :type group_title: str
+            :param description: A brief description of the group hub
+            :type description: str, None
+            :param membership_type: The ``membership_type`` value (``open``, ``closed`` or ``closed_hidden``)
+            :type membership_type: dict, None
+            :param open_group: Defines the group hub as an open group
+            :type open_group: bool, None
+            :param closed_group: Defines the group hub as a closed group
+            :type closed_group: bool, None
+            :param hidden_group: Defines the group hub as a closed and hidden group
+            :type hidden_group: bool, None
+            :param discussion_styles: A list of discussion styles that will be permitted in the group hub
+            :type discussion_styles: list, None
+            :param enable_blog: Defines that the **blog** discussion style should be enabled for the group hub
+            :type enable_blog: bool, None
+            :param enable_contest: Defines that the **contest** discussion style should be enabled for the group hub
+            :type enable_contest: bool, None
+            :param enable_forum: Defines that the **forum** discussion style should be enabled for the group hub
+            :type enable_forum: bool, None
+            :param enable_idea: Defines that the **idea** discussion style should be enabled for the group hub
+            :type enable_idea: bool, None
+            :param enable_qanda: Defines that the **Q&A** (``qanda``) discussion style should be enabled for
+                                 the group hub
+            :type enable_qanda: bool, None
+            :param enable_tkb: Defines that the **TKB** (``tkb``) discussion style should be enabled for
+                               the group hub
+            :type enable_tkb: bool, None
+            :param all_styles_default: Enables all discussion styles if not otherwise specified
+            :type all_styles_default: bool
+            :param parent_category_id: The parent category identifier (if applicable)
+            :type parent_category_id: str, int, None
+            :param avatar_image_path: The file path to the avatar image to be uploaded (if applicable)
+            :type avatar_image_path: str, None
+            :param full_response: Determines whether the full, raw API response should be returned by the function
+
+                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
+                                               ``return_api_url``, ``return_http_code``, ``return_status`` and
+                                               ``return_error_messages`` arguments.
+
+            :type full_response: bool, None
+            :param return_id: Determines if the **ID** of the new group hub should be returned by the function
+            :type return_id: bool, None
+            :param return_url: Determines if the **URL** of the new group hub should be returned by the function
+            :type return_url: bool, None
+            :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
+            :type return_api_url: bool, None
+            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned by
+                                     the function
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_error_messages: Determines if any error messages associated with the API response should
+                                          be returned by the function
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return structures_module.grouphubs.create(self.khoros_object, group_id, group_title, description,
+                                                      membership_type, open_group, closed_group, hidden_group,
+                                                      discussion_styles, enable_blog, enable_contest, enable_forum,
+                                                      enable_idea, enable_qanda, enable_tkb, all_styles_default,
+                                                      parent_category_id, avatar_image_path, full_response,
+                                                      return_id, return_url, return_api_url, return_http_code,
+                                                      return_status, return_error_messages, split_errors)
+
+        def structure_payload(self, group_id, group_title, description=None, membership_type=None, open_group=None,
+                              closed_group=None, hidden_group=None, discussion_styles=None, enable_blog=None,
+                              enable_contest=None, enable_forum=None, enable_idea=None, enable_qanda=None,
+                              enable_tkb=None, all_styles_default=True, parent_category_id=None):
+            """This function structures the payload to use in a Group Hub API request.
+
+            .. versionadded:: 2.6.0
+
+            :param group_id: The unique identifier (i.e. ``id`` field) for the new group hub **(Required)**
+            :type group_id: str, int
+            :param group_title: The title of the group hub **(Required)**
+            :type group_title: str
+            :param description: A brief description of the group hub
+            :type description: str, None
+            :param membership_type: The ``membership_type`` value (``open``, ``closed`` or ``closed_hidden``)
+            :type membership_type: dict, None
+            :param open_group: Defines the group hub as an open group
+            :type open_group: bool, None
+            :param closed_group: Defines the group hub as a closed group
+            :type closed_group: bool, None
+            :param hidden_group: Defines the group hub as a closed and hidden group
+            :type hidden_group: bool, None
+            :param discussion_styles: A list of discussion styles that will be permitted in the group hub
+            :type discussion_styles: list, None
+            :param enable_blog: Defines if the **blog** discussion style should be enabled for the group hub
+            :type enable_blog: bool, None
+            :param enable_contest: Defines if the **contest** discussion style should be enabled for the group hub
+            :type enable_contest: bool, None
+            :param enable_forum: Defines if the **forum** discussion style should be enabled for the group hub
+            :type enable_forum: bool, None
+            :param enable_idea: Defines if the **idea** discussion style should be enabled for the group hub
+            :type enable_idea: bool, None
+            :param enable_qanda: Defines if the **Q&A** (``qanda``) discussion style should be enabled for the group hub
+            :type enable_qanda: bool, None
+            :param enable_tkb: Defines if the **TKB** (``tkb``) discussion style should be enabled for the group hub
+            :type enable_tkb: bool, None
+            :param all_styles_default: Defines if all discussion styles should be enabled if not otherwise specified
+            :type all_styles_default: bool
+            :param parent_category_id: The parent category identifier (if applicable)
+            :type parent_category_id: str, int, None
+            :returns: The properly formatted payload for the API request
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError`
+            """
+            return structures_module.grouphubs.structure_payload(self.khoros_object, group_id, group_title, description,
+                                                                 membership_type, open_group, closed_group,
+                                                                 hidden_group, discussion_styles, enable_blog,
+                                                                 enable_contest, enable_forum, enable_idea,
+                                                                 enable_qanda, enable_tkb, all_styles_default,
+                                                                 parent_category_id)
+
+        def get_total_count(self):
+            """This function returns the total number of group hubs within the Khoros Community environment.
+
+            :returns: The total number of group hubs as an integer
+            """
+            return structures_module.grouphubs.get_total_count(self.khoros_object)
+
+        def update_title(self, new_title, group_hub_id=None, group_hub_url=None, full_response=None, return_id=None,
+                         return_url=None, return_api_url=None, return_http_code=None, return_status=None,
+                         return_error_messages=None, split_errors=False):
+            """This function updates the title of an existing group hub.
+
+            .. versionadded:: 2.6.0
+
+            :param new_title: The new title for the group hub
+            :type new_title: str
+            :param group_hub_id: The group hub ID that identifies the group hub to update
+                                 (necessary if URL not provided)
+            :type group_hub_id: str, None
+            :param group_hub_url: The group hub URL that identifies the group hub to update
+                                  (necessary if ID not provided)
+            :type group_hub_url: str, None
+            :param full_response: Determines whether the full, raw API response should be returned by the function
+
+                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
+                                               ``return_api_url``, ``return_http_code``, ``return_status`` and
+                                               ``return_error_messages`` arguments.
+
+            :type full_response: bool, None
+            :param return_id: Determines if the **ID** of the new group hub should be returned by the function
+            :type return_id: bool, None
+            :param return_url: Determines if the **URL** of the new group hub should be returned by the function
+            :type return_url: bool, None
+            :param return_api_url: Determines if the **API URL** of the new group hub should be returned
+                                   by the function
+            :type return_api_url: bool, None
+            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned
+                                     by the function
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_error_messages: Determines if any error messages associated with the API response should be
+                                          returned by the function
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.PUTRequestError`
+            """
+            return structures_module.grouphubs.update_title(self.khoros_object, new_title, group_hub_id,
+                                                            group_hub_url, full_response, return_id, return_url,
+                                                            return_api_url, return_http_code, return_status,
+                                                            return_error_messages, split_errors)
+
     class Message(object):
         """This class includes methods for interacting with messages."""
         def __init__(self, khoros_object):

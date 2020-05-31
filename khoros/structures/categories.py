@@ -6,8 +6,10 @@
 :Example:           ``category_id = categories.get_category_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 May 2020
+:Modified Date:     30 May 2020
 """
+
+import warnings
 
 from . import base
 from .. import api, liql, errors
@@ -44,18 +46,21 @@ def create(khoros_object, category_id, category_title, parent_id=None, return_js
 def get_category_id(url):
     """This function retrieves the Category ID for a given category when provided its URL.
 
+    .. versionchanged:: 2.6.0
+       The function was refactored to leverage the :py:func:`khoros.structures.base.get_structure_id` function.
+
     :param url: The URL from which to parse out the Category ID
     :type url: str
     :returns: The Category ID retrieved from the URL
     :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
     """
-    if '/ct-p/' not in url:
-        raise errors.exceptions.InvalidURLError(f"Could not find the 'ct-p' string in the following URL: {url}")
-    return url.split('ct-p/')[1]
+    return base.get_structure_id(url)
 
 
-def get_total_category_count(khoros_object):
+def get_total_count(khoros_object):
     """This function returns the total number of categories within the Khoros Community environment.
+
+    .. versionadded:: 2.6.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -63,6 +68,23 @@ def get_total_category_count(khoros_object):
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     return liql.get_total_count(khoros_object, 'categories')
+
+
+def get_total_category_count(khoros_object):
+    """This function returns the total number of categories within the Khoros Community environment.
+
+    .. deprecated:: 2.6.0
+       Use the :py:func:`khoros.structures.categories.get_total_count` function instead.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The total number of categories as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    warnings.warn("The 'khoros.structures.categories.get_total_category_count' function has been deprecated by the"
+                  "'khoros.structures.categories.get_total_count' function and will be removed in a future release.",
+                  DeprecationWarning)
+    return get_total_count(khoros_object)
 
 
 def get_category_details(khoros_object, identifier, first_item=True):

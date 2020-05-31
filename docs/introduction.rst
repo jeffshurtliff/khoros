@@ -154,6 +154,15 @@ This is an example of how the configuration file would be written:
    # Define the preferred format for API responses
    prefer_json: yes
 
+   # List the enabled discussion styles in the environment (blog, contest, forum, idea, qanda, tkb)
+   discussion_styles:
+       - blog
+       - contest
+       - forum
+       - idea
+       - qanda
+       - tkb
+
 The file can then be referenced using the ``helper`` argument when initializing the object instance, as shown below.
 
 .. code-block:: python

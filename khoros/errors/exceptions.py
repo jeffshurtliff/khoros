@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 May 2020
+:Modified Date:     31 May 2020
 """
 
 #################
@@ -106,6 +106,7 @@ class InvalidCallbackURLError(KhorosError):
 class MissingAuthDataError(KhorosError):
     """This exception is used when authentication data is not supplied and therefore a connection cannot occur."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The authentication data was not provided and a connection cannot be established."
         if not (args or kwargs):
             args = (default_msg,)
@@ -115,6 +116,7 @@ class MissingAuthDataError(KhorosError):
 class SessionAuthenticationError(KhorosError):
     """This exception is used when the session key authentication attempt failed."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The session key authentication attempt failed."
         if not (args or kwargs):
             args = (default_msg,)
@@ -243,6 +245,7 @@ class UnknownFileTypeError(KhorosError):
 class APIConnectionError(KhorosError):
     """This exception is used when the API query could not be completed due to connection aborts and/or timeouts."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The API query could not be completed due to connection aborts and/or timeouts."
         if not (args or kwargs):
             args = (default_msg,)
@@ -252,6 +255,7 @@ class APIConnectionError(KhorosError):
 class APIRequestError(KhorosError):
     """This exception is used for generic API request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The DELETE request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
@@ -261,6 +265,7 @@ class APIRequestError(KhorosError):
 class DELETERequestError(KhorosError):
     """This exception is used for generic DELETE request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The DELETE request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
@@ -270,6 +275,7 @@ class DELETERequestError(KhorosError):
 class GETRequestError(KhorosError):
     """This exception is used for generic GET request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The GET request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
@@ -279,6 +285,7 @@ class GETRequestError(KhorosError):
 class InvalidEndpointError(KhorosError):
     """This exception is used when an invalid API endpoint / service is provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The supplied endpoint for the API is not recognized. (Examples of valid " + \
                       "lookup types include 'people' and 'contents')"
         if not (args or kwargs):
@@ -289,6 +296,7 @@ class InvalidEndpointError(KhorosError):
 class InvalidLookupTypeError(KhorosError):
     """This exception is used when an invalid API lookup type is provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The supplied lookup type for the API is not recognized. (Examples of valid " + \
                       "lookup types include 'id' and 'email')"
         if not (args or kwargs):
@@ -319,6 +327,7 @@ class InvalidPayloadValueError(KhorosError):
 class InvalidRequestTypeError(KhorosError):
     """This exception is used when an invalid API request type is provided."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The supplied request type for the API is not recognized. (Examples of valid " + \
                       "request types include 'POST' and 'PUT')"
         if not (args or kwargs):
@@ -329,6 +338,7 @@ class InvalidRequestTypeError(KhorosError):
 class LookupMismatchError(KhorosError):
     """This exception is used when an a lookup value doesn't match the supplied lookup type."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The supplied lookup type for the API does not match the value that was provided."
         if not (args or kwargs):
             args = (default_msg,)
@@ -338,6 +348,7 @@ class LookupMismatchError(KhorosError):
 class NotFoundResponseError(KhorosError):
     """This exception is used when an API query returns a 404 response and there isn't a more specific class."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The API query returned a 404 response."
         if not (args or kwargs):
             args = (default_msg,)
@@ -347,6 +358,7 @@ class NotFoundResponseError(KhorosError):
 class POSTRequestError(KhorosError):
     """This exception is used for generic POST request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The POST request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
@@ -356,6 +368,7 @@ class POSTRequestError(KhorosError):
 class PUTRequestError(KhorosError):
     """This exception is used for generic PUT request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The PUT request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
@@ -370,6 +383,7 @@ class PUTRequestError(KhorosError):
 class InvalidHelperFileTypeError(KhorosError, ValueError):
     """This exception is used when an invalid file type is provided for the helper file."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The helper configuration file can only have the 'yaml' or 'json' file type."
         if not (args or kwargs):
             args = (default_msg,)
@@ -379,6 +393,7 @@ class InvalidHelperFileTypeError(KhorosError, ValueError):
 class InvalidHelperArgumentsError(KhorosError):
     """This exception is used when the helper function was supplied arguments instead of keyword arguments."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The helper configuration file only accepts basic keyword arguments. (e.g. arg_name='arg_value')"
         if not (args or kwargs):
             args = (default_msg,)
@@ -388,6 +403,7 @@ class InvalidHelperArgumentsError(KhorosError):
 class HelperFunctionNotFoundError(KhorosError):
     """This exception is used when a function referenced in the helper config file does not exist."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The function referenced in the helper configuration file could not be found."
         if not (args or kwargs):
             args = (default_msg,)
@@ -402,6 +418,7 @@ class HelperFunctionNotFoundError(KhorosError):
 class InvalidOperatorError(KhorosError):
     """This exception is used when an invalid operator is provided for the LiQL query."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "An invalid operator was provided for the LiQL query."
         if not (args or kwargs):
             args = (default_msg,)
@@ -411,6 +428,7 @@ class InvalidOperatorError(KhorosError):
 class OperatorMismatchError(KhorosError):
     """This exception is used when the number of operators in the LiQL query does not match the number of fields."""
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
         if not (args or kwargs):
             args = (default_msg,)
@@ -423,6 +441,7 @@ class TooManyResultsError(KhorosError):
     .. versionadded:: 2.0.0
     """
     def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
         default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
         if not (args or kwargs):
             args = (default_msg,)

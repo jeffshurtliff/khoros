@@ -6,13 +6,17 @@
 :Example:           ``group_hub_url = grouphubs.create(khoros_object, gh_id, gh_title, disc_styles, return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     27 May 2020
+:Modified Date:     30 May 2020
 """
 
-from .. import api, errors
+from .. import api, liql, errors
+from . import base
 
+# Define the default discussion styles to use when creating new group hubs
+DEFAULT_DISCUSSION_STYLES = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
 
-VALID_DISCUSSION_STYLES = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
+# Define a global variable to identify all discussion styles enabled for the environment where available
+all_discussion_styles = DEFAULT_DISCUSSION_STYLES
 
 
 def create(khoros_object, group_id, group_title, description=None, membership_type=None, open_group=None,
@@ -191,6 +195,7 @@ def structure_payload(khoros_object, group_id, group_title, description=None, me
              :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError`
     """
     payload = {"grouphub": ""}
+    refresh_enabled_discussion_styles(khoros_object)
     required_error_msg = "The 'group_id', 'group_title' and 'membership_type' fields are required " \
                          "to create a group hub."
     if any((khoros_object, group_id, group_title, membership_type)):
@@ -291,7 +296,7 @@ def _structure_discussion_styles(_payload, _discussion_styles=None, _enable_blog
     if not any((_discussion_styles, _enable_blog, _enable_contest, _enable_forum, _enable_idea, _enable_qanda,
                 _enable_tkb)):
         if _all_styles_default:
-            _discussion_styles = VALID_DISCUSSION_STYLES
+            _discussion_styles = all_discussion_styles
         else:
             raise errors.exceptions.MissingRequiredDataError(_required_msg)
     if _discussion_styles:
@@ -300,7 +305,7 @@ def _structure_discussion_styles(_payload, _discussion_styles=None, _enable_blog
         elif not isinstance(_discussion_styles, list):
             raise errors.exceptions.InvalidPayloadValueError(value=_discussion_styles, field='conversation_styles')
         for _style in _discussion_styles:
-            if _style not in VALID_DISCUSSION_STYLES:
+            if _style not in all_discussion_styles:
                 raise errors.exceptions.InvalidPayloadValueError(value=_style, field='conversation_styles')
         _payload['grouphub']['conversation_styles'] = _discussion_styles
     else:
@@ -317,6 +322,22 @@ def _structure_discussion_styles(_payload, _discussion_styles=None, _enable_blog
             if _toggle:
                 _discussion_styles.append(_value)
         _payload['grouphub']['conversation_styles'] = _discussion_styles
+    _payload = _remove_disabled_discussion_styles(_payload)
+    return _payload
+
+
+def _remove_disabled_discussion_styles(_payload):
+    """This function checks for any discussion styles that are disabled in the environment and removes them.
+
+    :param _payload: The JSON payload to be used in an API request
+    :type _payload: dict
+    :returns: The payload with only enabled discussion styles
+    """
+    for _style in _payload['grouphub']['conversation_styles']:
+        if _style not in all_discussion_styles:
+            errors.handlers.eprint(f"The discussion style '{_style}' will be removed from the payload as it is a "
+                                   "disabled discussion style in the environment.")
+            _payload['grouphub']['conversation_styles'].remove(_style)
     return _payload
 
 
@@ -337,4 +358,122 @@ def _structure_parent_category(_payload, _parent_id):
     return _payload
 
 
+def get_total_count(khoros_object):
+    """This function returns the total number of group hubs within the Khoros Community environment.
 
+    .. versionadded:: 2.6.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The total number of group hubs as an integer
+    """
+    return liql.get_total_count(khoros_object, 'grouphubs')
+
+
+def get_grouphub_id(url):
+    """This function retrieves the Group Hub ID for a given group hub when provided its URL.
+
+    .. versionadded:: 2.6.0
+
+    :param url: The URL from which to parse out the Group Hub ID
+    :type url: str
+    :returns: The Group Hub ID retrieved from the URL
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
+    """
+    return base.get_structure_id(url)
+
+
+def refresh_enabled_discussion_styles(khoros_object):
+    """This function refreshes the ``all_discussion_styles`` global variable to match what is in the
+       core object settings when applicable.
+
+    .. versionadded:: 2.6.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: None
+    """
+    if 'discussion_styles' in khoros_object._settings:
+        global all_discussion_styles
+        all_discussion_styles = khoros_object._settings.get('discussion_styles')
+    return
+
+
+def _verify_group_hub_id(_group_hub_id, _group_hub_url):
+    """This function verifies the Group Hub ID and looks it up as necessary using the Group Hub URL.
+
+    .. versionadded:: 2.6.0
+
+    :param _group_hub_id: The Group Hub ID supplied in the parent function
+    :type _group_hub_id: str, None
+    :param _group_hub_url: The Group Hub URL supplied in the parent function
+    :type _group_hub_url: str, None
+    :returns: The Group Hub ID
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not any((_group_hub_id, _group_hub_url)):
+        raise errors.exceptions.MissingRequiredDataError("An ID or URL for the group hub must be provided.")
+    if not _group_hub_id:
+        _group_hub_id = get_grouphub_id(_group_hub_url)
+    return _group_hub_id
+
+
+def _structure_empty_payload():
+    """This function returns the empty payload for a grouphub that is ready to be populated.
+
+    .. versionadded:: 2.6.0
+
+    :returns: The empty group hub payload as a dictionary
+    """
+    return {"grouphub": {}}
+
+
+def update_title(khoros_object, new_title, group_hub_id=None, group_hub_url=None, full_response=None, return_id=None,
+                 return_url=None, return_api_url=None, return_http_code=None, return_status=None,
+                 return_error_messages=None, split_errors=False):
+    """This function updates the title of an existing group hub.
+
+    .. versionadded:: 2.6.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param new_title: The new title for the group hub
+    :type new_title: str
+    :param group_hub_id: The group hub ID that identifies the group hub to update (necessary if URL not provided)
+    :type group_hub_id: str, None
+    :param group_hub_url: The group hub URL that identifies the group hub to update (necessary if ID not provided)
+    :type group_hub_url: str, None
+    :param full_response: Determines whether the full, raw API response should be returned by the function
+
+                          .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``,
+                                       ``return_http_code``, ``return_status`` and ``return_error_messages`` arguments.
+
+    :type full_response: bool, None
+    :param return_id: Determines if the **ID** of the new group hub should be returned by the function
+    :type return_id: bool, None
+    :param return_url: Determines if the **URL** of the new group hub should be returned by the function
+    :type return_url: bool, None
+    :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
+    :type return_api_url: bool, None
+    :param return_http_code: Determines if the **HTTP Code** of the API response should be returned by the function
+    :type return_http_code: bool, None
+    :param return_status: Determines if the **Status** of the API response should be returned by the function
+    :type return_status: bool, None
+    :param return_error_messages: Determines if any error messages associated with the API response should be
+                                  returned by the function
+    :type return_error_messages: bool, None
+    :param split_errors: Defines whether or not error messages should be merged when applicable
+    :type split_errors: bool
+    :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
+              fields defined by function arguments
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`
+    """
+    group_hub_id = _verify_group_hub_id(group_hub_id, group_hub_url)
+    payload = _structure_empty_payload()
+    payload['grouphub'] = {"title": new_title}
+    api_url = f"{khoros_object.core['v2_base']}/grouphubs/{group_hub_id}"
+    response = api.put_request_with_retries(api_url, payload, khoros_object=khoros_object)
+    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
+                                  return_status, return_error_messages, split_errors)

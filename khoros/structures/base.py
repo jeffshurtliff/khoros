@@ -59,7 +59,7 @@ def get_details(khoros_object, identifier='', structure_type=None, first_item=No
     is_href = True if ('/' in identifier and structure_type != 'node') else False
     where_filter = {True: 'view_href', False: 'id'}
     if '/' in identifier and structure_type == 'node':
-        identifier = _get_node_id(identifier)
+        identifier = get_structure_id(identifier)
     try:
         query = f'SELECT * FROM {liql_table}'
         if not community and structure_type != 'community':
@@ -72,23 +72,26 @@ def get_details(khoros_object, identifier='', structure_type=None, first_item=No
     return response
 
 
-def _get_node_id(_url):
+def get_structure_id(url):
     """This function retrieves the Node ID from a full URL.
+
+    .. versionchanged:: 2.6.0
+       The function was renamed from ``_get_node_id`` to ``get_structure_id`` and converted from private to public.
 
     .. versionadded:: 2.1.0
 
-    :param _url: The full URL of the node
-    :type _url: str
-    :returns: The Node ID in string format
+    :param url: The full URL of the node
+    :type url: str
+    :returns: The ID in string format
     """
-    _node_id = ''
-    for _node_url_code in Mapping.node_url_identifiers:
-        if _node_url_code in _url:
-            _node_id = _url.split(_node_url_code)[1]
+    node_id = ''
+    for node_url_code in Mapping.node_url_identifiers:
+        if node_url_code in url:
+            node_id = url.split(node_url_code)[1]
             break
-    if not _node_id:
-        raise errors.exceptions.InvalidURLError(f"Unable to identify the Node ID from the following URL: {_url}")
-    return _node_id
+    if not node_id:
+        raise errors.exceptions.InvalidURLError(f"Unable to identify the Node ID from the following URL: {url}")
+    return node_id
 
 
 def _check_url_for_identifier(_url, _id_type, _ignore_exceptions=False):
@@ -270,7 +273,7 @@ def get_structure_type_from_url(url, ignore_exceptions=False):
 class Mapping:
     """This class contains lists and dictionaries used to map structure data."""
     category_url_identifiers = ['ct-p/']
-    node_url_identifiers = ['bg-p/', 'con-p/', 'bd-p/', 'gp-p/', 'idb-p/', 'qa-p/', 'tkb-p/']
+    node_url_identifiers = ['bg-p/', 'con-p/', 'bd-p/', 'gp-p/', 'idb-p/', 'qa-p/', 'tkb-p/', 'gh-p/', 'ct-p/']
     structure_types = ['category', 'node']
     structure_types_to_tables = {
         'category': 'categories',

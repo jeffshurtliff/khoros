@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 May 2020
+:Modified Date:     31 May 2020
 """
 
 import warnings
@@ -319,6 +319,19 @@ def get_id_from_url(url):
 
 
 def _get_required_user_mention_data(_khoros_object, _user_info, _user_id, _login):
+    """This function retrieves the required data for constructing a user mention.
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _user_info: User information provided in a dictionary
+    :type _user_info: dict, None
+    :param _user_id: The User ID for the user
+    :type _user_id: str, int, None
+    :param _login: The username (i.e. login) for the user
+    :type _login: str, None
+    :returns: The User ID and username (i.e. login) for the user
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
     _missing_data_error = "A User ID or login must be supplied to construct an user @mention"
     _info_fields = ['id', 'login']
     if not any((_user_info, _user_id, _login)):
@@ -408,6 +421,21 @@ def _check_for_bad_content_id(_content_id, _url):
 
 
 def _get_required_content_mention_data(_khoros_object, _content_info, _content_id, _title, _url):
+    """This function retrieves the required data to construct a content mention.
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _content_info: Information on the content within a dictionary
+    :type _content_info: dict, None
+    :param _content_id: The ID of the content
+    :type _content_id: str, int, None
+    :param _title: The title of the content
+    :type _title: str, None
+    :param _url: The URL of the content
+    :type _url: str, None
+    :returns: The ID, title and URL of the content
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
     _missing_data_error = "A title and URL must be supplied to construct an user @mention"
     _content_info = {} if _content_info is None else _content_info
     _info_fields = ['title', 'url']

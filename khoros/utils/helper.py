@@ -107,6 +107,20 @@ def _get_session_auth_info(_helper_cfg):
     return _session_auth
 
 
+def _get_discussion_styles(_helper_cfg):
+    """This function defines (when present in the configuration) the enabled discussion styles in the environment.
+
+    :param _helper_cfg: The configuration parsed from the helper configuration file
+    :type _helper_cfg: dict
+    :returns: List of enabled discussion styles in the environment
+    """
+    _discussion_styles = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
+    if 'discussion_styles' in _helper_cfg:
+        if isinstance(_helper_cfg.get('discussion_styles'), list):
+            _discussion_styles = _helper_cfg.get('discussion_styles')
+    return _discussion_styles
+
+
 def _get_construct_info(_helper_cfg):
     """This function parses settings that can be leveraged in constructing API responses and similar tasks.
 
@@ -155,6 +169,9 @@ def get_helper_settings(file_path, file_type='yaml'):
 
     # Populate the construct information in the helper dictionary
     helper_settings['construct'] = _get_construct_info(helper_cfg)
+
+    # Populate the enabled discussion styles in the helper dictionary
+    helper_settings['discussion_styles'] = _get_discussion_styles(helper_cfg)
 
     # Return the helper_settings dictionary
     return helper_settings

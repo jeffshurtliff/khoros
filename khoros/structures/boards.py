@@ -6,13 +6,14 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 May 2020
+:Modified Date:     30 May 2020
 """
 
 import warnings
 
 from .. import api, errors
 from ..objects import users
+from . import base
 
 VALID_DISCUSSION_STYLES = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
 
@@ -472,3 +473,16 @@ def _warn_about_ignored_settings(_settings_type, _discussion_style):
                "provided will be ignored."
     warnings.warn(warn_msg, UserWarning)
     return
+
+
+def get_board_id(url):
+    """This function retrieves the Board ID for a given board when provided its URL.
+
+    .. versionadded:: 2.6.0
+
+    :param url: The URL from which to parse out the Board ID
+    :type url: str
+    :returns: The Board ID retrieved from the URL
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
+    """
+    return base.get_structure_id(url)

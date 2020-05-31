@@ -15,6 +15,17 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
+* Added the :py:class:`khoros.core.Khoros.GroupHub` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.GroupHub.create`
+    * :py:meth:`khoros.core.Khoros.GroupHub.structure_payload`
+    * :py:meth:`khoros.core.Khoros.GroupHub.get_total_count`
+    * :py:meth:`khoros.core.Khoros.GroupHub.update_title`
+* Added the :py:meth:`khoros.core.Khoros._import_grouphub_class` and its accompanying method call.
+* Added the :py:mod:`khoros.structures.grouphubs` module to the ``__all__`` special variable in the
+  :py:mod:`khoros.structures` ``__init__`` module and configured the module to import by default.
+* Added the :py:func:`khoros.structures.boards.get_board_id` function.
+* Added the :py:meth:`khoros.core.Khoros.Board.structure_payload` and
+  :py:meth:`khoros.core.Khoros.Board.get_board_id` methods.
 * Added the :py:func:`khoros.api.format_avatar_payload` function.
 * Added the :py:func:`khoros.api.combine_json_and_avatar_payload` function.
 * Added the :py:mod:`khoros.structures.grouphubs` module with the following functions:
@@ -26,6 +37,16 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.structures.grouphubs._structure_membership_type`
     * :py:func:`khoros.structures.grouphubs._structure_discussion_styles`
     * :py:func:`khoros.structures.grouphubs._structure_parent_category`
+    * :py:func:`khoros.structures.grouphubs.get_total_count`
+    * :py:func:`khoros.structures.grouphubs.get_grouphub_id`
+    * :py:func:`khoros.structures.grouphubs.refresh_enabled_discussion_styles`
+    * :py:func:`khoros.structures.grouphubs._remove_disabled_discussion_styles`
+    * :py:func:`khoros.structures.grouphubs.update_title`
+    * :py:func:`khoros.structures.grouphubs._verify_group_hub_id`
+* Added the :py:func:`khoros.structures.categories.get_total_count` function to replace the deprecated
+  :py:func:`khoros.structures.categories.get_total_category_count` function.
+* Added the :py:meth:`khoros.core.Khoros.Category.get_total_count` method to replace the deprecated
+  :py:meth:`khoros.core.Khoros.Category.get_total_category_count` method.
 
 Supporting Modules
 ------------------
@@ -45,6 +66,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_board_creation.test_invalid_board_type`
     * :py:func:`khoros.utils.tests.test_board_creation.test_description`
 * Added the :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError` exception class.
+* Added the :py:func:`khoros.utils.helper._get_discussion_styles` function.
 
 Documentation
 -------------
@@ -54,15 +76,49 @@ Additions to the documentation.
 * Added the :py:mod:`khoros.utils.tests.test_board_creation` module to the
   :doc:`Supporting Modules <supporting-modules>` page.
 * Added a docstring for :py:func:`khoros.utils.core_utils._is_zero_length`.
+* Added the ``discussion_styles`` field to the example helper file on the :doc:`introduction` page.
+
+General
+-------
+* Added the ``helper.yml`` file in the ``examples/`` directory of the repository using the syntax found on
+  the :doc:`introduction` page of the :doc:`documentation <index>`.
+* Added the ``discussion_styles`` list to the ``examples/helper.yml`` file.
 
 Changed
 =======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Renamed the :py:func:`khoros.structures.base._get_node_id` function to be
+  :py:func:`khoros.structures.base.get_structure_id` and converted it from a private to public function.
+* Added the ``gh-p`` and ``ct-p`` entries in the ``node_url_identifiers`` list within the
+  :py:class:`khoros.structures.base.Mapping` class.
+* Refactored the :py:func:`khoros.structures.categories.get_category_id` function to leverage the
+  :py:func:`khoros.structures.base.get_structure_id` function.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.utils.helper.get_helper_settings` function to capture the enabled discussion
+  styles via the :py:func:`khoros.utils.helper._get_discussion_styles` function.
+* Updated the :py:mod:`khoros.core.Khoros` class to define the enabled discussion styles even if a helper
+  configuration file is not supplied.
 
 Documentation
 -------------
 Changes to the documentation.
 
 * Added a caution message to the docstring for :py:func:`khoros.structures.boards.create`.
+
+Deprecated
+==========
+* Deprecated the :py:func:`khoros.structures.categories.get_total_category_count` function as it has been
+  replaced with the :py:func:`khoros.structures.categories.get_total_count` function.
+* Deprecated the :py:meth:`khoros.core.Khoros.Category.get_total_category_count` method as it has been
+  replaced with the :py:meth:`khoros.core.Khoros.Category.get_total_count` method.
 
 ******
 v2.5.2
