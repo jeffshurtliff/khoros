@@ -1,0 +1,682 @@
+================ Coverage for /Users/shurtj/Development/khoros/ ================
+------------------------------ Detailed Coverage -------------------------------
+| Name                                                                  |  Status |
+|-----------------------------------------------------------------------|---------|
+| setup.py (module)                                                     | COVERED |
+|-----------------------------------------------------------------------|---------|
+| docs/conf.py (module)                                                 | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/__init__.py (module)                                           | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/api.py (module)                                                | COVERED |
+|   define_headers (L22)                                                | COVERED |
+|   _get_json_query_string (L60)                                        | COVERED |
+|   get_request_with_retries (L77)                                      | COVERED |
+|   _api_request_with_payload (L112)                                    | COVERED |
+|   _api_request_without_payload (L164)                                 | COVERED |
+|   combine_json_and_avatar_payload (L196)                              | COVERED |
+|   format_avatar_payload (L214)                                        | COVERED |
+|   _report_failed_attempt (L227)                                       | COVERED |
+|   _raise_exception_for_repeated_timeouts (L247)                       | COVERED |
+|   post_request_with_retries (L258)                                    | COVERED |
+|   put_request_with_retries (L291)                                     | COVERED |
+|   _attempt_json_conversion (L324)                                     | COVERED |
+|   query_successful (L343)                                             | COVERED |
+|   get_results_count (L358)                                            | COVERED |
+|   get_items_list (L368)                                               | COVERED |
+|   delete (L378)                                                       | COVERED |
+|   perform_v1_search (L400)                                            | COVERED |
+|   encode_multipart_data (L431)                                        | COVERED |
+|   encode_v1_query_string (L445)                                       | COVERED |
+|   make_v1_request (L461)                                              | COVERED |
+|   deliver_v2_results (L502)                                           | COVERED |
+|   parse_v2_response (L553)                                            | COVERED |
+|   _get_v2_return_values (L634)                                        | COVERED |
+|   _confirm_field_supplied (L669)                                      | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/auth.py (module)                                               | COVERED |
+|   get_session_key (L18)                                               | COVERED |
+|   get_session_header (L48)                                            | COVERED |
+|   invalidate_session (L58)                                            | COVERED |
+|   get_oauth_authorization_url (L91)                                   | COVERED |
+|   get_oauth_callback_url_from_user (L109)                             | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/core.py (module)                                               | COVERED |
+|   Khoros (L28)                                                        | COVERED |
+|     Khoros.__init__ (L41)                                             | COVERED |
+|     Khoros._populate_core_settings (L213)                             | COVERED |
+|     Khoros._populate_auth_settings (L220)                             | COVERED |
+|     Khoros._populate_construct_settings (L234)                        | COVERED |
+|     Khoros._parse_env_settings (L240)                                 | COVERED |
+|     Khoros._parse_helper_settings (L255)                              | COVERED |
+|     Khoros._validate_base_url (L278)                                  | COVERED |
+|     Khoros._define_url_settings (L285)                                | COVERED |
+|     Khoros._session_auth_credentials_defined (L294)                   | COVERED |
+|     Khoros._connect_with_session_key (L305)                           | COVERED |
+|     Khoros._import_album_class (L316)                                 | COVERED |
+|     Khoros._import_board_class (L324)                                 | COVERED |
+|     Khoros._import_category_class (L332)                              | COVERED |
+|     Khoros._import_community_class (L340)                             | COVERED |
+|     Khoros._import_grouphub_class (L348)                              | COVERED |
+|     Khoros._import_message_class (L356)                               | COVERED |
+|     Khoros._import_node_class (L363)                                  | COVERED |
+|     Khoros._import_role_class (L370)                                  | COVERED |
+|     Khoros._import_studio_class (L377)                                | COVERED |
+|     Khoros._import_user_class (L384)                                  | COVERED |
+|     Khoros.connect (L392)                                             | COVERED |
+|     Khoros.query (L407)                                               | COVERED |
+|     Khoros.search (L434)                                              | COVERED |
+|     Khoros.get_total_count (L473)                                     | COVERED |
+|     Khoros.perform_v1_search (L487)                                   | COVERED |
+|     Khoros.parse_v2_response (L505)                                   | COVERED |
+|     Khoros.Album (L536)                                               | COVERED |
+|       Khoros.Album.__init__ (L538)                                    | COVERED |
+|       Khoros.Album.create (L546)                                      | COVERED |
+|       Khoros.Album.get_albums_for_user (L572)                         | COVERED |
+|     Khoros.Board (L601)                                               | COVERED |
+|       Khoros.Board.__init__ (L606)                                    | COVERED |
+|       Khoros.Board.create (L616)                                      | COVERED |
+|       Khoros.Board.structure_payload (L729)                           | COVERED |
+|       Khoros.Board.get_board_id (L815)                                | COVERED |
+|     Khoros.Category (L828)                                            | COVERED |
+|       Khoros.Category.__init__ (L830)                                 | COVERED |
+|       Khoros.Category.create (L838)                                   | COVERED |
+|       Khoros.Category.get_category_id (L859)                          | COVERED |
+|       Khoros.Category.get_total_count (L870)                          | COVERED |
+|       Khoros.Category.get_total_category_count (L880)                 | COVERED |
+|       Khoros.Category.get_category_details (L894)                     | COVERED |
+|       Khoros.Category.get_category_field (L910)                       | COVERED |
+|       Khoros.Category.get_url (L929)                                  | COVERED |
+|       Khoros.Category.get_title (L945)                                | COVERED |
+|       Khoros.Category.get_description (L967)                          | COVERED |
+|       Khoros.Category.get_parent_type (L984)                          | COVERED |
+|       Khoros.Category.get_parent_id (L1001)                           | COVERED |
+|       Khoros.Category.get_parent_url (L1018)                          | COVERED |
+|       Khoros.Category.get_root_type (L1035)                           | COVERED |
+|       Khoros.Category.get_root_id (L1052)                             | COVERED |
+|       Khoros.Category.get_root_url (L1069)                            | COVERED |
+|       Khoros.Category.get_language (L1086)                            | COVERED |
+|       Khoros.Category.is_hidden (L1103)                               | COVERED |
+|       Khoros.Category.get_views (L1120)                               | COVERED |
+|       Khoros.Category.friendly_date_enabled (L1137)                   | COVERED |
+|       Khoros.Category.get_friendly_date_max_age (L1154)               | COVERED |
+|       Khoros.Category.get_active_skin (L1171)                         | COVERED |
+|       Khoros.Category.get_depth (L1188)                               | COVERED |
+|       Khoros.Category.get_position (L1205)                            | COVERED |
+|       Khoros.Category.get_creation_date (L1222)                       | COVERED |
+|     Khoros.Community (L1240)                                          | COVERED |
+|       Khoros.Community.__init__ (L1242)                               | COVERED |
+|       Khoros.Community.get_community_details (L1252)                  | COVERED |
+|       Khoros.Community.get_community_field (L1262)                    | COVERED |
+|       Khoros.Community.get_tenant_id (L1278)                          | COVERED |
+|       Khoros.Community.get_title (L1290)                              | COVERED |
+|       Khoros.Community.get_description (L1307)                        | COVERED |
+|       Khoros.Community.get_primary_url (L1319)                        | COVERED |
+|       Khoros.Community.get_max_attachments (L1331)                    | COVERED |
+|       Khoros.Community.get_permitted_attachment_types (L1343)         | COVERED |
+|       Khoros.Community.email_confirmation_required_to_post (L1355)    | COVERED |
+|       Khoros.Community.get_language (L1367)                           | COVERED |
+|       Khoros.Community.get_ooyala_player_branding_id (L1379)          | COVERED |
+|       Khoros.Community.get_date_pattern (L1391)                       | COVERED |
+|       Khoros.Community.friendly_date_enabled (L1403)                  | COVERED |
+|       Khoros.Community.get_friendly_date_max_age (L1415)              | COVERED |
+|       Khoros.Community.get_active_skin (L1427)                        | COVERED |
+|       Khoros.Community.get_sign_out_url (L1439)                       | COVERED |
+|       Khoros.Community.get_creation_date (L1451)                      | COVERED |
+|       Khoros.Community.top_level_categories_enabled (L1464)           | COVERED |
+|       Khoros.Community.show_community_node_in_breadcrumb (L1476)      | COVERED |
+|       Khoros.Community.show_breadcrumb_at_top_level (L1489)           | COVERED |
+|       Khoros.Community.top_level_categories_on_community_page (L1501) | COVERED |
+|     Khoros.GroupHub (L1514)                                           | COVERED |
+|       Khoros.GroupHub.__init__ (L1516)                                | COVERED |
+|       Khoros.GroupHub.create (L1524)                                  | COVERED |
+|       Khoros.GroupHub.structure_payload (L1608)                       | COVERED |
+|       Khoros.GroupHub.get_total_count (L1659)                         | COVERED |
+|       Khoros.GroupHub.update_title (L1666)                            | COVERED |
+|     Khoros.Message (L1716)                                            | COVERED |
+|       Khoros.Message.__init__ (L1718)                                 | COVERED |
+|       Khoros.Message.create (L1726)                                   | COVERED |
+|       Khoros.Message.parse_v2_response (L1816)                        | COVERED |
+|       Khoros.Message.format_content_mention (L1852)                   | COVERED |
+|       Khoros.Message.format_user_mention (L1881)                      | COVERED |
+|     Khoros.Node (L1902)                                               | COVERED |
+|       Khoros.Node.__init__ (L1904)                                    | COVERED |
+|       Khoros.Node.get_node_id (L1912)                                 | COVERED |
+|       Khoros.Node.get_node_type_from_url (L1927)                      | COVERED |
+|       Khoros.Node.get_total_node_count (L1938)                        | COVERED |
+|       Khoros.Node.get_node_details (L1946)                            | COVERED |
+|       Khoros.Node.get_node_field (L1962)                              | COVERED |
+|       Khoros.Node.get_url (L1981)                                     | COVERED |
+|       Khoros.Node.get_type (L1997)                                    | COVERED |
+|       Khoros.Node.get_discussion_style (L2014)                        | COVERED |
+|       Khoros.Node.get_title (L2031)                                   | COVERED |
+|       Khoros.Node.get_description (L2053)                             | COVERED |
+|       Khoros.Node.get_parent_type (L2070)                             | COVERED |
+|       Khoros.Node.get_parent_id (L2087)                               | COVERED |
+|       Khoros.Node.get_parent_url (L2106)                              | COVERED |
+|       Khoros.Node.get_root_type (L2123)                               | COVERED |
+|       Khoros.Node.get_root_id (L2140)                                 | COVERED |
+|       Khoros.Node.get_root_url (L2159)                                | COVERED |
+|       Khoros.Node.get_avatar_url (L2176)                              | COVERED |
+|       Khoros.Node.get_creation_date (L2205)                           | COVERED |
+|       Khoros.Node.get_depth (L2224)                                   | COVERED |
+|       Khoros.Node.get_position (L2241)                                | COVERED |
+|       Khoros.Node.is_hidden (L2258)                                   | COVERED |
+|       Khoros.Node.get_views (L2275)                                   | COVERED |
+|     Khoros.Role (L2292)                                               | COVERED |
+|       Khoros.Role.__init__ (L2294)                                    | COVERED |
+|       Khoros.Role.get_total_role_count (L2304)                        | COVERED |
+|       Khoros.Role.get_roles_for_user (L2330)                          | COVERED |
+|     Khoros.Studio (L2341)                                             | COVERED |
+|       Khoros.Studio.__init__ (L2343)                                  | COVERED |
+|       Khoros.Studio.sdk_installed (L2351)                             | COVERED |
+|       Khoros.Studio.get_sdk_version (L2361)                           | COVERED |
+|       Khoros.Studio.node_installed (L2371)                            | COVERED |
+|       Khoros.Studio.get_node_version (L2381)                          | COVERED |
+|       Khoros.Studio.npm_installed (L2391)                             | COVERED |
+|       Khoros.Studio.get_npm_version (L2401)                           | COVERED |
+|     Khoros.User (L2411)                                               | COVERED |
+|       Khoros.User.__init__ (L2413)                                    | COVERED |
+|       Khoros.User.create (L2421)                                      | COVERED |
+|       Khoros.User.delete (L2452)                                      | COVERED |
+|       Khoros.User.get_user_id (L2463)                                 | COVERED |
+|       Khoros.User.get_username (L2489)                                | COVERED |
+|       Khoros.User.get_login (L2515)                                   | COVERED |
+|       Khoros.User.get_email (L2521)                                   | COVERED |
+|       Khoros.User.get_ids_from_login_list (L2547)                     | COVERED |
+|       Khoros.User.query_users_table_by_id (L2559)                     | COVERED |
+|       Khoros.User.get_user_data (L2571)                               | COVERED |
+|       Khoros.User.get_album_count (L2587)                             | COVERED |
+|       Khoros.User.get_followers_count (L2603)                         | COVERED |
+|       Khoros.User.get_following_count (L2619)                         | COVERED |
+|       Khoros.User.get_images_count (L2635)                            | COVERED |
+|       Khoros.User.get_public_images_count (L2651)                     | COVERED |
+|       Khoros.User.get_messages_count (L2668)                          | COVERED |
+|       Khoros.User.get_roles_count (L2684)                             | COVERED |
+|       Khoros.User.get_solutions_authored_count (L2700)                | COVERED |
+|       Khoros.User.get_topics_count (L2717)                            | COVERED |
+|       Khoros.User.get_replies_count (L2733)                           | COVERED |
+|       Khoros.User.get_videos_count (L2749)                            | COVERED |
+|       Khoros.User.get_kudos_given_count (L2765)                       | COVERED |
+|       Khoros.User.get_kudos_received_count (L2781)                    | COVERED |
+|       Khoros.User.get_online_user_count (L2798)                       | COVERED |
+|       Khoros.User.get_registration_data (L2806)                       | COVERED |
+|       Khoros.User.get_registration_timestamp (L2822)                  | COVERED |
+|       Khoros.User.get_registration_status (L2839)                     | COVERED |
+|       Khoros.User.get_last_visit_timestamp (L2856)                    | COVERED |
+|     Khoros.signout (L2873)                                            | COVERED |
+|     Khoros.__del__ (L2880)                                            | COVERED |
+|     Khoros.close (L2884)                                              | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/liql.py (module)                                               | COVERED |
+|   format_query (L23)                                                  | COVERED |
+|   get_query_url (L91)                                                 | COVERED |
+|   perform_query (L116)                                                | COVERED |
+|   get_total_count (L167)                                              | COVERED |
+|   parse_query_elements (L186)                                         | COVERED |
+|   __parse_select_fields (L236)                                        | COVERED |
+|   __wrap_string_vales (L251)                                          | COVERED |
+|   __convert_where_dicts_to_lists (L264)                               | COVERED |
+|   __parse_where_clause (L288)                                         | COVERED |
+|   LiQLSyntax (L365)                                                   | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/errors/__init__.py (module)                                    | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/errors/exceptions.py (module)                                  | COVERED |
+|   KhorosError (L18)                                                   | COVERED |
+|   InvalidNodeTypeError (L28)                                          | COVERED |
+|     InvalidNodeTypeError.__init__ (L30)                               | COVERED |
+|   NodeIDNotFoundError (L41)                                           | COVERED |
+|     NodeIDNotFoundError.__init__ (L43)                                | COVERED |
+|   NodeTypeNotFoundError (L54)                                         | COVERED |
+|     NodeTypeNotFoundError.__init__ (L56)                              | COVERED |
+|   InvalidStructureTypeError (L72)                                     | COVERED |
+|     InvalidStructureTypeError.__init__ (L77)                          | COVERED |
+|   InvalidCallbackURLError (L93)                                       | COVERED |
+|     InvalidCallbackURLError.__init__ (L95)                            | COVERED |
+|   MissingAuthDataError (L106)                                         | COVERED |
+|     MissingAuthDataError.__init__ (L108)                              | COVERED |
+|   SessionAuthenticationError (L116)                                   | COVERED |
+|     SessionAuthenticationError.__init__ (L118)                        | COVERED |
+|   CurrentlyUnsupportedError (L132)                                    | COVERED |
+|     CurrentlyUnsupportedError.__init__ (L138)                         | COVERED |
+|   DataMismatchError (L149)                                            | COVERED |
+|     DataMismatchError.__init__ (L154)                                 | COVERED |
+|   InvalidFieldError (L172)                                            | COVERED |
+|     InvalidFieldError.__init__ (L177)                                 | COVERED |
+|   InvalidURLError (L188)                                              | COVERED |
+|     InvalidURLError.__init__ (L193)                                   | COVERED |
+|   MissingRequiredDataError (L204)                                     | COVERED |
+|     MissingRequiredDataError.__init__ (L209)                          | COVERED |
+|   UnknownFileTypeError (L224)                                         | COVERED |
+|     UnknownFileTypeError.__init__ (L229)                              | COVERED |
+|   APIConnectionError (L245)                                           | COVERED |
+|     APIConnectionError.__init__ (L247)                                | COVERED |
+|   APIRequestError (L255)                                              | COVERED |
+|     APIRequestError.__init__ (L257)                                   | COVERED |
+|   DELETERequestError (L265)                                           | COVERED |
+|     DELETERequestError.__init__ (L267)                                | COVERED |
+|   GETRequestError (L275)                                              | COVERED |
+|     GETRequestError.__init__ (L277)                                   | COVERED |
+|   InvalidEndpointError (L285)                                         | COVERED |
+|     InvalidEndpointError.__init__ (L287)                              | COVERED |
+|   InvalidLookupTypeError (L296)                                       | COVERED |
+|     InvalidLookupTypeError.__init__ (L298)                            | COVERED |
+|   InvalidPayloadValueError (L307)                                     | COVERED |
+|     InvalidPayloadValueError.__init__ (L312)                          | COVERED |
+|   InvalidRequestTypeError (L327)                                      | COVERED |
+|     InvalidRequestTypeError.__init__ (L329)                           | COVERED |
+|   LookupMismatchError (L338)                                          | COVERED |
+|     LookupMismatchError.__init__ (L340)                               | COVERED |
+|   NotFoundResponseError (L348)                                        | COVERED |
+|     NotFoundResponseError.__init__ (L350)                             | COVERED |
+|   POSTRequestError (L358)                                             | COVERED |
+|     POSTRequestError.__init__ (L360)                                  | COVERED |
+|   PUTRequestError (L368)                                              | COVERED |
+|     PUTRequestError.__init__ (L370)                                   | COVERED |
+|   InvalidHelperFileTypeError (L383)                                   | COVERED |
+|     InvalidHelperFileTypeError.__init__ (L385)                        | COVERED |
+|   InvalidHelperArgumentsError (L393)                                  | COVERED |
+|     InvalidHelperArgumentsError.__init__ (L395)                       | COVERED |
+|   HelperFunctionNotFoundError (L403)                                  | COVERED |
+|     HelperFunctionNotFoundError.__init__ (L405)                       | COVERED |
+|   InvalidOperatorError (L418)                                         | COVERED |
+|     InvalidOperatorError.__init__ (L420)                              | COVERED |
+|   OperatorMismatchError (L428)                                        | COVERED |
+|     OperatorMismatchError.__init__ (L430)                             | COVERED |
+|   TooManyResultsError (L438)                                          | COVERED |
+|     TooManyResultsError.__init__ (L443)                               | COVERED |
+|   MessageTypeNotFoundError (L456)                                     | COVERED |
+|     MessageTypeNotFoundError.__init__ (L458)                          | COVERED |
+|   InvalidRoleError (L477)                                             | COVERED |
+|     InvalidRoleError.__init__ (L479)                                  | COVERED |
+|   InvalidRoleTypeError (L490)                                         | COVERED |
+|     InvalidRoleTypeError.__init__ (L492)                              | COVERED |
+|   UserCreationError (L508)                                            | COVERED |
+|     UserCreationError.__init__ (L510)                                 | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/errors/handlers.py (module)                                    | COVERED |
+|   eprint (L19)                                                        | COVERED |
+|   _exceptions_module_imported (L25)                                   | COVERED |
+|   _import_exceptions_module (L35)                                     | COVERED |
+|   _import_exception_classes (L42)                                     | COVERED |
+|   get_error_from_html (L49)                                           | COVERED |
+|   get_error_from_xml (L69)                                            | COVERED |
+|   _get_v1_error_from_json (L111)                                      | COVERED |
+|   _get_v2_error_from_json (L136)                                      | COVERED |
+|   get_error_from_json (L154)                                          | COVERED |
+|   verify_v1_response (L181)                                           | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/__init__.py (module)                                   | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/albums.py (module)                                     | COVERED |
+|   create (L16)                                                        | COVERED |
+|   format_album_json (L49)                                             | COVERED |
+|   _null_to_blank (L86)                                                | COVERED |
+|   get_albums_for_user (L94)                                           | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/attachments.py (module)                                | COVERED |
+|   construct_multipart_payload (L19)                                   | COVERED |
+|   format_attachment_payload (L43)                                     | COVERED |
+|   get_list_items (L63)                                                | COVERED |
+|   get_file_upload_info (L87)                                          | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/base.py (module)                                       | COVERED |
+|   get_node_id (L17)                                                   | COVERED |
+|   __get_node_type_identifier (L37)                                    | COVERED |
+|   get_node_type_from_url (L53)                                        | COVERED |
+|   Mapping (L69)                                                       | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/messages.py (module)                                   | COVERED |
+|   create (L34)                                                        | COVERED |
+|   construct_payload (L124)                                            | COVERED |
+|   _verify_required_fields (L226)                                      | COVERED |
+|   _confirm_field_supplied (L255)                                      | COVERED |
+|   parse_v2_response (L270)                                            | COVERED |
+|   get_id_from_url (L305)                                              | COVERED |
+|   _get_required_user_mention_data (L321)                              | COVERED |
+|   format_user_mention (L357)                                          | COVERED |
+|   _report_missing_id_and_retrieve (L388)                              | COVERED |
+|   _check_for_bad_content_id (L406)                                    | COVERED |
+|   _get_required_content_mention_data (L423)                           | COVERED |
+|   format_content_mention (L457)                                       | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/roles.py (module)                                      | COVERED |
+|   get_total_role_count (L22)                                          | COVERED |
+|   count_role_types (L65)                                              | COVERED |
+|   get_roles_for_user (L88)                                            | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/objects/users.py (module)                                      | COVERED |
+|   create (L18)                                                        | COVERED |
+|   process_user_settings (L58)                                         | COVERED |
+|   structure_payload (L213)                                            | COVERED |
+|   delete (L260)                                                       | COVERED |
+|   _get_where_clause_for_user_id (L277)                                | COVERED |
+|   _get_where_clause_for_username (L303)                               | COVERED |
+|   _get_where_clause_for_email (L329)                                  | COVERED |
+|   _get_user_identifier (L355)                                         | COVERED |
+|   get_user_id (L382)                                                  | COVERED |
+|   get_username (L418)                                                 | COVERED |
+|   get_login (L454)                                                    | COVERED |
+|   get_email (L461)                                                    | COVERED |
+|   query_users_table_by_id (L492)                                      | COVERED |
+|   _get_count (L515)                                                   | COVERED |
+|   _get_sum_weight (L530)                                              | COVERED |
+|   _process_settings_and_user_id (L545)                                | COVERED |
+|   get_user_data (L565)                                                | COVERED |
+|   get_user_data_with_v1 (L586)                                        | COVERED |
+|   get_album_count (L611)                                              | COVERED |
+|   get_followers_count (L631)                                          | COVERED |
+|   get_following_count (L651)                                          | COVERED |
+|   get_images_count (L671)                                             | COVERED |
+|   get_public_images_count (L691)                                      | COVERED |
+|   get_messages_count (L711)                                           | COVERED |
+|   get_roles_count (L731)                                              | COVERED |
+|   get_solutions_authored_count (L751)                                 | COVERED |
+|   get_topics_count (L771)                                             | COVERED |
+|   get_replies_count (L791)                                            | COVERED |
+|   get_videos_count (L814)                                             | COVERED |
+|   get_kudos_given_count (L834)                                        | COVERED |
+|   get_kudos_received_count (L854)                                     | COVERED |
+|   get_online_user_count (L874)                                        | COVERED |
+|   get_registration_data (L887)                                        | COVERED |
+|   get_registration_timestamp (L908)                                   | COVERED |
+|   get_registration_status (L929)                                      | COVERED |
+|   get_last_visit_timestamp (L949)                                     | COVERED |
+|   structure_user_dict_list (L971)                                     | COVERED |
+|   get_ids_from_login_list (L1019)                                     | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/__init__.py (module)                                | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/base.py (module)                                    | COVERED |
+|   get_details (L16)                                                   | COVERED |
+|   get_structure_id (L75)                                              | COVERED |
+|   _check_url_for_identifier (L97)                                     | COVERED |
+|   limit_to_first_child (L125)                                         | COVERED |
+|   get_structure_field (L138)                                          | COVERED |
+|   is_category_url (L187)                                              | COVERED |
+|   is_node_url (L202)                                                  | COVERED |
+|   verify_structure_type (L217)                                        | COVERED |
+|   get_structure_type_from_url (L253)                                  | COVERED |
+|   Mapping (L273)                                                      | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/boards.py (module)                                  | COVERED |
+|   create (L21)                                                        | COVERED |
+|   structure_payload (L136)                                            | COVERED |
+|   _structure_id_and_title (L265)                                      | COVERED |
+|   _structure_discussion_style (L289)                                  | COVERED |
+|   _structure_parent_category (L314)                                   | COVERED |
+|   _structure_simple_fields (L332)                                     | COVERED |
+|   _structure_label_settings (L349)                                    | COVERED |
+|   _structure_blog_settings (L400)                                     | COVERED |
+|   _structure_contest_settings (L436)                                  | COVERED |
+|   _warn_about_ignored_settings (L459)                                 | COVERED |
+|   get_board_id (L478)                                                 | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/categories.py (module)                              | COVERED |
+|   create (L18)                                                        | COVERED |
+|   get_category_id (L46)                                               | COVERED |
+|   get_total_count (L60)                                               | COVERED |
+|   get_total_category_count (L73)                                      | COVERED |
+|   get_category_details (L90)                                          | COVERED |
+|   get_category_field (L109)                                           | COVERED |
+|   get_url (L132)                                                      | COVERED |
+|   get_title (L155)                                                    | COVERED |
+|   get_description (L189)                                              | COVERED |
+|   get_parent_type (L209)                                              | COVERED |
+|   get_parent_id (L229)                                                | COVERED |
+|   get_parent_url (L249)                                               | COVERED |
+|   get_root_type (L269)                                                | COVERED |
+|   get_root_id (L289)                                                  | COVERED |
+|   get_root_url (L309)                                                 | COVERED |
+|   get_language (L329)                                                 | COVERED |
+|   is_hidden (L349)                                                    | COVERED |
+|   get_views (L369)                                                    | COVERED |
+|   friendly_date_enabled (L389)                                        | COVERED |
+|   get_friendly_date_max_age (L409)                                    | COVERED |
+|   get_active_skin (L429)                                              | COVERED |
+|   get_depth (L449)                                                    | COVERED |
+|   get_position (L469)                                                 | COVERED |
+|   get_creation_date (L489)                                            | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/communities.py (module)                             | COVERED |
+|   get_community_details (L17)                                         | COVERED |
+|   _check_for_multiple_tenants (L32)                                   | COVERED |
+|   get_community_field (L47)                                           | COVERED |
+|   get_tenant_id (L66)                                                 | COVERED |
+|   get_title (L81)                                                     | COVERED |
+|   get_description (L110)                                              | COVERED |
+|   get_primary_url (L125)                                              | COVERED |
+|   get_max_attachments (L140)                                          | COVERED |
+|   get_permitted_attachment_types (L155)                               | COVERED |
+|   email_confirmation_required_to_post (L170)                          | COVERED |
+|   get_language (L185)                                                 | COVERED |
+|   get_ooyala_player_branding_id (L200)                                | COVERED |
+|   get_date_pattern (L221)                                             | COVERED |
+|   friendly_date_enabled (L236)                                        | COVERED |
+|   get_friendly_date_max_age (L251)                                    | COVERED |
+|   get_active_skin (L266)                                              | COVERED |
+|   get_sign_out_url (L281)                                             | COVERED |
+|   get_creation_date (L296)                                            | COVERED |
+|   top_level_categories_enabled (L312)                                 | COVERED |
+|   show_community_node_in_breadcrumb (L327)                            | COVERED |
+|   show_breadcrumb_at_top_level (L342)                                 | COVERED |
+|   top_level_categories_on_community_page (L357)                       | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/grouphubs.py (module)                               | COVERED |
+|   create (L22)                                                        | COVERED |
+|   _create_group_hub_with_avatar (L109)                                | COVERED |
+|   _create_group_hub_without_avatar (L131)                             | COVERED |
+|   structure_payload (L151)                                            | COVERED |
+|   _structure_simple_string_fields (L211)                              | COVERED |
+|   _structure_membership_type (L233)                                   | COVERED |
+|   _structure_discussion_styles (L266)                                 | COVERED |
+|   _remove_disabled_discussion_styles (L329)                           | COVERED |
+|   _structure_parent_category (L344)                                   | COVERED |
+|   get_total_count (L361)                                              | COVERED |
+|   get_grouphub_id (L373)                                              | COVERED |
+|   refresh_enabled_discussion_styles (L386)                            | COVERED |
+|   _verify_group_hub_id (L402)                                         | COVERED |
+|   _structure_empty_payload (L421)                                     | COVERED |
+|   update_title (L431)                                                 | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/structures/nodes.py (module)                                   | COVERED |
+|   get_node_id (L18)                                                   | COVERED |
+|   _get_node_type_identifier (L52)                                     | COVERED |
+|   get_node_type_from_url (L67)                                        | COVERED |
+|   get_total_node_count (L85)                                          | COVERED |
+|   get_node_details (L96)                                              | COVERED |
+|   get_node_field (L115)                                               | COVERED |
+|   get_url (L144)                                                      | COVERED |
+|   get_type (L169)                                                     | COVERED |
+|   get_discussion_style (L189)                                         | COVERED |
+|   get_title (L209)                                                    | COVERED |
+|   get_description (L243)                                              | COVERED |
+|   get_parent_type (L263)                                              | COVERED |
+|   get_parent_id (L283)                                                | COVERED |
+|   get_parent_url (L308)                                               | COVERED |
+|   get_root_type (L329)                                                | COVERED |
+|   get_root_id (L349)                                                  | COVERED |
+|   get_root_url (L374)                                                 | COVERED |
+|   get_avatar_url (L396)                                               | COVERED |
+|   get_creation_date (L438)                                            | COVERED |
+|   get_depth (L465)                                                    | COVERED |
+|   get_position (L485)                                                 | COVERED |
+|   is_hidden (L505)                                                    | COVERED |
+|   get_views (L525)                                                    | COVERED |
+|   Mapping (L545)                                                      | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/studio/__init__.py (module)                                    | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/studio/base.py (module)                                        | COVERED |
+|   sdk_installed (L14)                                                 | COVERED |
+|   get_sdk_version (L29)                                               | COVERED |
+|   node_installed (L45)                                                | COVERED |
+|   get_node_version (L56)                                              | COVERED |
+|   npm_installed (L72)                                                 | COVERED |
+|   get_npm_version (L83)                                               | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/__init__.py (module)                                     | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/core_utils.py (module)                                   | COVERED |
+|   url_encode (L23)                                                    | COVERED |
+|   url_decode (L33)                                                    | COVERED |
+|   decode_html_entities (L43)                                          | COVERED |
+|   decode_binary (L53)                                                 | COVERED |
+|   run_cmd (L65)                                                       | COVERED |
+|   _is_zero_length (L118)                                              | COVERED |
+|   _structure_query_string (L127)                                      | COVERED |
+|   encode_query_string (L148)                                          | COVERED |
+|   is_numeric (L164)                                                   | COVERED |
+|   convert_set (L176)                                                  | COVERED |
+|   convert_single_value_to_tuple (L192)                                | COVERED |
+|   convert_string_to_tuple (L202)                                      | COVERED |
+|   get_random_string (L215)                                            | COVERED |
+|   display_warning (L227)                                              | COVERED |
+|   get_file_type (L240)                                                | COVERED |
+|   convert_dict_id_values_to_strings (L273)                            | COVERED |
+|   convert_list_values (L292)                                          | COVERED |
+|   extract_key_values_from_dict_list (L325)                            | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/environment.py (module)                                  | COVERED |
+|   _env_variable_exists (L42)                                          | COVERED |
+|   _get_env_variable_value (L59)                                       | COVERED |
+|   get_env_variables (L71)                                             | COVERED |
+|   _update_env_list (L85)                                              | COVERED |
+|   _update_env_mapping (L102)                                          | COVERED |
+|   update_env_variable_names (L118)                                    | COVERED |
+|   _import_custom_names_file (L138)                                    | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/helper.py (module)                                       | COVERED |
+|   import_helper_file (L21)                                            | COVERED |
+|   _convert_yaml_to_bool (L45)                                         | COVERED |
+|   _get_connection_info (L56)                                          | COVERED |
+|   _get_oauth2_info (L78)                                              | COVERED |
+|   _get_session_auth_info (L94)                                        | COVERED |
+|   _get_discussion_styles (L110)                                       | COVERED |
+|   _get_construct_info (L124)                                          | COVERED |
+|   get_helper_settings (L144)                                          | COVERED |
+|   HelperParsing (L181)                                                | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/version.py (module)                                      | COVERED |
+|   get_full_version (L19)                                              | COVERED |
+|   get_major_minor_version (L24)                                       | COVERED |
+|   get_latest_stable (L29)                                             | COVERED |
+|   latest_version (L38)                                                | COVERED |
+|   warn_when_not_latest (L47)                                          | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/__init__.py (module)                               | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_board_creation.py (module)                    | COVERED |
+|   set_package_path (L17)                                              | COVERED |
+|   import_boards_module (L23)                                          | COVERED |
+|   import_exceptions_module (L31)                                      | COVERED |
+|   initialize_khoros_object (L39)                                      | COVERED |
+|   get_required_fields (L50)                                           | COVERED |
+|   get_dict_for_required_fields (L70)                                  | COVERED |
+|   verify_data_fields (L85)                                            | COVERED |
+|   test_required_fields (L106)                                         | COVERED |
+|   test_valid_board_types (L118)                                       | COVERED |
+|   test_no_arguments (L133)                                            | COVERED |
+|   test_invalid_board_type (L140)                                      | COVERED |
+|   test_description (L147)                                             | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_core_utils.py (module)                        | COVERED |
+|   set_package_path (L15)                                              | COVERED |
+|   import_core_utils (L21)                                             | COVERED |
+|   test_url_encoding (L29)                                             | COVERED |
+|   test_query_string_encoding (L40)                                    | COVERED |
+|   test_numeric_eval (L54)                                             | COVERED |
+|   _check_type_and_items (L64)                                         | COVERED |
+|   test_convert_set (L74)                                              | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_helper_file.py (module)                       | COVERED |
+|   set_package_path (L14)                                              | COVERED |
+|   get_helper_path (L20)                                               | COVERED |
+|   test_yaml_file (L29)                                                | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_library_import.py (module)                    | COVERED |
+|   set_package_path (L14)                                              | COVERED |
+|   import_pkg_operation (L21)                                          | COVERED |
+|   test_library_import (L28)                                           | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_liql_where_parsing.py (module)                | COVERED |
+|   set_package_path (L14)                                              | COVERED |
+|   parse_where_clauses (L20)                                           | COVERED |
+|   test_where_clause_parsing (L64)                                     | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_mentions.py (module)                          | COVERED |
+|   set_package_path (L26)                                              | COVERED |
+|   expected_content_response (L35)                                     | COVERED |
+|   expected_user_response (L48)                                        | COVERED |
+|   get_content_test_data (L60)                                         | COVERED |
+|   get_user_test_data (L87)                                            | COVERED |
+|   test_content_mention_with_all_arguments (L99)                       | COVERED |
+|   test_content_mention_with_full_dict (L113)                          | COVERED |
+|   test_content_mention_with_no_id_arg (L132)                          | COVERED |
+|   test_content_mention_with_no_id_dict (L146)                         | COVERED |
+|   test_content_mention_with_false_id_arg (L161)                       | COVERED |
+|   test_content_mention_with_false_id_dict (L175)                      | COVERED |
+|   test_bad_content_url (L194)                                         | COVERED |
+|   test_relative_content_url_without_object (L216)                     | COVERED |
+|   test_relative_content_url_with_object (L240)                        | COVERED |
+|   test_user_mention_with_arguments (L272)                             | COVERED |
+|   test_user_mention_with_dictionary (L285)                            | COVERED |
+|   test_user_mention_with_args_no_object (L299)                        | COVERED |
+|   test_user_mention_with_dictionary_no_object (L319)                  | COVERED |
+|   test_user_mention_with_dict_and_object (L341)                       | COVERED |
+|-----------------------------------------------------------------------|---------|
+| khoros/utils/tests/test_node_id_extract.py (module)                   | COVERED |
+|   set_package_path (L17)                                              | COVERED |
+|   get_test_data (L23)                                                 | COVERED |
+|   test_with_valid_node_types (L43)                                    | COVERED |
+|   test_with_invalid_node_types (L65)                                  | COVERED |
+|   test_with_only_url (L91)                                            | COVERED |
+|   test_url_without_node (L111)                                        | COVERED |
+|-----------------------------------------------------------------------|---------|
+
+----------------------------------- Summary ------------------------------------
+| Name                                          | Total | Miss | Cover | Cover% |
+|-----------------------------------------------|-------|------|-------|--------|
+| setup.py                                      |     1 |    0 |     1 |   100% |
+| docs/conf.py                                  |     1 |    0 |     1 |   100% |
+| khoros/__init__.py                            |     1 |    0 |     1 |   100% |
+| khoros/api.py                                 |    25 |    0 |    25 |   100% |
+| khoros/auth.py                                |     6 |    0 |     6 |   100% |
+| khoros/core.py                                |   166 |    0 |   166 |   100% |
+| khoros/liql.py                                |    11 |    0 |    11 |   100% |
+| khoros/errors/__init__.py                     |     1 |    0 |     1 |   100% |
+| khoros/errors/exceptions.py                   |    72 |    0 |    72 |   100% |
+| khoros/errors/handlers.py                     |    11 |    0 |    11 |   100% |
+| khoros/objects/__init__.py                    |     1 |    0 |     1 |   100% |
+| khoros/objects/albums.py                      |     5 |    0 |     5 |   100% |
+| khoros/objects/attachments.py                 |     5 |    0 |     5 |   100% |
+| khoros/objects/base.py                        |     5 |    0 |     5 |   100% |
+| khoros/objects/messages.py                    |    13 |    0 |    13 |   100% |
+| khoros/objects/roles.py                       |     4 |    0 |     4 |   100% |
+| khoros/objects/users.py                       |    39 |    0 |    39 |   100% |
+| khoros/structures/__init__.py                 |     1 |    0 |     1 |   100% |
+| khoros/structures/base.py                     |    11 |    0 |    11 |   100% |
+| khoros/structures/boards.py                   |    12 |    0 |    12 |   100% |
+| khoros/structures/categories.py               |    25 |    0 |    25 |   100% |
+| khoros/structures/communities.py              |    23 |    0 |    23 |   100% |
+| khoros/structures/grouphubs.py                |    16 |    0 |    16 |   100% |
+| khoros/structures/nodes.py                    |    25 |    0 |    25 |   100% |
+| khoros/studio/__init__.py                     |     1 |    0 |     1 |   100% |
+| khoros/studio/base.py                         |     7 |    0 |     7 |   100% |
+| khoros/utils/__init__.py                      |     1 |    0 |     1 |   100% |
+| khoros/utils/core_utils.py                    |    19 |    0 |    19 |   100% |
+| khoros/utils/environment.py                   |     8 |    0 |     8 |   100% |
+| khoros/utils/helper.py                        |    10 |    0 |    10 |   100% |
+| khoros/utils/version.py                       |     6 |    0 |     6 |   100% |
+| khoros/utils/tests/__init__.py                |     1 |    0 |     1 |   100% |
+| khoros/utils/tests/test_board_creation.py     |    13 |    0 |    13 |   100% |
+| khoros/utils/tests/test_core_utils.py         |     8 |    0 |     8 |   100% |
+| khoros/utils/tests/test_helper_file.py        |     4 |    0 |     4 |   100% |
+| khoros/utils/tests/test_library_import.py     |     4 |    0 |     4 |   100% |
+| khoros/utils/tests/test_liql_where_parsing.py |     4 |    0 |     4 |   100% |
+| khoros/utils/tests/test_mentions.py           |    20 |    0 |    20 |   100% |
+| khoros/utils/tests/test_node_id_extract.py    |     7 |    0 |     7 |   100% |
+|-----------------------------------------------|-------|------|-------|--------|
+| TOTAL                                         |   593 |    0 |   593 | 100.0% |
+--------------- RESULT: PASSED (minimum: 80.0%, actual: 100.0%) ----------------
