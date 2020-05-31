@@ -11,6 +11,7 @@ Table of Contents
 
    introduction
    boards
+   group-hubs
    primary-modules
    supporting-modules
 

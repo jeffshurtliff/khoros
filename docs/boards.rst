@@ -31,6 +31,9 @@ APIs to harness these boards.
         * `Defining the Parent Category`_
         * `Creating a Hidden Board`_
         * `Configuring Label Settings`_
+* `Retrieving a Board ID`_
+
+|
 
 ********
 Overview
@@ -546,3 +549,29 @@ There are two ways to do this:
 :doc:`Return to Top <boards>`
 
 |
+
+*********************
+Retrieving a Board ID
+*********************
+The majority of Khoros Community API calls--and therefore the majority of functions and methods in
+this library--relating to boards require a board ID to be provided.  As such, it will often be
+necessary for you to quickly retrieve a board ID, which is easy to do via the
+:py:func:`khoros.core.Khoros.Board.get_board_id` function.
+
+This function requires only the URL of the board and can be called from within the core object
+(i.e. :py:class:`khoros.core.Khoros`) using the :py:meth:`khoros.core.Khoros.boards.get_board_id`
+method call as demonstrated below.
+
+.. code-block:: python
+
+   >>> from khoros import Khoros
+   >>> khoros = Khoros(helper='~/helper.yml')
+   >>> khoros.boards.get_board_id('https://community.example.com/t5/example-board/tkb-p/example-board')
+   'example-board'
+
+   >>>
+
+.. note:: This function will work with boards for all discussion styles.
+
+The retrieved board ID can then be used in other functions and methods to perform any
+necessary tasks.

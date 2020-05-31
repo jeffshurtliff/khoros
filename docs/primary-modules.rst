@@ -10,7 +10,7 @@ which are listed below.
         * `Board Subclass (khoros.core.Khoros.Board)`_
         * `Category Subclass (khoros.core.Khoros.Category)`_
         * `Community Subclass (khoros.core.Khoros.Community)`_
-        * Group Hub Subclass (khoros.core.Khoros.GroupHub)
+        * `Group Hub Subclass (khoros.core.Khoros.GroupHub)`_
         * `Node Subclass (khoros.core.Khoros.Node)`_
     * `Core Object Subclasses (khoros.core.Khoros)`_
         * `Album Subclass (khoros.core.Khoros.Album)`_
@@ -96,6 +96,15 @@ Category Subclass (khoros.core.Khoros.Category)
 Community Subclass (khoros.core.Khoros.Community)
 -------------------------------------------------
 .. autoclass:: khoros.core::Khoros.Community
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Group Hub Subclass (khoros.core.Khoros.GroupHub)
+------------------------------------------------
+.. autoclass:: khoros.core::Khoros.GroupHub
    :members:
 
 :doc:`Return to Top <primary-modules>`
