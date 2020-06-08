@@ -4,6 +4,30 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the new :py:mod:`khoros.objects.archives` module with the following functions:
+    * :py:func:`khoros.objects.archives.archive`
+    * :py:func:`khoros.objects.archives.unarchive`
+    * :py:func:`khoros.objects.archives.structure_archive_payload`
+    * :py:func:`khoros.objects.archives._valid_entries_type`
+    * :py:func:`khoros.objects.archives._convert_entries_to_dict`
+    * :py:func:`khoros.objects.archives._format_single_archive_entry`
+* Added the :py:mod:`khoros.objects.archives` module to the ``__all__`` special variable in the
+  :py:mod:`khoros.objects` ``__init__`` module and configured it to be imported by default.
+
+|
+
+******
 v2.6.0
 ******
 **Release Date: 2020-05-31**
