@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.7.0
 ******
-**Release Date: TBD**
+**Release Date: 2020-06-12**
 
 Added
 =====
@@ -22,8 +22,28 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.archives._valid_entries_type`
     * :py:func:`khoros.objects.archives._convert_entries_to_dict`
     * :py:func:`khoros.objects.archives._format_single_archive_entry`
+* Added the :py:func:`khoros.structures.base.structure_exists` function.
+* Added the :py:func:`khoros.structures.boards.board_exists` function.
+* Added the :py:func:`khoros.structures.categories.category_exists` function.
+* Added the :py:func:`khoros.structures.grouphubs.grouphub_exists` function.
+* Added the :py:func:`khoros.structures.nodes.node_exists` function.
+* Added the following methods in the :ref:`core structure subclasses <primary-modules:Core Structure Subclasses (khoros.core.Khoros)>`:
+    * :py:meth:`khoros.core.Khoros.Board.board_exists`
+    * :py:meth:`khoros.core.Khoros.Category.category_exists`
+    * :py:meth:`khoros.core.Khoros.GroupHub.grouphub_exists`
+    * :py:meth:`khoros.core.Khoros.Node.node_exists`
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
 * Added the :py:mod:`khoros.objects.archives` module to the ``__all__`` special variable in the
   :py:mod:`khoros.objects` ``__init__`` module and configured it to be imported by default.
+* Added several additional keys and values to the ``structure_types_to_tables`` dictionary in the
+  :py:class:`khoros.structures.base.Mapping` class.
 
 |
 

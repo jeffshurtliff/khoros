@@ -825,6 +825,20 @@ class Khoros(object):
             """
             return structures_module.boards.get_board_id(url)
 
+        def board_exists(self, board_id=None, board_url=None):
+            """This function checks to see if a board (i.e. blog, contest, forum, idea exchange, Q&A or TKB) exists.
+
+            .. versionadded:: 2.7.0
+
+            :param board_id: The ID of the board to check
+            :type board_id: str, None
+            :param board_url: The URL of the board to check
+            :type board_url: str, None
+            :returns: Boolean value indicating whether or not the board already exists
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.boards.board_exists(self.khoros_object, board_id, board_url)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):
@@ -890,6 +904,20 @@ class Khoros(object):
                           "with the 'khoros.core.Khoros.Category.get_total_count' method and will be removed in"
                           "a future release.", DeprecationWarning)
             return self.get_total_count()
+
+        def category_exists(self, category_id=None, category_url=None):
+            """This function checks to see if a category exists.
+
+            .. versionadded:: 2.7.0
+
+            :param category_id: The ID of the category to check
+            :type category_id: str, None
+            :param category_url: The URL of the category to check
+            :type category_url: str, None
+            :returns: Boolean value indicating whether or not the category already exists
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.categories.category_exists(self.khoros_object, category_id, category_url)
 
         def get_category_details(self, identifier, first_item=True):
             """This function returns a dictionary of community configuration settings.
@@ -1663,6 +1691,20 @@ class Khoros(object):
             """
             return structures_module.grouphubs.get_total_count(self.khoros_object)
 
+        def grouphub_exists(self, grouphub_id=None, grouphub_url=None):
+            """This function checks to see if a group hub exists.
+
+            .. versionadded:: 2.7.0
+
+            :param grouphub_id: The ID of the group hub to check
+            :type grouphub_id: str, None
+            :param grouphub_url: The URL of the group hub to check
+            :type grouphub_url: str, None
+            :returns: Boolean value indicating whether or not the group hub already exists
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.grouphubs.grouphub_exists(self.khoros_object, grouphub_id, grouphub_url)
+
         def update_title(self, new_title, group_hub_id=None, group_hub_url=None, full_response=None, return_id=None,
                          return_url=None, return_api_url=None, return_http_code=None, return_status=None,
                          return_error_messages=None, split_errors=False):
@@ -1942,6 +1984,20 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return structures_module.nodes.get_total_node_count(self.khoros_object)
+
+        def node_exists(self, node_id=None, node_url=None):
+            """This function checks to see if a node exists.
+
+            .. versionadded:: 2.7.0
+
+            :param node_id: The ID of the node to check
+            :type node_id: str, None
+            :param node_url: The URL of the node to check
+            :type node_url: str, None
+            :returns: Boolean value indicating whether or not the node already exists
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return structures_module.nodes.node_exists(self.khoros_object, node_id, node_url)
 
         def get_node_details(self, identifier, first_item=True):
             """This function returns a dictionary of node configuration settings.

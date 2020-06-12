@@ -6,7 +6,7 @@
 :Example:           ``details = base.get_details(khoros_object, 'category', 'category-id')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     12 Jun 2020
 """
 
 from .. import liql, errors
@@ -70,6 +70,36 @@ def get_details(khoros_object, identifier='', structure_type=None, first_item=No
     if first_item:
         response = response['data']['items'][0]
     return response
+
+
+def structure_exists(khoros_object, structure_type, structure_id=None, structure_url=None):
+    """This function checks to see if a structure (i.e. node, board, category or group hub) exists.
+
+    .. versionadded:: 2.7.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param structure_type: The type of structure (e.g. ``board``, ``category``, ``node`` or ``grouphub``)
+                           .. note:: The ``group hub`` value (as two words) is also acceptable.
+    :type structure_type: str
+    :param structure_id: The ID of the structure to check
+    :type structure_id: str, None
+    :param structure_url: The URL of the structure to check
+    :type structure_url: str, None
+    :returns: Boolean value indicating whether or not the structure already exists
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not any((structure_id, structure_url)):
+        raise errors.exceptions.MissingRequiredDataError("Must provide at least one lookup value.")
+    if structure_type not in Mapping.structure_types_to_tables.values():
+        if structure_type not in Mapping.structure_types_to_tables.keys():
+            raise errors.exceptions.InvalidStructureTypeError(val=structure_type)
+        else:
+            structure_type = Mapping.structure_types_to_tables.get(structure_type)
+    if not structure_id:
+        structure_id = get_structure_id(structure_url)
+    count = liql.get_total_count(khoros_object, structure_type, f'id = "{structure_id}"')
+    return True if count > 0 else False
 
 
 def get_structure_id(url):
@@ -276,8 +306,11 @@ class Mapping:
     node_url_identifiers = ['bg-p/', 'con-p/', 'bd-p/', 'gp-p/', 'idb-p/', 'qa-p/', 'tkb-p/', 'gh-p/', 'ct-p/']
     structure_types = ['category', 'node']
     structure_types_to_tables = {
+        'board': 'boards',
         'category': 'categories',
         'community': 'communities',
+        'group hub': 'grouphubs',
+        'grouphub': 'grouphubs',
         'node': 'nodes'
     }
     category_fields = {

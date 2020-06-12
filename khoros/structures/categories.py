@@ -87,6 +87,23 @@ def get_total_category_count(khoros_object):
     return get_total_count(khoros_object)
 
 
+def category_exists(khoros_object, category_id=None, category_url=None):
+    """This function checks to see if a category exists.
+
+    .. versionadded:: 2.7.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param category_id: The ID of the category to check
+    :type category_id: str, None
+    :param category_url: The URL of the category to check
+    :type category_url: str, None
+    :returns: Boolean value indicating whether or not the category already exists
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    return base.structure_exists(khoros_object, 'category', category_id, category_url)
+
+
 def get_category_details(khoros_object, identifier, first_item=True):
     """This function returns a dictionary of category configuration settings.
 

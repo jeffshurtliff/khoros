@@ -93,6 +93,23 @@ def get_total_node_count(khoros_object):
     return liql.get_total_count(khoros_object, 'nodes')
 
 
+def node_exists(khoros_object, node_id=None, node_url=None):
+    """This function checks to see if a node exists.
+
+    .. versionadded:: 2.7.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param node_id: The ID of the node to check
+    :type node_id: str, None
+    :param node_url: The URL of the node to check
+    :type node_url: str, None
+    :returns: Boolean value indicating whether or not the node already exists
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    return base.structure_exists(khoros_object, 'node', node_id, node_url)
+
+
 def get_node_details(khoros_object, identifier, first_item=True):
     """This function returns a dictionary of node configuration settings.
 

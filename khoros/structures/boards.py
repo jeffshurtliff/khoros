@@ -6,7 +6,7 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 May 2020
+:Modified Date:     12 Jun 2020
 """
 
 import warnings
@@ -486,3 +486,20 @@ def get_board_id(url):
     :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
     """
     return base.get_structure_id(url)
+
+
+def board_exists(khoros_object, board_id=None, board_url=None):
+    """This function checks to see if a board (i.e. blog, contest, forum, idea exchange, Q&A or TKB) exists.
+
+    .. versionadded:: 2.7.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to check
+    :type board_id: str, None
+    :param board_url: The URL of the board to check
+    :type board_url: str, None
+    :returns: Boolean value indicating whether or not the board already exists
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    return base.structure_exists(khoros_object, 'board', board_id, board_url)

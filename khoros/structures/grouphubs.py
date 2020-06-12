@@ -383,6 +383,23 @@ def get_grouphub_id(url):
     return base.get_structure_id(url)
 
 
+def grouphub_exists(khoros_object, grouphub_id=None, grouphub_url=None):
+    """This function checks to see if a group hub exists.
+
+    .. versionadded:: 2.7.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param grouphub_id: The ID of the group hub to check
+    :type grouphub_id: str, None
+    :param grouphub_url: The URL of the group hub to check
+    :type grouphub_url: str, None
+    :returns: Boolean value indicating whether or not the group hub already exists
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    return base.structure_exists(khoros_object, 'grouphub', grouphub_id, grouphub_url)
+
+
 def refresh_enabled_discussion_styles(khoros_object):
     """This function refreshes the ``all_discussion_styles`` global variable to match what is in the
        core object settings when applicable.
