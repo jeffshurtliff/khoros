@@ -461,6 +461,10 @@ def encode_v1_query_string(query_dict, return_json=True):
 def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', return_json=True):
     """This function makes a Community API v1 request.
 
+    .. versionchanged:: 2.7.1
+       Fixed a syntax error in raising the the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`
+       exception class and removed unnecessary print debugging.
+
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param endpoint: The API endpoint to be queried
@@ -484,7 +488,6 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
     query_string = encode_v1_query_string(query_params, return_json)
     header = {"Content-Type": "application/x-www-form-urlencoded"}
     url = f"{khoros_object.core['v1_base']}/{endpoint}?{query_string}"
-    print(url)
     if request_type.upper() == 'GET':
         response = get_request_with_retries(url, return_json, khoros_object, headers=header)
     elif request_type.upper() == 'POST':
@@ -492,7 +495,7 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
     elif request_type.upper() == 'PUT':
         response = put_request_with_retries(url, return_json=return_json, khoros_object=khoros_object, headers=header)
     elif request_type.upper() in currently_unsupported_types:
-        errors.exceptions.CurrentlyUnsupportedError()
+        raise errors.exceptions.CurrentlyUnsupportedError()
     else:
         raise errors.exceptions.InvalidRequestTypeError()
     # TODO: Verify successful response
