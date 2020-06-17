@@ -6,7 +6,7 @@
 :Example:           ``group_hub_url = grouphubs.create(khoros_object, gh_id, gh_title, disc_styles, return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 May 2020
+:Modified Date:     17 Jun 2020
 """
 
 from .. import api, liql, errors
@@ -27,6 +27,9 @@ def create(khoros_object, group_id, group_title, description=None, membership_ty
            split_errors=False):
     """This function creates a new group hub within a Khoros Community environment.
 
+    .. versionchanged:: 2.7.2
+       Changed the data type for ``membership_type`` from ``dict`` to ``str`` in the docstring.
+
     .. versionadded:: 2.6.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -38,7 +41,7 @@ def create(khoros_object, group_id, group_title, description=None, membership_ty
     :param description: A brief description of the group hub
     :type description: str, None
     :param membership_type: The ``membership_type`` value (``open``, ``closed`` or ``closed_hidden``)
-    :type membership_type: dict, None
+    :type membership_type: str, None
     :param open_group: Defines the group hub as an open group
     :type open_group: bool, None
     :param closed_group: Defines the group hub as a closed group
@@ -154,6 +157,10 @@ def structure_payload(khoros_object, group_id, group_title, description=None, me
                       all_styles_default=True, parent_category_id=None):
     """This function structures the payload to use in a Group Hub API request.
 
+    .. versionchanged:: 2.7.2
+       Changed the data type for ``membership_type`` from ``dict`` to ``str`` in the docstring and
+       fixed some bad logic raising false positive exceptions.
+
     .. versionadded:: 2.6.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -165,7 +172,7 @@ def structure_payload(khoros_object, group_id, group_title, description=None, me
     :param description: A brief description of the group hub
     :type description: str, None
     :param membership_type: The ``membership_type`` value (``open``, ``closed`` or ``closed_hidden``)
-    :type membership_type: dict, None
+    :type membership_type: str, None
     :param open_group: Defines the group hub as an open group
     :type open_group: bool, None
     :param closed_group: Defines the group hub as a closed group
@@ -198,7 +205,7 @@ def structure_payload(khoros_object, group_id, group_title, description=None, me
     refresh_enabled_discussion_styles(khoros_object)
     required_error_msg = "The 'group_id', 'group_title' and 'membership_type' fields are required " \
                          "to create a group hub."
-    if any((khoros_object, group_id, group_title, membership_type)):
+    if not all((khoros_object, group_id, group_title, membership_type)):
         raise errors.exceptions.MissingRequiredDataError(required_error_msg)
     payload = _structure_simple_string_fields(payload, group_id, group_title, description)
     payload = _structure_membership_type(payload, membership_type, open_group, closed_group, hidden_group)
@@ -233,12 +240,15 @@ def _structure_simple_string_fields(_payload, _group_id, _group_title, _descript
 def _structure_membership_type(_payload, _membership_type, _open_group, _closed_group, _hidden_group):
     """This function populates the payload with the ``membership_type`` data.
 
+    .. versionchanged:: 2.7.2
+       Changed the data type for ``membership_type`` from ``dict`` to ``str`` in the docstring.
+
     .. versionadded:: 2.6.0
 
     :param _payload: The payload for a Group Hub API call
     :type _payload: dict
     :param _membership_type: The ``membership_type`` value (``open``, ``closed`` or ``closed_hidden``)
-    :type _membership_type: dict, None
+    :type _membership_type: str, None
     :param _open_group: Defines the group hub as an open group
     :type _open_group: bool, None
     :param _closed_group: Defines the group hub as a closed group

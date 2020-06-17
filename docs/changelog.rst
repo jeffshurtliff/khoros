@@ -4,6 +4,31 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.2
+******
+**Release Date: 2020-06-17**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed some bad logic in the :py:func:`khoros.structures.grouphubs.structure_payload` that was raising
+  false positive exceptions.
+
+Documentation
+-------------
+Fixes to the documentation.
+
+* Changed the data type for ``membership_type`` from ``dict`` to ``str`` in the docstring for the
+  :py:func:`khoros.structures.grouphubs.create`, :py:func:`khoros.structures.grouphubs.structure_payload`
+  and :py:func:`khoros.structures.grouphubs._structure_membership_type` functions.
+
+|
+
+******
 v2.7.1
 ******
 **Release Date: 2020-06-17**
