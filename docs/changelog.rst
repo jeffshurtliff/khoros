@@ -4,6 +4,28 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.1
+******
+**Release Date: 2020-06-17**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Removed some print debugging found in the :py:func:`khoros.api.make_v1_request` function.
+* Fixed a syntax error with raising the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception
+  class within the :py:func:`khoros.api.make_v1_request` function.
+
+General
+-------
+* Added several API v1 output examples in the ``examples/example_output`` directory.
+
+|
+
+******
 v2.7.0
 ******
 **Release Date: 2020-06-12**
