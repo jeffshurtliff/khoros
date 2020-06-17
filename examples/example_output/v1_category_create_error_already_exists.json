@@ -1,0 +1,9 @@
+{
+  "response": {
+    "status": "error",
+    "error": {
+      "code": 102,
+      "message": "A category already exists with the value 'new_category_id' for the property 'id'."
+    }
+  }
+}

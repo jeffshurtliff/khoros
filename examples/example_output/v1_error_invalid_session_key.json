@@ -1,0 +1,9 @@
+{
+  "response": {
+    "status": "error",
+    "error": {
+      "code": 301,
+      "message": "Invalid session key."
+    }
+  }
+}

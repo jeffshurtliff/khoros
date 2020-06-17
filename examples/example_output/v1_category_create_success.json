@@ -1,0 +1,37 @@
+{
+  "response": {
+    "status": "success", 
+    "category": {
+      "type": "category", 
+      "href": "/categories/id/my-new-category",
+      "id": {
+        "type": "string", 
+        "$": "my-new-category"
+      }, 
+      "boards": {
+        "board": []
+      }, 
+      "blogs": {
+        "blog": []
+      }, 
+      "categories": {
+        "category": []
+      }, 
+      "grouphubs": {
+        "grouphub": []
+      }, 
+      "title": {
+        "type": "string", 
+        "$": "My New Category"
+      }, 
+      "short_title": {
+        "type": "string", 
+        "$": "My New Category"
+      }, 
+      "description": {
+        "type": "string", 
+        "$": ""
+      }
+    }
+  }
+}
