@@ -4,6 +4,38 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.5
+******
+
+Added
+=====
+
+General
+-------
+* Added the `v2_error_not_authorized.json` file to the `examples/example_output` directory.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added the ``default_content_type`` argument to the :py:func:`khoros.api.define_headers` function.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api._normalize_headers` function to ensure that
+  authentication/authorization tokens would not be altered.
+
+|
+
+******
 v2.7.4
 ******
 **Release Date: 2020-06-18**

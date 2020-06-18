@@ -1,0 +1,11 @@
+{
+  "status": "error", 
+  "message": "You are not authorized to make this request", 
+  "data": {
+    "type": "error_data", 
+    "code": 203, 
+    "developer_message": "", 
+    "more_info": ""
+  }, 
+  "metadata": {}
+}

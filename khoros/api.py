@@ -19,8 +19,12 @@ from . import errors
 from .utils import core_utils
 
 
-def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False):
+def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
+                   default_content_type=False):
     """This function defines the headers to use in an API call.
+
+    .. versionchanged:: 2.7.5
+       Added the ``default_content_type`` argument which is defined as ``False`` by default.
 
     .. versionchanged:: 2.7.4
        The HTTP headers were changed to be all lowercase in order to be standardized across the library.
@@ -41,6 +45,9 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :type content_type: str, None
     :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
+    :param default_content_type: Determines if ``application/json`` should be used as the default ``content-type``
+                                 value if the key does not exist (``False`` by default)
+    :type default_content_type: bool
     :returns: A dictionary with the header fields and associated values
     """
     if not khoros_object and not auth_dict:
@@ -50,6 +57,8 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
             headers = auth_dict['header']
         else:
             headers = khoros_object.auth['header']
+    if 'content-type' not in headers and default_content_type:
+        headers['content-type'] = 'application/json'
     if params:
         headers.update(params)
     if accept:
@@ -65,6 +74,9 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
 def _normalize_headers(_headers):
     """This function normalizes the HTTP headers to ensure that the keys and values are all lowercase.
 
+    .. versionchanged:: 2.7.5
+       The function was updated to ensure that authentication/authorization tokens would not be altered.
+
     .. versionadded:: 2.7.4
 
     :param _headers: The headers dictionary
@@ -72,8 +84,11 @@ def _normalize_headers(_headers):
     :returns: The normalized headers dictionary
     """
     _normalized_headers = {}
+    _auth_keys = ['li-api-session-key', 'authorization']
     for _header_key, _header_value in _headers.items():
-        if isinstance(_header_value, str):
+        if _header_key.lower() in _auth_keys:
+            _normalized_headers[_header_key] = _header_value
+        elif isinstance(_header_value, str):
             _normalized_headers[_header_key.lower()] = _header_value.lower()
         elif any((isinstance(_header_value, list), isinstance(_header_value, tuple))):
             _new_iterable = []
@@ -129,6 +144,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     retries = 0
     while retries <= 5:
         try:
+            print("QUERY URL:", query_url)                                  # TODO: Remove print debugging
             response = requests.get(query_url, headers=headers)
             break
         except Exception as exc_msg:
