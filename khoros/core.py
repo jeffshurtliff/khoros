@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 May 2020
+:Modified Date:     17 Jun 2020
 """
 
 import sys
@@ -31,7 +31,8 @@ class Khoros(object):
     DEFAULT_SETTINGS = {
         'community_url': 'https://community.khoros.com',
         'tenant_id': 'lithosphere',
-        'use_community_name': False
+        'use_community_name': False,
+        'debug_mode': False
     }
     DEFAULT_AUTH = {
         'auth_type': 'session_auth'
@@ -40,7 +41,7 @@ class Khoros(object):
     # Define the function that initializes the object instance
     def __init__(self, settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
-                 use_community_name=False, prefer_json=True):
+                 use_community_name=False, prefer_json=True, debug_mode=False):
         """This method initializes the Khoros object.
 
         :param settings: Predefined settings that the object should use
@@ -69,6 +70,8 @@ class Khoros(object):
         :type use_community_name: bool
         :param prefer_json: Defines preference that API responses be returned in JSON format (``True`` by default)
         :type prefer_json: bool
+        :param debug_mode: Determines if Debug Mode should be enabled for development purposes (``False`` by default)
+        :type debug_mode: bool
         """
         # Initialize the dictionaries if not passed to the class
         if settings is None:
@@ -91,7 +94,8 @@ class Khoros(object):
             'sso': sso,
             'auto_connect': auto_connect,
             'use_community_name': use_community_name,
-            'prefer_json': prefer_json
+            'prefer_json': prefer_json,
+            'debug_mode': debug_mode
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val:

@@ -157,6 +157,10 @@ def structure_payload(khoros_object, group_id, group_title, description=None, me
                       all_styles_default=True, parent_category_id=None):
     """This function structures the payload to use in a Group Hub API request.
 
+    .. versionchanged:: 2.7.3
+       Changed the ``grouphub`` value in the initial ``payload`` definition to be a dictionary
+       rather than a string to mitigate a :py:exc:`TypeError` exception getting raised.
+
     .. versionchanged:: 2.7.2
        Changed the data type for ``membership_type`` from ``dict`` to ``str`` in the docstring and
        fixed some bad logic raising false positive exceptions.
@@ -201,7 +205,7 @@ def structure_payload(khoros_object, group_id, group_title, description=None, me
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError`
     """
-    payload = {"grouphub": ""}
+    payload = {"grouphub": {}}
     refresh_enabled_discussion_styles(khoros_object)
     required_error_msg = "The 'group_id', 'group_title' and 'membership_type' fields are required " \
                          "to create a group hub."

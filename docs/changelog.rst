@@ -4,6 +4,40 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.3
+******
+**Release Date: 2020-06-17**
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added the ``debug_mode`` Boolean argument (``False`` by default) to the ``__init__`` method
+  for the :py:class:`khoros.core.Khoros` class which populates within the ``_settings`` protected
+  dictionary.
+
+General
+-------
+* Added ``dist.old/`` to the ``.gitignore`` file in the root directory of the repository.
+
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed how the payload in :py:func:`khoros.structures.grouphubs.structure_payload` is initially
+  defined to avoid a :py:exc:`TypeError` exception from being raised during the
+  :py:func:`khoros.structures.grouphubs._structure_simple_string_fields` function call.
+
+|
+
+******
 v2.7.2
 ******
 **Release Date: 2020-06-17**
