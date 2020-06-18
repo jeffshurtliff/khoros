@@ -4,6 +4,66 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.4
+******
+**Release Date: 2020-06-18**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.api._normalize_headers` function to normalize the HTTP headers.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:mod:`khoros.utils.tests.resources` module with the following functions:
+    * :py:func:`khoros.utils.tests.resources.set_package_path`
+    * :py:func:`khoros.utils.tests.resources.import_modules`
+    * :py:func:`khoros.utils.tests.resources.initialize_khoros_object`
+* Added the :py:mod:`khoros.utils.tests.test_http_headers` module for unit testing.
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added a section to the :doc:`primary-modules` page for the :py:mod:`khoros.objects.archives` module.
+* Added sections to the :doc:`supporting-modules` page for the following modules:
+    * :py:func:`khoros.utils.tests.resources`
+    * :py:func:`khoros.utils.tests.test_board_creation`
+    * :py:func:`khoros.utils.tests.test_grouphub_creation`
+    * :py:func:`khoros.utils.tests.test_http_headers`
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Standardized the case-sensitivity of the HTTP headers to all be lower-case in the following functions:
+    * :py:func:`khoros.api.define_headers`
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.auth.get_session_key`
+    * :py:func:`khoros.objects.users.create`
+* Included a function call for :py:func:`khoros.api._normalize_headers` in :py:func:`khoros.api.define_headers`.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the unit testing modules below to utilize the :py:mod:`khoros.utils.tests.resources` module:
+    * :py:mod:`khoros.utils.tests.test_board_creation`
+    * :py:mod:`khoros.utils.tests.test_grouphub_creation`
+
+
+|
+
+******
 v2.7.3
 ******
 **Release Date: 2020-06-17**
@@ -13,7 +73,7 @@ Added
 
 Supporting Modules
 ------------------
-Changes to the :doc:`supporting modules <supporting-modules>`.
+Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:mod:`khoros.utils.tests.test_grouphub_creation` module for unit testing with ``pytest``.
 
@@ -31,7 +91,6 @@ Changes to the :doc:`primary modules <primary-modules>`.
 General
 -------
 * Added ``dist.old/`` to the ``.gitignore`` file in the root directory of the repository.
-
 
 Fixed
 =====

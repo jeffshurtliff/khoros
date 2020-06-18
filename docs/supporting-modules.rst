@@ -15,8 +15,12 @@ which are listed below.
     * `Version Module (khoros.utils.version)`_
 * `Unit Testing`_
     * `Tests Module (khoros.utils.tests)`_
+        * `Resources Modules (khoros.utils.tests.resources)`_
+        * `Test Board Creation Module (khoros.utils.tests.test_board_creation)`_
         * `Test Core Utilities Module (khoros.utils.tests.test_core_utils)`_
+        * `Test Group Hub Creation Module (khoros.utils.tests.test_grouphub_creation)`_
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
+        * `Test HTTP Headers Module (khoros.utils.tests.test_http_headers)`_
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
         * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
@@ -138,6 +142,17 @@ This module includes unit tests for the package that are performed using pytest.
 
 |
 
+Resources Modules (khoros.utils.tests.resources)
+------------------------------------------------
+This module includes frequently used resources for performing unit testing.
+
+.. automodule:: khoros.utils.tests.resources
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Board Creation Module (khoros.utils.tests.test_board_creation)
 -------------------------------------------------------------------
 This module is used by pytest to verify that that the board creation works properly.
@@ -160,11 +175,33 @@ This module is used by pytest to verify that the core package utilities work pro
 
 |
 
+Test Group Hub Creation Module (khoros.utils.tests.test_grouphub_creation)
+--------------------------------------------------------------------------
+This module is used by pytest to verify that that the group hub creation works properly.
+
+.. automodule:: khoros.utils.tests.test_grouphub_creation
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Helper File Module (khoros.utils.tests.test_helper_file)
 -------------------------------------------------------------
 This module is used by pytest to verify that the helper configuration files work properly.
 
 .. automodule:: khoros.utils.tests.test_helper_file
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test HTTP Headers Module (khoros.utils.tests.test_http_headers)
+---------------------------------------------------------------
+This module is used by pytest to verify that HTTP headers are formatted appropriately.
+
+.. automodule:: khoros.utils.tests.test_http_headers
    :members:
 
 :doc:`Return to Top <supporting-modules>`

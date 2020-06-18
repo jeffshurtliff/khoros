@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     27 May 2020
+:Modified Date:     18 Jun 2020
 """
 
 import json
@@ -22,8 +22,12 @@ from .utils import core_utils
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False):
     """This function defines the headers to use in an API call.
 
+    .. versionchanged:: 2.7.4
+       The HTTP headers were changed to be all lowercase in order to be standardized across the library.
+       A function call for :py:func:`khoros.api._normalize_headers` was also introduced.
+
     .. versionchanged:: 2.3.0
-       Added the ``multipart`` Boolean argument to remove the ``Content-Type`` key value pair when appropriate.
+       Added the ``multipart`` Boolean argument to remove the ``content-type`` key value pair when appropriate.
 
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -31,9 +35,9 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :type auth_dict: dict, None
     :param params: Header parameters in a dictionary format
     :type params: dict, None
-    :param accept: The ``Accept`` header value (e.g. ``application/json``)
+    :param accept: The ``accept`` header value (e.g. ``application/json``)
     :type accept: str, None
-    :param content_type: The ``Content-Type`` header value (e.g. ``application/json``)
+    :param content_type: The ``content-type`` header value (e.g. ``application/json``)
     :type content_type: str, None
     :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
@@ -49,12 +53,39 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     if params:
         headers.update(params)
     if accept:
-        headers['Accept'] = accept
+        headers['accept'] = accept
     if content_type:
-        headers['Content-Type'] = content_type
-    if multipart and 'Content-Type' in headers:
-        del headers['Content-Type']
+        headers['content-type'] = content_type
+    if multipart and 'content-type' in headers:
+        del headers['content-type']
+    headers = _normalize_headers(headers)
     return headers
+
+
+def _normalize_headers(_headers):
+    """This function normalizes the HTTP headers to ensure that the keys and values are all lowercase.
+
+    .. versionadded:: 2.7.4
+
+    :param _headers: The headers dictionary
+    :type  _headers: dict
+    :returns: The normalized headers dictionary
+    """
+    _normalized_headers = {}
+    for _header_key, _header_value in _headers.items():
+        if isinstance(_header_value, str):
+            _normalized_headers[_header_key.lower()] = _header_value.lower()
+        elif any((isinstance(_header_value, list), isinstance(_header_value, tuple))):
+            _new_iterable = []
+            for _inner_value in _header_value:
+                _inner_value = _inner_value.lower() if isinstance(_inner_value, str) else _inner_value
+                _new_iterable.append(_inner_value)
+            _new_iterable = tuple(_new_iterable) if isinstance(_header_value, tuple) else _new_iterable
+            _normalized_headers[_header_key.lower()] = _new_iterable
+        else:
+            _header_key = _header_key.lower() if isinstance(_header_key, str) else _header_key
+            _normalized_headers[_header_key] = _header_value
+    return _normalized_headers
 
 
 def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
@@ -461,6 +492,9 @@ def encode_v1_query_string(query_dict, return_json=True):
 def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', return_json=True):
     """This function makes a Community API v1 request.
 
+    .. versionchanged:: 2.7.4
+       The HTTP headers were changed to be all lowercase in order to be standardized across the library.
+
     .. versionchanged:: 2.7.1
        Fixed a syntax error in raising the the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`
        exception class and removed unnecessary print debugging.
@@ -486,7 +520,7 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
     """
     currently_unsupported_types = ['UPDATE', 'PATCH', 'DELETE']
     query_string = encode_v1_query_string(query_params, return_json)
-    header = {"Content-Type": "application/x-www-form-urlencoded"}
+    header = {"content-type": "application/x-www-form-urlencoded"}
     url = f"{khoros_object.core['v1_base']}/{endpoint}?{query_string}"
     if request_type.upper() == 'GET':
         response = get_request_with_retries(url, return_json, khoros_object, headers=header)

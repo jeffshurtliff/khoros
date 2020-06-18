@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     18 Jun 2020
 """
 
 import requests
@@ -17,6 +17,9 @@ from .utils import core_utils
 
 def get_session_key(khoros_object):
     """This function retrieves the session key for an authentication session.
+
+    .. versionchanged:: 2.7.4
+       The HTTP headers were changed to be all lowercase in order to be standardized across the library.
 
     :param khoros_object: The core Khoros object
     :type khoros_object: class[khoros.Khoros]
@@ -31,7 +34,7 @@ def get_session_key(khoros_object):
         'restapi.response_format': 'json'
     })
     uri = f"{community_url}/restapi/vc/authentication/sessions/login/?{query_string}"
-    header = {"Content-Type": "application/x-www-form-urlencoded"}
+    header = {"content-type": "application/x-www-form-urlencoded"}
     response = requests.post(uri, headers=header)
     if response.status_code != 200:
         if type(response.text) == str and response.text.startswith('<html>'):

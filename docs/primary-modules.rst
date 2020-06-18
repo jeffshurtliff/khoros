@@ -23,6 +23,7 @@ which are listed below.
 * `Objects Module (khoros.objects)`_
     * `Base Objects Module (khoros.objects.base)`_
     * `Albums Module (khoros.objects.albums)`_
+    * `Archives Module (khoros.objects.archives)`_
     * `Attachments Module (khoros.objects.attachments)`_
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
@@ -228,6 +229,17 @@ Albums Module (khoros.objects.albums)
 This module includes functions that handle albums that contain images.
 
 .. automodule:: khoros.objects.albums
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Archives Module (khoros.objects.archives)
+=========================================
+This module includes functions that handle the archiving of messages.
+
+.. automodule:: khoros.objects.archives
    :members:
 
 :doc:`Return to Top <primary-modules>`

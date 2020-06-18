@@ -4,47 +4,12 @@
 :Synopsis:       This module is used by pytest to verify that the board creation works properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  25 May 2020
+:Modified Date:  18 Jun 2020
 """
-
-import os
-import sys
-import importlib
 
 import pytest
 
-
-def set_package_path():
-    """This function adds the high-level khoros directory to the sys.path list."""
-    sys.path.insert(0, os.path.abspath('../..'))
-    return
-
-
-def import_boards_module():
-    """This function imports the :py:mod:`khoros.structures.boards` module."""
-    set_package_path()
-    global boards
-    boards = importlib.import_module('khoros.structures.boards')
-    return
-
-
-def import_exceptions_module():
-    """This function imports the :py:mod:`khoros.errors.exceptions` module."""
-    set_package_path()
-    global exceptions
-    exceptions = importlib.import_module('khoros.errors.exceptions')
-    return
-
-
-def initialize_khoros_object():
-    """This function imports the :py:class:`khoros.core.Khoros` class and initializes an object."""
-    set_package_path()
-    global khoros
-    core_module = importlib.import_module('khoros.core')
-    khoros = core_module.Khoros(community_url='https://example.community.com', auto_connect=False,
-                                tenant_id='example', auth_type='session_auth',
-                                session_auth={'username': 'testuser', 'password': 'fakePassword123'})
-    return
+from . import resources
 
 
 def get_required_fields(board_type='forum', all_types=False):
@@ -158,6 +123,5 @@ def test_description():
 
 
 # Import modules and initialize the core object
-import_boards_module()
-import_exceptions_module()
-initialize_khoros_object()
+boards, exceptions = resources.import_modules('khoros.structures.boards', 'khoros.errors.exceptions')
+khoros = resources.initialize_khoros_object()

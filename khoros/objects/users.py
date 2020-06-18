@@ -6,7 +6,7 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 May 2020
+:Modified Date:     18 Jun 2020
 """
 
 import warnings
@@ -18,6 +18,9 @@ from ..utils import core_utils
 def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
            biography=None, sso_id=None, web_page_url=None, cover_image=None):
     """This function creates a new user in the Khoros Community environment.
+
+    .. versionchanged:: 2.7.4
+       The HTTP headers were changed to be all lowercase in order to be standardized across the library.
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -48,7 +51,7 @@ def create(khoros_object, user_settings=None, login=None, email=None, password=N
     payload = structure_payload(user_settings, login, email, password, first_name, last_name, biography, sso_id,
                                 web_page_url, cover_image)
     query_url = f"{khoros_object._settings['v2_base']}/users"
-    headers = {'Content-Type': 'application/json'}
+    headers = {'content-type': 'application/json'}
     response = api.post_request_with_retries(query_url, payload, auth_dict=khoros_object.auth, headers=headers)
     if not api.query_successful(response):
         raise errors.exceptions.UserCreationError(user=payload['login'], exc_msg=response['message'])
