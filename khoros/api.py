@@ -144,7 +144,6 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     retries = 0
     while retries <= 5:
         try:
-            print("QUERY URL:", query_url)                                  # TODO: Remove print debugging
             response = requests.get(query_url, headers=headers)
             break
         except Exception as exc_msg:
