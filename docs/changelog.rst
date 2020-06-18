@@ -8,6 +8,15 @@ v2.7.3
 ******
 **Release Date: 2020-06-17**
 
+Added
+=====
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:mod:`khoros.utils.tests.test_grouphub_creation` module for unit testing with ``pytest``.
+
 Changed
 =======
 
