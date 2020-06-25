@@ -1,0 +1,5 @@
+{
+  'api.request': (None, '{"data": {"type": "message", "board": {"id": "knowledge-base"}, "body": "This is an <B>API TEST</B> done in Python.", "subject": "My post with attachment", "attachments": {"list_item_type": "attachment", "items": [{"type": "attachment", "field": "attachment1", "filename": "pdf1.pdf"}, {"type": "attachment", "field": "attachment2", "filename": "pdf2.pdf"}]}}}', 'application/json'),
+  'attachment1': ('pdf1.pdf', <_io.BufferedReader name='C:\\Users\\jeffshurtliff\\pdf1.pdf'>),
+  'attachment2': ('pdf2.pdf', <_io.BufferedReader name='C:\\Users\\jeffshurtliff\\pdf2.pdf'>)
+}

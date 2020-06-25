@@ -1,0 +1,117 @@
+{
+    "status":"success",
+    "message":"",
+    "http_code":200,
+    "data":{
+        "type":"message",
+        "id":"110",
+        "href":"/messages/110",
+        "view_href":"https://community.example.com/t5/products/my-post-with-attachment/ta-p/110",
+        "author":{
+            "type":"user",
+            "id":"2",
+            "href":"/users/2",
+            "view_href":"https://community.example.com/t5/user/viewprofilepage/user-id/2",
+            "login":"jeffshurtliff"
+        },
+        "subject":"My post with attachment",
+        "body":"This is an <B>API TEST</B> done in Python.",
+        "teaser":"",
+        "board":{
+            "type":"board",
+            "id":"knowledge-base",
+            "href":"/boards/knowledge-base",
+            "view_href":"https://community.example.com/t5/products/tkb-p/knowledge-base"
+        },
+        "conversation":{
+            "type":"conversation",
+            "id":"110",
+            "view_href":"https://community.example.com/t5/products/my-post-with-attachment/ta-p/110",
+            "style":"tkb",
+            "thread_style":"tkb",
+            "messages_count":1,
+            "solved":False,
+            "last_post_time":"2020-05-03T12:37:18.311-07:00",
+            "last_post_time_friendly":"a moment ago"
+        },
+        "topic":{
+            "type":"message",
+            "id":"110",
+            "href":"/messages/110",
+            "view_href":"https://community.example.com/t5/products/my-post-with-attachment/ta-p/110"
+        },
+        "post_time":"2020-05-03T12:37:18.311-07:00",
+        "post_time_friendly":"a moment ago",
+        "depth":0,
+        "read_only":False,
+        "language":"EN",
+        "can_accept_solution":False,
+        "placeholder":False,
+        "is_solution":False,
+        "solution_data":{
+
+        },
+        "metrics":{
+            "type":"message_metrics",
+            "views":0
+        },
+        "current_revision":{
+            "type":"revision",
+            "id":"1",
+            "last_edit_author":{
+                "type":"user",
+                "id":"2",
+                "href":"/users/2",
+                "view_href":"https://community.example.com/t5/user/viewprofilepage/user-id/2",
+                "login":"jeffshurtliff"
+            },
+            "last_edit_time":"2020-05-03T12:37:18.311-07:00"
+        },
+        "kudos":{
+            "query":"SELECT * FROM kudos WHERE message.id = '110'"
+        },
+        "tags":{
+            "query":"SELECT * FROM tags WHERE messages.id = '110'"
+        },
+        "labels":{
+            "query":"SELECT * FROM labels WHERE messages.id = '110'"
+        },
+        "images":{
+            "query":"SELECT * FROM images WHERE messages.id = '110'"
+        },
+        "videos":{
+            "query":"SELECT * FROM videos WHERE messages.id = '110'"
+        },
+        "attachments":{
+            "query":"SELECT * FROM attachments WHERE message.id = '110'"
+        },
+        "replies":{
+            "query":"SELECT * FROM messages WHERE parent.id = '110'"
+        },
+        "ratings":{
+            "query":"SELECT * FROM ratings WHERE message.id = '110'"
+        },
+        "custom_tags":{
+            "query":"SELECT * FROM custom_tags WHERE messages.id = '110'"
+        },
+        "moderation_status":"approved",
+        "user_context":{
+            "type":"user_context",
+            "kudo":False,
+            "read":False,
+            "can_reply":True,
+            "can_kudo":False,
+            "can_delete":True
+        },
+        "contributors":{
+            "query":"SELECT * FROM users WHERE messages_contributed.id = '110'"
+        },
+        "helpfulness_allowed":False,
+        "popularity":-0.0004102777777777778,
+        "excluded_from_kudos_leaderboards":False,
+        "is_promoted":False
+    },
+    "metadata":{
+
+    }
+}
