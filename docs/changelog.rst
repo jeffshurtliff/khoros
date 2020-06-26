@@ -4,8 +4,53 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.7.6
+******
+**Release Date: 2020-06-25**
+
+Added
+=====
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the `LGTM Grade <https://lgtm.com/projects/g/jeffshurtliff/khoros>`_ to the ``README.md`` file.
+
+General
+-------
+* Added the two files below to the ``examples/example_output/`` directory.
+    * ``v2_message_attachment_create_payload.json``
+    * ``v2_message_attachment_create_success.json``
+
+Changed
+=======
+
+Documentation
+-------------
+Changes to the documentation.
+* Added the :doc:`core-object-methods` page amd moved the documentation for the :py:mod:`khoros` (``__init__.py``)
+  module and the :py:mod:`khoros.core` module to the new page from the :doc:`primary-modules` page.
+* Added the new :doc:`core-object-methods` page to the :doc:`index` page.
+* Added navigational sentences at the bottom of the :doc:`primary-modules`, :doc:`supporting-modules` and
+  :doc:`core-object-methods` pages.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed the "Exception objects instantiated but not raised" issue reported in GitHub.
+  (`Issue #2 <https://github.com/jeffshurtliff/khoros/issues/2>`_)
+
+|
+
+******
 v2.7.5
 ******
+**Release Date: 2020-06-18**
 
 Added
 =====

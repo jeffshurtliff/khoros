@@ -31,7 +31,7 @@ which are listed below.
 ********************
 Classes & Exceptions
 ********************
-This section includes modules that contain the classes and exceptions used in the package.
+This section includes modules that contain the classes and exceptions used throughout the package.
 
 |
 
@@ -251,3 +251,5 @@ This module is used by pytest to verify that Node IDs can be extracted successfu
 :doc:`Return to Top <supporting-modules>`
 
 |
+
+The previous page addresses the :doc:`primary-modules` within the *khoros* package.
