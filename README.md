@@ -37,6 +37,14 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         </td>
     </tr>
     <tr>
+        <td>Code Quality</td>
+        <td>
+            <a href="https://lgtm.com/projects/g/jeffshurtliff/khoros">
+            <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/jeffshurtliff/khoros">
+            </a>
+        </td>
+    </tr>
+    <tr>
         <td>Documentation</td>
         <td>
             <a href='https://khoros.readthedocs.io/en/latest/?badge=latest'>
