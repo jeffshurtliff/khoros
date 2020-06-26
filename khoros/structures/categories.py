@@ -6,7 +6,7 @@
 :Example:           ``category_id = categories.get_category_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 May 2020
+:Modified Date:     25 Jun 2020
 """
 
 import warnings
@@ -192,7 +192,7 @@ def get_title(khoros_object, identifier=None, full_title=True, short_title=False
     """
     if not full_title and not short_title:
         exc_msg = "Must return at least the full title or the short title."
-        errors.exceptions.MissingRequiredDataError(exc_msg)
+        raise errors.exceptions.MissingRequiredDataError(exc_msg)
     if not category_details:
         category_details = get_category_details(khoros_object, identifier)
     titles = (category_details['title'], category_details['short_title'])

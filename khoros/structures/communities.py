@@ -6,7 +6,7 @@
 :Example:           ``details = get_community_details(khoros_object)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     25 Jun 2020
 """
 
 from . import base
@@ -96,7 +96,7 @@ def get_title(khoros_object, full_title=True, short_title=False, community_detai
     """
     if not full_title and not short_title:
         exc_msg = "Must return at least the full title or the short title."
-        errors.exceptions.MissingRequiredDataError(exc_msg)
+        raise errors.exceptions.MissingRequiredDataError(exc_msg)
     if not community_details:
         community_details = get_community_details(khoros_object)
     titles = (community_details['title'], community_details['short_title'])

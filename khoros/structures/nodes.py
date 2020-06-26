@@ -6,7 +6,7 @@
 :Example:           ``node_id = nodes.get_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 May 2020
+:Modified Date:     25 Jun 2020
 """
 
 import re
@@ -246,7 +246,7 @@ def get_title(khoros_object, identifier=None, full_title=True, short_title=False
     """
     if not full_title and not short_title:
         exc_msg = "Must return at least the full title or the short title."
-        errors.exceptions.MissingRequiredDataError(exc_msg)
+        raise errors.exceptions.MissingRequiredDataError(exc_msg)
     if not node_details:
         node_details = get_node_details(khoros_object, identifier)
     titles = (node_details['title'], node_details['short_title'])

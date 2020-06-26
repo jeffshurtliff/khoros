@@ -6,7 +6,7 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 May 2020
+:Modified Date:     25 Jun 2020
 """
 
 from .. import api, liql, errors
@@ -75,7 +75,7 @@ def count_role_types(role_type, roles_dict):
     :raises: :py:exc:`khoros.errors.exceptions.InvalidRoleTypeError`
     """
     if role_type not in ROLE_TYPES.keys() and role_type not in ROLE_TYPES.values():
-        errors.exceptions.InvalidRoleTypeError(role_type=role_type)
+        raise errors.exceptions.InvalidRoleTypeError(role_type=role_type)
     elif role_type in ROLE_TYPES:
         role_type = ROLE_TYPES.get(role_type)
     count = 0
