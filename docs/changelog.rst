@@ -25,6 +25,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.tags.structure_single_tag_payload`
     * :py:func:`khoros.objects.tags.add_single_tag_to_message`
     * :py:func:`khoros.objects.tags.add_tags_to_message`
+* Added the :py:func:`khoros.objects.attachments._structure_attachments_to_add` function.
 
 Supporting Modules
 ------------------
@@ -39,8 +40,10 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Updated the :py:func:`khoros.objects.messages.structure_payload` function to support the
-  :py:func:`khoros.objects.messages.update` function.
+* Updated the functions below to support the :py:func:`khoros.objects.messages.update` function.
+    * :py:func:`khoros.objects.messages.structure_payload`
+    * :py:func:`khoros.objects.attachments.construct_multipart_payload`
+    * :py:func:`khoros.objects.attachments.format_attachment_payload`
 * Updated the if statement in :py:func:`khoros.objects.messages._verify_required_fields` to leverage
   the :py:func:`isinstance` function.
 

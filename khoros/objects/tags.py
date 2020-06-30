@@ -71,6 +71,7 @@ def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
+    # TODO: Refactor this to work as directed by AdamN in Khoros Atlas
     tags = (tags, ) if isinstance(tags, str) else tags
     for tag in tags:
         add_single_tag_to_message(khoros_object, str(tag), msg_id, allow_exceptions)
