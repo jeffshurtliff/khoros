@@ -178,6 +178,20 @@ def get_error_from_json(json_error, v1=False, include_error_bool=True, fail_on_n
     return error_details
 
 
+def verify_core_object_present(khoros_object):
+    """This function verifies whether or not the core object was supposed and raises an exception if not.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: None
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not khoros_object:
+        _import_exception_classes()
+        raise exceptions.MissingRequiredDataError('The core object must be provided in order to perform the action')
+    return
+
+
 def verify_v1_response(api_response, query_type='get', endpoint='', fail_on_no_results=False):
     """This function evaluates a Community API v1 response to identify any failures.
 

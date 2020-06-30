@@ -4,6 +4,49 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.8.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the following functions within the :py:mod:`khoros.objects.messages` module:
+    * :py:func:`khoros.objects.messages.update`
+    * :py:func:`khoros.objects.messages.is_read_only`
+    * * :py:func:`khoros.objects.messages.set_read_only`
+    * :py:func:`khoros.objects.messages._verify_message_id`
+    * :py:func:`khoros.objects.messages._add_moderation_status_to_payload`
+* Added the new :py:mod:`khoros.objects.tags` module with the following functions:
+    * :py:func:`khoros.objects.tags.structure_single_tag_payload`
+    * :py:func:`khoros.objects.tags.add_single_tag_to_message`
+    * :py:func:`khoros.objects.tags.add_tags_to_message`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.errors.handlers.verify_core_object_present` function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.objects.messages.structure_payload` function to support the
+  :py:func:`khoros.objects.messages.update` function.
+* Updated the if statement in :py:func:`khoros.objects.messages._verify_required_fields` to leverage
+  the :py:func:`isinstance` function.
+
+|
+
+******
 v2.7.6
 ******
 **Release Date: 2020-06-25**

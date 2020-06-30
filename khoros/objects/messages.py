@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     31 May 2020
+:Modified Date:     29 Jun 2020
 """
 
 import warnings
@@ -124,8 +124,13 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
 def construct_payload(subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
                       context_id=None, context_url=None, is_answer=None, is_draft=None, read_only=None, seo_title=None,
                       seo_description=None, teaser=None, tags=None, cover_image=None, images=None, labels=None,
-                      product_category=None, products=None, topic=None, videos=None):
+                      product_category=None, products=None, topic=None, videos=None, parent=None, status=None,
+                      moderation_status=None, attachments_to_add=None, attachments_to_remove=None, action='create'):
     """This function constructs and properly formats the JSON payload for a messages API request.
+
+    .. versionchanged:: 2.8.0
+       Added the ``parent``, ``status``, ``moderation_status``, ``attachments_to_add``, ``attachments_to_remove``
+       and ``action`` arguments, and added the ``raises`` section to the docstring.
 
     .. versionadded:: 2.3.0
 
@@ -176,7 +181,36 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
     :type topic: dict, None
     :param videos: The query to retrieve videos uploaded to the message
     :type videos: dict, None
+    :param parent: The parent of the message
+    :type parent: str, None
+    :param status: The message status for messages where conversation.style is ``idea`` or ``contest``
+
+                   .. caution:: This property is not returned if the message has the default ``Unspecified`` status
+                                assigned. It will only be returned for ideas with a status of ``Completed`` or with a
+                                custom status created in Community Admin.
+
+    :type status: dict, None
+    :param moderation_status: The moderation status of the message
+
+                              .. note:: Acceptable values are ``unmoderated``, ``approved``, ``rejected``,
+                                        ``marked_undecided``, ``marked_approved`` and ``marked_rejected``.
+
+    :type moderation_status: str, None
+
+    :param attachments_to_add: The full path(s) to one or more attachments (e.g. ``path/to/file1.pdf``) to be
+                               added to the message
+    :type attachments_to_add: str, tuple, list, set, None
+    :param attachments_to_remove: One or more attachments to remove from the message
+
+                                  .. note:: Each attachment should specify the attachment id of the attachment to
+                                            remove, which begins with ``m#_``. (e.g. ``m283_file1.pdf``)
+
+    :type attachments_to_remove: str, tuple, list, set, None
+    :param action: Defines if the payload will be used to ``create`` (default) or ``update`` a message
+    :type action: str
     :returns: The properly formatted JSON payload
+    :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
     # Define the default payload structure
     payload = {
@@ -185,16 +219,18 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
         }
     }
 
-    # Ensure the required fields are defined
-    _verify_required_fields(node, node_id, node_url, subject)
+    # Ensure the required fields are defined if creating a message
+    if action == 'create':
+        _verify_required_fields(node, node_id, node_url, subject)
 
     # Define the destination
-    if not node:
-        if node_id:
-            node = {"id": f"{node_id}"}
-        else:
-            node = {"id": f"{nodes.get_node_id(url=node_url)}"}
-    payload['data']['board'] = node
+    if action == 'create' or any((node, node_id, node_url)):
+        if not node:
+            if node_id:
+                node = {"id": f"{node_id}"}
+            else:
+                node = {"id": f"{nodes.get_node_id(url=node_url)}"}
+        payload['data']['board'] = node
 
     # Add supplied data where appropriate if string or Boolean
     supplied_data = {
@@ -214,17 +250,155 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
         if field_value[0]:
             if field_value[1] == str:
                 payload['data'][field_name] = f"{field_value[0]}"
-            elif field_value[1] == bool and type(field_value[0]) == str:
-                # noinspection PyTypeChecker
-                payload['data'][field_name] = bool(field_value[0])
+            elif field_value[1] == bool:
+                bool_value = bool(field_value[0]) if isinstance(field_value[0], str) else field_value[0]
+                payload['data'][field_name] = bool_value
 
     # TODO: Add functionality for non-string and non-Boolean arguments
 
     return payload
 
 
+def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
+           canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
+           moderation_status=None, parent=None, product_category=None, products=None, read_only=None, topic=None,
+           status=None, seo_title=None, seo_description=None, tags=None, teaser=None, attachments_to_add=None,
+           attachments_to_remove=None, full_response=False, return_id=False, return_url=False, return_api_url=False,
+           return_http_code=False):
+    """This function updates one or more elements of an existing message.
+
+    .. versionadded:: 2.8.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the existing message
+    :type msg_id: str, int, None
+    :param msg_url: The URL of the existing message
+    :type msg_url: str, None
+    :param subject: The title or subject of the message
+    :type subject: str, None
+    :param body: The body of the message in HTML format
+    :type body: str, None
+    :param node: A dictionary containing the ``id`` key and its associated value indicating the destination
+    :type node: dict, None
+    :param node_id: The ID of the node in which the message will be published
+    :type node_id: str, None
+    :param node_url: The URL of the node in which the message will be published
+
+                     .. note:: This argument is necessary in the absence of the ``node`` and ``node_id`` arguments.
+
+    :type node_url: str, None
+    :param canonical_url: The search engine-friendly URL to the message
+    :type canonical_url: str, None
+    :param context_id: Metadata on a message to identify the message with an external identifier of your choosing
+    :type context_id: str, None
+    :param context_url: Metadata on a message representing a URL to associate with the message (external identifier)
+    :type context_url: str, None
+    :param cover_image: The cover image set for the message
+    :type cover_image: dict, None
+    :param is_draft: Indicates whether or not the message is still a draft (i.e. unpublished)
+    :type is_draft: bool, None
+    :param labels: The query to retrieve labels applied to the message
+    :type labels: dict, None
+    :param moderation_status: The moderation status of the message
+
+                              .. note:: Acceptable values are ``unmoderated``, ``approved``, ``rejected``,
+                                        ``marked_undecided``, ``marked_approved`` and ``marked_rejected``.
+
+    :type moderation_status: str, None
+    :param parent: The parent of the message
+    :type parent: str, None
+    :param product_category: The product category (i.e. container for ``products``) associated with the message
+    :type product_category: dict, None
+    :param products: The product in a product catalog associated with the message
+    :type products: dict, None
+    :param read_only: Indicates whether or not the message should be read-only or have replies/comments blocked
+    :type read_only: bool, None
+    :param topic: The root message of the conversation in which the message appears
+    :type topic: dict, None
+    :param status: The message status for messages where conversation.style is ``idea`` or ``contest``
+
+                   .. caution:: This property is not returned if the message has the default ``Unspecified`` status
+                                assigned. It will only be returned for ideas with a status of Completed or with a
+                                custom status created in Community Admin.
+
+    :type status: dict, None
+    :param seo_title: The title of the message used for SEO purposes
+    :type seo_title: str, None
+    :param seo_description: A description of the message used for SEO purposes
+    :type seo_description: str, None
+    :param tags: The query to retrieve tags applied to the message
+    :type tags: dict, None
+    :param teaser: The message teaser (used with blog articles)
+    :type teaser: str, None
+    :param attachments_to_add: The full path(s) to one or more attachments (e.g. ``path/to/file1.pdf``) to be
+                               added to the message
+    :type attachments_to_add: str, tuple, list, set, None
+    :param attachments_to_remove: One or more attachments to remove from the message
+
+                                  .. note:: Each attachment should specify the attachment id of the attachment to
+                                            remove, which begins with ``m#_``. (e.g. ``m283_file1.pdf``)
+
+    :type attachments_to_remove: str, tuple, list, set, None
+    :param full_response: Defines if the full response should be returned instead of the outcome (``False`` by default)
+
+                          .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``
+                                       and ``return_http_code`` arguments.
+
+    :type full_response: bool
+    :param return_id: Indicates that the **Message ID** should be returned (``False`` by default)
+    :type return_id: bool
+    :param return_url: Indicates that the **Message URL** should be returned (``False`` by default)
+    :type return_url: bool
+    :param return_api_url: Indicates that the **API URL** of the message should be returned (``False`` by default)
+    :type return_api_url: bool
+    :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
+                             (``False`` by default)
+    :type return_http_code: bool
+    :returns: Boolean value indicating a successful outcome (default) or the full API response
+    :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.DataMismatchError`
+    """
+    msg_id = _verify_message_id(msg_id, msg_url)
+    api_url = f"{khoros_object.core['v2_base']}/messages/{msg_id}"
+    payload = construct_payload(subject, body, node, node_id, node_url, canonical_url, context_id, context_url,
+                                is_draft=is_draft, read_only=read_only, seo_title=seo_title, tags=tags, topic=topic,
+                                seo_description=seo_description, teaser=teaser, cover_image=cover_image, labels=labels,
+                                parent=parent, products=products, product_category=product_category, status=status,
+                                moderation_status=moderation_status, attachments_to_add=attachments_to_add,
+                                attachments_to_remove=attachments_to_remove, action='update')
+    multipart = True if attachments_to_add else False
+    if multipart:
+        payload = attachments.construct_multipart_payload(payload, attachments_to_add)
+    response = api.put_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
+    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code)
+
+
+def _verify_message_id(_msg_id, _msg_url):
+    """This function verifies that a message ID has been defined or can be using the message URL.
+
+    .. versionadded:: 2.8.0
+
+    :param _msg_id: The message ID associated with a message
+    :type _msg_id: str, int, None
+    :param _msg_url: The URL associated with a message
+    :type _msg_url: str, None
+    :returns: The message ID
+    :raises: :py:exc:`errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`errors.exceptions.MessageTypeNotFoundError`
+    """
+    if not any((_msg_id, _msg_url)):
+        raise errors.exceptions.MissingRequiredDataError("A message ID or URL must be defined when updating messages")
+    elif not _msg_id:
+        _msg_id = get_id_from_url(_msg_url)
+    return _msg_id
+
+
 def _verify_required_fields(_node, _node_id, _node_url, _subject):
     """This function verifies that the required fields to create a message are satisfied.
+
+    .. versionchanged:: 2.8.0
+       Updated the if statement to leverage the :py:func:`isinstance` function.
 
     .. versionadded:: 2.3.0
 
@@ -243,13 +417,35 @@ def _verify_required_fields(_node, _node_id, _node_url, _subject):
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     _requirements_satisfied = True
-    if (not _node and not _node_id and not _node_url) or (_node is not None and type(_node) != dict) or not _subject:
+    if (not _node and not _node_id and not _node_url) or (_node is not None and not isinstance(_node, dict)) \
+            or not _subject:
         _requirements_satisfied = False
     elif _node and (not _node_id and not _node_url):
         _requirements_satisfied = False if 'id' not in _node else True
     if not _requirements_satisfied:
         raise errors.exceptions.MissingRequiredDataError("A node and subject must be defined when creating messages")
     return
+
+
+def _add_moderation_status_to_payload(_payload, _moderation_status):
+    """This function adds the moderation status field and value to the payload when applicable.
+
+    .. versionadded:: 2.8.0
+
+    :param _payload: The payload for the API call
+    :type _payload: dict
+    :param _moderation_status: The ``moderation_status`` field value
+    :type _moderation_status: str, None
+    :returns: The payload with the potentially added ``moderation_status`` key value pair
+    """
+    _valid_options = ['unmoderated', 'approved', 'rejected', 'marked_undecided', 'marked_approved', 'marked_rejected']
+    if _moderation_status:
+        if not isinstance(_moderation_status, str) or _moderation_status not in _valid_options:
+            warnings.warn(f"The moderation status '{_moderation_status}' is not a valid option and will be ignored.",
+                          RuntimeWarning)
+        else:
+            _payload['data']['moderation_status'] = _moderation_status
+    return _payload
 
 
 def _confirm_field_supplied(_fields_dict):
@@ -316,6 +512,76 @@ def get_id_from_url(url):
         if msg_type in url:
             return (url.split(f'{msg_type}/')[1]).split('#')[0]
     raise errors.exceptions.MessageTypeNotFoundError(url=url)
+
+
+def is_read_only(khoros_object=None, msg_id=None, msg_url=None, api_response=None):
+    """This function checks to see whether or not a message is read-only.
+
+    .. versionadded:: 2.8.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros], None
+    :param msg_id: The unique identifier for the message
+    :type msg_id: str, int, None
+    :param msg_url: THe URL of the message
+    :type msg_url: str, None
+    :param api_response: The JSON data from an API response
+    :type api_response: dict, None
+    :returns: Boolean value indicating whether or not the message is read-only
+    :raises: :py:exc:`errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`errors.exceptions.MessageTypeNotFoundError`
+    """
+    if api_response:
+        current_status = api_response['data']['read_only']
+    else:
+        errors.handlers.verify_core_object_present(khoros_object)
+        msg_id = _verify_message_id(msg_id, msg_url)
+        query = f'SELECT read_only FROM messages WHERE id = "{msg_id}"'
+        api_response = liql.perform_query(khoros_object, liql_query=query, verify_success=True)
+        current_status = api_response['data']['items'][0]['read_only']
+    return current_status
+
+
+def set_read_only(khoros_object, enable=True, msg_id=None, msg_url=None, suppress_warnings=False):
+    """This function sets (i.e. enables or disables) the read-only flag for a given message.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param enable: Determines if the read-only flag should be enabled (``True`` by default)
+    :type enable: bool
+    :param msg_id: The unique identifier for the message
+    :type msg_id: str, int, None
+    :param msg_url: The URL for the message
+    :type msg_url: str, None
+    :param suppress_warnings: Determines whether or not warning messages should be suppressed (``False`` by default)
+    :type suppress_warnings: bool
+    :returns: None
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    def _get_warn_msg(_msg_id, _status):
+        """This function returns the appropriate warning message to use when applicable."""
+        return f"Read-only status is already {_status} for Message ID {_msg_id}"
+
+    msg_id = _verify_message_id(msg_id, msg_url)
+    current_status = is_read_only(khoros_object, msg_id)
+    warn_msg = None
+    if all((enable, current_status)):
+        warn_msg = _get_warn_msg(msg_id, 'enabled')
+    elif enable is False and current_status is False:
+        warn_msg = _get_warn_msg(msg_id, 'disabled')
+    if warn_msg and not suppress_warnings:
+        errors.handlers.eprint(warn_msg)
+    else:
+        result = update(khoros_object, msg_id, msg_url, read_only=enable, full_response=True)
+        if result['status'] == 'error':
+            errors.handlers.eprint(errors.handlers.get_error_from_json(result))
+        else:
+            new_status = is_read_only(api_response=result)
+            if new_status == current_status and not suppress_warnings:
+                warn_msg = f"The API call was successful but the read-only status for Message ID {msg_id} is " \
+                           f"still {new_status}."
+                errors.handlers.eprint(warn_msg)
+    return
 
 
 def _get_required_user_mention_data(_khoros_object, _user_info, _user_id, _login):
