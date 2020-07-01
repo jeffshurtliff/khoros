@@ -33,6 +33,11 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.errors.handlers.verify_core_object_present` function.
 
+General
+-------
+* Added the file ``v2_message_attachment_update_payload.json`` to the
+  ``examples/example_output`` directory.
+
 Changed
 =======
 
@@ -44,6 +49,7 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.messages.structure_payload`
     * :py:func:`khoros.objects.attachments.construct_multipart_payload`
     * :py:func:`khoros.objects.attachments.format_attachment_payload`
+    * :py:func:`khoros.objects.attachments.get_file_upload_info`
 * Updated the if statement in :py:func:`khoros.objects.messages._verify_required_fields` to leverage
   the :py:func:`isinstance` function.
 
