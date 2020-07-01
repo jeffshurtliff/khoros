@@ -1,0 +1,5 @@
+{
+    'data': (None, '{"type": "message", "attachments_to_add": [{"type": "attachment", "field": "attachment1"}, {"type": "attachment", "field": "attachment2"}]}', 'application/json'),
+    'attachment1': <_io.BufferedReader name='C:\\Users\\jeffshurtliff\\pdf1.pdf'>,
+    'attachment2': <_io.BufferedReader name='C:\\Users\\jeffshurtliff\\pdf2.pdf'>
+}
