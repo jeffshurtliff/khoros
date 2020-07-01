@@ -38,7 +38,7 @@ def construct_multipart_payload(message_json, file_paths, action='create'):
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
     file_paths = core_utils.convert_string_to_tuple(file_paths)
-    files_payload = get_file_upload_info(file_paths)
+    files_payload = get_file_upload_info(file_paths, action)
     if action == 'update':
         message_json['data'].update(format_attachment_payload(file_paths, 'update'))
         full_payload = _format_full_payload('data', message_json['data'], files_payload)
@@ -142,19 +142,27 @@ def get_list_items(file_paths):
     return list_items
 
 
-def get_file_upload_info(file_paths):
+def get_file_upload_info(file_paths, action='create'):
     """This function constructs the binary file(s) portion of the multipart API call.
+
+    .. versionchanged:: 2.8.0
+       Support was added for updating an existing message.
 
     .. versionadded:: 2.3.0
 
     :param file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
     :type file_paths: str, tuple, list, set
+    :param action: Indicates if the payload will be used to ``create`` (default) or ``update`` a message
+    :type action: str
     :returns: A dictionary with the file upload information for the API call
     """
     file_paths = core_utils.convert_string_to_tuple(file_paths)
     files, count = {}, 1
     for path in file_paths:
         # TODO: Dynamically define the MIME type
-        files[f'attachment{count}'] = (f'{os.path.basename(path)}', open(path, 'rb'))
+        if action == 'update':
+            files[f'attachment{count}'] = open(path, 'rb')
+        else:
+            files[f'attachment{count}'] = (f'{os.path.basename(path)}', open(path, 'rb'))
         count += 1
     return files
