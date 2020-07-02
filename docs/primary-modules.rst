@@ -16,6 +16,7 @@ which are listed below.
     * `Attachments Module (khoros.objects.attachments)`_
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
+    * `Tags Module (khoros.objects.tags)`_
     * `Users Module (khoros.objects.users)`_
 * `Structures Module (khoros.structures)`_
     * `Base Structures Module (khoros.structures.base)`_
@@ -151,6 +152,17 @@ Roles Module (khoros.objects.roles)
 This module includes functions that handle roles and permissions.
 
 .. automodule:: khoros.objects.roles
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Tags Module (khoros.objects.tags)
+=================================
+This module includes functions that handle tags within a Khoros Community environment.
+
+.. automodule:: khoros.objects.tags
    :members:
 
 :doc:`Return to Top <primary-modules>`

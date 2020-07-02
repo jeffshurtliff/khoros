@@ -8,6 +8,7 @@ which are listed below.
     * `Errors Module (khoros.errors)`_
         * `Exceptions Module (khoros.errors.exceptions)`_
         * `Handlers Module (khoros.errors.handlers)`_
+        * `Translations Module (khoros.errors.translations)`_
 * `Tools & Utilities`_
     * `Core Utilities Module (khoros.utils.core_utils)`_
     * `Environment Module (khoros.utils.environment)`_
@@ -62,6 +63,17 @@ Handlers Module (khoros.errors.handlers)
 This sub-module contains various error handling functions that are leveraged throughout the library.
 
 .. automodule:: khoros.errors.handlers
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Translations Module (khoros.errors.translations)
+------------------------------------------------
+This sub-module provides more relevant translations for error messages in API responses where possible.
+
+.. automodule:: khoros.errors.translations
    :members:
 
 :doc:`Return to Top <supporting-modules>`
