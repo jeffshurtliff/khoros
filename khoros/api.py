@@ -552,8 +552,13 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
 
 
 def deliver_v2_results(response, full_response=None, return_id=None, return_url=None, return_api_url=None,
-                       return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
+                       return_http_code=None, return_status=None, return_error_messages=None, split_errors=False,
+                       khoros_object=None):
     """This function parses a Community API v2 response and returned specific data based on the function arguments.
+
+    .. versionchanged:: 2.8.0
+       Introduced the ability for error messages to be translated where possible to be more relevant, and added
+       the optional ``khoros_object`` argument to facilitate this.
 
     .. versionchanged:: 2.5.2
        Replaced the ``return_developer_message`` argument with ``return_error_messages``.
@@ -578,6 +583,12 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
     :type return_error_messages: bool, None
     :param split_errors: Determines if error messages should be split into separate values or merged when applicable
     :type split_errors: bool
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros], None
+
+                         .. note:: The core object is only leveraged to check whether or not the ``translate_errors``
+                                   setting is configured and to retrieve its value where possible.
+
     :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
               fields defined by function arguments
     """
@@ -592,7 +603,7 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
             'return_status': return_status,
             'return_error_messages': return_error_messages,
         }
-        return_values = _get_v2_return_values(return_booleans, response, split_errors)
+        return_values = _get_v2_return_values(return_booleans, response, split_errors, khoros_object)
         for return_key, return_value in return_booleans.items():
             if return_value:
                 data_to_return.append(return_values.get(return_key))
@@ -604,8 +615,12 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
 
 def parse_v2_response(json_response, return_dict=False, status=False, error_msg=False, dev_msg=False,
                       split_errors=False, http_code=False, data_id=False, data_url=False,
-                      data_api_uri=False, v2_base=''):
+                      data_api_uri=False, v2_base='', khoros_object=None):
     """This function parses an API response for a Community API v2 operation and returns parsed data.
+
+    .. versionchanged:: 2.8.0
+       Introduced the ability for error messages to be translated where possible to be more relevant, and added
+       the optional ``khoros_object`` argument to facilitate this.
 
     .. versionchanged:: 2.5.2
        Replaced the ``developer_msg`` argument with ``error_msg`` and added the ``dev_msg`` and ``split_error``
@@ -638,7 +653,13 @@ def parse_v2_response(json_response, return_dict=False, status=False, error_msg=
     :param data_api_uri: Defines if the **API URI** should be returned
     :type data_api_uri: bool
     :param v2_base: The base URL for the API v2
-    :type v2_base: str
+    :type v2_base: str, None
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros], None
+
+                         .. note:: The core object is only leveraged to check whether or not the ``translate_errors``
+                                   setting is configured and to retrieve its value where possible.
+
     :returns: A string, tuple or dictionary with the parsed data
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
@@ -670,11 +691,15 @@ def parse_v2_response(json_response, return_dict=False, status=False, error_msg=
         except (TypeError, ValueError):
             pass
     if 'error_msg' in parsed_data:
+        translated_error_msg = errors.translations.translate_error(parsed_data.get('error_msg'), khoros_object)
+        translated_dev_msg = errors.translations.translate_error(parsed_data.get('dev_msg'), khoros_object)
         if split_errors:
-            parsed_data['error_msg'] = (parsed_data.get('error_msg'), parsed_data.get('dev_msg'))
+            parsed_data['error_msg'] = (translated_error_msg, translated_dev_msg)
         else:
             if len(parsed_data.get('dev_msg')) > 0 and parsed_data.get('error_msg') != parsed_data.get('dev_msg'):
-                parsed_data['error_msg'] = f"{parsed_data.get('error_msg')} - {parsed_data.get('dev_msg')}"
+                parsed_data['error_msg'] = f"{translated_error_msg} - {translated_dev_msg}"
+            else:
+                parsed_data['error_msg'] = translated_error_msg
         del parsed_data['dev_msg']
     if not return_dict:
         parsed_data = tuple(list(parsed_data.values()))
@@ -683,8 +708,12 @@ def parse_v2_response(json_response, return_dict=False, status=False, error_msg=
     return parsed_data
 
 
-def _get_v2_return_values(_return_booleans, _api_response, _split_errors):
+def _get_v2_return_values(_return_booleans, _api_response, _split_errors, _khoros_object=None):
     """This function collects the relevant return values to be delivered for certain functions.
+
+    .. versionchanged:: 2.8.0
+       Introduced the ability for error messages to be translated where possible to be more relevant, and added
+       the optional ``_khoros_object`` argument to facilitate this.
 
     .. versionadded:: 2.5.2
 
@@ -694,6 +723,12 @@ def _get_v2_return_values(_return_booleans, _api_response, _split_errors):
     :type _api_response: dict
     :param _split_errors: Defines whether or not error messages should be merged when applicable
     :type _split_errors: bool
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros], None
+
+                          .. note:: The core object is only leveraged to check whether or not the ``translate_errors``
+                                    setting is configured and to retrieve its value where possible.
+
     :returns: A dictionary of the parsed return values for return types whose Boolean values are ``True``
     """
     _return_values = {}
@@ -701,18 +736,24 @@ def _get_v2_return_values(_return_booleans, _api_response, _split_errors):
         if _return_boolean:
             try:
                 if _return_type == 'return_id':
-                    _return_values[_return_type] = parse_v2_response(_api_response, data_id=True)
+                    _return_values[_return_type] = parse_v2_response(_api_response, data_id=True,
+                                                                     khoros_object=_khoros_object)
                 elif _return_type == 'return_url':
-                    _return_values[_return_type] = parse_v2_response(_api_response, data_url=True)
+                    _return_values[_return_type] = parse_v2_response(_api_response, data_url=True,
+                                                                     khoros_object=_khoros_object)
                 elif _return_type == 'return_api_url':
-                    _return_values[_return_type] = parse_v2_response(_api_response, data_api_uri=True)
+                    _return_values[_return_type] = parse_v2_response(_api_response, data_api_uri=True,
+                                                                     khoros_object=_khoros_object)
                 elif _return_type == 'return_http_code':
-                    _return_values[_return_type] = parse_v2_response(_api_response, http_code=True)
+                    _return_values[_return_type] = parse_v2_response(_api_response, http_code=True,
+                                                                     khoros_object=_khoros_object)
                 elif _return_type == 'return_status':
-                    _return_values[_return_type] = parse_v2_response(_api_response, status=True)
+                    _return_values[_return_type] = parse_v2_response(_api_response, status=True,
+                                                                     khoros_object=_khoros_object)
                 else:
                     _return_values[_return_type] = parse_v2_response(_api_response, error_msg=True,
-                                                                     split_errors=_split_errors)
+                                                                     split_errors=_split_errors,
+                                                                     khoros_object=_khoros_object)
             except KeyError:
                 pass
     return _return_values
