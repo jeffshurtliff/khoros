@@ -44,7 +44,7 @@ def construct_multipart_payload(message_json, file_paths, action='create'):
         full_payload = _format_full_payload('data', message_json['data'], files_payload)
     else:
         message_json['data']['attachments'] = format_attachment_payload(file_paths)
-        full_payload = _format_full_payload('api.request', message_json, file_paths)
+        full_payload = _format_full_payload('api.request', message_json, files_payload)
     return full_payload
 
 
