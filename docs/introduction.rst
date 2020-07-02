@@ -249,6 +249,9 @@ The environment variables leveraged in the :py:mod:`khoros` library are listed b
    * - KHOROS_LIQL_ALWAYS_OK
      - Boolean string indicating if all responses should return a ``200 OK`` status code
      - ``False``
+   * - KHOROS_TRANSLATE_ERRORS
+     - Boolean string indicating if errors in API responses should be made more relevant where possible
+     - ``True``
 
 If you are leveraging this library on a macOS or Linux operating system (e.g. Ubuntu Server) then you can simply
 add the environment variables you wish to define to either the ``/etc/environment`` file if you wish to apply
@@ -294,7 +297,7 @@ Once the :py:class:`khoros.Khoros` object instance has been initialized, it can 
 with a Khoros Community environment in many ways, which will be fully documented shortly in the
 `documentation <https://khoros.readthedocs.io/en/latest/>`_. The example below demonstrates how
 a search can be performed using LiQL to return information from the environment in
-`json <https://en.wikipedia.org/wiki/JSON>`_ format.
+`JSON <https://en.wikipedia.org/wiki/JSON>`_ format.
 
 .. code-block:: python
 
@@ -323,6 +326,16 @@ This package falls under the `MIT License <https://github.com/jeffshurtliff/khor
 Reporting Issues
 ****************
 Issues can be reported within the `GitHub repository <https://github.com/jeffshurtliff/khoros/issues>`_.
+
+:doc:`Return to Top <introduction>`
+
+|
+
+*******
+Roadmap
+*******
+Upcoming improvements to the library can be found in the
+`2020 Roadmap on GitHub <https://github.com/jeffshurtliff/khoros/projects/1>`_.
 
 :doc:`Return to Top <introduction>`
 

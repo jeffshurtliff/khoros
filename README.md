@@ -226,6 +226,7 @@ os.environ['KHOROS_URL'] = 'https://community.example.com'
 | KHOROS_LIQL_PRETTY        | Boolean string indicating if reader-friendly formatting should be used                                                                                     | `False`                                                |
 | KHOROS_LIQL_TRACK_LSI     | Boolean string indicating if queries should be captured in Community Analytics search reports                                                              | `False`                                                |
 | KHOROS_LIQL_ALWAYS_OK     | Boolean string indicating if all responses should return a `200 OK` status code                                                                            | `False`                                                |
+| KHOROS_TRANSLATE_ERRORS   | Boolean string indicating if errors in API responses should be made more relevant where possible                                                           | `True`                                                 |
 
 If you are leveraging this library on a macOS or Linux operating system (e.g. Ubuntu Server) then you can simply
 add the environment variables you wish to define to either the `/etc/environment` file if you wish to apply
@@ -287,6 +288,9 @@ The documentation is located here: [https://khoros.readthedocs.io/en/latest/](ht
 
 ## Reporting Issues
 Issues can be reported within the [GitHub repository](https://github.com/jeffshurtliff/khoros/issues).
+
+## Roadmap
+Upcoming improvements to the library can be found in the [2020 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/1).
 
 ## Disclaimer
 This package is considered unofficial and is in no way endorsed or supported by [Khoros, LLC](https://www.khoros.com).

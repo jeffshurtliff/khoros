@@ -56,6 +56,8 @@ Additions to the documentation.
 
 * Added the :py:mod:`khoros.objects.tags` module  to the :doc:`primary-modules` page.
 * Added the :py:mod:`khoros.errors.translations` module to the :doc:`supporting-modules` page.
+* Added a reference to the ``KHOROS_TRANSLATE_ERRORS`` environment variable and added a new
+  **Roadmap** section to both the :doc:`introduction` page and the ``README.md`` file.
 
 General
 -------
