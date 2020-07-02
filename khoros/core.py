@@ -258,10 +258,14 @@ class Khoros(object):
                     self._settings[settings_fields[0]][settings_fields[1]] = env_var_value
 
     def _parse_helper_settings(self):
-        """This method parses the settings in the helper configuration file when provided."""
+        """This method parses the settings in the helper configuration file when provided.
+
+        .. versionchanged:: 2.8.0
+           Support was added for the ``translate_errors`` setting and any other top-level setting.
+        """
         # Parse the helper settings and add them to the primary settings
         if 'connection' in self._helper_settings:
-            _helper_keys = ['connection', 'construct']
+            _helper_keys = ['connection', 'construct', 'translate_errors']
             _auth_keys = ['oauth2', 'session_auth', 'sso']
             for _helper_key in _helper_keys:
                 if _helper_key == 'connection':
@@ -276,6 +280,9 @@ class Khoros(object):
                     for _construct_key in _construct_keys:
                         if _construct_key in self._helper_settings['construct']:
                             self._settings[_construct_key] = self._helper_settings['construct'][_construct_key]
+                else:
+                    if _helper_key in self._helper_settings:
+                        self._settings[_helper_key] = self._helper_settings[_helper_key]
         if 'discussion_styles' in self._helper_settings:
             if isinstance(self._helper_settings.get('discussion_styles'), list):
                 self._settings['discussion_styles'] = self._helper_settings.get('discussion_styles')

@@ -46,6 +46,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the :py:mod:`khoros.errors.translations` module with the following functions:
     * :py:func:`khoros.errors.translations.translate_error`
     * :py:func:`khoros.errors.translations.translation_enabled`
+    * :py:func:`khoros.errors.translations.parse_message`
 * Added the :py:mod:`khoros.errors.translations` module to the ``__all__`` special variable
   and imported it by default within the :py:mod:`khoros.errors` (``__init__.py``) module.
 
@@ -72,6 +73,8 @@ Additions to the :doc:`core-object-methods`.
   in the :py:meth:`khoros.core.Khoros.Message.create` method, and changed the default value
   of the ``full_response``, ``return_id``, ``return_url``, return_api_url`` and
   ``return_http_code`` arguments to ``None`` rather than ``False``.
+* Added support for the ``translate_errors`` Helper setting and any other future top-level
+  setting within the :py:meth:`khoros.core.Khoros._parse_helper_settings` method.
 
 
 Primary Modules
@@ -90,6 +93,20 @@ Changes to the :doc:`primary modules <primary-modules>`.
   of the ``full_response``, ``return_id``, ``return_url``, return_api_url`` and
   ``return_http_code`` arguments to ``None`` rather than ``False``.
 
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.utils.helper.get_helper_settings` function to capture the
+  ``translate_errors`` value when defined in the configuration file.
+* Refactored the :py:func:`khoros.utils.helper._get_construct_info` function to leverage the
+  :py:func:`khoros.utils.helper._collect_values` function.
+
+General
+-------
+* Updated the ``examples/helper.yml`` file to include the ``translate_errors`` setting.
+* Added the ``KHOROS_TRANSLATE_ERRORS`` environment variable to the
+  ``examples/custom_env_variables.yml`` and ``examples/custom_env_variables.json`` files.
 |
 
 ******

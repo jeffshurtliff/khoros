@@ -138,7 +138,7 @@ def _get_construct_info(_helper_cfg):
     return _collect_values(_top_level_keys, _helper_cfg)
 
 
-def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None):
+def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None, _ignore_missing=False):
     """This function loops through a list of top-level keys to collect their corresponding values.
 
     .. versionadded:: 2.8.0
@@ -147,6 +147,10 @@ def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None):
     :type _top_level_keys: list, tuple, set, str
     :param _helper_cfg: The configuration parsed from the helper configuration file
     :type _helper_cfg: dict
+    :param _helper_dict: A predefined dictionary to which the key value pairs should be added
+    :type _helper_dict: dict, None
+    :param _ignore_missing: Indicates whether or not fields with null values should be ignored (``False`` by default)
+    :type _ignore_missing: bool
     :returns: A dictionary with the identified key value pairs
     """
     _helper_dict = {} if not _helper_dict else _helper_dict
@@ -158,7 +162,8 @@ def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None):
                 _key_val = HelperParsing.yaml_boolean_values.get(_key_val)
             _helper_dict[_key] = _key_val
         else:
-            _helper_dict[_key] = None
+            if not _ignore_missing:
+                _helper_dict[_key] = None
     return _helper_dict
 
 
@@ -199,7 +204,7 @@ def get_helper_settings(file_path, file_type='yaml'):
     helper_settings['discussion_styles'] = _get_discussion_styles(helper_cfg)
 
     # Populate the error translation setting in the helper dictionary
-    helper_settings['translate_errors'] = _collect_values('translate_errors', helper_cfg)
+    helper_settings.update(_collect_values('translate_errors', helper_cfg, _ignore_missing=True))
 
     # Return the helper_settings dictionary
     return helper_settings
