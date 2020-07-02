@@ -22,6 +22,9 @@ connection:
 # Define the preferred format for API responses
 prefer_json: yes
 
+# Define whether errors in API responses should be translated to be more relevant
+translate_errors: yes
+
 # List the enabled discussion styles in the environment (blog, contest, forum, idea, qanda, tkb)
 discussion_styles:
     - blog
