@@ -6,7 +6,7 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     12 Jun 2020
+:Modified Date:     01 Jul 2020
 """
 
 import warnings
@@ -24,8 +24,8 @@ def create(khoros_object, board_id, board_title, discussion_style, description=N
            blog_comments_enabled=None, blog_moderators=None, blog_moderator_ids=None, blog_moderator_logins=None,
            one_entry_per_contest=None, one_kudo_per_contest=None, posting_date_end=None, posting_date_start=None,
            voting_date_end=None, voting_date_start=None, winner_announced_date=None, full_response=None, return_id=None,
-           return_url=None, return_api_url=None, return_http_code=None, return_status=None,
-           return_error_messages=None, split_errors=False):
+           return_url=None, return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
+           split_errors=False):
     """This function creates a new board within a Khoros Community environment.
 
     .. versionchanged:: 2.5.2
