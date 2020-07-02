@@ -6,7 +6,7 @@
 :Example:           TBD
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     01 Jul 2020
 """
 
 import os
@@ -19,7 +19,7 @@ from ..utils.core_utils import get_file_type
 
 ENV_VARIABLE_NAMES = ['KHOROS_URL', 'KHOROS_TENANT_ID', 'KHOROS_DEFAULT_AUTH', 'KHOROS_OAUTH_ID', 'KHOROS_OAUTH_SECRET',
                       'KHOROS_OAUTH_REDIRECT_URL', 'KHOROS_SESSION_USER', 'KHOROS_SESSION_PW', 'KHOROS_PREFER_JSON',
-                      'KHOROS_LIQL_PRETTY', 'KHOROS_LIQL_TRACK_LSI', 'KHOROS_LIQL_ALWAYS_OK']
+                      'KHOROS_LIQL_PRETTY', 'KHOROS_LIQL_TRACK_LSI', 'KHOROS_LIQL_ALWAYS_OK', 'KHOROS_TRANSLATE_ERRORS']
 
 ENV_SETTINGS_MAPPING = {
     'KHOROS_URL': ('community_url',),
@@ -31,6 +31,7 @@ ENV_SETTINGS_MAPPING = {
     'KHOROS_SESSION_USER': ('session_auth', 'username'),
     'KHOROS_SESSION_PW': ('session_auth', 'password'),
     'KHOROS_PREFER_JSON': ('prefer_json',),
+    'KHOROS_TRANSLATE_ERRORS': ('translate_errors',),
     # TODO: Add LiQL environment variables
 }
 

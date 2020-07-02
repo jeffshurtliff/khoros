@@ -6,7 +6,7 @@
 :Example:           ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     01 Jul 2020
 """
 
 import json
@@ -124,28 +124,53 @@ def _get_discussion_styles(_helper_cfg):
 def _get_construct_info(_helper_cfg):
     """This function parses settings that can be leveraged in constructing API responses and similar tasks.
 
+    .. versionchanged:: 2.8.0
+       The function was refactored to leverage the :py:func:`khoros.utils.helper._collect_values` function.
+
     .. versionchanged:: 2.2.0
        Removed one of the preceding underscores in the function name
+
+    :param _helper_cfg: The configuration parsed from the helper configuration file
+    :type _helper_cfg: dict
+    :returns: A dictionary with the key value pair for the ``prefer_json`` key if found in the config file
     """
-    _construct_info = {}
     _top_level_keys = ['prefer_json']
+    return _collect_values(_top_level_keys, _helper_cfg)
+
+
+def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None):
+    """This function loops through a list of top-level keys to collect their corresponding values.
+
+    .. versionadded:: 2.8.0
+
+    :param _top_level_keys: One or more top-level keys that might be found in the helper config file
+    :type _top_level_keys: list, tuple, set, str
+    :param _helper_cfg: The configuration parsed from the helper configuration file
+    :type _helper_cfg: dict
+    :returns: A dictionary with the identified key value pairs
+    """
+    _helper_dict = {} if not _helper_dict else _helper_dict
+    _top_level_keys = (_top_level_keys, ) if isinstance(_top_level_keys, str) else _top_level_keys
     for _key in _top_level_keys:
         if _key in _helper_cfg:
             _key_val = _helper_cfg[_key]
             if _key_val in HelperParsing.yaml_boolean_values:
                 _key_val = HelperParsing.yaml_boolean_values.get(_key_val)
-            _construct_info[_key] = _key_val
+            _helper_dict[_key] = _key_val
         else:
-            _construct_info[_key] = None
-    return _construct_info
+            _helper_dict[_key] = None
+    return _helper_dict
 
 
 # Define function to retrieve the helper configuration settings
 def get_helper_settings(file_path, file_type='yaml'):
     """This function returns a dictionary of the defined helper settings.
 
+    .. versionchanged:: 2.8.0
+       The function was updated to capture the ``translate_errors`` value when defined.
+
     .. versionchanged:: 2.2.0
-       Added support for JSON formatted helper configuration files
+       Support was added for JSON-formatted helper configuration files.
 
     :param file_path: The file path to the helper configuration file
     :type file_path: str
@@ -172,6 +197,9 @@ def get_helper_settings(file_path, file_type='yaml'):
 
     # Populate the enabled discussion styles in the helper dictionary
     helper_settings['discussion_styles'] = _get_discussion_styles(helper_cfg)
+
+    # Populate the error translation setting in the helper dictionary
+    helper_settings['translate_errors'] = _collect_values('translate_errors', helper_cfg)
 
     # Return the helper_settings dictionary
     return helper_settings
