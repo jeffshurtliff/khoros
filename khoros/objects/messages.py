@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Jun 2020
+:Modified Date:     01 Jul 2020
 """
 
 import warnings
@@ -35,8 +35,12 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
            context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
            labels=None, product_category=None, products=None, read_only=None, seo_title=None, seo_description=None,
            tags=None, teaser=None, topic=None, videos=None, attachment_file_paths=None, full_response=False,
-           return_id=False, return_url=False, return_api_url=False, return_http_code=False):
+           return_id=False, return_url=False, return_api_url=False, return_http_code=False, return_status=None,
+           return_error_messages=None, split_errors=False):
     """This function creates a new message within a given node.
+
+    .. versionchanged:: 2.8.0
+       The ``return_status``, ``return_error_messages`` and ``split_errors`` arguments were introduced.
 
     .. versionadded:: 2.3.0
 
@@ -106,6 +110,13 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
                              (``False`` by default)
     :type return_http_code: bool
+    :param return_status: Determines if the **Status** of the API response should be returned by the function
+    :type return_status: bool, None
+    :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with the
+           API response should be returned by the function
+    :type return_error_messages: bool, None
+    :param split_errors: Defines whether or not error messages should be merged when applicable
+    :type split_errors: bool
     :returns: Boolean value indicating a successful outcome (default) or the full API response
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
@@ -118,7 +129,8 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
-    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code)
+    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
+                                  return_status, return_error_messages, split_errors, khoros_object)
 
 
 def construct_payload(subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
@@ -263,8 +275,8 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
            canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
            moderation_status=None, parent=None, product_category=None, products=None, read_only=None, topic=None,
            status=None, seo_title=None, seo_description=None, tags=None, teaser=None, attachments_to_add=None,
-           attachments_to_remove=None, full_response=False, return_id=False, return_url=False, return_api_url=False,
-           return_http_code=False):
+           attachments_to_remove=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
+           return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
     """This function updates one or more elements of an existing message.
 
     .. versionadded:: 2.8.0
@@ -345,16 +357,23 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
                           .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``
                                        and ``return_http_code`` arguments.
 
-    :type full_response: bool
+    :type full_response: bool, None
     :param return_id: Indicates that the **Message ID** should be returned (``False`` by default)
-    :type return_id: bool
+    :type return_id: bool, None
     :param return_url: Indicates that the **Message URL** should be returned (``False`` by default)
-    :type return_url: bool
+    :type return_url: bool, None
     :param return_api_url: Indicates that the **API URL** of the message should be returned (``False`` by default)
-    :type return_api_url: bool
+    :type return_api_url: bool, None
     :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
                              (``False`` by default)
-    :type return_http_code: bool
+    :type return_http_code: bool, None
+    :param return_status: Determines if the **Status** of the API response should be returned by the function
+    :type return_status: bool, None
+    :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with the
+           API response should be returned by the function
+    :type return_error_messages: bool, None
+    :param split_errors: Defines whether or not error messages should be merged when applicable
+    :type split_errors: bool
     :returns: Boolean value indicating a successful outcome (default) or the full API response
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
@@ -372,7 +391,8 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
         payload = attachments.construct_multipart_payload(payload, attachments_to_add, 'update')
     print(f"\nPAYLOAD:\n{payload}\n")       # TODO: Remove print debugging
     response = api.put_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
-    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code)
+    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
+                                  return_status, return_error_messages, split_errors, khoros_object)
 
 
 def _verify_message_id(_msg_id, _msg_url):

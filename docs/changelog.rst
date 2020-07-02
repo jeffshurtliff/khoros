@@ -11,6 +11,13 @@ v2.8.0
 Added
 =====
 
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.Message.update` method.
+* Added the ``translate_errors`` default setting to the core object.
+
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
@@ -26,12 +33,28 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.tags.add_single_tag_to_message`
     * :py:func:`khoros.objects.tags.add_tags_to_message`
 * Added the :py:func:`khoros.objects.attachments._structure_attachments_to_add` function.
+* Introduced the ability for error messages to be translated where possible to be more relevant
+  within the :py:func:`khoros.api.parse_v2_response`, :py:func:`khoros.api.deliver_v2_response`
+  and :py:func:`khoros.api._get_v2_return_values` functions, and added the optional
+  ``khoros_object`` or ``_khoros_object`` argument to facilitate this.
 
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.errors.handlers.verify_core_object_present` function.
+* Added the :py:mod:`khoros.errors.translations` module with the following functions:
+    * :py:func:`khoros.errors.translations.translate_error`
+    * :py:func:`khoros.errors.translations.translation_enabled`
+* Added the :py:mod:`khoros.errors.translations` module to the ``__all__`` special variable
+  and imported it by default within the :py:mod:`khoros.errors` (``__init__.py``) module.
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the :py:mod:`khoros.objects.tags` module  to the :doc:`primary-modules` page.
+* Added the :py:mod:`khoros.errors.translations` module to the :doc:`supporting-modules` page.
 
 General
 -------
@@ -40,6 +63,16 @@ General
 
 Changed
 =======
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Introduced the ``return_status``, ``return_error_messages`` and ``split_errors`` arguments
+  in the :py:meth:`khoros.core.Khoros.Message.create` method, and changed the default value
+  of the ``full_response``, ``return_id``, ``return_url``, return_api_url`` and
+  ``return_http_code`` arguments to ``None`` rather than ``False``.
+
 
 Primary Modules
 ---------------
@@ -52,6 +85,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.attachments.get_file_upload_info`
 * Updated the if statement in :py:func:`khoros.objects.messages._verify_required_fields` to leverage
   the :py:func:`isinstance` function.
+* Added the ``return_status``, ``return_error_messages`` and ``split_errors`` arguments
+  to the :py:func:`khoros.objects.messages.create` function, and changed the default value
+  of the ``full_response``, ``return_id``, ``return_url``, return_api_url`` and
+  ``return_http_code`` arguments to ``None`` rather than ``False``.
 
 |
 

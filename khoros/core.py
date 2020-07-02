@@ -32,7 +32,8 @@ class Khoros(object):
         'community_url': 'https://community.khoros.com',
         'tenant_id': 'lithosphere',
         'use_community_name': False,
-        'debug_mode': False
+        'debug_mode': False,
+        'translate_errors': True
     }
     DEFAULT_AUTH = {
         'auth_type': 'session_auth'
@@ -1773,9 +1774,12 @@ class Khoros(object):
                    context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
                    labels=None, product_category=None, products=None, read_only=None, seo_title=None,
                    seo_description=None, tags=None, teaser=None, topic=None, videos=None, attachment_file_paths=None,
-                   full_response=False, return_id=False, return_url=False, return_api_url=False,
-                   return_http_code=False):
+                   full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
+                   return_status=None, return_error_messages=None, split_errors=False):
             """This function creates a new message within a given node.
+
+            .. versionchanged:: 2.8.0
+               The ``return_status``, ``return_error_messages`` and ``split_errors`` arguments were introduced.
 
             .. versionadded:: 2.3.0
 
@@ -1836,17 +1840,24 @@ class Khoros(object):
                                   .. caution:: This argument overwrites the ``return_id``, ``return_url``,
                                                ``return_api_url`` and ``return_http_code`` arguments.
 
-            :type full_response: bool
+            :type full_response: bool, None
             :param return_id: Indicates that the **Message ID** should be returned (``False`` by default)
-            :type return_id: bool
+            :type return_id: bool, None
             :param return_url: Indicates that the **Message URL** should be returned (``False`` by default)
-            :type return_url: bool
+            :type return_url: bool, None
             :param return_api_url: Indicates that the **API URL** of the message should be returned
                                    (``False`` by default)
-            :type return_api_url: bool
+            :type return_api_url: bool, None
             :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
                                      (``False`` by default)
-            :type return_http_code: bool
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with the
+                                          API response should be returned by the function
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
             :returns: Boolean value indicating a successful outcome (default) or the full API response
             :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
                      :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -1857,7 +1868,128 @@ class Khoros(object):
                                                   is_answer, is_draft, labels, product_category, products, read_only,
                                                   seo_title, seo_description, tags, teaser, topic, videos,
                                                   attachment_file_paths, full_response, return_id, return_url,
-                                                  return_api_url, return_http_code)
+                                                  return_api_url, return_http_code, return_status,
+                                                  return_error_messages, split_errors)
+
+        def update(self, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
+                   canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
+                   moderation_status=None, parent=None, product_category=None, products=None, read_only=None,
+                   topic=None, status=None, seo_title=None, seo_description=None, tags=None, teaser=None,
+                   attachments_to_add=None, attachments_to_remove=None, full_response=None, return_id=None,
+                   return_url=None, return_api_url=None, return_http_code=None, return_status=None,
+                   return_error_messages=None, split_errors=False):
+            """This function updates one or more elements of an existing message.
+
+            .. versionadded:: 2.8.0
+
+            :param msg_id: The ID of the existing message
+            :type msg_id: str, int, None
+            :param msg_url: The URL of the existing message
+            :type msg_url: str, None
+            :param subject: The title or subject of the message
+            :type subject: str, None
+            :param body: The body of the message in HTML format
+            :type body: str, None
+            :param node: A dictionary containing the ``id`` key and its associated value indicating the destination
+            :type node: dict, None
+            :param node_id: The ID of the node in which the message will be published
+            :type node_id: str, None
+            :param node_url: The URL of the node in which the message will be published
+
+                             .. note:: This argument is necessary in the absence of the ``node`` and ``node_id``
+                                       arguments.
+
+            :type node_url: str, None
+            :param canonical_url: The search engine-friendly URL to the message
+            :type canonical_url: str, None
+            :param context_id: Metadata on a message to identify the message with an external identifier of
+                               your choosing
+            :type context_id: str, None
+            :param context_url: Metadata on a message representing a URL to associate with the message
+                                (external identifier)
+            :type context_url: str, None
+            :param cover_image: The cover image set for the message
+            :type cover_image: dict, None
+            :param is_draft: Indicates whether or not the message is still a draft (i.e. unpublished)
+            :type is_draft: bool, None
+            :param labels: The query to retrieve labels applied to the message
+            :type labels: dict, None
+            :param moderation_status: The moderation status of the message
+
+                                      .. note:: Acceptable values are ``unmoderated``, ``approved``, ``rejected``,
+                                                ``marked_undecided``, ``marked_approved`` and ``marked_rejected``.
+
+            :type moderation_status: str, None
+            :param parent: The parent of the message
+            :type parent: str, None
+            :param product_category: The product category (i.e. container for ``products``) associated with the message
+            :type product_category: dict, None
+            :param products: The product in a product catalog associated with the message
+            :type products: dict, None
+            :param read_only: Indicates whether or not the message should be read-only or have replies/comments blocked
+            :type read_only: bool, None
+            :param topic: The root message of the conversation in which the message appears
+            :type topic: dict, None
+            :param status: The message status for messages where conversation.style is ``idea`` or ``contest``
+
+                           .. caution:: This property is not returned if the message has the default ``Unspecified``
+                                        status assigned. It will only be returned for ideas with a status of Completed
+                                        or with a custom status created in Community Admin.
+
+            :type status: dict, None
+            :param seo_title: The title of the message used for SEO purposes
+            :type seo_title: str, None
+            :param seo_description: A description of the message used for SEO purposes
+            :type seo_description: str, None
+            :param tags: The query to retrieve tags applied to the message
+            :type tags: dict, None
+            :param teaser: The message teaser (used with blog articles)
+            :type teaser: str, None
+            :param attachments_to_add: The full path(s) to one or more attachments (e.g. ``path/to/file1.pdf``) to be
+                                       added to the message
+            :type attachments_to_add: str, tuple, list, set, None
+            :param attachments_to_remove: One or more attachments to remove from the message
+
+                                          .. note:: Each attachment should specify the attachment id of the attachment
+                                                    to remove, which begins with ``m#_``. (e.g. ``m283_file1.pdf``)
+
+            :type attachments_to_remove: str, tuple, list, set, None
+            :param full_response: Defines if the full response should be returned instead of the outcome
+                                  (``False`` by default)
+
+                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
+                                               ``return_api_url`` and ``return_http_code`` arguments.
+
+            :type full_response: bool, None
+            :param return_id: Indicates that the **Message ID** should be returned (``False`` by default)
+            :type return_id: bool, None
+            :param return_url: Indicates that the **Message URL** should be returned (``False`` by default)
+            :type return_url: bool, None
+            :param return_api_url: Indicates that the **API URL** of the message should be returned
+                                   (``False`` by default)
+            :type return_api_url: bool, None
+            :param return_http_code: Indicates that the **HTTP status code** of the response should be returned
+                                     (``False`` by default)
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with the
+                   API response should be returned by the function
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
+            :returns: Boolean value indicating a successful outcome (default) or the full API response
+            :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.DataMismatchError`
+            """
+            return objects_module.messages.update(self.khoros_object, msg_id, msg_url, subject, body, node, node_id,
+                                                  node_url, canonical_url, context_id, context_url, cover_image,
+                                                  is_draft, labels, moderation_status, parent, product_category,
+                                                  products, read_only, topic, status, seo_title, seo_description, tags,
+                                                  teaser, attachments_to_add, attachments_to_remove, full_response,
+                                                  return_id, return_url, return_api_url, return_http_code,
+                                                  return_status, return_error_messages, split_errors)
 
         @staticmethod
         def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,
