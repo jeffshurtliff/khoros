@@ -61,6 +61,28 @@ def test_numeric_eval():
     return
 
 
+def test_remove_tld():
+    """This function tests to the :py:func:`khoros.utils.core_utils.remove_tld` function."""
+    url = 'https://community.khoros.com/t5/Developer-Discussion/Add-multiple-tags-to-a-message-with-a-' \
+          'single-API-call/m-p/596532#M17061'
+    control_data = {
+        'with': '/t5/Developer-Discussion/Add-multiple-tags-to-a-message-with-a-single-API-call/m-p/596532#M17061',
+        'without': '/t5/Developer-Discussion/Add-multiple-tags-to-a-message-with-a-single-API-call/m-p/596532'
+    }
+    assert core_utils.remove_tld(url, strip_anchors=False) == control_data.get('with')
+    assert core_utils.remove_tld(url, strip_anchors=True) == control_data.get('without')
+    return
+
+
+def test_merge_and_dedup():
+    """This function tests the :py:func:`khoros.utils.core_utils.merge_and_dedup` function."""
+    control_data = ['one', 'two', 'three', 'four', 'five', 6]
+    test_data = core_utils.merge_and_dedup('one', 'two', 'two', ('two', 'three'), ['four', 'four'],
+                                           {'four', 'five'}, 6, {6})
+    assert test_data == control_data
+    return
+
+
 def _check_type_and_items(_converted_item, _control_item, _new_type):
     """This function facilitates testing the :py:func:`khoros.utils.core_utils.convert_set` function."""
     _correct_type = True if isinstance(_converted_item, _new_type) else False

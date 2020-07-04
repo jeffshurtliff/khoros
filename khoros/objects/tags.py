@@ -9,13 +9,16 @@
 :Modified Date:     03 Jul 2020
 """
 
-from .. import api, errors
+from .. import api, liql, errors
+from ..utils import core_utils
 
 ITERABLE_TYPES = (list, tuple, set)
 
 
 def structure_single_tag_payload(tag_text):
     """This function structures the payload for a single tag.
+
+    .. versionadded:: 2.8.0
 
     :param tag_text: The tag to be included in the payload
     :type tag_text: str
@@ -35,6 +38,8 @@ def structure_single_tag_payload(tag_text):
 
 def add_single_tag_to_message(khoros_object, tag, msg_id, allow_exceptions=False):
     """This function adds a single tag to an existing message.
+
+    .. versionadded:: 2.8.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -59,33 +64,88 @@ def add_single_tag_to_message(khoros_object, tag, msg_id, allow_exceptions=False
     return
 
 
-def structure_tags_for_message(*tags, ignore_non_strings=False):
+def get_tags_for_message(khoros_object, msg_id):
+    """This function retrieves the tags for a given message.
+
+    .. versionadded:: 2.8.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The Message ID for the message from which to retrieve tags
+    :type msg_id: str, int
+    :returns: A list of tags associated with the message
+    """
+    tag_list = []
+    query = f"SELECT text FROM tags WHERE messages.id = '{msg_id}'"
+    response = liql.perform_query(khoros_object, liql_query=query, verify_success=True)
+    entries = api.get_items_list(response)
+    for entry in entries:
+        tag_list.append(entry['text'])
+    return tag_list
+
+
+def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite=False, ignore_non_strings=False):
     """This function structures tags to use within the payload for creating or updating a message.
+
+    .. versionadded:: 2.8.0
 
     :param tags: One or more tags or list of tags to be structured
     :type tags: str, list, tuple, set
-    :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignoreed rather than
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+
+                          .. note:: The core object is only necessary when providing a Message ID as it will be
+                                    needed to retrieve the existing tags from the message.
+
+    :type khoros_object: class[khoros.Khoros], None
+    :param msg_id: Message ID of an existing message so that its existing tags can be retrieved (optional)
+    :type msg_id: str, int, None
+    :param overwrite: Determines if tags should overwrite any existing tags (where applicable) or if the tags
+                      should be appended to the existing tags (default)
+    :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
                                converted to strings (``False`` by default)
     :type ignore_non_strings: bool
     :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
     """
-    formatted_list = []
-    for tag_or_list in tags:
-        if type(tag_or_list) not in ITERABLE_TYPES and (isinstance(tag_or_list, str) or not ignore_non_strings):
-            tag_or_list = (str(tag_or_list),)
+    formatted_list, existing_tags = [], []
+    if msg_id and not any((overwrite, khoros_object)):
+        raise errors.exceptions.MissingRequiredDataError('The core Khoros object must be provided when supplying '
+                                                         'a Message ID')
+    elif msg_id and not overwrite:
+        errors.handlers.verify_core_object_present(khoros_object)
+        existing_tags = get_tags_for_message(khoros_object, msg_id)
+    formatted_list = _format_tag_data(tags, ignore_non_strings)
+    existing_tags = _format_tag_data(existing_tags, ignore_non_strings)
+    return core_utils.merge_and_dedup(formatted_list, existing_tags)
+
+
+def _format_tag_data(_collection, _ignore_non_strings):
+    """This function is used by :py:func:`khoros.objects.tags.structure_tags_for_message` to format the tag data.
+
+    .. versionadded:: 2.8.0
+    """
+    _formatted_list = []
+    for _tag_or_list in _collection:
+        if type(_tag_or_list) not in ITERABLE_TYPES and (isinstance(_tag_or_list, str) or not _ignore_non_strings):
+            _tag_or_list = (str(_tag_or_list),)
         else:
             continue
-        for tag in tag_or_list:
-            tag = {
+        for _tag in _tag_or_list:
+            _tag = {
                 "type": "tag",
-                "text": tag
+                "text": _tag
             }
-            formatted_list.append(tag)
-    return formatted_list
+            _formatted_list.append(_tag)
+    return _formatted_list
 
 
 def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
     """This function adds one or more tags to an existing message.
+
+    .. versionadded:: 2.8.0
+
+    ..caution:: This function is not the most effective way to add multiple tags to a message. It is recommended
+                that the :py:func:`khoros.objects.messages.update` function be used instead with its ``tags``
+                argument, which is more efficient and performance-conscious.
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -98,7 +158,6 @@ def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
-    # TODO: Refactor this to work as directed by AdamN in Khoros Atlas
     tags = (tags, ) if isinstance(tags, str) else tags
     for tag in tags:
         add_single_tag_to_message(khoros_object, str(tag), msg_id, allow_exceptions)

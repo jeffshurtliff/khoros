@@ -32,6 +32,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.tags.structure_single_tag_payload`
     * :py:func:`khoros.objects.tags.add_single_tag_to_message`
     * :py:func:`khoros.objects.tags.add_tags_to_message`
+    * :py:func:`khoros.objects.tags.get_tags_for_message`
+    * :py:func:`khoros.objects.tags._format_tag_data`
 * Added the :py:func:`khoros.objects.attachments._structure_attachments_to_add` function.
 * Introduced the ability for error messages to be translated where possible to be more relevant
   within the :py:func:`khoros.api.parse_v2_response`, :py:func:`khoros.api.deliver_v2_response`
@@ -58,6 +60,10 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_two_string_tags_ignore`
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int`
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int_ignore`
+* Added the :py:func:`khoros.utils.core_utils.remove_tld` function.
+* Added the :py:func:`khoros.utils.tests.test_remove_tld` function.
+* Added the :py:func:`khoros.utils.core_utils.merge_and_dedup` function.
+* Added the :py:func:`khoros.utils.tests.test_merge_and_dedup` function.
 
 Documentation
 -------------

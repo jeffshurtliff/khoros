@@ -7,12 +7,13 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jul 2020
+:Modified Date:     03 Jul 2020
 """
 
 import warnings
 
 from . import attachments, users
+from . import tags as tags_module
 from .. import api, liql, errors
 from ..structures import nodes
 
@@ -34,13 +35,14 @@ MESSAGE_SEO_URLS = {
 def create(khoros_object, subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
            context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
            labels=None, product_category=None, products=None, read_only=None, seo_title=None, seo_description=None,
-           tags=None, teaser=None, topic=None, videos=None, attachment_file_paths=None, full_response=False,
-           return_id=False, return_url=False, return_api_url=False, return_http_code=False, return_status=None,
-           return_error_messages=None, split_errors=False):
+           tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None, attachment_file_paths=None,
+           full_response=False, return_id=False, return_url=False, return_api_url=False, return_http_code=False,
+           return_status=None, return_error_messages=None, split_errors=False):
     """This function creates a new message within a given node.
 
     .. versionchanged:: 2.8.0
-       The ``return_status``, ``return_error_messages`` and ``split_errors`` arguments were introduced.
+       The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
+       arguments were introduced.
 
     .. versionadded:: 2.3.0
 
@@ -87,6 +89,9 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :type seo_description: str, None
     :param tags: The query to retrieve tags applied to the message
     :type tags: dict, None
+    :param ignore_non_string_tags: Determines if non-strings (excluding iterables) should be ignored rather than
+                                   converted to strings (``False`` by default)
+    :type ignore_non_string_tags: bool
     :param teaser: The message teaser (used with blog articles)
     :type teaser: str, None
     :param topic: The root message of the conversation in which the message appears
@@ -124,7 +129,8 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     api_url = f"{khoros_object.core['v2_base']}/messages"
     payload = construct_payload(subject, body, node, node_id, node_url, canonical_url, context_id, context_url,
                                 is_answer, is_draft, read_only, seo_title, seo_description, teaser, tags, cover_image,
-                                images, labels, product_category, products, topic, videos)
+                                images, labels, product_category, products, topic, videos,
+                                ignore_non_string_tags=ignore_non_string_tags, khoros_object=khoros_object)
     multipart = True if attachment_file_paths else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
@@ -137,12 +143,14 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
                       context_id=None, context_url=None, is_answer=None, is_draft=None, read_only=None, seo_title=None,
                       seo_description=None, teaser=None, tags=None, cover_image=None, images=None, labels=None,
                       product_category=None, products=None, topic=None, videos=None, parent=None, status=None,
-                      moderation_status=None, attachments_to_add=None, attachments_to_remove=None, action='create'):
+                      moderation_status=None, attachments_to_add=None, attachments_to_remove=None, overwrite_tags=False,
+                      ignore_non_string_tags=False, msg_id=None, khoros_object=None, action='create'):
     """This function constructs and properly formats the JSON payload for a messages API request.
 
     .. versionchanged:: 2.8.0
-       Added the ``parent``, ``status``, ``moderation_status``, ``attachments_to_add``, ``attachments_to_remove``
-       and ``action`` arguments, and added the ``raises`` section to the docstring.
+       Added the ``parent``, ``status``, ``moderation_status``, ``attachments_to_add``, ``attachments_to_remove``,
+       ``overwrite_tags``, ``ignore_non_string_tags``, ``msg_id``, ``khoros_object`` and ``action`` arguments, and
+       added the ``raises`` section to the docstring.
 
     .. versionadded:: 2.3.0
 
@@ -218,6 +226,20 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
                                             remove, which begins with ``m#_``. (e.g. ``m283_file1.pdf``)
 
     :type attachments_to_remove: str, tuple, list, set, None
+    :param overwrite_tags: Determines if tags should overwrite any existing tags (where applicable) or if the tags
+                           should be appended to the existing tags (default)
+    :type overwrite_tags: bool
+    :param ignore_non_string_tags: Determines if non-strings (excluding iterables) should be ignored rather than
+                                   converted to strings (``False`` by default)
+    :type ignore_non_string_tags: bool
+    :param msg_id: Message ID of an existing message so that its existing tags can be retrieved (optional)
+    :type msg_id: str, int, None
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+
+                          .. note:: The core object is only necessary when providing a Message ID as it will be
+                                     needed to retrieve the existing tags from the message.
+
+    :type khoros_object: class[khoros.Khoros], None
     :param action: Defines if the payload will be used to ``create`` (default) or ``update`` a message
     :type action: str
     :returns: The properly formatted JSON payload
@@ -266,7 +288,15 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
                 bool_value = bool(field_value[0]) if isinstance(field_value[0], str) else field_value[0]
                 payload['data'][field_name] = bool_value
 
-    # TODO: Add functionality for non-string and non-Boolean arguments
+    # Add moderation status to payload when applicable
+    payload = _add_moderation_status_to_payload(payload, moderation_status)
+
+    # Add tags to payload when applicable
+    if tags:
+        payload = _add_tags_to_payload(payload, tags, _khoros_object=khoros_object, _msg_id=msg_id,
+                                       _overwrite_tags=overwrite_tags, _ignore_non_strings=ignore_non_string_tags)
+
+    # TODO: Add functionality for remaining non-string and non-Boolean arguments
 
     return payload
 
@@ -274,9 +304,10 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
 def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
            canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
            moderation_status=None, parent=None, product_category=None, products=None, read_only=None, topic=None,
-           status=None, seo_title=None, seo_description=None, tags=None, teaser=None, attachments_to_add=None,
-           attachments_to_remove=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
-           return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
+           status=None, seo_title=None, seo_description=None, tags=None, overwrite_tags=False,
+           ignore_non_string_tags=False, teaser=None, attachments_to_add=None, attachments_to_remove=None,
+           full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
+           return_status=None, return_error_messages=None, split_errors=False):
     """This function updates one or more elements of an existing message.
 
     .. versionadded:: 2.8.0
@@ -341,6 +372,12 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
     :type seo_description: str, None
     :param tags: The query to retrieve tags applied to the message
     :type tags: dict, None
+    :param overwrite_tags: Determines if tags should overwrite any existing tags (where applicable) or if the tags
+                           should be appended to the existing tags (default)
+    :type overwrite_tags: bool
+    :param ignore_non_string_tags: Determines if non-strings (excluding iterables) should be ignored rather than
+                                   converted to strings (``False`` by default)
+    :type ignore_non_string_tags: bool
     :param teaser: The message teaser (used with blog articles)
     :type teaser: str, None
     :param attachments_to_add: The full path(s) to one or more attachments (e.g. ``path/to/file1.pdf``) to be
@@ -466,6 +503,37 @@ def _add_moderation_status_to_payload(_payload, _moderation_status):
                           RuntimeWarning)
         else:
             _payload['data']['moderation_status'] = _moderation_status
+    return _payload
+
+
+def _add_tags_to_payload(_payload, _tags, _khoros_object=None, _msg_id=None, _overwrite_tags=False,
+                         _ignore_non_strings=False):
+    """This function adds tags to the payload for an API call against the *messages* collection.
+
+    :param _payload: The payload for the API call
+    :type _payload: dict
+    :param _tags: A list, tuple, set or string containing one or more tags to add to the message
+    :type _tags: list, tuple, set, str
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+
+                           .. note:: The core object is only necessary when providing a Message ID as it will be
+                                     needed to retrieve the existing tags from the message.
+
+    :type _khoros_object: class[khoros.Khoros], None
+    :param _msg_id: Message ID of an existing message so that its existing tags can be retrieved (optional)
+    :type _msg_id: str, int, None
+    :param _overwrite_tags: Determines if tags should overwrite any existing tags (where applicable) or if the tags
+                      should be appended to the existing tags (default)
+    :type _overwrite_tags: bool
+    :param _ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
+                               converted to strings (``False`` by default)
+    :type _ignore_non_strings: bool
+    :returns: The payload with tgs included when relevant
+    """
+    _formatted_tags = tags_module.structure_tags_for_message(_tags, khoros_object=_khoros_object, msg_id=_msg_id,
+                                                             overwrite=_overwrite_tags,
+                                                             ignore_non_strings=_ignore_non_strings)
+    _payload['data']['tags'] = _formatted_tags
     return _payload
 
 

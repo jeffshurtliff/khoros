@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 May 2020
+:Modified Date:     03 Jul 2020
 """
 
 import os
@@ -344,3 +344,35 @@ def extract_key_values_from_dict_list(key_name, dict_list, exclude_if_present=No
                 key_value = str(single_dict.get(key_name)) if convert_to_string else single_dict.get(key_name)
                 value_list.append(key_value)
     return value_list
+
+
+def remove_tld(url, strip_anchors=True):
+    """This function removes the top-level domain (TLD) from a Khoros Community platform URL.
+
+    :param url: The URL from which the TLD should be removed
+    :type url: str
+    :param strip_anchors: Determines if anchors (e.g. ``#top``) should be stripped (``True`` by default)
+    :type strip_anchors: bool
+    :returns: The URL beginning with ``/t5/``
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidURLError`
+    """
+    if '/t5/' not in url:
+        raise errors.exceptions.InvalidURLError('The provided URL is not from the Khoros Community platform.')
+    url = f"/t5/{url.split('/t5/')[1]}"
+    return url.split('#')[0] if strip_anchors and '#' in url else url
+
+
+def merge_and_dedup(*data):
+    """This function merges various data elements into a single, deduplicated list.
+
+    :param data: One or more data elements to merge and deduplicate
+    :returns: A merged and deduplicated list of data
+    """
+    iter_types, unique_list = [list, tuple, set], []
+    for element in data:
+        if type(element) not in iter_types:
+            element = (element,)
+        for item in element:
+            if item not in unique_list:
+                unique_list.append(item)
+    return unique_list
