@@ -49,6 +49,15 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.errors.translations.parse_message`
 * Added the :py:mod:`khoros.errors.translations` module to the ``__all__`` special variable
   and imported it by default within the :py:mod:`khoros.errors` (``__init__.py``) module.
+* Added the :py:mod:`khoros.utils.tests.test_tags` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_tags.test_single_tag_structure`
+    * :py:func:`khoros.utils.tests.test_tags.get_structure_control_data`
+    * :py:func:`khoros.utils.tests.test_tags.test_message_structure_one_tag`
+    * :py:func:`khoros.utils.tests.test_tags.test_message_structure_two_tags`
+    * :py:func:`khoros.utils.tests.test_tags.test_message_structure_one_string_tag_ignore`
+    * :py:func:`khoros.utils.tests.test_tags.test_message_structure_two_string_tags_ignore`
+    * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int`
+    * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int_ignore`
 
 Documentation
 -------------
@@ -56,6 +65,7 @@ Additions to the documentation.
 
 * Added the :py:mod:`khoros.objects.tags` module  to the :doc:`primary-modules` page.
 * Added the :py:mod:`khoros.errors.translations` module to the :doc:`supporting-modules` page.
+* Added the :py:mod:`khoros.utils.tests.test_tags` module to the :doc:`supporting-modules` page.
 * Added a reference to the ``KHOROS_TRANSLATE_ERRORS`` environment variable and added a new
   **Roadmap** section to both the :doc:`introduction` page and the ``README.md`` file.
 
@@ -109,6 +119,7 @@ General
 * Updated the ``examples/helper.yml`` file to include the ``translate_errors`` setting.
 * Added the ``KHOROS_TRANSLATE_ERRORS`` environment variable to the
   ``examples/custom_env_variables.yml`` and ``examples/custom_env_variables.json`` files.
+
 |
 
 ******
@@ -137,6 +148,7 @@ Changed
 Documentation
 -------------
 Changes to the documentation.
+
 * Added the :doc:`core-object-methods` page amd moved the documentation for the :py:mod:`khoros` (``__init__.py``)
   module and the :py:mod:`khoros.core` module to the new page from the :doc:`primary-modules` page.
 * Added the new :doc:`core-object-methods` page to the :doc:`index` page.
@@ -361,7 +373,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.categories.category_exists` function.
 * Added the :py:func:`khoros.structures.grouphubs.grouphub_exists` function.
 * Added the :py:func:`khoros.structures.nodes.node_exists` function.
-* Added the following methods in the :ref:`core structure subclasses <primary-modules:Core Structure Subclasses (khoros.core.Khoros)>`:
+* Added the following methods in the :ref:`core structure subclasses <core-object-methods:Core Structure Subclasses (khoros.core.Khoros)>`:
     * :py:meth:`khoros.core.Khoros.Board.board_exists`
     * :py:meth:`khoros.core.Khoros.Category.category_exists`
     * :py:meth:`khoros.core.Khoros.GroupHub.grouphub_exists`
