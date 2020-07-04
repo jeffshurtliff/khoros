@@ -26,6 +26,7 @@ which are listed below.
         * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
+        * `Test Tags Module (khoros.utils.tests.test_tags)`_
 
 |
 
@@ -258,6 +259,17 @@ Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)
 This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
 
 .. automodule:: khoros.utils.tests.test_node_id_extract
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Tags Module (khoros.utils.tests.test_tags)
+-----------------------------------------------
+This module is used by pytest to verify that tags function properly.
+
+.. automodule:: khoros.utils.tests.test_tags
    :members:
 
 :doc:`Return to Top <supporting-modules>`
