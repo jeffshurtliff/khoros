@@ -6,10 +6,12 @@
 :Example:           ``tags.add_single_tag_to_message('tutorial', 123)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Jun 2020
+:Modified Date:     03 Jul 2020
 """
 
 from .. import api, errors
+
+ITERABLE_TYPES = (list, tuple, set)
 
 
 def structure_single_tag_payload(tag_text):
@@ -55,6 +57,31 @@ def add_single_tag_to_message(khoros_object, tag, msg_id, allow_exceptions=False
         else:
             errors.handlers.eprint(api_error)
     return
+
+
+def structure_tags_for_message(*tags, ignore_non_strings=False):
+    """This function structures tags to use within the payload for creating or updating a message.
+
+    :param tags: One or more tags or list of tags to be structured
+    :type tags: str, list, tuple, set
+    :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignoreed rather than
+                               converted to strings (``False`` by default)
+    :type ignore_non_strings: bool
+    :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
+    """
+    formatted_list = []
+    for tag_or_list in tags:
+        if type(tag_or_list) not in ITERABLE_TYPES and (isinstance(tag_or_list, str) or not ignore_non_strings):
+            tag_or_list = (str(tag_or_list),)
+        else:
+            continue
+        for tag in tag_or_list:
+            tag = {
+                "type": "tag",
+                "text": tag
+            }
+            formatted_list.append(tag)
+    return formatted_list
 
 
 def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
