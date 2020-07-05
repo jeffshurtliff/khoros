@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 Jul 2020
+:Modified Date:     05 Jul 2020
 """
 
 import warnings
@@ -422,7 +422,8 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
                                 seo_description=seo_description, teaser=teaser, cover_image=cover_image, labels=labels,
                                 parent=parent, products=products, product_category=product_category, status=status,
                                 moderation_status=moderation_status, attachments_to_add=attachments_to_add,
-                                attachments_to_remove=attachments_to_remove, action='update')
+                                attachments_to_remove=attachments_to_remove, overwrite_tags=overwrite_tags,
+                                ignore_non_string_tags=ignore_non_string_tags,  action='update')
     multipart = True if attachments_to_add else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachments_to_add, 'update')

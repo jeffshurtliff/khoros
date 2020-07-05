@@ -113,6 +113,9 @@ def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite
     elif msg_id and not overwrite:
         errors.handlers.verify_core_object_present(khoros_object)
         existing_tags = get_tags_for_message(khoros_object, msg_id)
+    print("Getting formatted list:")            # TODO: Remove print debugging
+    print("Tags:", tags)                        # TODO: Remove print debugging
+    print("Existing:", existing_tags)           # TODO: Remove print debugging
     formatted_list = _format_tag_data(tags, ignore_non_strings)
     existing_tags = _format_tag_data(existing_tags, ignore_non_strings)
     return core_utils.merge_and_dedup(formatted_list, existing_tags)
@@ -124,11 +127,14 @@ def _format_tag_data(_collection, _ignore_non_strings):
     .. versionadded:: 2.8.0
     """
     _formatted_list = []
+    _collection = _get_low_level_tags(_collection)
     for _tag_or_list in _collection:
-        if type(_tag_or_list) not in ITERABLE_TYPES and (isinstance(_tag_or_list, str) or not _ignore_non_strings):
-            _tag_or_list = (str(_tag_or_list),)
-        else:
+        print("Checking:", _tag_or_list)                    # TODO: Remove print debugging
+        if not isinstance(_tag_or_list, str) and _ignore_non_strings:
             continue
+        else:
+            _tag_or_list = (str(_tag_or_list),)
+        print("_tag_or_list:", _tag_or_list)                # TODO: Remove print debugging
         for _tag in _tag_or_list:
             _tag = {
                 "type": "tag",
@@ -136,6 +142,29 @@ def _format_tag_data(_collection, _ignore_non_strings):
             }
             _formatted_list.append(_tag)
     return _formatted_list
+
+
+def _get_low_level_tags(_collection):
+    """This function expands a multi-level iterable to get the low-level tags.
+
+    :param _collection: Iterable with one or more levels or a single tag
+    :type _collection: list, tuple, set, str, int, float
+    :returns: A list of all low-level tags (pre-formatted)
+    """
+    _low_level_tags, _iterables = [], []
+    for _item in _collection:
+        if type(_item) not in ITERABLE_TYPES:
+            _low_level_tags.append(_item)
+        else:
+            _iterables.append(_item)
+    while len(_iterables) > 0:
+        _item = _iterables.pop()
+        for _sub_item in _item:
+            if type(_sub_item) not in ITERABLE_TYPES:
+                _low_level_tags.append(_sub_item)
+            else:
+                _iterables.append(_sub_item)
+    return _low_level_tags
 
 
 def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
