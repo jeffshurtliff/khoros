@@ -60,6 +60,19 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_two_string_tags_ignore`
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int`
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int_ignore`
+* Added the :py:mod:`khoros.utils.tests.test_messages` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_messages.get_control_data`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_only_subject`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_node`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_node_id`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_node_url`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_body`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_one_str_tag`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_one_int_tag`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_str_iter_int_tags`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_str_iter_int_tags_ignore`
+    * :py:func:`khoros.utils.tests.test_messages.test_construct_with_tag_iterables`
+    * :py:func:`khoros.utils.tests.test_messages.assert_tags_present`
 * Added the :py:func:`khoros.utils.core_utils.remove_tld` function.
 * Added the :py:func:`khoros.utils.tests.test_core_utils.test_remove_tld` function.
 * Added the :py:func:`khoros.utils.core_utils.merge_and_dedup` function.
@@ -72,6 +85,7 @@ Additions to the documentation.
 * Added the :py:mod:`khoros.objects.tags` module  to the :doc:`primary-modules` page.
 * Added the :py:mod:`khoros.errors.translations` module to the :doc:`supporting-modules` page.
 * Added the :py:mod:`khoros.utils.tests.test_tags` module to the :doc:`supporting-modules` page.
+* Added the :py:mod:`khoros.utils.tests.test_messages` module to the :doc:`supporting-modules` page.
 * Added a reference to the ``KHOROS_TRANSLATE_ERRORS`` environment variable and added a new
   :ref:`Roadmap <introduction:Roadmap>` section to both the :doc:`introduction` page and the
   ``README.md`` file.
