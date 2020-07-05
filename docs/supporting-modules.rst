@@ -25,6 +25,7 @@ which are listed below.
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
         * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
+        * `Test Messages Module (khoros.utils.tests.test_messages)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
         * `Test Tags Module (khoros.utils.tests.test_tags)`_
 
@@ -248,6 +249,17 @@ Test Mentions Module (khoros.utils.tests.test_mentions)
 This module is used by pytest to verify that user and content mentions work properly.
 
 .. automodule:: khoros.utils.tests.test_mentions
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Messages Module (khoros.utils.tests.test_messages)
+-------------------------------------------------------
+This module is used by pytest to verify that messages work properly.
+
+.. automodule:: khoros.utils.tests.test_messages
    :members:
 
 :doc:`Return to Top <supporting-modules>`
