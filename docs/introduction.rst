@@ -8,13 +8,14 @@ community platforms.
 * `Installation`_
 * `Change Log`_
 * `Usage`_
-    * `Importing the Package`_
+    * `Importing the package`_
     * `Initializing a Khoros object instance`_
         * `Passing the information directly into the object`_
         * `Leveraging a "helper" configuration file`_
     * `Interacting with the Community APIs`_
 * `License`_
 * `Reporting Issues`_
+* `Roadmap`_
 * `Disclaimer`_
 
 ************
@@ -56,7 +57,7 @@ This section provides basic usage instructions for the package.
 
 |
 
-Importing the Package
+Importing the package
 =====================
 Rather than importing the base package, it is recommended that you import the primary :py:class:`khoros.Khoros`
 class using the syntax below.

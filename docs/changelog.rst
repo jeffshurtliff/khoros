@@ -25,7 +25,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the following functions within the :py:mod:`khoros.objects.messages` module:
     * :py:func:`khoros.objects.messages.update`
     * :py:func:`khoros.objects.messages.is_read_only`
-    * * :py:func:`khoros.objects.messages.set_read_only`
+    * :py:func:`khoros.objects.messages.set_read_only`
     * :py:func:`khoros.objects.messages._verify_message_id`
     * :py:func:`khoros.objects.messages._add_moderation_status_to_payload`
 * Added the new :py:mod:`khoros.objects.tags` module with the following functions:
@@ -61,9 +61,9 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int`
     * :py:func:`khoros.utils.tests.test_tags.test_message_structure_str_int_ignore`
 * Added the :py:func:`khoros.utils.core_utils.remove_tld` function.
-* Added the :py:func:`khoros.utils.tests.test_remove_tld` function.
+* Added the :py:func:`khoros.utils.tests.test_core_utils.test_remove_tld` function.
 * Added the :py:func:`khoros.utils.core_utils.merge_and_dedup` function.
-* Added the :py:func:`khoros.utils.tests.test_merge_and_dedup` function.
+* Added the :py:func:`khoros.utils.tests.test_core_utils.test_merge_and_dedup` function.
 
 Documentation
 -------------
@@ -73,7 +73,10 @@ Additions to the documentation.
 * Added the :py:mod:`khoros.errors.translations` module to the :doc:`supporting-modules` page.
 * Added the :py:mod:`khoros.utils.tests.test_tags` module to the :doc:`supporting-modules` page.
 * Added a reference to the ``KHOROS_TRANSLATE_ERRORS`` environment variable and added a new
-  **Roadmap** section to both the :doc:`introduction` page and the ``README.md`` file.
+  :ref:`Roadmap <introduction:Roadmap>` section to both the :doc:`introduction` page and the
+  ``README.md`` file.
+* Created the currently in-progress :doc:`messages` page, per Enhancement
+  `#1 <https://github.com/jeffshurtliff/khoros/issues/1>`_.
 
 General
 -------
@@ -119,6 +122,20 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   ``translate_errors`` value when defined in the configuration file.
 * Refactored the :py:func:`khoros.utils.helper._get_construct_info` function to leverage the
   :py:func:`khoros.utils.helper._collect_values` function.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Updated the **Supported Versions** chart in the
+  `Security Policy <https://github.com/jeffshurtliff/khoros/security/policy>`_.
+* Made a very minor formatting change on the :doc:`introduction` page.
+* Added the :doc:`messages` page to the master :ref:`index:Table of Contents`.
+* Added a link to the `PyPI package page <https://pypi.org/project/khoros>`_
+  in the first paragraph of the :doc:`index <index>` page.
+* Changed the *intersphinx inventory* URL for the built-in Python 3 modules from
+  `<https://docs.python.org/>`_ to `<https://docs.python.org/3/>`_ in the
+  ``docs/conf.py`` file.
 
 General
 -------

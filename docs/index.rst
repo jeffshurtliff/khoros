@@ -1,7 +1,8 @@
 ###############################
 Khoros Community Python Library
 ###############################
-Welcome to the official documentation for the Khoros Community Python Library.
+Welcome to the official documentation for the
+`Khoros Community Python library <https://pypi.org/project/khoros>`_.
 
 *****************
 Table of Contents
@@ -10,6 +11,7 @@ Table of Contents
 .. toctree::
 
    introduction
+   messages
    boards
    group-hubs
    core-object-methods
