@@ -6,7 +6,7 @@
 :Example:           ``tags.add_single_tag_to_message('tutorial', 123)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 Jul 2020
+:Modified Date:     06 Jul 2020
 """
 
 from .. import api, liql, errors
@@ -113,9 +113,6 @@ def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite
     elif msg_id and not overwrite:
         errors.handlers.verify_core_object_present(khoros_object)
         existing_tags = get_tags_for_message(khoros_object, msg_id)
-    print("Getting formatted list:")            # TODO: Remove print debugging
-    print("Tags:", tags)                        # TODO: Remove print debugging
-    print("Existing:", existing_tags)           # TODO: Remove print debugging
     formatted_list = _format_tag_data(tags, ignore_non_strings)
     existing_tags = _format_tag_data(existing_tags, ignore_non_strings)
     return core_utils.merge_and_dedup(formatted_list, existing_tags)
@@ -129,12 +126,10 @@ def _format_tag_data(_collection, _ignore_non_strings):
     _formatted_list = []
     _collection = _get_low_level_tags(_collection)
     for _tag_or_list in _collection:
-        print("Checking:", _tag_or_list)                    # TODO: Remove print debugging
         if not isinstance(_tag_or_list, str) and _ignore_non_strings:
             continue
         else:
             _tag_or_list = (str(_tag_or_list),)
-        print("_tag_or_list:", _tag_or_list)                # TODO: Remove print debugging
         for _tag in _tag_or_list:
             _tag = {
                 "type": "tag",
