@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jun 2020
+:Modified Date:     06 Jul 2020
 """
 
 import sys
@@ -1780,13 +1780,14 @@ class Khoros(object):
         def create(self, subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
                    context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
                    labels=None, product_category=None, products=None, read_only=None, seo_title=None,
-                   seo_description=None, tags=None, teaser=None, topic=None, videos=None, attachment_file_paths=None,
-                   full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-                   return_status=None, return_error_messages=None, split_errors=False):
+                   seo_description=None, tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None,
+                   attachment_file_paths=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
+                   return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
             """This function creates a new message within a given node.
 
             .. versionchanged:: 2.8.0
-               The ``return_status``, ``return_error_messages`` and ``split_errors`` arguments were introduced.
+               The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
+               arguments were introduced.
 
             .. versionadded:: 2.3.0
 
@@ -1833,6 +1834,9 @@ class Khoros(object):
             :type seo_description: str, None
             :param tags: The query to retrieve tags applied to the message
             :type tags: dict, None
+            :param ignore_non_string_tags: Determines if non-strings (excluding iterables) should be ignored rather than
+                                           converted to strings (``False`` by default)
+            :type ignore_non_string_tags: bool
             :param teaser: The message teaser (used with blog articles)
             :type teaser: str, None
             :param topic: The root message of the conversation in which the message appears
@@ -1873,18 +1877,18 @@ class Khoros(object):
             return objects_module.messages.create(self.khoros_object, subject, body, node, node_id, node_url,
                                                   canonical_url, context_id, context_url, cover_image, images,
                                                   is_answer, is_draft, labels, product_category, products, read_only,
-                                                  seo_title, seo_description, tags, teaser, topic, videos,
-                                                  attachment_file_paths, full_response, return_id, return_url,
-                                                  return_api_url, return_http_code, return_status,
+                                                  seo_title, seo_description, tags, ignore_non_string_tags, teaser,
+                                                  topic, videos, attachment_file_paths, full_response, return_id,
+                                                  return_url, return_api_url, return_http_code, return_status,
                                                   return_error_messages, split_errors)
 
         def update(self, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
                    canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
                    moderation_status=None, parent=None, product_category=None, products=None, read_only=None,
-                   topic=None, status=None, seo_title=None, seo_description=None, tags=None, teaser=None,
-                   attachments_to_add=None, attachments_to_remove=None, full_response=None, return_id=None,
-                   return_url=None, return_api_url=None, return_http_code=None, return_status=None,
-                   return_error_messages=None, split_errors=False):
+                   topic=None, status=None, seo_title=None, seo_description=None, tags=None, overwrite_tags=False,
+                   ignore_non_string_tags=False, teaser=None, attachments_to_add=None, attachments_to_remove=None,
+                   full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
+                   return_status=None, return_error_messages=None, split_errors=False):
             """This function updates one or more elements of an existing message.
 
             .. versionadded:: 2.8.0
@@ -1950,10 +1954,16 @@ class Khoros(object):
             :type seo_description: str, None
             :param tags: The query to retrieve tags applied to the message
             :type tags: dict, None
+            :param overwrite_tags: Determines if tags should overwrite any existing tags (where applicable) or if the
+                                   tags should be appended to the existing tags (default)
+            :type overwrite_tags: bool
+            :param ignore_non_string_tags: Determines if non-strings (excluding iterables) should be ignored rather than
+                                           converted to strings (``False`` by default)
+            :type ignore_non_string_tags: bool
             :param teaser: The message teaser (used with blog articles)
             :type teaser: str, None
             :param attachments_to_add: The full path(s) to one or more attachments (e.g. ``path/to/file1.pdf``) to be
-                                       added to the message
+                                           added to the message
             :type attachments_to_add: str, tuple, list, set, None
             :param attachments_to_remove: One or more attachments to remove from the message
 
@@ -1994,9 +2004,10 @@ class Khoros(object):
                                                   node_url, canonical_url, context_id, context_url, cover_image,
                                                   is_draft, labels, moderation_status, parent, product_category,
                                                   products, read_only, topic, status, seo_title, seo_description, tags,
-                                                  teaser, attachments_to_add, attachments_to_remove, full_response,
-                                                  return_id, return_url, return_api_url, return_http_code,
-                                                  return_status, return_error_messages, split_errors)
+                                                  overwrite_tags, ignore_non_string_tags, teaser, attachments_to_add,
+                                                  attachments_to_remove, full_response, return_id, return_url,
+                                                  return_api_url, return_http_code, return_status,
+                                                  return_error_messages, split_errors)
 
         @staticmethod
         def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,

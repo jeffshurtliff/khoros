@@ -104,13 +104,12 @@ Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
 
-* Introduced the ``return_status``, ``return_error_messages`` and ``split_errors`` arguments
-  in the :py:meth:`khoros.core.Khoros.Message.create` method, and changed the default value
-  of the ``full_response``, ``return_id``, ``return_url``, return_api_url`` and
-  ``return_http_code`` arguments to ``None`` rather than ``False``.
+* Introduced the ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and
+  ``split_errors`` arguments in the :py:meth:`khoros.core.Khoros.Message.create` method, and
+  changed the default value of the ``full_response``, ``return_id``, ``return_url``,
+  ``return_api_url`` and ``return_http_code`` arguments to ``None`` rather than ``False``.
 * Added support for the ``translate_errors`` Helper setting and any other future top-level
   setting within the :py:meth:`khoros.core.Khoros._parse_helper_settings` method.
-
 
 Primary Modules
 ---------------
