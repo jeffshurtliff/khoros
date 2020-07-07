@@ -427,7 +427,6 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
     multipart = True if attachments_to_add else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachments_to_add, 'update')
-    print(f"\nPAYLOAD:\n{payload}\n")       # TODO: Remove print debugging
     response = api.put_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
     return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
                                   return_status, return_error_messages, split_errors, khoros_object)
