@@ -6,10 +6,11 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 Jul 2020
+:Modified Date:     08 Jul 2020
 """
 
 import os
+import base64
 import random
 import string
 import warnings
@@ -60,6 +61,31 @@ def decode_binary(binary):
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
     """
     return binary.decode('utf-8')
+
+
+def encode_base64(object_to_encode, str_encoding='utf-8', url_encode_object=False, return_bytes=False):
+    """This function encodes a string or bytes-like object
+
+    .. versionadded:: 3.0.0
+
+    :param object_to_encode: The string or bytes-like object to encode as base64
+    :param str_encoding: Defines the encoding (``utf-8`` by default) to utilize
+    :type str_encoding: str
+    :param url_encode_object: Determines if the base64 string should be url-encoded (``False`` by default)
+    :type url_encode_object: bool
+    :param return_bytes: Determines if the base64-encoded object should be returned as a bytes-like object rather
+                         than a string (``False`` by default)
+    :returns: The encoded object as a string or bytes-like object
+    :raises: :py:exc:`TypeError`
+    """
+    if isinstance(object_to_encode, str):
+        object_to_encode = object_to_encode.encode(str_encoding)
+    base64_object = base64.b64encode(object_to_encode)
+    if not return_bytes:
+        base64_object = base64_object.decode(str_encoding)
+        if url_encode_object:
+            base64_object = url_encode(base64_object)
+    return base64_object
 
 
 def run_cmd(cmd, return_type='dict', shell=True, decode_output=True, strip_output=False,
