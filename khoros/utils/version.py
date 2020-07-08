@@ -6,14 +6,14 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 Jun 2020
+:Modified Date:     08 Jul 2020
 """
 
 import warnings
 
 import requests
 
-__version__ = "2.8.0"
+__version__ = "3.0.0"
 
 
 def get_full_version():
