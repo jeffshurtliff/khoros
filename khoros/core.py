@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Jul 2020
+:Modified Date:     13 Jul 2020
 """
 
 import sys
@@ -22,7 +22,7 @@ from .utils import environment
 from .utils.helper import get_helper_settings
 
 # Initialize logging
-logging.getLogger("khoros").addHandler(logging.NullHandler())
+logging.getLogger("khoros").addHandler(logging.NullHandler())       # TODO: Replace with log_utils call
 
 
 class Khoros(object):

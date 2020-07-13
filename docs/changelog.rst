@@ -15,6 +15,20 @@ Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
+* Introduced logging within the library:
+    * Added the :py:mod:`khoros.utils.log_utils` module with the following functions, classes and methods:
+        * :py:func:`khoros.utils.log_utils.initialize_logging`
+        * :py:class:`khoros.utils.log_utils.LessThanFilter`
+        * :py:meth:`khoros.utils.log_utils.LessThanFilter.filter`
+        * :py:func:`khoros.utils.log_utils._apply_defaults`
+        * :py:func:`khoros.utils.log_utils._get_log_levels_from_dict`
+        * :py:func:`khoros.utils.log_utils._set_logging_level`
+        * :py:func:`khoros.utils.log_utils._add_handlers`
+        * :py:func:`khoros.utils.log_utils._add_file_handler`
+        * :py:func:`khoros.utils.log_utils._add_stream_handler`
+        * :py:func:`khoros.utils.log_utils._add_split_stream_handlers`
+        * :py:func:`khoros.utils.log_utils._add_syslog_handler`
+    * Added a ``logging`` section to the ``examples/helper.yml`` file to indicate how logging can be configured.
 * Added the :py:func:`khoros.utils.core_utils.encode_base64` function.
 
 Documentation
