@@ -18,11 +18,11 @@ from . import auth, errors, liql, api
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
-from .utils import environment
+from .utils import environment, log_utils
 from .utils.helper import get_helper_settings
 
 # Initialize logging
-logging.getLogger("khoros").addHandler(logging.NullHandler())       # TODO: Replace with log_utils call
+logger = log_utils.initialize_logging(__name__)
 
 
 class Khoros(object):

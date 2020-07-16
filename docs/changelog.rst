@@ -11,6 +11,12 @@ v3.0.0
 Added
 =====
 
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* TBD
+
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
@@ -30,6 +36,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
         * :py:func:`khoros.utils.log_utils._add_syslog_handler`
     * Added a ``logging`` section to the ``examples/helper.yml`` file to indicate how logging can be configured.
 * Added the :py:func:`khoros.utils.core_utils.encode_base64` function.
+* Added the :py:func:`khoros.utils.version.log_current_version` function.
 
 Documentation
 -------------
@@ -39,6 +46,27 @@ Documentation
 
 Changed
 =======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Replaced the basic :py:mod:`logging` initialization with a call to the
+  :py:func:`khoros.utils.log_utils.initialize_logging` function.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* The following changes were made to the :py:mod:`khoros.utils.version` module:
+    * Initialized a logger at the beginning of the module.
+    * Added a debug log entry to the :py:func:`khoros.utils.versions.get_full_version` which reports
+      the current version of the library.
+    * Reduced the :py:func:`khoros.utils.version.latest_version` function to a single return statement.
+    * Added error handling and logging in the :py:func:`khoros.utils.version.get_latest_stable` function
+      to avoid an exception if PyPI cannot be queried successfully.
+    * Updated the :py:func:`khoros.utils.version.warn_when_not_latest` function to use logging for the
+      warning rather than the :py:mod:`warnings` module.
 
 General
 -------

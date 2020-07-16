@@ -6,19 +6,39 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Jul 2020
+:Modified Date:     13 Jul 2020
 """
-
-import warnings
 
 import requests
 
+from . import log_utils
+
+# Define special and global variables
 __version__ = "3.0.0"
+latest_version_reported = False
+logger = log_utils.initialize_logging(__name__)
 
 
 def get_full_version():
     """This function returns the current full version of the khoros package."""
     return __version__
+
+
+def log_current_version(debug=False):
+    """This function reports the current running version of the library in a debug log entry.
+
+    .. versionadded:: 3.0.0
+
+    :param debug: Defines if the message should be logged with the ``DEBUG`` log level. (``False`` by default)
+    :type debug: bool
+    :returns: None
+    """
+    log_msg = f'The current version of the library is {__version__}.'
+    if debug:
+        logger.debug(log_msg)
+    else:
+        logger.info(log_msg)
+    return
 
 
 def get_major_minor_version():
@@ -29,31 +49,52 @@ def get_major_minor_version():
 def get_latest_stable():
     """This function returns the latest stable version of the khoros package.
 
+    .. versionchanged:: 3.0.0
+       Error handling and logging was added to avoid an exception if PyPI cannot be queried successfully.
+
     :returns: The latest stable version in string format
     """
-    pypi_data = requests.get('https://pypi.org/pypi/khoros/json').json()
-    return pypi_data['info']['version']
+    try:
+        pypi_data = requests.get('https://pypi.org/pypi/khoros/json').json()
+        latest_stable = pypi_data['info']['version']
+        global latest_version_reported
+        if not latest_version_reported:
+            logger.debug(f'The latest stable version of the library on PyPI is {latest_stable}.')
+            latest_version_reported = True
+    except Exception as exc:
+        exc_msg = f"{type(exc).__name__} - {exc}"
+        logger.error("Unable to perform the query to retrieve the latest stable version of the library due "
+                     f"to the following exception: {exc_msg}")
+        latest_stable = '0.0.0'
+    return latest_stable
 
 
 def latest_version():
     """This function defines if the current version matches the latest stable version on PyPI.
 
+    .. versionchanged:: 3.0.0
+       The function was reduced to a single return statement.
+
     :returns: Boolean value indicating if the versions match
     """
-    latest_stable = get_latest_stable()
-    return True if __version__ == latest_stable else False
+    return True if get_full_version() == get_latest_stable() else False
 
 
 def warn_when_not_latest():
     """This function displays a :py:exc:`RuntimeWarning` if the running version doesn't match the latest stable version.
 
+    .. versionchanged:: 3.0.0
+       The function was updated to use logging for the warning rather than the :py:mod:`warnings` module.
+
     :returns: None
     """
-    try:
-        if not latest_version():
+    if not latest_version():
+        if get_latest_stable() != '0.0.0':
             warn_msg = "The latest stable version of khoros is not running. " + \
                        "Consider running 'pip install khoros --upgrade' when feasible."
-            warnings.warn(warn_msg, RuntimeWarning)
-    except Exception:
-        pass
+            logger.warning(warn_msg)
     return
+
+
+# Log the current version only when debug mode is enabled
+log_current_version(debug=True)
