@@ -6,11 +6,15 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Apr 2020
+:Modified Date:     17 Jul 2020
 """
 
 from . import api, errors
+from .utils import log_utils
 from .utils.core_utils import convert_set
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 COLLECTIONS = ['albums', 'attachments', 'boards', 'bookmarks', 'categories', 'communities', 'custom_tags',
                'floated_messages', 'grouphubs', 'images', 'inbox_notes', 'kudos', 'labels', 'me_toos',

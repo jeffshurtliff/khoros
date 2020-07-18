@@ -6,11 +6,14 @@
 :Example:           ``response = albums.create_album(khoros_obj, title='My Album', hidden=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 May 2020
+:Modified Date:     17 Jul 2020
 """
 
 from .. import api, liql, errors
-from ..utils import core_utils
+from ..utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def create(khoros_object, title=None, description=None, owner_id=None, hidden=False, default=False,

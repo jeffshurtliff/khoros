@@ -6,12 +6,16 @@
 :Example:           ``details = get_community_details(khoros_object)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 from . import base
 from .. import errors
+from ..utils import log_utils
 from ..utils.core_utils import display_warning
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def get_community_details(khoros_object):

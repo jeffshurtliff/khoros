@@ -17,6 +17,32 @@ Additions to the :doc:`core-object-methods`.
 
 * TBD
 
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.api.get_platform_version`
+* Added the :py:func:`khoros.api._normalize_base_url`
+* Instantiated a logger in the following modules:
+    * :py:mod:`khoros.api`
+    * :py:mod:`khoros.auth`
+    * :py:mod:`khoros.liql`
+    * :py:mod:`khoros.objects.albums`
+    * :py:mod:`khoros.objects.archives`
+    * :py:mod:`khoros.objects.attachments`
+    * :py:mod:`khoros.objects.base`
+    * :py:mod:`khoros.objects.messages`
+    * :py:mod:`khoros.objects.roles`
+    * :py:mod:`khoros.objects.tags`
+    * :py:mod:`khoros.objects.users`
+    * :py:mod:`khoros.structures.base`
+    * :py:mod:`khoros.structures.boards`
+    * :py:mod:`khoros.structures.categories`
+    * :py:mod:`khoros.structures.communities`
+    * :py:mod:`khoros.structures.grouphubs`
+    * :py:mod:`khoros.structures.nodes`
+    * :py:mod:`khoros.studio.base`
+
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.

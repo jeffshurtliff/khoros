@@ -6,13 +6,16 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 import requests
 
 from . import api, errors
-from .utils import core_utils
+from .utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def get_session_key(khoros_object):

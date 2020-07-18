@@ -6,13 +6,17 @@
 :Example:           ``archives.archive(khoros_obj, '123', suggested_url, return_status=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 import warnings
 
 from .. import api, errors
 from . import messages
+from ..utils import log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def archive(khoros_object, message_id=None, message_url=None, suggested_url=None, archive_entries=None,

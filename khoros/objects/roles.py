@@ -6,10 +6,14 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 from .. import api, liql, errors
+from ..utils import log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 ROLE_TYPES = {
     'board': 'b',

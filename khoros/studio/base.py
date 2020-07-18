@@ -5,10 +5,13 @@
 :Usage:             ``import khoros.studio.base as studio_base``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 May 2020
+:Modified Date:     17 Jul 2020
 """
 
-from ..utils import core_utils
+from ..utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def sdk_installed():

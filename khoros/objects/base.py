@@ -6,12 +6,16 @@
 :Example:           ``node_id = base.get_node_id('https://community.khoros.com/t5/Khoros-Blog/bg-p/relnote', 'blog')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Apr 2020
+:Modified Date:     17 Jul 2020
 """
 
 import warnings
 
 from ..structures import nodes
+from ..utils import log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def get_node_id(url, node_type=None):

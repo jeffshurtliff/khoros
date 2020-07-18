@@ -6,14 +6,18 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jul 2020
+:Modified Date:     17 Jul 2020
 """
 
 import warnings
 
 from .. import api, errors
 from ..objects import users
+from ..utils import log_utils
 from . import base
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 VALID_DISCUSSION_STYLES = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
 

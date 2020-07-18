@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jun 2020
+:Modified Date:     16 Jul 2020
 """
 
 import json
@@ -16,7 +16,10 @@ import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from . import errors
-from .utils import core_utils
+from .utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
@@ -775,3 +778,59 @@ def _confirm_field_supplied(_fields_dict):
     if not _field_supplied:
         raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
     return
+
+
+def _normalize_base_url(_base_url):
+    """This function normalizes the base URL (i.e. top-level domain) for use in other functions.
+
+    .. versionadded:: 3.0.0
+
+    :param _base_url: The base URL of a Khoros Community environment
+    :type _base_url: str
+    :returns: The normalized base URL
+    """
+    _base_url = _base_url[:-1] if _base_url.endswith('/') else _base_url
+    _base_url = f"https://{_base_url}" if not _base_url.startswith('http') else _base_url
+    return _base_url
+
+
+def get_platform_version(base_url, full_release=False, simple=False, commit_id=False, timestamp=False):
+    """This function retrieves the Khoros Community platform version information for a given environment.
+
+    .. versionadded:: 3.0.0
+
+    :param base_url: The base URL (i.e. top-level domain) of the Khoros Community environment
+    :type base_url: str
+    :param full_release: Defines if the full platform release version should be returned
+
+                         .. note:: If none of the options are enabled then the ``full_release`` option will be
+                                   enabled by default.
+
+    :type full_release: bool
+    :param simple: Defines if the simple X.Y version (e.g. 20.6) should be returned
+    :type simple: bool
+    :param commit_id: Defines if the Commit ID (i.e. hash) for the release should be returned
+    :type commit_id: bool
+    :param timestamp: Defines if the timestamp of the release (e.g. 2007092156) should be returned
+    :type timestamp: bool
+    :returns: One or more string with version information
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    full_release = True if not any((full_release, simple, commit_id, timestamp)) else full_release
+    base_url = _normalize_base_url(base_url)
+    version_info = requests.get(f'{base_url}/status/version')
+    if version_info.status_code != 200:
+        fail_msg = f'The attempt to get the platform version failed with a {version_info.status_code} status code.'
+        logger.error(fail_msg)
+        raise errors.exceptions.GETRequestError(fail_msg)
+    versions = []
+    parsed_info = {
+        version_info.text.split('(')[1].split(')')[0]: full_release,
+        version_info.text.split('Revision: ')[1].split(' (')[0]: simple,
+        version_info.text.split('Commit Id: ')[1].split(' <br>')[0]: commit_id,
+        version_info.text.split('Timestamp: ')[1].split('<')[0]: timestamp
+    }
+    for parsed_value, enabled in parsed_info.items():
+        if enabled:
+            versions.append(parsed_value)
+    return versions[0] if len(versions) == 1 else tuple(versions)

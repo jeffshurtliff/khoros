@@ -6,13 +6,17 @@
 :Example:           ``category_id = categories.get_category_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 import warnings
 
 from . import base
+from ..utils import log_utils
 from .. import api, liql, errors
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def create(khoros_object, category_id, category_title, parent_id=None, return_json=True):
