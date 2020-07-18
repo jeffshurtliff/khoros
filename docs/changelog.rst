@@ -97,9 +97,17 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 General
 -------
 * Updated the Sphinx configuration file (``conf.py``) to suppress the ``duplicate label`` warnings.
-* Added version 3.0.x to the ``SECURITY.md`` file under Supported
+* Added version 3.0.x to the ``SECURITY.md`` file under Supported.
 
 :doc:`Return to Top <changelog>`
+
+Fixed
+=====
+
+General
+-------
+* Changed the `pyYAML <https://pypi.org/project/PyYAML/>`_ version in ``requirements.txt`` to be
+  ``5.3.1`` rather than ``5.3`` in order to avoid the CI build failure in GitHub Actions.
 
 |
 
