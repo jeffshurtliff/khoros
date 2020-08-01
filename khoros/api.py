@@ -507,8 +507,11 @@ def encode_v1_query_string(query_dict, return_json=True):
     return core_utils.encode_query_string(query_dict)
 
 
-def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', return_json=True):
+def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GET', return_json=True):
     """This function makes a Community API v1 request.
+
+    .. versionchanged:: 3.0.0
+       The ``query_params`` argument has been updated to be optional.
 
     .. versionchanged:: 2.7.4
        The HTTP headers were changed to be all lowercase in order to be standardized across the library.
@@ -522,7 +525,7 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
     :param endpoint: The API endpoint to be queried
     :type endpoint: str
     :param query_params: The field and associated values to be leveraged in the query string
-    :type query_params: dict
+    :type query_params: dict, None
     :param request_type: Determines which type of API request to perform (e.g. ``GET``, ``POST``, ``PUT``, etc.)
     :type request_type: str
     :param return_json: Determines if the response should be returned in JSON format rather than the default
@@ -537,6 +540,7 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
              :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
     """
     currently_unsupported_types = ['UPDATE', 'PATCH', 'DELETE']
+    query_params = {} if not query_params else query_params
     query_string = encode_v1_query_string(query_params, return_json)
     header = {"content-type": "application/x-www-form-urlencoded"}
     url = f"{khoros_object.core['v1_base']}/{endpoint}?{query_string}"

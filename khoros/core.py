@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Jul 2020
+:Modified Date:     31 Jul 2020
 """
 
 import sys
@@ -204,6 +204,7 @@ class Khoros(object):
                                        f"'{self._settings['auth_type']}' authentication type.")
 
         # Import inner object classes so their methods can be called from the primary object
+        self.v1 = self._import_v1_class()
         self.albums = self._import_album_class()
         self.boards = self._import_board_class()
         self.categories = self._import_category_class()
@@ -324,6 +325,14 @@ class Khoros(object):
         self.auth['session_key'] = self._settings['session_auth']['session_key']
         self.auth['header'] = self._settings['auth_header']
         self.auth['active'] = True
+
+    def _import_v1_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.V1` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 3.0.0
+        """
+        return Khoros.V1(self)
 
     def _import_album_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Album` inner class to be utilized in the
@@ -499,6 +508,9 @@ class Khoros(object):
     def perform_v1_search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
         """This function performs a search for a particular field value using a Community API v1 call.
 
+        .. deprecated:: 3.0.0
+           Use the :py:meth:`khoros.core.Khoros.V1.search` method instead.
+
         :param endpoint: The API v1 endpoint against which to perform the search query
         :type endpoint: str
         :param filter_field: The name of the field being queried within the API v1 endpoint
@@ -512,6 +524,8 @@ class Khoros(object):
         :returns: The API response (optionally in JSON format)
         :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
         """
+        warnings.warn("This method has been deprecated. Use the khoros.core.Khoros.V1.search method instead",
+                      DeprecationWarning)
         return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
     @staticmethod
@@ -544,6 +558,99 @@ class Khoros(object):
         """
         return api.parse_v2_response(json_response, return_dict, status, developer_msg, http_code, data_id, data_url,
                                      data_api_uri, v2_base)
+
+    class V1(object):
+        """This class includes methods for performing base Community API v1 requests."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.V1` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get(self, endpoint, query_params=None, return_json=True):
+            """This function makes a Community API v1 GET request.
+
+            .. versionadded:: 3.0.0
+
+            :param endpoint: The API endpoint to be queried
+            :type endpoint: str
+            :param query_params: The field and associated values to be leveraged in the query string
+            :type query_params: dict
+            :param return_json: Determines if the response should be returned in JSON format rather than the default
+            :type return_json: bool
+            :returns: The API response
+            :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                     :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+            """
+            query_params = {} if not query_params else query_params
+            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'GET', return_json)
+
+        def post(self, endpoint, query_params=None, return_json=True):
+            """This function makes a Community API v1 POST request.
+
+            .. versionadded:: 3.0.0
+
+            :param endpoint: The API endpoint to be queried
+            :type endpoint: str
+            :param query_params: The field and associated values to be leveraged in the query string
+            :type query_params: dict
+            :param return_json: Determines if the response should be returned in JSON format rather than the default
+            :type return_json: bool
+            :returns: The API response
+            :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+            """
+            query_params = {} if not query_params else query_params
+            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'POST', return_json)
+
+        def put(self, endpoint, query_params=None, return_json=True):
+            """This function makes a Community API v1 PUT request.
+
+            .. versionadded:: 3.0.0
+
+            :param endpoint: The API endpoint to be queried
+            :type endpoint: str
+            :param query_params: The field and associated values to be leveraged in the query string
+            :type query_params: dict
+            :param return_json: Determines if the response should be returned in JSON format rather than the default
+            :type return_json: bool
+            :returns: The API response
+            :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                     :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+            """
+            query_params = {} if not query_params else query_params
+            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'PUT', return_json)
+
+        def search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
+            """This function performs a search for a particular field value using a Community API v1 call.
+
+            .. versionadded:: 3.0.0
+
+            :param endpoint: The API v1 endpoint against which to perform the search query
+            :type endpoint: str
+            :param filter_field: The name of the field being queried within the API v1 endpoint
+            :type filter_field: str
+            :param filter_value: The value associated with the field being queried
+            :type filter_value: str, int
+            :param return_json: Determines if the response should be returned in JSON format (``False`` by default)
+            :type return_json: bool
+            :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
+            :type fail_on_no_results: bool
+            :returns: The API response (optionally in JSON format)
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
     class Album(object):
         """This class includes methods for interacting with the `albums <https://rsa.im/2WAewBP>`_ collection."""

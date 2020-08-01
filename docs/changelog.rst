@@ -15,7 +15,12 @@ Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
 
-* TBD
+* Added the :py:class:`khoros.core.Khoros.V1` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.V1.get`
+    * :py:meth:`khoros.core.Khoros.V1.post`
+    * :py:meth:`khoros.core.Khoros.V1.put`
+    * :py:meth:`khoros.core.Khoros.V1.search`
+* Added the :py:meth:`khoros.core.Khoros._import_v1_class` and accompanying method call.
 
 Primary Modules
 ---------------
@@ -80,6 +85,13 @@ Changes to the :doc:`core-object-methods`.
 * Replaced the basic :py:mod:`logging` initialization with a call to the
   :py:func:`khoros.utils.log_utils.initialize_logging` function.
 
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api.make_v1_request` function to make the ``query_params``
+  argument optional.
+
 Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
@@ -108,6 +120,16 @@ General
 -------
 * Changed the `pyYAML <https://pypi.org/project/PyYAML/>`_ version in ``requirements.txt`` to be
   ``5.3.1`` rather than ``5.3`` in order to avoid the CI build failure in GitHub Actions.
+
+Deprecated
+==========
+
+Core Object
+-----------
+Deprecations in the :doc:`core-object-methods`.
+
+* Deprecated the :py:meth:`khoros.core.Khoros.perform_v1_search` method as it has been replaced
+  by the :py:meth:`khoros.core.Khoros.V1.search` method.
 
 |
 
