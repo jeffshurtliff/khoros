@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     31 Jul 2020
+:Modified Date:     01 Aug 2020
 """
 
 import sys
