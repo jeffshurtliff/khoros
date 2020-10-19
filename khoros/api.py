@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 Jul 2020
+:Modified Date:     19 Oct 2020
 """
 
 import json
@@ -511,7 +511,8 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
     """This function makes a Community API v1 request.
 
     .. versionchanged:: 3.0.0
-       The ``query_params`` argument has been updated to be optional.
+       The ``query_params`` argument has been updated to be optional and a full query string can now
+       be passed within the ``endpoint`` argument.
 
     .. versionchanged:: 2.7.4
        The HTTP headers were changed to be all lowercase in order to be standardized across the library.
@@ -543,7 +544,10 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
     query_params = {} if not query_params else query_params
     query_string = encode_v1_query_string(query_params, return_json)
     header = {"content-type": "application/x-www-form-urlencoded"}
-    url = f"{khoros_object.core['v1_base']}/{endpoint}?{query_string}"
+    endpoint = endpoint[1:] if endpoint.startswith('/') else endpoint
+    url = f"{khoros_object.core['v1_base']}/{endpoint}"
+    query_string_delimiter = '&' if '?' in url else '?'
+    url = f"{khoros_object.core['v1_base']}/{endpoint}{query_string_delimiter}{query_string}"
     if request_type.upper() == 'GET':
         response = get_request_with_retries(url, return_json, khoros_object, headers=header)
     elif request_type.upper() == 'POST':

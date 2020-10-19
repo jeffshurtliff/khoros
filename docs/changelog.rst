@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v3.0.0
 ******
-**Release Date: TBD**
+**Release Date: 2020-10-19**
 
 Added
 =====
@@ -91,6 +91,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 
 * Updated the :py:func:`khoros.api.make_v1_request` function to make the ``query_params``
   argument optional.
+* Updated the :py:func:`khoros.api.make_v1_request` function to allow full query strings to be
+  passed within the ``endpoint`` argument.
 
 Supporting Modules
 ------------------
