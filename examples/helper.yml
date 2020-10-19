@@ -33,3 +33,20 @@ discussion_styles:
     - idea
     - qanda
     - tkb
+
+# Define how logging should be leveraged
+logging:
+    format: %(asctime)s - %(levelname)s - %(name)s - %(message)s
+    console_output: yes
+    console:
+        log_level: warning
+    file_output: yes
+    file:
+        log_level: info
+        log_file: khoros_community.log
+        overwrite: no
+    syslog_output: no
+    syslog:
+        log_level: info
+        address: localhost
+        port: 514

@@ -6,13 +6,17 @@
 :Example:           ``node_id = nodes.get_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 import re
 
 from . import base
 from .. import liql, errors
+from ..utils import log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def get_node_id(url=None, node_type=None, node_details=None):

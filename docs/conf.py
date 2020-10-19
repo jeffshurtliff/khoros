@@ -110,6 +110,11 @@ html_static_path = ['_static']
 # Allow the autosection feature to allow document prefixes
 autosectionlabel_prefix_document = True
 
+# Suppress 'duplicate label' warnings from the autosection feature
+suppress_warnings = [
+    'autosectionlabel.changelog',
+    'autosectionlabel.changelogs/changelog-1.1.0-thru-2.5.2'
+]
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

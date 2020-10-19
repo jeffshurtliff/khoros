@@ -6,11 +6,15 @@
 :Example:           ``group_hub_url = grouphubs.create(khoros_object, gh_id, gh_title, disc_styles, return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 from .. import api, liql, errors
+from ..utils import log_utils
 from . import base
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 # Define the default discussion styles to use when creating new group hubs
 DEFAULT_DISCUSSION_STYLES = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']

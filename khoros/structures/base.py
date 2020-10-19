@@ -6,11 +6,15 @@
 :Example:           ``details = base.get_details(khoros_object, 'category', 'category-id')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     12 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 from .. import liql, errors
+from ..utils import log_utils
 from ..utils.core_utils import display_warning
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def get_details(khoros_object, identifier='', structure_type=None, first_item=None, community=False):

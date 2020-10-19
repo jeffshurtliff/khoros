@@ -6,13 +6,16 @@
 :Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 import warnings
 
 from .. import api, liql, errors
-from ..utils import core_utils
+from ..utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,

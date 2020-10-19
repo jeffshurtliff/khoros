@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jun 2020
+:Modified Date:     19 Oct 2020
 """
 
 import json
@@ -16,7 +16,10 @@ import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from . import errors
-from .utils import core_utils
+from .utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
@@ -504,8 +507,12 @@ def encode_v1_query_string(query_dict, return_json=True):
     return core_utils.encode_query_string(query_dict)
 
 
-def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', return_json=True):
+def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GET', return_json=True):
     """This function makes a Community API v1 request.
+
+    .. versionchanged:: 3.0.0
+       The ``query_params`` argument has been updated to be optional and a full query string can now
+       be passed within the ``endpoint`` argument.
 
     .. versionchanged:: 2.7.4
        The HTTP headers were changed to be all lowercase in order to be standardized across the library.
@@ -519,7 +526,7 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
     :param endpoint: The API endpoint to be queried
     :type endpoint: str
     :param query_params: The field and associated values to be leveraged in the query string
-    :type query_params: dict
+    :type query_params: dict, None
     :param request_type: Determines which type of API request to perform (e.g. ``GET``, ``POST``, ``PUT``, etc.)
     :type request_type: str
     :param return_json: Determines if the response should be returned in JSON format rather than the default
@@ -534,9 +541,13 @@ def make_v1_request(khoros_object, endpoint, query_params, request_type='GET', r
              :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
     """
     currently_unsupported_types = ['UPDATE', 'PATCH', 'DELETE']
+    query_params = {} if not query_params else query_params
     query_string = encode_v1_query_string(query_params, return_json)
     header = {"content-type": "application/x-www-form-urlencoded"}
-    url = f"{khoros_object.core['v1_base']}/{endpoint}?{query_string}"
+    endpoint = endpoint[1:] if endpoint.startswith('/') else endpoint
+    url = f"{khoros_object.core['v1_base']}/{endpoint}"
+    query_string_delimiter = '&' if '?' in url else '?'
+    url = f"{khoros_object.core['v1_base']}/{endpoint}{query_string_delimiter}{query_string}"
     if request_type.upper() == 'GET':
         response = get_request_with_retries(url, return_json, khoros_object, headers=header)
     elif request_type.upper() == 'POST':
@@ -775,3 +786,59 @@ def _confirm_field_supplied(_fields_dict):
     if not _field_supplied:
         raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
     return
+
+
+def _normalize_base_url(_base_url):
+    """This function normalizes the base URL (i.e. top-level domain) for use in other functions.
+
+    .. versionadded:: 3.0.0
+
+    :param _base_url: The base URL of a Khoros Community environment
+    :type _base_url: str
+    :returns: The normalized base URL
+    """
+    _base_url = _base_url[:-1] if _base_url.endswith('/') else _base_url
+    _base_url = f"https://{_base_url}" if not _base_url.startswith('http') else _base_url
+    return _base_url
+
+
+def get_platform_version(base_url, full_release=False, simple=False, commit_id=False, timestamp=False):
+    """This function retrieves the Khoros Community platform version information for a given environment.
+
+    .. versionadded:: 3.0.0
+
+    :param base_url: The base URL (i.e. top-level domain) of the Khoros Community environment
+    :type base_url: str
+    :param full_release: Defines if the full platform release version should be returned
+
+                         .. note:: If none of the options are enabled then the ``full_release`` option will be
+                                   enabled by default.
+
+    :type full_release: bool
+    :param simple: Defines if the simple X.Y version (e.g. 20.6) should be returned
+    :type simple: bool
+    :param commit_id: Defines if the Commit ID (i.e. hash) for the release should be returned
+    :type commit_id: bool
+    :param timestamp: Defines if the timestamp of the release (e.g. 2007092156) should be returned
+    :type timestamp: bool
+    :returns: One or more string with version information
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    full_release = True if not any((full_release, simple, commit_id, timestamp)) else full_release
+    base_url = _normalize_base_url(base_url)
+    version_info = requests.get(f'{base_url}/status/version')
+    if version_info.status_code != 200:
+        fail_msg = f'The attempt to get the platform version failed with a {version_info.status_code} status code.'
+        logger.error(fail_msg)
+        raise errors.exceptions.GETRequestError(fail_msg)
+    versions = []
+    parsed_info = {
+        version_info.text.split('(')[1].split(')')[0]: full_release,
+        version_info.text.split('Revision: ')[1].split(' (')[0]: simple,
+        version_info.text.split('Commit Id: ')[1].split(' <br>')[0]: commit_id,
+        version_info.text.split('Timestamp: ')[1].split('<')[0]: timestamp
+    }
+    for parsed_value, enabled in parsed_info.items():
+        if enabled:
+            versions.append(parsed_value)
+    return versions[0] if len(versions) == 1 else tuple(versions)

@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Jul 2020
+:Modified Date:     17 Jul 2020
 """
 
 import warnings
@@ -16,6 +16,10 @@ from . import attachments, users
 from . import tags as tags_module
 from .. import api, liql, errors
 from ..structures import nodes
+from ..utils import log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 REQUIRED_FIELDS = ['board', 'subject']
 CONTEXT_KEYS = ['id', 'url']

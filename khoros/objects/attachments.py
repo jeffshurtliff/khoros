@@ -6,14 +6,17 @@
 :Example:           ``payload = format_attachment_payload(titles, file_paths)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 Jun 2020
+:Modified Date:     17 Jul 2020
 """
 
 import os
 import json
 
 from .. import errors
-from ..utils import core_utils
+from ..utils import core_utils, log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def construct_multipart_payload(message_json, file_paths, action='create'):

@@ -6,7 +6,7 @@
 :Example:           ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jul 2020
+:Modified Date:     13 Jul 2020
 """
 
 import json
@@ -14,12 +14,18 @@ import json
 import yaml
 
 from .. import errors
+from . import log_utils
 from .core_utils import get_file_type
 
+# Initialize logging within the module
+logger = log_utils.initialize_logging(__name__)
 
-# Define function to import a YAML helper file
+
 def import_helper_file(file_path, file_type):
     """This function imports a YAML (.yml) or JSON (.json) helper config file.
+
+    .. versionchanged:: 3.3.0
+       A log entry was added to report when the helper file has been imported successfully.
 
     .. versionchanged:: 2.2.0
        Changed the name and replaced the ``yaml.load`` function call with ``yaml.safe_load`` to be more secure.
@@ -37,11 +43,11 @@ def import_helper_file(file_path, file_type):
         elif file_type == 'json':
             helper_cfg = json.load(cfg_file)
         else:
-            raise errors.exceptions.InvalidHelperFileTypeError
+            raise errors.exceptions.InvalidHelperFileTypeError()
+    logger.info(f'The helper file {file_path} was imported successfully.')
     return helper_cfg
 
 
-# Define function to covert a YAML Boolean value to a Python Boolean value
 def _convert_yaml_to_bool(_yaml_bool_value):
     """This function converts the 'yes' and 'no' YAML values to traditional Boolean values."""
     true_values = ['yes', 'true']
@@ -52,7 +58,6 @@ def _convert_yaml_to_bool(_yaml_bool_value):
     return _bool_value
 
 
-# Define function to get the connection information
 def _get_connection_info(_helper_cfg):
     """This function parses any connection information found in the helper file.
 
@@ -167,7 +172,6 @@ def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None, _ignore_mis
     return _helper_dict
 
 
-# Define function to retrieve the helper configuration settings
 def get_helper_settings(file_path, file_type='yaml'):
     """This function returns a dictionary of the defined helper settings.
 
@@ -210,7 +214,6 @@ def get_helper_settings(file_path, file_type='yaml'):
     return helper_settings
 
 
-# Define class for dictionaries to help in parsing the configuration files
 class HelperParsing:
     """This class is used to help parse values imported from a YAML configuration file."""
     # Define dictionary to map YAML Boolean to Python Boolean
