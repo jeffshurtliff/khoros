@@ -158,8 +158,29 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     return _attempt_json_conversion(response, return_json)
 
 
+def _is_plaintext_payload(_headers, _payload=None):
+    """This function checks to determine whether or not the payload for an API is in JSON or plaintext format.
+
+    .. versionadded:: 3.1.0
+
+    :param _headers: The headers associated with the API call
+    :type _headers: dict
+    :param _payload: The payload to be delivered in the API call
+    :type _payload: dict, str
+    :returns: Boolean value indicating whether or not the payload is plaintext
+    :raises: :py:exc:`ValueError`
+    """
+    _is_plaintext = False
+    if ('content-type' in _headers and _headers.get('content-type') == 'text/plain') or isinstance(_payload, str):
+        _is_plaintext = True
+    return _is_plaintext
+
+
 def _api_request_with_payload(_url, _payload=None, _request_type='post', _headers=None, _multipart=False):
     """This function performs an API request while supplying a JSON payload.
+
+    .. versionchanged:: 3.1.0
+       The function now supports plaintext payloads.
 
     .. versionchanged:: 2.5.0
        The function can now be called without supplying a JSON payload.
@@ -186,18 +207,21 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
     if not _payload:
         _response = _api_request_without_payload(_url, _request_type, _headers)
     else:
+        _is_plaintext = _is_plaintext_payload(_headers, _payload)
         while _retries <= 5:
             try:
                 if _request_type.lower() == "put":
                     if _multipart:
                         _response = requests.put(_url, files=_payload, headers=_headers)
                     else:
-                        _response = requests.put(_url, data=json.dumps(_payload, default=str), headers=_headers)
+                        _payload = json.dumps(_payload, default=str) if not _is_plaintext else _payload
+                        _response = requests.put(_url, data=_payload, headers=_headers)
                 elif _request_type.lower() == "post":
                     if _multipart:
                         _response = requests.post(_url, files=_payload, headers=_headers)
                     else:
-                        _response = requests.post(_url, data=json.dumps(_payload, default=str), headers=_headers)
+                        _payload = json.dumps(_payload, default=str) if not _is_plaintext else _payload
+                        _response = requests.post(_url, data=_payload, headers=_headers)
                 else:
                     raise errors.exceptions.InvalidRequestTypeError()
                 break
@@ -304,9 +328,36 @@ def _raise_exception_for_repeated_timeouts():
     raise errors.exceptions.APIConnectionError(_failure_msg)
 
 
-def post_request_with_retries(url, json_payload=None, return_json=True, khoros_object=None, auth_dict=None,
-                              headers=None, multipart=False):
+def payload_request_with_retries(url, request_type, json_payload=None, plaintext_payload=None, return_json=True,
+                                 khoros_object=None, auth_dict=None, headers=None, multipart=False):
+
+    # Ensure that the request type is valid
+    valid_request_types = ['post', 'put']
+    request_type = request_type.lower()
+    if request_type not in valid_request_types:
+        raise errors.exceptions.InvalidRequestTypeError()
+
+    # Construct the appropriate headers for the POST call
+    if plaintext_payload and not json_payload:
+        multipart = False
+        headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
+                                 content_type='text/plain')
+    else:
+        headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
+
+    # Perform the API call and retrieve the response
+    payload = plaintext_payload if plaintext_payload and not json_payload else json_payload
+    response = _api_request_with_payload(url, payload, request_type, headers, multipart)
+    return _attempt_json_conversion(response, return_json)
+
+
+def post_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
+                              auth_dict=None, headers=None, multipart=False):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.1.0
+       The function can now accept plaintext payloads and now leverages the `:py:func:payload_request_with_retries`
+       function.
 
     .. versionchanged:: 2.5.0
        The function can now be called without supplying a JSON payload.
@@ -318,6 +369,8 @@ def post_request_with_retries(url, json_payload=None, return_json=True, khoros_o
     :type url: str
     :param json_payload: The payload for the POST request in JSON format
     :type json_payload: dict, None
+    :param plaintext_payload: The payload for the POST request in plaintext (i.e. ``text/plain``) format
+    :type plaintext_payload: str, None
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -332,14 +385,18 @@ def post_request_with_retries(url, json_payload=None, return_json=True, khoros_o
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
-    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
-    response = _api_request_with_payload(url, json_payload, 'post', headers, multipart)
-    return _attempt_json_conversion(response, return_json)
+    return payload_request_with_retries(url, 'post', json_payload=json_payload, plaintext_payload=plaintext_payload,
+                                        return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
+                                        headers=headers, multipart=multipart)
 
 
-def put_request_with_retries(url, json_payload=None, return_json=True, khoros_object=None, auth_dict=None,
-                             headers=None, multipart=False):
+def put_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
+                             auth_dict=None, headers=None, multipart=False):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.1.0
+       The function can now accept plaintext payloads and now leverages the `:py:func:payload_request_with_retries`
+       function.
 
     .. versionchanged:: 2.5.0
        The function can now be called without supplying a JSON payload.
@@ -351,6 +408,8 @@ def put_request_with_retries(url, json_payload=None, return_json=True, khoros_ob
     :type url: str
     :param json_payload: The payload for the PUT request in JSON format
     :type json_payload: dict, None
+    :param plaintext_payload: The payload for the POST request in plaintext (i.e. ``text/plain``) format
+    :type plaintext_payload: str, None
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -365,9 +424,9 @@ def put_request_with_retries(url, json_payload=None, return_json=True, khoros_ob
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`
     """
-    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
-    response = _api_request_with_payload(url, json_payload, 'put', headers, multipart)
-    return _attempt_json_conversion(response, return_json)
+    return payload_request_with_retries(url, 'put', json_payload=json_payload, plaintext_payload=plaintext_payload,
+                                        return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
+                                        headers=headers, multipart=multipart)
 
 
 def _attempt_json_conversion(_response, _return_json):

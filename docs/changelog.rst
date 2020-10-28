@@ -4,6 +4,38 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.1.0
+******
+**Release Date: 2020-10-28**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.api.payload_request_with_retries` function to act as a "master function" for
+  :py:func:`khoros.api.post_request_with_retries` and :py:func:`khoros.api.put_request_with_retries`.
+* Added the :py:func:`khoros.api._is_plaintext_payload` function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added support for ``text/plain`` payloads in the following functions:
+    * :py:func:`khoros.api.post_request_with_retries`
+    * :py:func:`khoros.api._api_request_with_payload`
+* Updated the :py:func:`khoros.api.post_request_with_retries` and
+  :py:func:`khoros.api.put_request_with_retries` functions to leverage the new
+  :py:func:`khoros.api.payload_request_with_retries` function.
+
+|
+
+******
 v3.0.0
 ******
 **Release Date: 2020-10-19**
