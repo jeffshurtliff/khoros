@@ -11,6 +11,17 @@ v3.1.0
 Added
 =====
 
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.get` method to perform simple GET requests that leverage the core
+  object authorization headers where necessary.
+* Added the :py:meth:`khoros.post` method to perform simple POST requests that leverage the core
+  object authorization headers where necessary.
+* Added the :py:meth:`khoros.put` method to perform simple PUT requests that leverage the core
+  object authorization headers where necessary.
+
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
@@ -19,6 +30,13 @@ Additions to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.api.post_request_with_retries` and :py:func:`khoros.api.put_request_with_retries`.
 * Added the :py:func:`khoros.api._is_plaintext_payload` function.
 
+Documentation
+-------------
+Additions to the documentation.
+
+* Added missing sections to the :doc:`Core Object Methods <core-object-methods>` page.
+
+
 Changed
 =======
 
@@ -26,7 +44,8 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Added support for ``text/plain`` payloads in the following functions:
+* Added support for ``text/plain`` payloads and introduced the ``content_type`` parameter
+  in the following functions:
     * :py:func:`khoros.api.post_request_with_retries`
     * :py:func:`khoros.api._api_request_with_payload`
 * Updated the :py:func:`khoros.api.post_request_with_retries` and
