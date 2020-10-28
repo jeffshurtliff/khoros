@@ -329,7 +329,7 @@ def _raise_exception_for_repeated_timeouts():
 
 
 def payload_request_with_retries(url, request_type, json_payload=None, plaintext_payload=None, return_json=True,
-                                 khoros_object=None, auth_dict=None, headers=None, multipart=False):
+                                 khoros_object=None, auth_dict=None, headers=None, multipart=False, content_type=None):
 
     # Ensure that the request type is valid
     valid_request_types = ['post', 'put']
@@ -338,7 +338,10 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
         raise errors.exceptions.InvalidRequestTypeError()
 
     # Construct the appropriate headers for the POST call
-    if plaintext_payload and not json_payload:
+    if content_type:
+        headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
+                                 content_type=content_type.lower())
+    elif plaintext_payload and not json_payload:
         multipart = False
         headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
                                  content_type='text/plain')
@@ -352,12 +355,12 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
 
 
 def post_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
-                              auth_dict=None, headers=None, multipart=False):
+                              auth_dict=None, headers=None, multipart=False, content_type=None):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
     .. versionchanged:: 3.1.0
        The function can now accept plaintext payloads and now leverages the `:py:func:payload_request_with_retries`
-       function.
+       function. The ``content_type`` parameter has also been introduced.
 
     .. versionchanged:: 2.5.0
        The function can now be called without supplying a JSON payload.
@@ -381,22 +384,28 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, re
     :type headers: dict, None
     :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
+    :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                         .. note:: If this parameter is not defined then the content type will be identified based
+                                   on the payload format and/or type of request.
+
+    :type content_type: str, None
     :returns: The API response from the POST request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
     return payload_request_with_retries(url, 'post', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
-                                        headers=headers, multipart=multipart)
+                                        headers=headers, multipart=multipart, content_type=content_type.lower())
 
 
 def put_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
-                             auth_dict=None, headers=None, multipart=False):
+                             auth_dict=None, headers=None, multipart=False, content_type=None):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
 
     .. versionchanged:: 3.1.0
        The function can now accept plaintext payloads and now leverages the `:py:func:payload_request_with_retries`
-       function.
+       function. The ``content_type`` parameter has also been introduced.
 
     .. versionchanged:: 2.5.0
        The function can now be called without supplying a JSON payload.
@@ -420,13 +429,19 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :type headers: dict, None
     :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
+    :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                         .. note:: If this parameter is not defined then the content type will be identified based
+                                   on the payload format and/or type of request.
+
+    :type content_type: str, None
     :returns: The API response from the PUT request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`
     """
     return payload_request_with_retries(url, 'put', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
-                                        headers=headers, multipart=multipart)
+                                        headers=headers, multipart=multipart, content_type=content_type.lower())
 
 
 def _attempt_json_conversion(_response, _return_json):
