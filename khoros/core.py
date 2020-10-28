@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Aug 2020
+:Modified Date:     28 Oct 2020
 """
 
 import sys
@@ -424,6 +424,93 @@ class Khoros(object):
         else:
             msg = f"The '{connection_type}' authentication type is currently unsupported."
             raise errors.exceptions.CurrentlyUnsupportedError(msg)
+
+    def get(self, query_url, relative_url=True, return_json=True, headers=None):
+        """This method performs a simple GET request that leverages the Khoros authorization headers.
+
+        :param query_url: The relative (default) or fully-qualified URL for the API call
+        :type query_url: str
+        :param relative_url: Determines if the URL should be appended to the community domain (``True`` by default)
+        :type relative_url: bool
+        :param return_json: Determines if the API response should be converted into JSON format (``True`` by default)
+        :type return_json: bool
+        :param headers: Allows the API call headers to be manually defined rather than using only the core object
+        :type headers: dict, None
+        :returns: The API response from the GET request
+        """
+        query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
+        query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
+        return api.get_request_with_retries(query_url, return_json=return_json, headers=headers, khoros_object=self)
+
+    def post(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
+             multipart=False):
+        """This method performs a simple POST request that leverages the Khoros authorization headers.
+
+        :param query_url: The relative (default) or fully-qualified URL for the API call
+        :type query_url: str
+        :param payload: The JSON or plaintext payload (if any) to be supplied with the API request
+
+                        .. todo:: Add support for other payload formats such as binary, etc.
+
+        :type payload: dict, str, None
+        :param relative_url: Determines if the URL should be appended to the community domain (``True`` by default)
+        :type relative_url: bool
+        :param return_json: Determines if the API response should be converted into JSON format (``True`` by default)
+        :type return_json: bool
+        :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                             .. note:: If this parameter is not defined then the content type will be identified based
+                                       on the payload format and/or type of request.
+
+        :type content_type: str, None
+        :param headers: Allows the API call headers to be manually defined rather than using only the core object
+        :type headers: dict, None
+        :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+        :type multipart: bool
+        :returns: The API response from the GET request
+        """
+        query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
+        query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
+        json_payload = payload if isinstance(payload, dict) else None
+        plaintext_payload = payload if isinstance(payload, str) else None
+        return api.post_request_with_retries(query_url, json_payload=json_payload, plaintext_payload=plaintext_payload,
+                                             return_json=return_json, headers=headers, multipart=multipart,
+                                             content_type=content_type.lower(), khoros_object=self)
+
+    def put(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
+            multipart=False):
+        """This method performs a simple PUT request that leverages the Khoros authorization headers.
+
+        :param query_url: The relative (default) or fully-qualified URL for the API call
+        :type query_url: str
+        :param payload: The JSON or plaintext payload (if any) to be supplied with the API request
+
+                        .. todo:: Add support for other payload formats such as binary, etc.
+
+        :type payload: dict, str, None
+        :param relative_url: Determines if the URL should be appended to the community domain (``True`` by default)
+        :type relative_url: bool
+        :param return_json: Determines if the API response should be converted into JSON format (``True`` by default)
+        :type return_json: bool
+        :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                             .. note:: If this parameter is not defined then the content type will be identified based
+                                       on the payload format and/or type of request.
+
+        :type content_type: str, None
+        :param headers: Allows the API call headers to be manually defined rather than using only the core object
+        :type headers: dict, None
+        :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+        :type multipart: bool
+        :returns: The API response from the GET request
+        """
+        query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
+        query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
+        json_payload = payload if isinstance(payload, dict) else None
+        plaintext_payload = payload if isinstance(payload, str) else None
+        return api.put_request_with_retries(query_url, json_payload=json_payload, plaintext_payload=plaintext_payload,
+                                            return_json=return_json, headers=headers, multipart=multipart,
+                                            content_type=content_type.lower(), khoros_object=self)
 
     def query(self, query, return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False,
               error_code='', format_statements=True):
