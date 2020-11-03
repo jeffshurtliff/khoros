@@ -77,7 +77,7 @@ class Khoros(object):
         # Initialize the dictionaries if not passed to the class
         if settings is None:
             settings = {}
-        
+
         # Initialize other dictionaries that will be used by the class object
         self.auth = {}
         self.core = {}
@@ -446,6 +446,11 @@ class Khoros(object):
              multipart=False):
         """This method performs a simple POST request that leverages the Khoros authorization headers.
 
+        .. versionchanged:: 3.1.1
+           The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
+
+        .. versionadded:: 3.1.0
+
         :param query_url: The relative (default) or fully-qualified URL for the API call
         :type query_url: str
         :param payload: The JSON or plaintext payload (if any) to be supplied with the API request
@@ -473,6 +478,7 @@ class Khoros(object):
         query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
+        content_type = '' if not content_type else content_type
         return api.post_request_with_retries(query_url, json_payload=json_payload, plaintext_payload=plaintext_payload,
                                              return_json=return_json, headers=headers, multipart=multipart,
                                              content_type=content_type.lower(), khoros_object=self)
@@ -481,6 +487,11 @@ class Khoros(object):
             multipart=False):
         """This method performs a simple PUT request that leverages the Khoros authorization headers.
 
+        .. versionchanged:: 3.1.1
+           The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
+
+        .. versionadded:: 3.1.0
+
         :param query_url: The relative (default) or fully-qualified URL for the API call
         :type query_url: str
         :param payload: The JSON or plaintext payload (if any) to be supplied with the API request
@@ -508,6 +519,7 @@ class Khoros(object):
         query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
+        content_type = '' if not content_type else content_type
         return api.put_request_with_retries(query_url, json_payload=json_payload, plaintext_payload=plaintext_payload,
                                             return_json=return_json, headers=headers, multipart=multipart,
                                             content_type=content_type.lower(), khoros_object=self)
@@ -650,6 +662,8 @@ class Khoros(object):
         """This class includes methods for performing base Community API v1 requests."""
         def __init__(self, khoros_object):
             """This method initializes the :py:class:`khoros.core.Khoros.V1` inner class object.
+
+            .. versionadded:: 3.0.0
 
             :param khoros_object: The core :py:class:`khoros.Khoros` object
             :type khoros_object: class[khoros.Khoros]
@@ -1482,7 +1496,7 @@ class Khoros(object):
             :type khoros_object: class[khoros.Khoros]
             """
             self.khoros_object = khoros_object
-        
+
         def get_community_details(self):
             """This function returns a dictionary of community configuration settings.
 

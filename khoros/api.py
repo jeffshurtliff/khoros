@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     19 Oct 2020
+:Modified Date:     02 Nov 2020
 """
 
 import json
@@ -358,6 +358,9 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, re
                               auth_dict=None, headers=None, multipart=False, content_type=None):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
+    .. versionchanged:: 3.1.1
+       The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
+
     .. versionchanged:: 3.1.0
        The function can now accept plaintext payloads and now leverages the `:py:func:payload_request_with_retries`
        function. The ``content_type`` parameter has also been introduced.
@@ -394,6 +397,7 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, re
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
+    content_type = '' if not content_type else content_type
     return payload_request_with_retries(url, 'post', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
                                         headers=headers, multipart=multipart, content_type=content_type.lower())
@@ -402,6 +406,9 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, re
 def put_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
                              auth_dict=None, headers=None, multipart=False, content_type=None):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.1.1
+       The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
 
     .. versionchanged:: 3.1.0
        The function can now accept plaintext payloads and now leverages the `:py:func:payload_request_with_retries`
@@ -439,6 +446,7 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`
     """
+    content_type = '' if not content_type else content_type
     return payload_request_with_retries(url, 'put', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
                                         headers=headers, multipart=multipart, content_type=content_type.lower())
