@@ -4,6 +4,31 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.1.1
+******
+**Release Date: 2020-11-02**
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Fixed issues in the following methods to address the bug `#20 <https://github.com/jeffshurtliff/khoros/issues/20>`_:
+    * :py:meth:`khoros.core.Khoros.post`
+    * :py:meth:`khoros.core.Khoros.put`
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Fixed issues in the function :py:func:`khoros.api.post_request_with_retries` to address the bug
+  `#20 <https://github.com/jeffshurtliff/khoros/issues/20>`_.
+
+|
+
+******
 v3.1.0
 ******
 **Release Date: 2020-10-28**
