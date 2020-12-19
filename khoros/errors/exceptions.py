@@ -20,50 +20,6 @@ class KhorosError(Exception):
     pass
 
 
-#########################
-# Base Object Exceptions
-#########################
-
-
-class InvalidNodeTypeError(KhorosError):
-    """This exception is used when an invalid node type is provided."""
-    def __init__(self, *args, **kwargs):
-        """This method defines the default or custom message for the exception."""
-        default_msg = "The node type that was provided is invalid."
-        if not (args or kwargs):
-            args = (default_msg,)
-        elif 'val' in kwargs:
-            custom_msg = f"{default_msg.split('node type ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
-            args = (custom_msg,)
-        super().__init__(*args)
-
-
-class NodeIDNotFoundError(KhorosError):
-    """This exception is used when a valid Node ID could not be found in a provided URL."""
-    def __init__(self, *args, **kwargs):
-        """This method defines the default or custom message for the exception."""
-        default_msg = "A valid Node ID could not be identified in the given URL."
-        if not (args or kwargs):
-            args = (default_msg,)
-        elif 'val' in kwargs:
-            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
-            args = (custom_msg,)
-        super().__init__(*args)
-
-
-class NodeTypeNotFoundError(KhorosError):
-    """This exception is used when a valid node type could not be found in a provided URL."""
-    def __init__(self, *args, **kwargs):
-        """This method defines the default or custom message for the exception."""
-        default_msg = "A valid node type could not be identified in the given URL."
-        if not (args or kwargs):
-            args = (default_msg,)
-        elif 'val' in kwargs:
-            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
-            args = (custom_msg,)
-        super().__init__(*args)
-
-
 ############################
 # Base Structure Exceptions
 ############################
@@ -466,6 +422,65 @@ class MessageTypeNotFoundError(KhorosError):
         elif 'url' in kwargs:
             custom_msg = f"{default_msg.split('provided')[0]}following URL: {kwargs['url']}"
             args = (custom_msg,)
+        super().__init__(*args)
+
+
+##################
+# Node Exceptions
+##################
+
+
+class InvalidNodeTypeError(KhorosError):
+    """This exception is used when an invalid node type is provided."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The node type that was provided is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('node type ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class NodeIDNotFoundError(KhorosError):
+    """This exception is used when a valid Node ID could not be found in a provided URL."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "A valid Node ID could not be identified in the given URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class NodeTypeNotFoundError(KhorosError):
+    """This exception is used when a valid node type could not be found in a provided URL."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "A valid node type could not be identified in the given URL."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
+class UnsupportedNodeTypeError(KhorosError):
+    """This exception is used when an invalid node type has been provided."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The node type is unsupported with the given operation."
+        if 'node_type' in kwargs:
+            custom_msg = f"{default_msg.split('node type ')[0]}'{kwargs['node_type']}'{default_msg.split('type')[1]}"
+            if 'operation' in kwargs:
+                custom_msg = custom_msg.replace('the given operation', kwargs['operation'])
+            args = (custom_msg,)
+        else:
+            args = (default_msg,)
         super().__init__(*args)
 
 
