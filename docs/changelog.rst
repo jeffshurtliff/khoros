@@ -4,6 +4,25 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.2.0
+******
+**Release Date: 2020-12-19**
+
+Changed
+=======
+
+General
+-------
+
+* Updated ``setup.py`` to enable support for Python v3.8.x and v3.9.x now that compatibility testing
+  has been performed and no issues have been identified.
+* Updated the *Development Status* classifier in ``setup.py`` to be ``5 - Production/Stable``.
+* Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
+  as long as they meet a minimum version requirement.
+
+|
+
+******
 v3.1.1
 ******
 **Release Date: 2020-11-02**
