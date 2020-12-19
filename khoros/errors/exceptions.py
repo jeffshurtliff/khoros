@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     31 May 2020
+:Modified Date:     19 Dec 2020
 """
 
 #################
@@ -229,11 +229,25 @@ class DELETERequestError(KhorosError):
 
 
 class GETRequestError(KhorosError):
-    """This exception is used for generic GET request errors when there isn't a more specific exception."""
+    """This exception is used for generic GET request errors when there isn't a more specific exception.
+
+    .. versionchanged:: 3.2.0
+       Enabled the ability to optionally pass ``status_code`` and/or ``message`` arguments.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The GET request did not return a successful response."
-        if not (args or kwargs):
+        custom_msg = "The GET request failed with the following message:"
+        if 'status_code' in kwargs or 'message' in kwargs:
+            if 'status_code' in kwargs:
+                status_code_msg = f"returned the {kwargs['status_code']} status code"
+                custom_msg = custom_msg.replace('failed', status_code_msg)
+            if 'message' in kwargs:
+                custom_msg = f"{custom_msg} {kwargs['message']}"
+            else:
+                custom_msg = custom_msg.split(' with the following')[0] + "."
+            args = (custom_msg,)
+        elif not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
 
@@ -381,6 +395,23 @@ class InvalidOperatorError(KhorosError):
         super().__init__(*args)
 
 
+class LiQLParseError(KhorosError):
+    """This exception is used when a function is unable to successfully parse a LiQL response.
+
+    .. versionadded:: 3.2.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "Failed to parse the LiQL query response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'message' in kwargs and kwargs['message']:
+            custom_section = f" as the query failed with the following message: {kwargs['message']}"
+            custom_msg = default_msg.replace('.', custom_section)
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
 class OperatorMismatchError(KhorosError):
     """This exception is used when the number of operators in the LiQL query does not match the number of fields."""
     def __init__(self, *args, **kwargs):
@@ -394,11 +425,14 @@ class OperatorMismatchError(KhorosError):
 class TooManyResultsError(KhorosError):
     """This exception is used when more results are returned than were expected in a LiQL query.
 
+    .. versionchanged:: 3.2.0
+       Fixed the default message to be appropriate as it was the same message found in another exception.
+
     .. versionadded:: 2.0.0
     """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
-        default_msg = "The number of operators provided in the LiQL query does not match the number of fields/values."
+        default_msg = "More results were returned in the LiQL response than were expected."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
@@ -470,16 +504,19 @@ class NodeTypeNotFoundError(KhorosError):
 
 
 class UnsupportedNodeTypeError(KhorosError):
-    """This exception is used when an invalid node type has been provided."""
+    """This exception is used when an unsupported node type has been provided.
+
+    .. versionadded:: 3.2.0
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The node type is unsupported with the given operation."
         if 'node_type' in kwargs:
-            custom_msg = f"{default_msg.split('node type ')[0]}'{kwargs['node_type']}'{default_msg.split('type')[1]}"
+            custom_msg = f"{default_msg.split('node ')[0]}'{kwargs['node_type']}' node{default_msg.split('node')[1]}"
             if 'operation' in kwargs:
                 custom_msg = custom_msg.replace('the given operation', kwargs['operation'])
             args = (custom_msg,)
-        else:
+        elif not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
 
