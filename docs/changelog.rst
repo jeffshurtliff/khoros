@@ -17,6 +17,7 @@ General
 * Updated ``setup.py`` to enable support for Python v3.8.x and v3.9.x now that compatibility testing
   has been performed and no issues have been identified.
 * Updated the *Development Status* classifier in ``setup.py`` to be ``5 - Production/Stable``.
+* Added some additional *Topic* classifiers in ``setup.py``.
 * Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
   as long as they meet a minimum version requirement.
 
