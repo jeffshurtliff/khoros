@@ -21,7 +21,7 @@ setuptools.setup(
     url="https://github.com/jeffshurtliff/khoros",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Information Technology",
         "Intended Audience :: System Administrators",
@@ -31,10 +31,11 @@ setuptools.setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Communications",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Content Management System",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Message Boards",
         "Topic :: Internet :: WWW/HTTP :: Site Management"
     ],
-    python_requires='>=3.6, <3.8.1',
+    python_requires='>=3.6',
 )
