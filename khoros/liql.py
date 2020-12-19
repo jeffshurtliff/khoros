@@ -187,6 +187,28 @@ def get_total_count(khoros_object, collection, where_filter="", verify_success=T
     return response['data']['count']
 
 
+def get_returned_items(liql_response, only_first=False):
+    """This function prunes a full LiQL API response down to only the returned item(s).
+
+    .. versionadded:: 3.2.0
+
+    :param liql_response: The full JSON response from the LiQL query as a dictionary
+    :type liql_response: dict
+    :param only_first: Returns only the first item found rather than a list of items (``False`` by default)
+    :type only_first: bool
+    :returns: A list of items (or a single item) found within the LiQL response
+    :raises: :py:exc:`khoros.errors.exceptions.LiQLParseError`
+    """
+    if 'status' not in liql_response:
+        raise errors.exceptions.LiQLParseError()
+    elif liql_response.get('status') != 'success':
+        raise errors.exceptions.LiQLParseError(message=liql_response.get('message'))
+    liql_items = liql_response['data']['items']
+    if only_first:
+        liql_items = liql_items[0]
+    return liql_items
+
+
 def parse_query_elements(select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0):
     """This function parses query elements to construct a full LiQL query in the appropriate syntax.
 
