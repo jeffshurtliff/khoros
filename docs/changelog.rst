@@ -8,6 +8,26 @@ v3.2.0
 ******
 **Release Date: 2020-12-19**
 
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the new :py:mod:`khoros.objects.settings` module with the following functions:
+    * :py:func:`khoros.objects.settings.get_node_setting`
+    * :py:func:`khoros.objects.settings._get_v1_node_setting`
+    * :py:func:`khoros.objects.settings._get_v2_node_setting`
+* Added the new :py:func:`khoros.liql.get_returned_items` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the new :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError` exception.
+* Added the new :py:exc:`khoros.errors.exceptions.LiQLParseError` exception.
+
 Changed
 =======
 
@@ -20,6 +40,26 @@ General
 * Added some additional *Topic* classifiers in ``setup.py``.
 * Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
   as long as they meet a minimum version requirement.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Moved the exceptions within the **Base Object Exceptions** section of :py:mod:`khoros.errors.exceptions`
+  into a new section entitled **Node Exceptions**.
+* Updated the :py:exc:`khoros.errors.exceptions.GETRequestError` exception to optionally accept ``status_code``
+  and ``message`` as arguments.
+
+Fixed
+=====
+
+Supporting Modules
+------------------
+Fixes in the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the default message in the :py:exc:`khoros.errors.exceptions.TooManyResultsError` exception to be
+  appropriate as it was inadvertently using the same message leveraged in the
+  :py:exc:`khoros.errors.exceptions.OperatorMismatchError` exception.
 
 |
 
