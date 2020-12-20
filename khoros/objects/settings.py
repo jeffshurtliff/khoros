@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     19 Dec 2020
+:Modified Date:     20 Dec 2020
 """
 
 from .. import api, liql, errors
@@ -17,6 +17,23 @@ logger = log_utils.initialize_logging(__name__)
 
 
 def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1=None):
+    """This function retrieves the value of a specific node setting.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param setting_name: The name of the setting field for which to retrieve the value
+    :type setting_name: str
+    :param node_id: The ID of the node associated with the setting to retrieve
+    :type node_id: str
+    :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+    :type node_type: str
+    :param v1: Optionally defines a specific Community API version to use when retrieving the value
+    :type v1: bool, None
+    :returns: The value of the setting for the node
+    :raises: :py:exc:`khoros.errors.exceptions.LiQLParseError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    """
     # Determine which API version to utilize
     if v1 is None:
         # Leverage APIv2 if the setting name follows the standard v2 naming convention for custom metadata fields
