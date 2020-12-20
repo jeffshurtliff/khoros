@@ -19,6 +19,8 @@ logger = log_utils.initialize_logging(__name__)
 def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1=None):
     """This function retrieves the value of a specific node setting.
 
+    .. versionadded:: 3.2.0
+
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param setting_name: The name of the setting field for which to retrieve the value
@@ -30,9 +32,9 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     :param v1: Optionally defines a specific Community API version to use when retrieving the value
     :type v1: bool, None
     :returns: The value of the setting for the node
-    :raises: :py:exc:`khoros.errors.exceptions.LiQLParseError`,
-             :py:exc:`khoros.errors.exceptions.GETRequestError`,
-             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.LiQLParseError`
     """
     # Determine which API version to utilize
     if v1 is None:
@@ -59,6 +61,21 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
 
 
 def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
+    """This function retrieves a node setting value using the Community API v1.
+
+    .. versionadded:: 3.2.0
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _setting_name: The name of the setting field for which to retrieve the value
+    :type _setting_name: str
+    :param _node_id: The ID of the node associated with the setting to retrieve
+    :type _node_id: str
+    :param _node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+    :type _node_type: str
+    :returns: The value of the setting in its original format
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
     _uri = f"/{_node_type}/id/{_node_id}/settings/name/{_setting_name}"
     _settings_data = api.make_v1_request(_khoros_object, _uri, 'GET')['response']
     if _settings_data.get('status') == 'error':
@@ -68,6 +85,21 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 
 
 def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
+    """This function retrieves a node setting value using the Community API v2 and LiQL.
+
+    .. versionadded:: 3.2.0
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _setting_name: The name of the setting field for which to retrieve the value
+    :type _setting_name: str
+    :param _node_id: The ID of the node associated with the setting to retrieve
+    :type _node_id: str
+    :param _node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+    :type _node_type: str
+    :returns: The value of the setting in its original format
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
     return liql.get_returned_items(_settings_data, only_first=True)[_setting_name]
