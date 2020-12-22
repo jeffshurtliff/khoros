@@ -120,5 +120,28 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 
 
 def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board'):
+    """This function defines a particular setting value for a given node.
+
+    :param khoros_object:The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param setting_name: The name of the setting field for which to retrieve the value
+    :type setting_name: str
+    :param setting_val: The value of the setting to be defined
+    :type setting_val: str
+    :param node_id: The ID of the node associated with the setting to retrieve
+    :type node_id: str
+    :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+    :type node_type: str
+    :returns: None
+    :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
     node_type = _validate_node_type(node_type)
-    # uri = f''
+    uri = f'/{node_type}/id/{node_id}/settings/name/{setting_name}/set'
+    payload = {'value': str(setting_val)}
+    response = api.make_v1_request(khoros_object, uri, payload, 'POST')['response']
+    if response.get('status') != "success":
+        raise errors.exceptions.POSTRequestError(status_code=response['error']['code'],
+                                                 message=response['error']['message'])
+    return
