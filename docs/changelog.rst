@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v3.2.0
 ******
-**Release Date: 2020-12-22**
+**Release Date: 2020-12-23**
 
 Added
 =====
@@ -90,6 +90,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   ``message`` as an argument.
 * Updated the :py:func:`khoros.utils.core_utils.encode_query_string` function to support
   API v1 calls using JSON payloads.
+* Updated the function :py:func:`khoros.utils.core_utils.convert_single_value_to_tuple` to be
+  more PEP8 compliant.
 
 Fixed
 =====
@@ -100,12 +102,18 @@ Fixes in the :doc:`core-object-methods`.
 
 * Fixed an argument mismatch issue in the :py:meth:`khoros.core.Khoros.parse_v2_response` and
   :py:meth:`khoros.core.Khoros.Message.parse_v2_response` (deprecated) methods.
+* Updated the methods below to pass the query parameters in the message body to avoid exceeding
+  the URI limit and receiving responses with ``413`` or ``414`` status codes.
+    * :py:meth:`khoros.core.Khoros.V1.post`
+    * :py:meth:`khoros.core.Khoros.V1.put`
 
 Primary Modules
 ---------------
 Fixes in the :doc:`primary modules <primary-modules>`.
 
 * Added a missing docstring for the :py:func:`khoros.api.payload_request_with_retries` function.
+* Updated the function :py:func:`khoros.api.make_v1_request` to pass the query parameters in the message
+  body to avoid exceeding the URI limit and receiving responses with ``413`` or ``414`` status codes.
 
 Supporting Modules
 ------------------
