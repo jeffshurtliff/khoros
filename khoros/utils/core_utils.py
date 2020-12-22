@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Dec 2020
+:Modified Date:     22 Dec 2020
 """
 
 import os
@@ -230,11 +230,15 @@ def convert_set(iterable, convert_to='list'):
 def convert_single_value_to_tuple(value):
     """This function converts a single value of nearly any type into a tuple.
 
+    .. versionchanged:: 3.2.0
+       The function has been aesthetically updated to be more PEP8 compliant.
+
     .. versionadded:: 2.3.0
 
     :param value: The value to convert into a tuple
     """
-    return (value, )
+    value = (value,)
+    return value
 
 
 def convert_string_to_tuple(value):
