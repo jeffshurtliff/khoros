@@ -345,21 +345,49 @@ class PayloadMismatchError(KhorosError):
 
 
 class POSTRequestError(KhorosError):
-    """This exception is used for generic POST request errors when there isn't a more specific exception."""
+    """This exception is used for generic POST request errors when there isn't a more specific exception.
+
+    .. versionchanged:: 3.2.0
+       Enabled the ability to optionally pass ``status_code`` and/or ``message`` arguments.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The POST request did not return a successful response."
-        if not (args or kwargs):
+        custom_msg = "The POST request failed with the following message:"
+        if 'status_code' in kwargs or 'message' in kwargs:
+            if 'status_code' in kwargs:
+                status_code_msg = f"returned the {kwargs['status_code']} status code"
+                custom_msg = custom_msg.replace('failed', status_code_msg)
+            if 'message' in kwargs:
+                custom_msg = f"{custom_msg} {kwargs['message']}"
+            else:
+                custom_msg = custom_msg.split(' with the following')[0] + "."
+            args = (custom_msg,)
+        elif not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
 
 
 class PUTRequestError(KhorosError):
-    """This exception is used for generic PUT request errors when there isn't a more specific exception."""
+    """This exception is used for generic PUT request errors when there isn't a more specific exception.
+
+    .. versionchanged:: 3.2.0
+       Enabled the ability to optionally pass ``status_code`` and/or ``message`` arguments.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The PUT request did not return a successful response."
-        if not (args or kwargs):
+        custom_msg = "The PUT request failed with the following message:"
+        if 'status_code' in kwargs or 'message' in kwargs:
+            if 'status_code' in kwargs:
+                status_code_msg = f"returned the {kwargs['status_code']} status code"
+                custom_msg = custom_msg.replace('failed', status_code_msg)
+            if 'message' in kwargs:
+                custom_msg = f"{custom_msg} {kwargs['message']}"
+            else:
+                custom_msg = custom_msg.split(' with the following')[0] + "."
+            args = (custom_msg,)
+        elif not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
 
