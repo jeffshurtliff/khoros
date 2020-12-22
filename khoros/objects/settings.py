@@ -32,7 +32,9 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     :param v1: Optionally defines a specific Community API version to use when retrieving the value
     :type v1: bool, None
     :returns: The value of the setting for the node
-    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.LiQLParseError`
     """
@@ -88,7 +90,9 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     :param _node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
     :type _node_type: str
     :returns: The value of the setting in its original format
-    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     _uri = f"/{_node_type}/id/{_node_id}/settings/name/{_setting_name}"
     _settings_data = api.make_v1_request(_khoros_object, _uri, 'GET')['response']
@@ -112,7 +116,9 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     :param _node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
     :type _node_type: str
     :returns: The value of the setting in its original format
-    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
@@ -121,6 +127,8 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 
 def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board'):
     """This function defines a particular setting value for a given node.
+
+    .. versionadded:: 3.2.0
 
     :param khoros_object:The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -133,7 +141,9 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
     :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
     :type node_type: str
     :returns: None
-    :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """

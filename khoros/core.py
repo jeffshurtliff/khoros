@@ -2820,7 +2820,49 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def get_node_setting(self, setting_name, node_id, node_type='board', v1=None):
+            """This function retrieves the value of a specific node setting.
+
+            .. versionadded:: 3.2.0
+
+            :param setting_name: The name of the setting field for which to retrieve the value
+            :type setting_name: str
+            :param node_id: The ID of the node associated with the setting to retrieve
+            :type node_id: str
+            :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+            :type node_type: str
+            :param v1: Optionally defines a specific Community API version to use when retrieving the value
+            :type v1: bool, None
+            :returns: The value of the setting for the node
+            :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+                     :py:exc:`khoros.errors.exceptions.LiQLParseError`
+            """
             return objects_module.settings.get_node_setting(self.khoros_object, setting_name, node_id, node_type, v1)
+
+        def define_node_setting(self, setting_name, setting_val, node_id, node_type='board'):
+            """This function defines a particular setting value for a given node.
+
+            .. versionadded:: 3.2.0
+
+            :param setting_name: The name of the setting field for which to retrieve the value
+            :type setting_name: str
+            :param setting_val: The value of the setting to be defined
+            :type setting_val: str
+            :param node_id: The ID of the node associated with the setting to retrieve
+            :type node_id: str
+            :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+            :type node_type: str
+            :returns: None
+            :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+                     :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+            """
+            return objects_module.settings.define_node_setting(self.khoros_object, setting_name, setting_val,
+                                                               node_id, node_type)
 
     class Studio(object):
         """This class includes methods relating to the Lithium SDK and Studio Plugin."""
