@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     02 Nov 2020
+:Modified Date:     22 Dec 2020
 """
 
 import json
@@ -328,9 +328,47 @@ def _raise_exception_for_repeated_timeouts():
     raise errors.exceptions.APIConnectionError(_failure_msg)
 
 
-def payload_request_with_retries(url, request_type, json_payload=None, plaintext_payload=None, return_json=True,
-                                 khoros_object=None, auth_dict=None, headers=None, multipart=False, content_type=None):
+def payload_request_with_retries(url, request_type, json_payload=None, plaintext_payload=None, url_encoded_payload=None,
+                                 return_json=True, khoros_object=None, auth_dict=None, headers=None, multipart=False,
+                                 content_type=None):
+    """This function performs an API request that includes a payload with up to three reties as necessary.
 
+    .. versionchanged:: 3.2.0
+       Support has been introduced for URL-encoded string payloads in POST and PUT requests.
+
+    :param url: The URI to be queried
+    :type url: str
+    :param request_type: Defines the API call as a ``GET``, ``POST`` or ``PUT`` request
+    :type request_type: str
+    :param json_payload: The payload for the POST or PUT request in JSON format
+    :type json_payload: dict, None
+    :param plaintext_payload: The payload for the POST or PUT request in plaintext (i.e. ``text/plain``) format
+    :type plaintext_payload: str, None
+    :param url_encoded_payload: The payload for the POST or PUT request as a URL-encoded string
+    :type url_encoded_payload: str, None
+    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :type return_json: bool
+    :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
+    :type khoros_object: class[khoros.Khoros], None
+    :param auth_dict: The ``auth`` dictionary within the :py:class:`khoros.Khoros` class object
+    :type auth_dict: dict, None
+    :param headers: Any header values (in dictionary format) to pass in the API call (optional)
+    :type headers: dict, None
+    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :type multipart: bool
+    :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                         .. note:: If this parameter is not defined then the content type will be identified based
+                                   on the payload format and/or type of request.
+
+    :type content_type: str, None
+    :returns: The API response from the API request
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
     # Ensure that the request type is valid
     valid_request_types = ['post', 'put']
     request_type = request_type.lower()
@@ -349,14 +387,28 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
         headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
 
     # Perform the API call and retrieve the response
-    payload = plaintext_payload if plaintext_payload and not json_payload else json_payload
+    if any((plaintext_payload, url_encoded_payload)) and not json_payload:
+        if plaintext_payload and not url_encoded_payload:
+            payload = plaintext_payload
+        elif url_encoded_payload and not plaintext_payload:
+            payload = url_encoded_payload
+        else:
+            raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
+    elif json_payload and not any((plaintext_payload, url_encoded_payload)):
+        payload = json_payload
+    else:
+        raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
     response = _api_request_with_payload(url, payload, request_type, headers, multipart)
     return _attempt_json_conversion(response, return_json)
 
 
-def post_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
-                              auth_dict=None, headers=None, multipart=False, content_type=None):
+def post_request_with_retries(url, json_payload=None, plaintext_payload=None, url_encoded_payload=None,
+                              return_json=True, khoros_object=None, auth_dict=None, headers=None, multipart=False,
+                              content_type=None):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.2.0
+       Support has been introduced for URL-encoded string payloads in POST requests.
 
     .. versionchanged:: 3.1.1
        The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
@@ -377,6 +429,8 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, re
     :type json_payload: dict, None
     :param plaintext_payload: The payload for the POST request in plaintext (i.e. ``text/plain``) format
     :type plaintext_payload: str, None
+    :param url_encoded_payload: The payload for the POST request as a URL-encoded string
+    :type url_encoded_payload: str, None
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -395,17 +449,22 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, re
     :type content_type: str, None
     :returns: The API response from the POST request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
-             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
     content_type = '' if not content_type else content_type
     return payload_request_with_retries(url, 'post', json_payload=json_payload, plaintext_payload=plaintext_payload,
-                                        return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
-                                        headers=headers, multipart=multipart, content_type=content_type.lower())
+                                        url_encoded_payload=url_encoded_payload, return_json=return_json,
+                                        khoros_object=khoros_object, auth_dict=auth_dict, headers=headers,
+                                        multipart=multipart, content_type=content_type.lower())
 
 
-def put_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, khoros_object=None,
-                             auth_dict=None, headers=None, multipart=False, content_type=None):
+def put_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, url_encoded_payload=None,
+                             khoros_object=None, auth_dict=None, headers=None, multipart=False, content_type=None):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.2.0
+       Support has been introduced for URL-encoded string payloads in PUT requests.
 
     .. versionchanged:: 3.1.1
        The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
@@ -426,6 +485,8 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :type json_payload: dict, None
     :param plaintext_payload: The payload for the POST request in plaintext (i.e. ``text/plain``) format
     :type plaintext_payload: str, None
+    :param url_encoded_payload: The payload for the POST request as a URL-encoded string
+    :type url_encoded_payload: str, None
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -444,12 +505,14 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :type content_type: str, None
     :returns: The API response from the PUT request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
-             :py:exc:`khoros.errors.exceptions.PUTRequestError`
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
     content_type = '' if not content_type else content_type
     return payload_request_with_retries(url, 'put', json_payload=json_payload, plaintext_payload=plaintext_payload,
-                                        return_json=return_json, khoros_object=khoros_object, auth_dict=auth_dict,
-                                        headers=headers, multipart=multipart, content_type=content_type.lower())
+                                        url_encoded_payload=url_encoded_payload, return_json=return_json,
+                                        khoros_object=khoros_object, auth_dict=auth_dict, headers=headers,
+                                        multipart=multipart, content_type=content_type.lower())
 
 
 def _attempt_json_conversion(_response, _return_json):
@@ -573,8 +636,29 @@ def encode_multipart_data(data_fields):
     return MultipartEncoder(fields=data_fields)
 
 
-def encode_v1_query_string(query_dict, return_json=True):
-    """This function formats and URL-encodes a Community API v1 quey string.
+def encode_payload_values(payload_dict):
+    """This function URL-encoded any string-formatted payload values.
+
+    .. versionadded:: 3.2.0
+
+    :param payload_dict: The JSON payload for an API call in dictionary format
+    :type payload_dict: dict
+    :returns: The JSON payload with URL-encoded string values
+    """
+    encoded_payload = {}
+    for field, value in payload_dict.items():
+        if isinstance(value, str):
+            encoded_payload[field] = core_utils.url_encode(value)
+        else:
+            encoded_payload[field] = value
+    return encoded_payload
+
+
+def encode_v1_query_string(query_dict, return_json=True, json_payload=False):
+    """This function formats and URL-encodes a Community API v1 query string.
+
+    .. versionchanged:: 3.2.0
+       Introduced the ability to pass the query parameters as JSON payload to avoid URI length limits.
 
     .. versionadded:: 2.5.0
 
@@ -582,15 +666,22 @@ def encode_v1_query_string(query_dict, return_json=True):
     :type query_dict: dict
     :param return_json: Determines if JSON should be returned rather than XML (default: ``True``)
     :type return_json: bool
+    :param json_payload: Determines if query parameters should be passed as JSON payload rather than in the URI
+                         (``False`` by default)
+    :type json_payload: bool
     :returns: The properly formatted and encoded query string
     """
     if return_json:
         query_dict['restapi.response_format'] = 'json'
-    return core_utils.encode_query_string(query_dict)
+    return core_utils.encode_query_string(query_dict, json_payload=json_payload)
 
 
-def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GET', return_json=True):
+def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GET', return_json=True,
+                    params_in_uri=False, json_payload=False):
     """This function makes a Community API v1 request.
+
+    .. versionchanged:: 3.2.0
+       Introduced the new default ability to pass the query parameters as payload to avoid URI length limits.
 
     .. versionchanged:: 3.0.0
        The ``query_params`` argument has been updated to be optional and a full query string can now
@@ -609,10 +700,23 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
     :type endpoint: str
     :param query_params: The field and associated values to be leveraged in the query string
     :type query_params: dict, None
-    :param request_type: Determines which type of API request to perform (e.g. ``GET``, ``POST``, ``PUT``, etc.)
+    :param request_type: Determines which type of API request to perform (e.g. ``GET`` or ``POST``)
+
+                         .. caution:: While ``PUT`` requests are technically supported in this library, at this time
+                                      they are not yet supported by the Khoros Community API v1 endpoints.
+
     :type request_type: str
     :param return_json: Determines if the response should be returned in JSON format rather than the default
     :type return_json: bool
+    :param params_in_uri: Determines if query parameters should be passed in the URI rather than in the request body
+                         (``False`` by default)
+    :type params_in_uri: bool
+    :param json_payload: Determines if query parameters should be passed as JSON payload rather than in the URI
+                         (``False`` by default)
+
+                         .. caution:: This is not yet fully supported and therefore should not be used at this time.
+
+    :type json_payload: bool
     :returns: The API response
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
              :py:exc:`khoros.errors.exceptions.GETRequestError`,
@@ -620,27 +724,51 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
              :py:exc:`khoros.errors.exceptions.PUTRequestError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
-             :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+             :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
+    # Construct the API request
     currently_unsupported_types = ['UPDATE', 'PATCH', 'DELETE']
     query_params = {} if not query_params else query_params
-    query_string = encode_v1_query_string(query_params, return_json)
+    query_string = encode_v1_query_string(query_params, return_json, params_in_uri)
     header = {"content-type": "application/x-www-form-urlencoded"}
     endpoint = endpoint[1:] if endpoint.startswith('/') else endpoint
     url = f"{khoros_object.core['v1_base']}/{endpoint}"
-    query_string_delimiter = '&' if '?' in url else '?'
-    url = f"{khoros_object.core['v1_base']}/{endpoint}{query_string_delimiter}{query_string}"
+
+    # Only add the query parameters to the URI when explicitly requested
+    if params_in_uri:
+        query_string_delimiter = '&' if '?' in url else '?'
+        url = f"{khoros_object.core['v1_base']}/{endpoint}{query_string_delimiter}{query_string}"
+
+    # Determine the request type and perform the appropriate call
     if request_type.upper() == 'GET':
         response = get_request_with_retries(url, return_json, khoros_object, headers=header)
     elif request_type.upper() == 'POST':
-        response = post_request_with_retries(url, return_json=return_json, khoros_object=khoros_object, headers=header)
+        if params_in_uri:
+            response = post_request_with_retries(url, return_json=return_json, khoros_object=khoros_object,
+                                                 headers=header)
+        elif json_payload:
+            # TODO: Finish testing and adding support for this type of payload (may just need different header)
+            response = post_request_with_retries(url, json_payload=query_params, return_json=return_json,
+                                                 khoros_object=khoros_object, headers=header)
+        else:
+            response = post_request_with_retries(url, url_encoded_payload=query_string, return_json=return_json,
+                                                 khoros_object=khoros_object, headers=header)
     elif request_type.upper() == 'PUT':
-        response = put_request_with_retries(url, return_json=return_json, khoros_object=khoros_object, headers=header)
+        if params_in_uri:
+            response = put_request_with_retries(url, return_json=return_json, khoros_object=khoros_object,
+                                                headers=header)
+        elif json_payload:
+            # TODO: Finish testing and adding support for this type of payload (may just need different header)
+            response = put_request_with_retries(url, json_payload=query_params, return_json=return_json,
+                                                khoros_object=khoros_object, headers=header)
+        else:
+            response = put_request_with_retries(url, url_encoded_payload=query_string, return_json=return_json,
+                                                khoros_object=khoros_object, headers=header)
     elif request_type.upper() in currently_unsupported_types:
         raise errors.exceptions.CurrentlyUnsupportedError()
     else:
         raise errors.exceptions.InvalidRequestTypeError()
-    # TODO: Verify successful response
     return response
 
 

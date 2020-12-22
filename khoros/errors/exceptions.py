@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     19 Dec 2020
+:Modified Date:     22 Dec 2020
 """
 
 #################
@@ -74,9 +74,12 @@ class SessionAuthenticationError(KhorosError):
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The session key authentication attempt failed."
+        custom_msg = default_msg.replace('.', ' with the following message:')
         if not (args or kwargs):
             args = (default_msg,)
-        # TODO: Add alternate message if variable is passed to the exception class
+        elif 'message' in kwargs:
+            custom_msg = f"{custom_msg} {kwargs['message']}"
+            args = (custom_msg,)
         super().__init__(*args)
 
 
@@ -322,6 +325,22 @@ class NotFoundResponseError(KhorosError):
         default_msg = "The API query returned a 404 response."
         if not (args or kwargs):
             args = (default_msg,)
+        super().__init__(*args)
+
+
+class PayloadMismatchError(KhorosError):
+    """This exception is used when more than one payload is supplied for an API request.
+
+    .. versionadded:: 3.2.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "More than one payload was provided for the API call when only one is permitted."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif kwargs['request_type']:
+            custom_msg = default_msg.replace("API call", f"{kwargs['request_type'].upper()} request")
+            args = (custom_msg,)
         super().__init__(*args)
 
 

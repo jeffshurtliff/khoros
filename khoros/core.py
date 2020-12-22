@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 Oct 2020
+:Modified Date:     22 Dec 2020
 """
 
 import sys
@@ -213,6 +213,7 @@ class Khoros(object):
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
+        self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.users = self._import_user_class()
 
@@ -394,6 +395,13 @@ class Khoros(object):
         .. versionadded:: 2.4.0
         """
         return Khoros.Role(self)
+
+    def _import_settings_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Settings` inner class to be utilized in the core object.
+
+        .. versionadded:: 3.2.0
+        """
+        return Khoros.Settings(self)
 
     def _import_studio_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Studio` inner class to be utilized in the core object.
@@ -628,9 +636,12 @@ class Khoros(object):
         return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
     @staticmethod
-    def parse_v2_response(json_response, return_dict=False, status=False, developer_msg=False, http_code=False,
+    def parse_v2_response(json_response, return_dict=False, status=False, error_msg=False, http_code=False,
                           data_id=False, data_url=False, data_api_uri=False, v2_base=''):
         """This function parses an API response for a Community API v2 operation and returns parsed data.
+
+        .. versionchanged:: 3.2.0
+           The lower-level function call now utilizes keyword arguments to fix an argument mismatch issue.
 
         .. versionadded:: 2.5.0
 
@@ -640,8 +651,8 @@ class Khoros(object):
         :type return_dict: bool
         :param status: Defines if the **status** value should be returned
         :type status: bool
-        :param developer_msg: Defines if the **developer response** message should be returned
-        :type developer_msg: bool
+        :param error_msg: Defines if the error message (and **developer response** message) should be returned
+        :type error_msg: bool
         :param http_code: Defines if the **HTTP status code** should be returned
         :type http_code: bool
         :param data_id: Defines if the **ID** should be returned
@@ -655,8 +666,9 @@ class Khoros(object):
         :returns: A string, tuple or dictionary with the parsed data
         :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
         """
-        return api.parse_v2_response(json_response, return_dict, status, developer_msg, http_code, data_id, data_url,
-                                     data_api_uri, v2_base)
+        return api.parse_v2_response(json_response, return_dict, status, error_msg, dev_msg=error_msg,
+                                     http_code=http_code, data_id=data_id, data_url=data_url,
+                                     data_api_uri=data_api_uri, v2_base=v2_base)
 
     class V1(object):
         """This class includes methods for performing base Community API v1 requests."""
@@ -691,8 +703,11 @@ class Khoros(object):
             query_params = {} if not query_params else query_params
             return api.make_v1_request(self.khoros_object, endpoint, query_params, 'GET', return_json)
 
-        def post(self, endpoint, query_params=None, return_json=True):
+        def post(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False):
             """This function makes a Community API v1 POST request.
+
+            .. versionchanged:: 3.2.0
+               Introduced the ability to pass the query parameters as payload to avoid URI length limits.
 
             .. versionadded:: 3.0.0
 
@@ -702,20 +717,38 @@ class Khoros(object):
             :type query_params: dict
             :param return_json: Determines if the response should be returned in JSON format rather than the default
             :type return_json: bool
+            :param params_in_uri: Determines if query parameters should be passed in the URI rather than in the
+                                  request body (``False`` by default)
+            :type params_in_uri: bool
+            :param json_payload: Determines if query parameters should be passed as JSON payload rather than in the URI
+                                 (``False`` by default)
+
+                                 .. caution:: This is not yet fully supported and therefore should not be used
+                                              at this time.
+
+            :type json_payload: bool
             :returns: The API response
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
-                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
+                     :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             query_params = {} if not query_params else query_params
-            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'POST', return_json)
+            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'POST', return_json=return_json,
+                                       params_in_uri=params_in_uri, json_payload=json_payload)
 
-        def put(self, endpoint, query_params=None, return_json=True):
+        def put(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False):
             """This function makes a Community API v1 PUT request.
 
+            .. versionchanged:: 3.2.0
+               Introduced the ability to pass the query parameters as payload to avoid URI length limits.
+
             .. versionadded:: 3.0.0
+
+            .. caution:: While ``PUT`` requests are technically supported in this library, at this time
+                         they are not yet supported by the Khoros Community API v1 endpoints.
 
             :param endpoint: The API endpoint to be queried
             :type endpoint: str
@@ -723,15 +756,27 @@ class Khoros(object):
             :type query_params: dict
             :param return_json: Determines if the response should be returned in JSON format rather than the default
             :type return_json: bool
+            :param params_in_uri: Determines if query parameters should be passed in the URI rather than in the
+                                  request body (``False`` by default)
+            :type params_in_uri: bool
+            :param json_payload: Determines if query parameters should be passed as JSON payload rather than in the URI
+                                 (``False`` by default)
+
+                                 .. caution:: This is not yet fully supported and therefore should not be used
+                                              at this time.
+
+            :type json_payload: bool
             :returns: The API response
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.PUTRequestError`,
                      :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
-                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
+                     :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
+                     :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             query_params = {} if not query_params else query_params
-            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'PUT', return_json)
+            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'PUT', return_json=return_json,
+                                       params_in_uri=params_in_uri, json_payload=json_payload)
 
         def search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
             """This function performs a search for a particular field value using a Community API v1 call.
@@ -2222,6 +2267,9 @@ class Khoros(object):
                               message_id=False, message_url=False, message_api_uri=False, v2_base=''):
             """This function parses an API response for a message operation (e.g. creating a message) and returns data.
 
+            .. versionchanged:: 3.2.0
+               The lower-level function call now utilizes keyword arguments to fix an argument mismatch issue.
+
             .. deprecated:: 2.5.0
                Use the :py:func:`khoros.core.Khoros.parse_v2_response` function instead.
 
@@ -2250,8 +2298,10 @@ class Khoros(object):
             """
             warnings.warn(f"This function is deprecated and 'khoros.core.Khoros.parse_v2_response' should be used.",
                           DeprecationWarning)
-            return api.parse_v2_response(json_response, return_dict, status, response_msg, http_code, message_id,
-                                         message_url, message_api_uri, v2_base)
+            dev_msg = response_msg
+            return api.parse_v2_response(json_response, return_dict, status, response_msg, dev_msg, http_code=http_code,
+                                         data_id=message_id, data_url=message_url, data_api_uri=message_api_uri,
+                                         v2_base=v2_base)
 
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This function formats the ``<li-message>`` HTML tag for a content @mention.
@@ -2755,6 +2805,22 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETResponseError`
             """
             return objects_module.roles.get_roles_for_user(self.khoros_object, user_id)
+
+    class Settings(object):
+        """This class includes methods relating to the retrieval and defining of various settings.
+
+        .. versionadded:: 3.2.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Studio` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get_node_setting(self, setting_name, node_id, node_type='board', v1=None):
+            return objects_module.settings.get_node_setting(self.khoros_object, setting_name, node_id, node_type, v1)
 
     class Studio(object):
         """This class includes methods relating to the Lithium SDK and Studio Plugin."""

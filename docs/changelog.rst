@@ -6,10 +6,18 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v3.2.0
 ******
-**Release Date: 2020-12-19**
+**Release Date: 2020-12-21**
 
 Added
 =====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:class:`khoros.core.Khoros.Settings` class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Settings.get_node_setting`
+* Added the :py:meth:`khoros.core.Khoros._import_settings_class` method.
 
 Primary Modules
 ---------------
@@ -19,14 +27,20 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.settings.get_node_setting`
     * :py:func:`khoros.objects.settings._get_v1_node_setting`
     * :py:func:`khoros.objects.settings._get_v2_node_setting`
+    * :py:func:`khoros.objects.settings._validate_node_type`
+* Added the :py:mod:`khoros.objects.settings` module to the ``__init__.py`` file for the
+  :py:mod:`khoros.objects` module.
 * Added the new :py:func:`khoros.liql.get_returned_items` function.
+* Added the new :py:func:`khoros.api.encode_payload_values` function.
 
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
-* Added the new :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError` exception.
-* Added the new :py:exc:`khoros.errors.exceptions.LiQLParseError` exception.
+* Added the following new exception classes:
+    * :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`
+    * :py:exc:`khoros.errors.exceptions.LiQLParseError`
+    * :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
 
 Changed
 =======
@@ -41,6 +55,26 @@ General
 * Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
   as long as they meet a minimum version requirement.
 
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the methods below to support API v1 calls using payloads:
+    * :py:meth:`khoros.core.Khoros.V1.post`
+    * :py:meth:`khoros.core.Khoros.V1.put`
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the functions below to support API v1 calls using JSON payloads:
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.api.encode_v1_query_string`
+* Added support for URL-encoded string payloads in the following functions:
+    * :py:func:`khoros.api.payload_request_with_retries`
+    * :py:func:`khoros.api.post_request_with_retries`
+    * :py:func:`khoros.api.put_request_with_retries`
+
 Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
@@ -49,9 +83,26 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   into a new section entitled **Node Exceptions**.
 * Updated the :py:exc:`khoros.errors.exceptions.GETRequestError` exception to optionally accept ``status_code``
   and ``message`` as arguments.
+* Updated the :py:exc:`khoros.errors.exceptions.SessionAuthenticationError` exception to optionally accept
+  ``message`` as an argument.
+* Updated the :py:func:`khoros.utils.core_utils.encode_query_string` function to support
+  API v1 calls using JSON payloads.
 
 Fixed
 =====
+
+Core Object
+-----------
+Fixes in the :doc:`core-object-methods`.
+
+* Fixed an argument mismatch issue in the :py:meth:`khoros.core.Khoros.parse_v2_response` and
+  :py:meth:`khoros.core.Khoros.Message.parse_v2_response` (deprecated) methods.
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Added a missing docstring for the :py:func:`khoros.api.payload_request_with_retries` function.
 
 Supporting Modules
 ------------------

@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Jul 2020
+:Modified Date:     21 Dec 2020
 """
 
 import os
@@ -171,16 +171,28 @@ def _structure_query_string(_url_dict, _no_encode):
     return _query_string
 
 
-def encode_query_string(url_dict, no_encode=None):
+def encode_query_string(url_dict, no_encode=None, json_payload=False):
     """This function compiles a URL query string from a dictionary of parameters.
+
+    .. versionchanged:: 3.2.0
+       Introduced the ability to pass the query parameters as JSON payload to avoid URI length limits.
 
     :param url_dict: Dictionary of URL query string keys and values
     :type url_dict: dict
     :param no_encode: Designates any dictionary keys (i.e. field names) whose values should not be URL-encoded
     :type no_encode: list, tuple, set, str, None
+    :param json_payload: Determines if query parameters should be passed as JSON payload rather than in the URI
+                         (``False`` by default)
+    :type json_payload: bool
     :returns: The URL query string in string format
     """
-    if no_encode:
+    if json_payload:
+        # Structure the query string using only the field names
+        query_string = ""
+        for field in url_dict.keys():
+            delimiter = "&" if len(query_string) > 0 else ""
+            query_string = f"{query_string}{delimiter}{field}"
+    elif no_encode:
         query_string = _structure_query_string(url_dict, no_encode)
     else:
         query_string = urllib.parse.urlencode(url_dict)

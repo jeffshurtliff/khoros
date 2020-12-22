@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     20 Dec 2020
+:Modified Date:     22 Dec 2020
 """
 
 from .. import api, liql, errors
@@ -42,15 +42,7 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
         v1 = False if setting_name.startswith("c_") else True
 
     # Get the proper URI syntax for the given node type
-    node_type_map = {
-        'board': 'boards',
-        'category': 'categories',
-        'grouphub': 'grouphubs'
-    }
-    if node_type not in node_type_map.keys() and node_type not in node_type_map.values():
-        raise errors.exceptions.InvalidNodeTypeError(val=node_type)
-    elif node_type in node_type_map:
-        node_type = node_type_map.get(node_type)
+    node_type = _validate_node_type(node_type)
 
     # Perform the appropriate API request based on required version
     if v1:
@@ -58,6 +50,28 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     else:
         setting_value = _get_v2_node_setting(khoros_object, setting_name, node_id, node_type)
     return setting_value
+
+
+def _validate_node_type(_node_type):
+    """This function checks to ensure that a valid node type has been provided for viewing or defining node settings.
+
+    .. versionadded:: 3.2.0
+
+    :param _node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
+    :type _node_type: str
+    :returns: The node type value which may or may not have been updated
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    """
+    _node_type_map = {
+        'board': 'boards',
+        'category': 'categories',
+        'grouphub': 'grouphubs'
+    }
+    if _node_type not in _node_type_map.keys() and _node_type not in _node_type_map.values():
+        raise errors.exceptions.InvalidNodeTypeError(val=_node_type)
+    elif _node_type in _node_type_map:
+        _node_type = _node_type_map.get(_node_type)
+    return _node_type
 
 
 def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
@@ -103,3 +117,8 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
     return liql.get_returned_items(_settings_data, only_first=True)[_setting_name]
+
+
+def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board'):
+    node_type = _validate_node_type(node_type)
+    # uri = f''
