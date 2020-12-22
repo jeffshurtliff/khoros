@@ -104,6 +104,7 @@ Fixes in the :doc:`core-object-methods`.
   :py:meth:`khoros.core.Khoros.Message.parse_v2_response` (deprecated) methods.
 * Updated the methods below to pass the query parameters in the message body to avoid exceeding
   the URI limit and receiving responses with ``413`` or ``414`` status codes.
+
     * :py:meth:`khoros.core.Khoros.V1.post`
     * :py:meth:`khoros.core.Khoros.V1.put`
 
@@ -191,8 +192,7 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Added support for ``text/plain`` payloads and introduced the ``content_type`` parameter
-  in the following functions:
+* Added support for ``text/plain`` payloads and introduced the ``content_type`` parameter in the following functions:
     * :py:func:`khoros.api.post_request_with_retries`
     * :py:func:`khoros.api._api_request_with_payload`
 * Updated the :py:func:`khoros.api.post_request_with_retries` and
