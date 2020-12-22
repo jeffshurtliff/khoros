@@ -11,6 +11,7 @@ Table of Contents
 .. toctree::
 
    introduction
+   community-api-calls
    messages
    boards
    group-hubs
