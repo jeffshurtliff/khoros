@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v3.2.0
 ******
-**Release Date: 2020-12-21**
+**Release Date: 2020-12-22**
 
 Added
 =====
@@ -17,6 +17,7 @@ Additions to the :doc:`core-object-methods`.
 
 * Added the :py:class:`khoros.core.Khoros.Settings` class with the following methods:
     * :py:meth:`khoros.core.Khoros.Settings.get_node_setting`
+    * :py:meth:`khoros.core.Khoros.Settings.define_node_setting`
 * Added the :py:meth:`khoros.core.Khoros._import_settings_class` method.
 
 Primary Modules
