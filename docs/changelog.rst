@@ -81,8 +81,10 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Moved the exceptions within the **Base Object Exceptions** section of :py:mod:`khoros.errors.exceptions`
   into a new section entitled **Node Exceptions**.
-* Updated the :py:exc:`khoros.errors.exceptions.GETRequestError` exception to optionally accept ``status_code``
-  and ``message`` as arguments.
+* Updated the following exceptions to optionally accept ``status_code`` and ``message`` as arguments:
+    * :py:exc:`khoros.errors.exceptions.GETRequestError`
+    * :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    * :py:exc:`khoros.errors.exceptions.PUTRequestError`
 * Updated the :py:exc:`khoros.errors.exceptions.SessionAuthenticationError` exception to optionally accept
   ``message`` as an argument.
 * Updated the :py:func:`khoros.utils.core_utils.encode_query_string` function to support
