@@ -62,6 +62,7 @@ General
 * Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
   as long as they meet a minimum version requirement.
 * Made a minor adjustment to the ``README.md`` file relating to documentation.
+* Updated the ``docs/conf.py`` file to require Sphinx version 3.4.0.
 
 Core Object
 -----------
