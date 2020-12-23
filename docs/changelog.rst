@@ -11,6 +11,11 @@ v3.2.0
 Added
 =====
 
+General
+-------
+* Created the ``dev-requirements.txt`` to indicate which packages may be required for contributors,
+  whereas the ``requirements.txt`` file now only contains the absolute necessities to use the package.
+
 Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
@@ -53,6 +58,7 @@ General
   has been performed and no issues have been identified.
 * Updated the *Development Status* classifier in ``setup.py`` to be ``5 - Production/Stable``.
 * Added some additional *Topic* classifiers in ``setup.py``.
+* Significantly cleaned up the ``requirements.txt`` file to only include the absolute necessities.
 * Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
   as long as they meet a minimum version requirement.
 
