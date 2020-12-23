@@ -61,6 +61,7 @@ General
 * Significantly cleaned up the ``requirements.txt`` file to only include the absolute necessities.
 * Updated ``requirements.txt`` to replace ``==`` with ``>=`` to be less strict on dependency versions
   as long as they meet a minimum version requirement.
+* Made a minor adjustment to the ``README.md`` file relating to documentation.
 
 Core Object
 -----------
