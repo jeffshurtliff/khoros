@@ -121,6 +121,8 @@ Fixes in the :doc:`primary modules <primary-modules>`.
 * Added a missing docstring for the :py:func:`khoros.api.payload_request_with_retries` function.
 * Updated the function :py:func:`khoros.api.make_v1_request` to pass the query parameters in the message
   body to avoid exceeding the URI limit and receiving responses with ``413`` or ``414`` status codes.
+* Fixed an issue where v1 GET requests were not appending the ``restapi.response_format=json`` query
+  string when a JSON response has been requested.
 
 Supporting Modules
 ------------------

@@ -681,7 +681,8 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
     """This function makes a Community API v1 request.
 
     .. versionchanged:: 3.2.0
-       Introduced the new default ability to pass the query parameters as payload to avoid URI length limits.
+       Introduced the new default ability to pass the query parameters as payload to avoid URI length limits,
+       and fixed an issue with GET requests not returning JSON responses even when requested.
 
     .. versionchanged:: 3.0.0
        The ``query_params`` argument has been updated to be optional and a full query string can now
@@ -738,7 +739,13 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
     # Only add the query parameters to the URI when explicitly requested
     if params_in_uri:
         query_string_delimiter = '&' if '?' in url else '?'
-        url = f"{khoros_object.core['v1_base']}/{endpoint}{query_string_delimiter}{query_string}"
+        url = f"{url}{query_string_delimiter}{query_string}"
+
+    # Add query string to GET request URIs when a JSON response has been requested
+    if request_type.upper() == 'GET' and return_json:
+        json_query_string = 'restapi.response_format=json'
+        query_string_delimiter = '&' if '?' in url else '?'
+        url = f"{url}{query_string_delimiter}{json_query_string}"
 
     # Determine the request type and perform the appropriate call
     if request_type.upper() == 'GET':
