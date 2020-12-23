@@ -63,6 +63,8 @@ General
   as long as they meet a minimum version requirement.
 * Made a minor adjustment to the ``README.md`` file relating to documentation.
 * Updated the ``docs/conf.py`` file to require Sphinx version 3.4.0.
+* Re-added the Sphinx-related dependencies to ``requirements.txt`` to allow ReadTheDocs builds
+  to be successful.
 
 Core Object
 -----------
