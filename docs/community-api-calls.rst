@@ -19,7 +19,7 @@ for several reasons, including:
 There are three types of API calls that can be made using the :py:class:`khoros.core.Khoros` object:
 
 * `Community API v1 calls`_
-* Community API v2 calls
+* `Community API v2 calls`_
 * Generic API calls
 
 .. include:: embed/instantiate-object.rst
@@ -105,3 +105,112 @@ argument is passed in the method.
 :doc:`Return to Top <community-api-calls>`
 
 |
+
+**********************
+Community API v2 calls
+**********************
+The primary benefit introduced with the
+`Khoros Community API v2 <https://developer.khoros.com/khoroscommunitydevdocs/docs/getting-started-with-community-api-2-1>`_
+is the ability to leverage the
+`Lithium Query Language (LiQL) <https://developer.khoros.com/khoroscommunitydevdocs/docs/using-liql>`_
+to perform GET requests.
+
+This Python library provides two options for performing LiQL queries. The first is to
+provide the full LiQL query as a string argument using the :py:meth:`khoros.core.Khoros.query`
+method, and the second is to pass separate arguments for the LiQL elements into the
+:py:meth:`khoros.core.Khoros.search` method which constructs the LiQL query for you.
+
+|
+
+Using LiQL queries and the *query* method
+=========================================
+If you are familiar and comfortable with the
+`LiQL syntax <https://developer.khoros.com/khoroscommunitydevdocs/docs/using-liql>`_
+then you may prefer to construct your own LiQL queries when performing v2 GET requests.
+
+This can be done by leveraging the :py:meth:`khoros.core.Khoros.query` method in the
+core object, as demonstrated below.
+
+.. code-block:: python
+
+   >>> query = "SELECT login FROM users WHERE id = '216'"
+   >>> khoros.query(query)
+   {'status': 'success', 'message': '', 'http_code': 200,
+   'data': {'type': 'users', 'list_item_type': 'user', 'size': 1,
+   'items': [{'type': 'user', 'login': 'joeCustomer'}]}, 'metadata': {}}
+
+Because the Community API v2 returns data in JSON format by default, the same can
+be said for this library.
+
+
+:doc:`Return to Top <community-api-calls>`
+
+|
+
+Passing search parameters to the *search* method
+================================================
+If you are not very comfortable with LiQL syntax (or just want an easy way to
+perform LiQL queries) then you can use the :py:meth:`khoros.core.Khoros.search`
+method to pass LiQL elements and allow the LiQL query to be constructed for you
+behind-the-scenes.
+
+The arguments that can be utilized in the method to construct the LiQL query are
+listed in the table below.
+
+=================  ===========================  ================================================================================
+Argument           Data Type(s)                 Description
+=================  ===========================  ================================================================================
+``select_fields``  str, tuple, list, set        One or more fields to be selected within the SELECT statement (e.g. ``id``)
+``from_source``    str                          The source of the data to use in the FROM statement (e.g. ``messages``)
+``where_filter``   str, tuple, list, dict, set  The filters (if any) to use in the WHERE clause (e.g. ``id = '2'``)
+``order_by``       str, tuple, set, dict, list  The field(s) by which to order the response data (optional)
+``order_desc``     bool                         Defines if the ORDER BY directionality is DESC (default) or ASC
+``limit``          int                          Allows an optional limit to be placed on the response items (ignored by default)
+=================  ===========================  ================================================================================
+
+In addition to the arguments above, you can also utilize the optional arguments below
+to further customize the request and/or response.
+
+=====================  ============  ================================================================================
+Argument               Data Type(s)  Description
+=====================  ============  ================================================================================
+``return_json``        bool          Setting to ``False`` will return the
+                                     `requests.models.Response <https://2.python-requests.org/en/master/user/advanced/#id2>`_ object
+``pretty_print``       bool          Defines if the response should be "pretty printed" (``False`` by default)
+``track_in_lsi``       bool          Defines if the query should be tracked within LSI, aka Khoros Community
+                                     Analytics (``False`` by default)
+``always_ok``          bool          Ensures that the API response always returns a ``200 OK`` status code even when
+                                     the request fails (``False`` by default)
+``error_code``         str           Allows an error code to optionally be supplied for testing purposes (ignored by default)
+``format_statements``  bool          Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
+                                     all caps (``True`` by default)
+=====================  ============  ================================================================================
+
+.. note::
+   These arguments above are also available in the :py:meth:`khoros.core.Khoros.query` method.
+
+To demonstrate how this method works, let us consider the LiQL query
+``SELECT login FROM users WHERE id = '216'`` that was used in the
+:ref:`example <community-api-calls:Passing search parameters to the *search* method>`
+for the :py:meth:`khoros.core.Khoros.query` method. The code snippet
+below shows how the same query could be performed using the
+:py:meth:`khoros.core.Khoros.search` method.
+
+.. code-block:: python
+
+   >>> khoros.search('login', 'users', 'id = "216"')
+   {'status': 'success', 'message': '', 'http_code': 200,
+   'data': {'type': 'users', 'list_item_type': 'user', 'size': 1,
+   'items': [{'type': 'user', 'login': 'joeCustomer'}]}, 'metadata': {}}
+
+:doc:`Return to Top <community-api-calls>`
+
+|
+
+*****************
+Generic API calls
+*****************
+
+.. todo:: Coming soon!
+
+:doc:`Return to Top <community-api-calls>`
