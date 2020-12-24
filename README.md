@@ -266,7 +266,7 @@ echo.
 
 ### Interacting with the Community APIs
 Once the `Khoros` object instance has been initialized, it can be leveraged to interact with a Khoros Community
-environment in many ways, which is fully documented shortly in the 
+environment in many ways, which is fully documented in the official
 [documentation](https://khoros.readthedocs.io/en/latest/). The example below demonstrates how a search can be
 performed using LiQL to return information from the environment in JSON format.
 
