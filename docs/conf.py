@@ -87,7 +87,7 @@ pygments_style = 'sphinx'
 html_theme = 'alabaster'
 
 # Add the favicon
-html_favicon = 'favicon.ico'
+html_favicon = '_static/favicon.ico'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -99,6 +99,9 @@ html_favicon = 'favicon.ico'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# Add custom CSS (not necessary for only custom.css)
+# html_style = '_static/custom.css'
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
