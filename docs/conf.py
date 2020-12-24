@@ -93,7 +93,17 @@ html_favicon = '_static/favicon.ico'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'logo': 'khoros-python-logo.png',
+    'description': 'Khoros Communities API for Python developers',
+    'font_family': 'Arial, sans-serif',
+    'head_font_family': 'Arial, sans-serif',
+    'github_user': 'jeffshurtliff',
+    'github_repo': 'khoros',
+    'github_banner': False,
+    'github_button': True,
+    'donate_url': 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=XDZ8M6UV6EFK6&item_name=Khoros+Python+API&currency_code=USD',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

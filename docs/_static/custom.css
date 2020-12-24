@@ -1,3 +1,10 @@
+/* Align the logo in the top-left corner */
+div.sphinxsidebarwrapper p.logo {
+    padding: 0;
+    margin: -20px 0 -10px -10px;
+    text-align: left;
+}
+
 /* Hide the ad widget at the bottom of the page */
 .ethical-alabaster {
     display: none;
