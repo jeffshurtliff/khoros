@@ -135,3 +135,6 @@ dmypy.json
 # Local directory
 local/
 !local/.gitkeep
+
+# Ignore any macOS files
+.DS_Store
