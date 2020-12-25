@@ -20,7 +20,7 @@ There are three types of API calls that can be made using the :py:class:`khoros.
 
 * `Community API v1 calls`_
 * `Community API v2 calls`_
-* Generic API calls
+* `Generic API calls`_
 
 .. include:: embed/instantiate-object.rst
 
@@ -210,7 +210,68 @@ below shows how the same query could be performed using the
 *****************
 Generic API calls
 *****************
+If you need to perform a more generic API call (as opposed to an API call to the
+v1 or v2 Community API) for any reason but which still includes the authorization
+header automatically, such as to query a custom endpoint, then you can leverage
+the base methods below from the :py:class:`khoros.core.Khoros` object.
+
+* :py:meth:`khoros.core.Khoros.get`
+* :py:meth:`khoros.core.Khoros.post`
+* :py:meth:`khoros.core.Khoros.put`
+
+Performing a GET request
+========================
+The method for making a generic GET request is similar to the
+:py:meth:`khoros.core.Khoros.V1.get` method in structure, but with a few key
+differences:
+
+* You have the ability to leverage an **absolute** or **relative** URI.
+* Query parameters cannot be passed as a Python dictionary and must be included in the URI.
+
+.. note:: This second item above may change in a future release.
+
+.. warning::
+   Also similar to the v1 GET request method, the response attempts to return in
+   JSON format by default. Therefore, if your custom endpoint (or wherever else is being
+   queried) is not returning in JSON format then you will need to ensure that the keyword
+   argument ``return_json=False`` is passed when calling the method. This will result in
+   the method returning the response as a
+   `requests.models.Response <https://2.python-requests.org/en/master/user/advanced/#id2>`_
+   object instead.
+
+Below are some simple examples of how this method might be used.
+
+.. code-block:: python
+
+   >>> khoros.get('/plugins/custom/example/example/hello_world')
+   {'response': 'Hello World!'}
+   >>> khoros.get('/plugins/custom/example/example/say_hello?name=John',
+   ... return_json=False).text
+   'Hello, John!'
+
+.. note::
+   You may notice that relative URIs are expected by default. If you wish to supply an
+   absolute URI then you will need to pass the keyword argument ``relative_url=False``
+   when calling the method.
+
+:doc:`Return to Top <community-api-calls>`
+
+|
+
+Performing a POST request
+=========================
 
 .. todo:: Coming soon!
 
 :doc:`Return to Top <community-api-calls>`
+
+|
+
+Performing a PUT request
+========================
+
+.. todo:: Coming soon!
+
+:doc:`Return to Top <community-api-calls>`
+
+|
