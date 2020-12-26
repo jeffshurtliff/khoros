@@ -6,7 +6,7 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     19 Dec 2020
+:Modified Date:     26 Dec 2020
 """
 
 import requests
@@ -14,7 +14,7 @@ import requests
 from . import log_utils
 
 # Define special and global variables
-__version__ = "3.3.0"
+__version__ = "3.3.0rc1"
 latest_version_reported = False
 logger = log_utils.initialize_logging(__name__)
 
