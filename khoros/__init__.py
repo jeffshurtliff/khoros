@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(community_url='https://community.example.com', helper='path/to/helper_file.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     05 Apr 2020
+:Modified Date:     26 Dec 2020
 """
 
 from . import errors
