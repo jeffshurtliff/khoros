@@ -8,8 +8,22 @@ v3.3.0
 ******
 **Release Date: 2020-12-26**
 
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Defined the ``version`` variable within the :py:class:`khoros.core.Khoros` core object to make it
+  easy to determine the current version of the package after having instantiated said object.
+
 Changed
 =======
+
+General
+-------
+* Added ``Khoros`` to the ``__all__`` dictionary in the primary ``__init__.py`` file.
 
 Core Object
 -----------

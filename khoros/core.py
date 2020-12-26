@@ -18,7 +18,7 @@ from . import auth, errors, liql, api
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
-from .utils import environment, log_utils
+from .utils import environment, log_utils, version
 from .utils.helper import get_helper_settings
 
 # Initialize logging
@@ -77,6 +77,9 @@ class Khoros(object):
         :param debug_mode: Determines if Debug Mode should be enabled for development purposes (``False`` by default)
         :type debug_mode: bool
         """
+        # Define the current version
+        self.version = version.get_full_version()
+
         # Initialize the predefined settings dictionary if not passed to the class
         defined_settings = {} if not defined_settings else defined_settings
 
