@@ -13,7 +13,7 @@ from . import errors
 from .core import Khoros
 from .utils import version
 
-__all__ = ['core', 'auth', 'liql', 'errors']
+__all__ = ['core', 'Khoros', 'auth', 'liql', 'errors']
 
 # Define the package version by pulling from the khoros.utils.version module
 __version__ = version.get_full_version()
