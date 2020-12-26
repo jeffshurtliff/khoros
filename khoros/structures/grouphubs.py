@@ -6,7 +6,7 @@
 :Example:           ``group_hub_url = grouphubs.create(khoros_object, gh_id, gh_title, disc_styles, return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     26 Dec 2020
 """
 
 from .. import api, liql, errors
@@ -422,15 +422,18 @@ def refresh_enabled_discussion_styles(khoros_object):
     """This function refreshes the ``all_discussion_styles`` global variable to match what is in the
        core object settings when applicable.
 
+    .. versionchanged:: 3.3.0
+       Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
+
     .. versionadded:: 2.6.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :returns: None
     """
-    if 'discussion_styles' in khoros_object._settings:
+    if 'discussion_styles' in khoros_object.core_settings:
         global all_discussion_styles
-        all_discussion_styles = khoros_object._settings.get('discussion_styles')
+        all_discussion_styles = khoros_object.core_settings.get('discussion_styles')
     return
 
 

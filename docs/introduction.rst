@@ -1,8 +1,8 @@
 ############
 Introduction
 ############
-The  **khoros**  library acts as a Python software development kit (SDK) to administer and manage
-`Khoros Community <https://developer.khoros.com/khoroscommunitydevdocs>`_ (formerly Lithium) online
+The **khoros** library acts as a Python software development kit (SDK) to administer and manage
+`Khoros Communities <https://khoros.com/platform/communities>`_ (formerly Lithium) online
 community platforms.
 
 * `Installation`_
@@ -16,6 +16,7 @@ community platforms.
 * `License`_
 * `Reporting Issues`_
 * `Roadmap`_
+* `Additional Resources`_
 * `Disclaimer`_
 
 ************
@@ -25,7 +26,7 @@ The package can be installed via pip using the syntax below.
 
 .. code-block:: shell
 
-   pip install khoros
+   pip install khoros --upgrade
 
 You may also clone the repository and install from source using below.
 
@@ -39,6 +40,8 @@ You may also clone the repository and install from source using below.
 
 |
 
+-----
+
 **********
 Change Log
 **********
@@ -48,6 +51,8 @@ Changes for each release can be found on the :doc:`Change Log <changelog>` page.
 
 |
 
+-----
+
 *****
 Usage
 *****
@@ -56,6 +61,8 @@ This section provides basic usage instructions for the package.
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
 
 Importing the package
 =====================
@@ -71,6 +78,8 @@ This recommendation is because the best practice is to use the name ``khoros`` w
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
 
 Initializing a Khoros object instance
 =====================================
@@ -88,6 +97,8 @@ The :py:class:`khoros.Khoros` object can be initiated in three different ways:
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
 
 Passing the information directly into the object
 ------------------------------------------------
@@ -119,6 +130,8 @@ Alternatively, configuration settings can be passed at once using the ``options`
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
 
 Leveraging a "helper" configuration file
 ----------------------------------------
@@ -174,6 +187,8 @@ The file can then be referenced using the ``helper`` argument when initializing 
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
 
 Utilizing environment variables
 -------------------------------
@@ -292,6 +307,8 @@ variables for your user via the Command Prompt (i.e. ``cmd.exe``) or  PowerShell
 
 |
 
+-----
+
 Interacting with the Community APIs
 ===================================
 Once the :py:class:`khoros.Khoros` object instance has been initialized, it can be leveraged to interact
@@ -314,6 +331,8 @@ a search can be performed using LiQL to return information from the environment 
 
 |
 
+-----
+
 *******
 License
 *******
@@ -322,6 +341,8 @@ This package falls under the `MIT License <https://github.com/jeffshurtliff/khor
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
 
 ****************
 Reporting Issues
@@ -332,15 +353,33 @@ Issues can be reported within the `GitHub repository <https://github.com/jeffshu
 
 |
 
+-----
+
 *******
 Roadmap
 *******
-Upcoming improvements to the library can be found in the
-`2020 Roadmap on GitHub <https://github.com/jeffshurtliff/khoros/projects/1>`_.
+Upcoming improvements to the library can be found in the following locations:
+
+* `2020 Roadmap on GitHub <https://github.com/jeffshurtliff/khoros/projects/1>`_
+* `2021 Roadmap on GitHub <https://github.com/jeffshurtliff/khoros/projects/2>`_
 
 :doc:`Return to Top <introduction>`
 
 |
+
+-----
+
+********************
+Additional Resources
+********************
+Additional resources for leveraging the Community APIs can be found in the official
+`Khoros Developer Documentation <https://developer.khoros.com/khoroscommunitydevdocs>`_.
+
+:doc:`Return to Top <introduction>`
+
+|
+
+-----
 
 **********
 Disclaimer

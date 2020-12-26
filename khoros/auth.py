@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     26 Dec 2020
 """
 
 import requests
@@ -21,6 +21,9 @@ logger = log_utils.initialize_logging(__name__)
 def get_session_key(khoros_object):
     """This function retrieves the session key for an authentication session.
 
+    .. versionchanged:: 3.3.0
+       Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
+
     .. versionchanged:: 2.7.4
        The HTTP headers were changed to be all lowercase in order to be standardized across the library.
 
@@ -28,9 +31,9 @@ def get_session_key(khoros_object):
     :type khoros_object: class[khoros.Khoros]
     :returns: The session key in string format
     """
-    community_url = khoros_object._settings['community_url']
-    username = khoros_object._settings['session_auth']['username']
-    password = khoros_object._settings['session_auth']['password']
+    community_url = khoros_object.core_settings['community_url']
+    username = khoros_object.core_settings['session_auth']['username']
+    password = khoros_object.core_settings['session_auth']['password']
     query_string = core_utils.encode_query_string({
         'user.login': username,
         'user.password': password,
@@ -64,6 +67,9 @@ def get_session_header(session_key):
 def invalidate_session(khoros_object, user_id=None, sso_id=None):
     """This function invalidates an active authentication session.
 
+    .. versionchanged:: 3.3.0
+       Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
+
     :param khoros_object: The core Khoros object
     :type khoros_object: class[khoros.Khoros]
     :param user_id: The User ID of the service account (Lithium Registration)
@@ -79,11 +85,11 @@ def invalidate_session(khoros_object, user_id=None, sso_id=None):
     elif user_id:
         payload['id'] = user_id
     else:
-        username = khoros_object._settings['session_auth']['username']
+        username = khoros_object.core_settings['session_auth']['username']
         user_id = khoros_object.search('id', 'users', f'login = "{username}"')
         user_id = user_id['data']['items'][0]['id']
         payload['id'] = user_id
-    query_url = f"{khoros_object._settings['v2_base']}/auth/signout"
+    query_url = f"{khoros_object.core_settings['v2_base']}/auth/signout"
     headers = {'content-type': 'application/json'}
     response = api.post_request_with_retries(query_url, payload, return_json=True,
                                              auth_dict=khoros_object.auth, headers=headers)
@@ -97,14 +103,17 @@ def invalidate_session(khoros_object, user_id=None, sso_id=None):
 def get_oauth_authorization_url(khoros_object):
     """This function constructs the authorization URL needed for the OAuth 2.0 Web Application Flow.
 
+    .. versionchanged:: 3.3.0
+       Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
+
     :param khoros_object: The core Khoros object
     :type khoros_object: class[khoros.Khoros]
     :returns: The properly encoded authorization URL in string format
     """
-    community_url = khoros_object._settings['community_url']
+    community_url = khoros_object.core_settings['community_url']
     query_string = core_utils.encode_query_string({
-        'client_id': khoros_object._settings['oauth2']['client_id'],
-        'redirect_uri': khoros_object._settings['oauth2']['redirect_url'],
+        'client_id': khoros_object.core_settings['oauth2']['client_id'],
+        'redirect_uri': khoros_object.core_settings['oauth2']['redirect_url'],
         'response_type': 'code',
         'state': core_utils.get_random_string()
     }, no_encode='redirect_uri')

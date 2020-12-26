@@ -2,11 +2,11 @@
 """
 :Module:            khoros.core
 :Synopsis:          Collection of core functions and tools to work with the Khoros Community APIs
-:Usage:             ``import khoros.core`` (Imported by default in primary package)``
-:Example:           ``khoros = Khoros(community_url='community.example.com', community_name='mycommunity')``
+:Usage:             ``import khoros.core`` *(Imported by default in primary package)*
+:Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Dec 2020
+:Modified Date:     26 Dec 2020
 """
 
 import sys
@@ -39,14 +39,17 @@ class Khoros(object):
         'auth_type': 'session_auth'
     }
 
-    # Define the function that initializes the object instance
-    def __init__(self, settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
+    # Define the function that initializes the object instance (i.e. instantiates the object)
+    def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False):
-        """This method initializes the Khoros object.
+        """This method instantiates the core Khoros object.
 
-        :param settings: Predefined settings that the object should use
-        :type settings: dict, None
+        .. versionchanged:: 3.3.0
+           Changed ``settings`` to ``defined_settings`` and ``_settings`` to ``_core_settings``.
+
+        :param defined_settings: Predefined settings that the object should use
+        :type defined_settings: dict, None
         :param community_url: The base URL of the Khoros community instance (e.g. ``community.khoros.com``)
         :type community_url: str, None
         :param tenant_id: The tenant ID for the Khoros community instance (e.g. ``lithosphere``)
@@ -74,9 +77,8 @@ class Khoros(object):
         :param debug_mode: Determines if Debug Mode should be enabled for development purposes (``False`` by default)
         :type debug_mode: bool
         """
-        # Initialize the dictionaries if not passed to the class
-        if settings is None:
-            settings = {}
+        # Initialize the predefined settings dictionary if not passed to the class
+        defined_settings = {} if not defined_settings else defined_settings
 
         # Initialize other dictionaries that will be used by the class object
         self.auth = {}
@@ -100,11 +102,11 @@ class Khoros(object):
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val:
-                settings[_arg_key] = _arg_val
+                defined_settings[_arg_key] = _arg_val
 
-        # Creates the private _settings attribute using the default settings as a base
-        self._settings = copy.copy(Khoros.DEFAULT_SETTINGS)
-        self._settings.update(Khoros.DEFAULT_AUTH)
+        # Creates the private core_settings attribute using the default settings as a base
+        self.core_settings = copy.copy(Khoros.DEFAULT_SETTINGS)
+        self.core_settings.update(Khoros.DEFAULT_AUTH)
 
         # Capture any relevant environment variables if defined
         if not helper:
@@ -116,14 +118,14 @@ class Khoros(object):
             self._env_settings = {}
 
         # Overwrite any settings with any that were passed in the settings argument
-        self._settings.update(settings)
+        self.core_settings.update(defined_settings)
 
         # Capture the helper settings if applicable
         if helper is None:
             self._helper_settings['connection'] = {}
             self._helper_settings['discussion_styles'] = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
         else:
-            self._settings['helper'] = helper
+            self.core_settings['helper'] = helper
             if type(helper) == tuple or type(helper) == list:
                 file_path, file_type = helper
             elif type(helper) == str:
@@ -142,7 +144,7 @@ class Khoros(object):
             self.auth['active'] = False
 
         # Update the default authentication type if necessary
-        self.auth['type'] = self._settings['auth_type']
+        self.auth['type'] = self.core_settings['auth_type']
         if auth_type is not None:
             accepted_auth_types = ['session_auth', 'oauth2', 'sso']
             auth_map = {
@@ -151,7 +153,7 @@ class Khoros(object):
                 'sso': sso
             }
             if str(auth_type) in accepted_auth_types:
-                self._settings['auth_type'] = auth_type
+                self.core_settings['auth_type'] = auth_type
                 self.auth['type'] = auth_type
                 if auth_map.get(auth_type) is None and auth_type not in self._helper_settings['connection']:
                     error_msg = f"The '{auth_type}' authentication type was specified but no associated data was found."
@@ -159,19 +161,19 @@ class Khoros(object):
             else:
                 error_msg = f"'{auth_type}' is an invalid authentication type. Reverting to default. ('session_auth')"
                 errors.handlers.eprint(error_msg)
-                self._settings.update(Khoros.DEFAULT_AUTH)
-                self.auth['type'] = self._settings['auth_type']
+                self.core_settings.update(Khoros.DEFAULT_AUTH)
+                self.auth['type'] = self.core_settings['auth_type']
         elif sso is not None:
-            self._settings['auth_type'] = 'sso'
-            self.auth['type'] = self._settings['auth_type']
+            self.core_settings['auth_type'] = 'sso'
+            self.auth['type'] = self.core_settings['auth_type']
         elif oauth2 is not None:
-            self._settings['auth_type'] = 'oauth2'
-            self.auth['type'] = self._settings['auth_type']
+            self.core_settings['auth_type'] = 'oauth2'
+            self.auth['type'] = self.core_settings['auth_type']
         else:
             if session_auth is not None:
-                self._settings['auth_type'] = 'session_auth'
+                self.core_settings['auth_type'] = 'session_auth'
             elif self._session_auth_credentials_defined():
-                self._settings['auth_type'] = 'session_auth'
+                self.core_settings['auth_type'] = 'session_auth'
             elif 'session_auth' not in self._helper_settings['connection']:
                 error_msg = f"No data was found for the default '{auth_type}' authentication type."
                 raise errors.exceptions.MissingAuthDataError(error_msg)
@@ -197,11 +199,11 @@ class Khoros(object):
 
         # Auto-connect to the environment if specified (default)
         if auto_connect:
-            if 'session_auth' in self._settings['auth_type']:
+            if 'session_auth' in self.core_settings['auth_type']:
                 self._connect_with_session_key()
             else:
                 errors.handlers.eprint("Unable to auto-connect to the instance with the given " +
-                                       f"'{self._settings['auth_type']}' authentication type.")
+                                       f"'{self.core_settings['auth_type']}' authentication type.")
 
         # Import inner object classes so their methods can be called from the primary object
         self.v1 = self._import_v1_class()
@@ -221,8 +223,8 @@ class Khoros(object):
         """This method populates the khoros.core dictionary with the core public settings used by the object."""
         _core_settings = ['community_url', 'base_url', 'v1_base', 'v2_base']
         for _setting in _core_settings:
-            if _setting in self._settings:
-                self.core[_setting] = self._settings[_setting]
+            if _setting in self.core_settings:
+                self.core[_setting] = self.core_settings[_setting]
 
     def _populate_auth_settings(self):
         """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks."""
@@ -232,17 +234,17 @@ class Khoros(object):
             'sso': ['sso_token']
         }
         for _setting in _auth_settings:
-            if _setting in self._settings:
+            if _setting in self.core_settings:
                 if _setting in _setting_keys:
                     for _setting_key in _setting_keys.get(_setting):
-                        if _setting_key in self._settings[_setting]:
-                            self.auth[_setting_key] = self._settings[_setting][_setting_key]
+                        if _setting_key in self.core_settings[_setting]:
+                            self.auth[_setting_key] = self.core_settings[_setting][_setting_key]
 
     def _populate_construct_settings(self):
         """This method populates the khoros.construct dictionary to assist in constructing API queries and responses."""
-        if 'prefer_json' in self._settings:
+        if 'prefer_json' in self.core_settings:
             return_formats = {True: '&restapi.response_format=json', False: ''}
-            self.construct['response_format'] = return_formats.get(self._settings['prefer_json'])
+            self.construct['response_format'] = return_formats.get(self.core_settings['prefer_json'])
 
     def _parse_env_settings(self):
         """This method parses the settings identified from environment variables.
@@ -253,11 +255,11 @@ class Khoros(object):
             if env_var_name in environment.env_settings_mapping:
                 settings_fields = environment.env_settings_mapping.get(env_var_name)
                 if len(settings_fields) == 1:
-                    self._settings[settings_fields[0]] = env_var_value
+                    self.core_settings[settings_fields[0]] = env_var_value
                 elif len(settings_fields) == 2:
-                    if settings_fields[0] not in self._settings:
-                        self._settings[settings_fields[0]] = {}
-                    self._settings[settings_fields[0]][settings_fields[1]] = env_var_value
+                    if settings_fields[0] not in self.core_settings:
+                        self.core_settings[settings_fields[0]] = {}
+                    self.core_settings[settings_fields[0]][settings_fields[1]] = env_var_value
 
     def _parse_helper_settings(self):
         """This method parses the settings in the helper configuration file when provided.
@@ -276,34 +278,36 @@ class Khoros(object):
                     for _connection_key in _connection_keys:
                         if _connection_key in self._helper_settings['connection']:
                             _new_key = 'auth_type' if _connection_key == 'default_auth_type' else _connection_key
-                            self._settings[_new_key] = self._helper_settings['connection'][_connection_key]
+                            self.core_settings[_new_key] = self._helper_settings['connection'][_connection_key]
                 elif _helper_key == 'construct':
                     _construct_keys = ['prefer_json']
                     for _construct_key in _construct_keys:
                         if _construct_key in self._helper_settings['construct']:
-                            self._settings[_construct_key] = self._helper_settings['construct'][_construct_key]
+                            self.core_settings[_construct_key] = self._helper_settings['construct'][_construct_key]
                 else:
                     if _helper_key in self._helper_settings:
-                        self._settings[_helper_key] = self._helper_settings[_helper_key]
+                        self.core_settings[_helper_key] = self._helper_settings[_helper_key]
         if 'discussion_styles' in self._helper_settings:
             if isinstance(self._helper_settings.get('discussion_styles'), list):
-                self._settings['discussion_styles'] = self._helper_settings.get('discussion_styles')
+                self.core_settings['discussion_styles'] = self._helper_settings.get('discussion_styles')
 
     def _validate_base_url(self):
         """This method ensures that the Community URL is defined appropriately."""
-        if ('http://' not in self._settings['community_url']) and ('https://' not in self._settings['community_url']):
-            self._settings['community_url'] = f"https://{self._settings['community_url']}"
-        if self._settings['community_url'].endswith('/'):
-            self._settings['community_url'] = self._settings['community_url'][:-1]
+        if ('http://' not in self.core_settings['community_url']) and \
+                ('https://' not in self.core_settings['community_url']):
+            self.core_settings['community_url'] = f"https://{self.core_settings['community_url']}"
+        if self.core_settings['community_url'].endswith('/'):
+            self.core_settings['community_url'] = self.core_settings['community_url'][:-1]
 
     def _define_url_settings(self):
         """This method defines the URL settings associated with the Khoros environment."""
-        if 'community_name' in self._settings and self._settings['use_community_name'] is True:
-            self._settings['base_url'] = f"{self._settings['community_url']}/{self._settings['community_name']}"
+        if 'community_name' in self.core_settings and self.core_settings['use_community_name'] is True:
+            self.core_settings['base_url'] = f"{self.core_settings['community_url']}/" \
+                                             f"{self.core_settings['community_name']}"
         else:
-            self._settings['base_url'] = self._settings['community_url']
-        self._settings['v1_base'] = f"{self._settings['community_url']}/restapi/vc"
-        self._settings['v2_base'] = f"{self._settings['base_url']}/api/2.0"
+            self.core_settings['base_url'] = self.core_settings['community_url']
+        self.core_settings['v1_base'] = f"{self.core_settings['community_url']}/restapi/vc"
+        self.core_settings['v2_base'] = f"{self.core_settings['base_url']}/api/2.0"
 
     def _session_auth_credentials_defined(self):
         """This method checks to see if session authentication credentials have been defined.
@@ -311,20 +315,21 @@ class Khoros(object):
         .. versionadded:: 2.2.0
         """
         _defined = False
-        if 'session_auth' in self._settings:
-            _defined = True if ('username' in self._settings['session_auth'] and
-                                'password' in self._settings['session_auth']) else _defined
+        if 'session_auth' in self.core_settings:
+            _defined = True if ('username' in self.core_settings['session_auth'] and
+                                'password' in self.core_settings['session_auth']) else _defined
         return _defined
 
     def _connect_with_session_key(self):
         """This method establishes a connection to the Khoros environment using basic / session key authentication."""
-        if ('username' not in self._settings['session_auth']) or ('password' not in self._settings['session_auth']):
+        if ('username' not in self.core_settings['session_auth']) or \
+                ('password' not in self.core_settings['session_auth']):
             error_msg = f"The username and/or password for session key authentication cannot be found."
             raise errors.exceptions.MissingAuthDataError(error_msg)
-        self._settings['session_auth']['session_key'] = auth.get_session_key(self)
-        self._settings['auth_header'] = auth.get_session_header(self._settings['session_auth']['session_key'])
-        self.auth['session_key'] = self._settings['session_auth']['session_key']
-        self.auth['header'] = self._settings['auth_header']
+        self.core_settings['session_auth']['session_key'] = auth.get_session_key(self)
+        self.core_settings['auth_header'] = auth.get_session_header(self.core_settings['session_auth']['session_key'])
+        self.auth['session_key'] = self.core_settings['session_auth']['session_key']
+        self.auth['header'] = self.core_settings['auth_header']
         self.auth['active'] = True
 
     def _import_v1_class(self):
@@ -426,7 +431,7 @@ class Khoros(object):
         :returns: None
         """
         if connection_type is None:
-            connection_type = self._settings['auth_type']
+            connection_type = self.core_settings['auth_type']
         if connection_type == 'session_auth':
             self._connect_with_session_key()
         else:
@@ -447,7 +452,7 @@ class Khoros(object):
         :returns: The API response from the GET request
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
+        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
         return api.get_request_with_retries(query_url, return_json=return_json, headers=headers, khoros_object=self)
 
     def post(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
@@ -483,7 +488,7 @@ class Khoros(object):
         :returns: The API response from the GET request
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
+        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
         content_type = '' if not content_type else content_type
@@ -524,7 +529,7 @@ class Khoros(object):
         :returns: The API response from the GET request
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self._settings['community_url']}{query_url}" if relative_url else query_url
+        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
         content_type = '' if not content_type else content_type
@@ -1655,7 +1660,8 @@ class Khoros(object):
             :returns: Boolean value indicating if email configuration is required before posting
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return structures_module.communities.email_confirmation_required_to_post(self.khoros_object, community_details)
+            return structures_module.communities.email_confirmation_required_to_post(self.khoros_object,
+                                                                                     community_details)
 
         def get_language(self, community_details=None):
             """This function retrieves the language (e.g. ``en``) utilized in the environment.
@@ -2614,7 +2620,7 @@ class Khoros(object):
             :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
             :type node_details: dict, None
-            :param include_prefix: Determines if the prefix (e.g. ``category:``) should be included (``False`` by default)
+            :param include_prefix: Defines if the prefix (e.g. ``category:``) should be included (``False`` by default)
             :type include_prefix: bool
             :returns: The Root Category ID as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
@@ -2679,7 +2685,7 @@ class Khoros(object):
             :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
             :type node_details: dict, None
-            :param friendly: Determines whether to return the "friendly" date (e.g. ``Friday``) instead (``False`` by default)
+            :param friendly: Defines if the "friendly" date (e.g. ``Friday``) should be returned (``False`` by default)
             :type friendly: bool
             :returns: The creation date as a string
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,

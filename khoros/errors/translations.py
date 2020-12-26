@@ -6,7 +6,7 @@
 :Example:           ``error_msg = translations.translate_error(error_msg, khoros_object)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jul 2020
+:Modified Date:     26 Dec 2020
 """
 
 ERROR_TRANSLATIONS = {
@@ -36,14 +36,17 @@ def translate_error(error_msg, khoros_object=None, translate_errors=True):
 def translation_enabled(translate_errors=True, khoros_object=None):
     """This function identifies whether or not error translation is permitted.
 
+    .. versionchanged:: 3.3.0
+       Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
+
     :param translate_errors: Defines if errors can be transmitted (``True`` by default) even with no core object
     :type translate_errors: bool
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros], None
     :returns: Boolean value defining if translation is enabled
     """
-    if khoros_object and 'translate_errors' in khoros_object._settings:
-        translate_errors = khoros_object._settings.get('translate_errors')
+    if khoros_object and 'translate_errors' in khoros_object.core_settings:
+        translate_errors = khoros_object.core_settings.get('translate_errors')
     return translate_errors
 
 

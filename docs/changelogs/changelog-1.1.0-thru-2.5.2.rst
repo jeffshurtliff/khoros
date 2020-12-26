@@ -58,6 +58,8 @@ Changes to the documentation.
 
 |
 
+-----
+
 ******
 v2.5.1
 ******
@@ -115,6 +117,8 @@ Changes to the documentation.
 :doc:`Return to Top <../changelog>`
 
 |
+
+-----
 
 ******
 v2.5.0
@@ -222,6 +226,8 @@ Deprecations in the :doc:`primary modules <../primary-modules>`.
 
 |
 
+-----
+
 ******
 v2.4.0
 ******
@@ -299,6 +305,8 @@ Fixes to the :doc:`primary modules <../primary-modules>`.
 :doc:`Return to Top <../changelog>`
 
 |
+
+-----
 
 ******
 v2.3.0
@@ -431,6 +439,8 @@ Fixes to the :doc:`supporting modules <../supporting-modules>`.
 
 |
 
+-----
+
 ******
 v2.2.0
 ******
@@ -527,6 +537,8 @@ Changes to the documentation.
 :doc:`Return to Top <../changelog>`
 
 |
+
+-----
 
 ******
 v2.1.0
@@ -752,6 +764,8 @@ Additions to the :doc:`supporting modules <../supporting-modules>`.
 
 |
 
+-----
+
 ******
 v2.0.0
 ******
@@ -964,6 +978,8 @@ Fixes in the documentation.
 
 |
 
+-----
+
 ******
 v1.2.0
 ******
@@ -1033,6 +1049,8 @@ Changes to the :doc:`supporting modules <../supporting-modules>`.
 :doc:`Return to Top <../changelog>`
 
 |
+
+-----
 
 ******
 v1.1.0

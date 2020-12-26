@@ -1,6 +1,6 @@
-# Khoros Community Python Library
+# Khoros Communities Python Library
 The **khoros** library acts as a Python software development kit (SDK) to administer and manage 
-[Khoros Community](https://developer.khoros.com/khoroscommunitydevdocs) (formerly Lithium)  online community platforms.
+[Khoros Communities](https://khoros.com/platform/communities) (formerly Lithium)  online community platforms.
 
 <table>
     <tr>
@@ -89,7 +89,7 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
 The package can be installed via pip using the syntax below.
 
 ```sh
-pip install khoros
+pip install khoros --upgrade
 ```
 
 You may also clone the repository and install from source using below.
@@ -290,7 +290,13 @@ The documentation is located here: [https://khoros.readthedocs.io/en/latest/](ht
 Issues can be reported within the [GitHub repository](https://github.com/jeffshurtliff/khoros/issues).
 
 ## Roadmap
-Upcoming improvements to the library can be found in the [2020 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/1).
+Upcoming improvements to the library can be found in the following locations: 
+ - [2020 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/1)
+ - [2021 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/2)
+
+## Additional Resources
+Additional resources for leveraging the Community APIs can be found in the official
+[Khoros Developer Documentation](https://developer.khoros.com/khoroscommunitydevdocs).
 
 ## Disclaimer
 This package is considered unofficial and is in no way endorsed or supported by [Khoros, LLC](https://www.khoros.com).

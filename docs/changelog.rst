@@ -4,6 +4,51 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.3.0
+******
+**Release Date: 2020-12-26**
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Renamed the ``_settings`` dictionary (private) to be ``core_settings`` (public) in the core object
+  to avoid warning messages being displayed in PyCharm and other IDEs as reported in Issue
+  `#26 <https://github.com/jeffshurtliff/khoros/issues/26>`_.
+* Renamed the ``settings`` argument in the ``__init__`` method for the :py:class:`khoros.core.Khoros`
+  object to be ``defined_settings`` to avoid conflicting with the :py:meth:`khoros.core.Khoros.Settings`
+  method.
+* Made some minor PEP8 compliance-related adjustments in the :py:mod:`khoros.core` module.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the functions below to change ``_settings`` to ``core_settings``.
+    * :py:func:`khoros.auth.get_session_key`
+    * :py:func:`khoros.auth.invalidate_session`
+    * :py:func:`khoros.auth.get_oauth_authorization_url`
+    * :py:func:`khoros.objects.users.create`
+    * :py:func:`khoros.objects.users.delete`
+    * :py:func:`khoros.structures.grouphubs.refresh_enabled_discussion_styles`
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.errors.translations.translation_enabled` function to change ``_settings``
+  to ``core_settings``.
+
+:doc:`Return to Top <changelog>`
+
+|
+
+-----
+
+******
 v3.2.0
 ******
 **Release Date: 2020-12-23**
@@ -136,7 +181,11 @@ Fixes in the :doc:`supporting modules <supporting-modules>`.
   appropriate as it was inadvertently using the same message leveraged in the
   :py:exc:`khoros.errors.exceptions.OperatorMismatchError` exception.
 
+:doc:`Return to Top <changelog>`
+
 |
+
+-----
 
 ******
 v3.1.1
@@ -161,7 +210,11 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Fixed issues in the function :py:func:`khoros.api.post_request_with_retries` to address the bug
   `#20 <https://github.com/jeffshurtliff/khoros/issues/20>`_.
 
+:doc:`Return to Top <changelog>`
+
 |
+
+-----
 
 ******
 v3.1.0
@@ -211,7 +264,11 @@ Changes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.api.put_request_with_retries` functions to leverage the new
   :py:func:`khoros.api.payload_request_with_retries` function.
 
+:doc:`Return to Top <changelog>`
+
 |
+
+-----
 
 ******
 v3.0.0
@@ -343,7 +400,11 @@ Deprecations in the :doc:`core-object-methods`.
 * Deprecated the :py:meth:`khoros.core.Khoros.perform_v1_search` method as it has been replaced
   by the :py:meth:`khoros.core.Khoros.V1.search` method.
 
+:doc:`Return to Top <changelog>`
+
 |
+
+-----
 
 ******
 v2.8.0
@@ -502,6 +563,8 @@ General
 
 |
 
+-----
+
 ******
 v2.7.6
 ******
@@ -549,6 +612,8 @@ Fixes in the :doc:`primary modules <primary-modules>`.
 
 |
 
+-----
+
 ******
 v2.7.5
 ******
@@ -583,6 +648,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 :doc:`Return to Top <changelog>`
 
 |
+
+-----
 
 ******
 v2.7.4
@@ -645,6 +712,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
 |
 
+-----
+
 ******
 v2.7.3
 ******
@@ -689,6 +758,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 
 |
 
+-----
+
 ******
 v2.7.2
 ******
@@ -716,6 +787,8 @@ Fixes to the documentation.
 
 |
 
+-----
+
 ******
 v2.7.1
 ******
@@ -739,6 +812,8 @@ General
 :doc:`Return to Top <changelog>`
 
 |
+
+-----
 
 ******
 v2.7.0
@@ -785,6 +860,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 :doc:`Return to Top <changelog>`
 
 |
+
+-----
 
 ******
 v2.6.0
@@ -906,5 +983,7 @@ Deprecated
 :doc:`Return to Top <changelog>`
 
 |
+
+-----
 
 .. include:: changelogs/changelog-1.1.0-thru-2.5.2.rst
