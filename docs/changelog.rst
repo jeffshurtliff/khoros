@@ -21,7 +21,7 @@ Additions to the documentation.
 * Added the
   :ref:`Settings Module (khoros.objects.settings) <primary-modules:Settings Module (khoros.objects.settings)>`
   section to the :doc:`Primary Modules <primary-modules>` page.
-*
+* Updated the CSS styling in ``custom.css`` to improve readability of methods and functions.
 
 Changed
 =======
