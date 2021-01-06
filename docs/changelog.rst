@@ -3,6 +3,29 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+******
+v3.3.1
+******
+**Release Date: 2021-01-06**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed an issue with the :py:func:`khoros.api.make_v1_request` function call within
+  the :py:func:`khoros.objects.settings._get_v2_node_setting` that was resulting in
+  :py:exc:`IndexError` exceptions.
+* Fixed an issue in :py:func:`khoros.objects.settings._get_v2_node_setting` resulting in
+  an :py:exc:`IndexError` exception if the setting field is not found, and made changes
+  to return a ``None`` value in that situation.
+
+|
+
+-----
+
 ************
 v3.3.0.post0
 ************

@@ -79,6 +79,10 @@ def _validate_node_type(_node_type):
 def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v1.
 
+    .. versionchanged:: 3.3.1
+       Fixed an issue with the :py:func:`khoros.api.make_v1_request` function call that was resulting
+       in :py:exc:`IndexError` exceptions.
+
     .. versionadded:: 3.2.0
 
     :param _khoros_object: The core :py:class:`khoros.Khoros` object
@@ -95,7 +99,7 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
              :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     _uri = f"/{_node_type}/id/{_node_id}/settings/name/{_setting_name}"
-    _settings_data = api.make_v1_request(_khoros_object, _uri, 'GET')['response']
+    _settings_data = api.make_v1_request(_khoros_object, _uri, request_type='GET')['response']
     if _settings_data.get('status') == 'error':
         raise errors.exceptions.GETRequestError(status_code=_settings_data['error']['code'],
                                                 message=_settings_data['error']['message'])
@@ -104,6 +108,10 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 
 def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v2 and LiQL.
+
+    .. versionchanged:: 3.3.1
+       Error handling has been introduced to avoid an :py:exc:`KeyError` exception if the setting field
+       is not found, and to return a ``None`` value in that situation.
 
     .. versionadded:: 3.2.0
 
@@ -122,7 +130,9 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
-    return liql.get_returned_items(_settings_data, only_first=True)[_setting_name]
+    _returned_items = liql.get_returned_items(_settings_data, only_first=True)
+    _setting_value = _returned_items.get(_setting_name) if _returned_items.get(_setting_name) else None
+    return _setting_value
 
 
 def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board'):
