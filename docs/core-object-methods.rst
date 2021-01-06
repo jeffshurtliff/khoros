@@ -8,18 +8,19 @@ within the core object for the **khoros** package, which are listed below.
 * `Core Module (khoros.core)`_
     * `Core Functionality Subclasses (khoros.core.Khoros)`_
         * `V1 Subclass (khoros.core.Khoros.V1)`_
+    * `Core Object Subclasses (khoros.core.Khoros)`_
+        * `Album Subclass (khoros.core.Khoros.Album)`_
+        * `Message Subclass (khoros.core.Khoros.Message)`_
+        * `Role Subclass (khoros.core.Khoros.Role)`_
+        * `Settings Subclass (khoros.core.Khoros.Settings)`_
+        * `User Subclass (khoros.core.Khoros.User)`_
     * `Core Structure Subclasses (khoros.core.Khoros)`_
         * `Board Subclass (khoros.core.Khoros.Board)`_
         * `Category Subclass (khoros.core.Khoros.Category)`_
         * `Community Subclass (khoros.core.Khoros.Community)`_
         * `Group Hub Subclass (khoros.core.Khoros.GroupHub)`_
         * `Node Subclass (khoros.core.Khoros.Node)`_
-    * `Core Object Subclasses (khoros.core.Khoros)`_
-        * `Album Subclass (khoros.core.Khoros.Album)`_
-        * `Message Subclass (khoros.core.Khoros.Message)`_
-        * `Role Subclass (khoros.core.Khoros.Role)`_
-        * `Studio Subclass (khoros.core.Khoros.Studio)`_
-        * `User Subclass (khoros.core.Khoros.User)`_
+    * `Studio Subclass (khoros.core.Khoros.Studio)`_
 
 |
 
@@ -166,9 +167,9 @@ Role Subclass (khoros.core.Khoros.Role)
 
 |
 
-Studio Subclass (khoros.core.Khoros.Studio)
--------------------------------------------
-.. autoclass:: khoros.core::Khoros.Studio
+Settings Subclass (khoros.core.Khoros.Settings)
+-----------------------------------------------
+.. autoclass:: khoros.core::Khoros.Settings
    :members:
    :noindex:
 
@@ -185,5 +186,17 @@ User Subclass (khoros.core.Khoros.User)
 :doc:`Return to Top <core-object-methods>`
 
 |
+
+Studio Subclass (khoros.core.Khoros.Studio)
+===========================================
+.. autoclass:: khoros.core::Khoros.Studio
+   :members:
+   :noindex:
+
+:doc:`Return to Top <core-object-methods>`
+
+|
+
+-----
 
 The next page addresses the :doc:`primary-modules` within the *khoros* package.

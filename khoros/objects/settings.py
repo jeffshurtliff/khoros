@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Dec 2020
+:Modified Date:     06 Jan 2021
 """
 
 from .. import api, liql, errors
@@ -128,9 +128,12 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board'):
     """This function defines a particular setting value for a given node.
 
+    .. versionchanged:: 3.3.0.post0
+       A minor fix was made to the docstring to correct a Sphinx parsing issue. The function itself was not changed.
+
     .. versionadded:: 3.2.0
 
-    :param khoros_object:The core :py:class:`khoros.Khoros` object
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param setting_name: The name of the setting field for which to retrieve the value
     :type setting_name: str

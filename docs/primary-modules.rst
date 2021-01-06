@@ -16,6 +16,7 @@ which are listed below.
     * `Attachments Module (khoros.objects.attachments)`_
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
+    * `Settings Module (khoros.objects.settings)`_
     * `Tags Module (khoros.objects.tags)`_
     * `Users Module (khoros.objects.users)`_
 * `Structures Module (khoros.structures)`_
@@ -158,6 +159,17 @@ This module includes functions that handle roles and permissions.
 
 |
 
+Settings Module (khoros.objects.settings)
+=========================================
+This module includes functions that handle community, node and user settings.
+
+.. automodule:: khoros.objects.settings
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
 Tags Module (khoros.objects.tags)
 =================================
 This module includes functions that handle tags within a Khoros Community environment.
@@ -280,6 +292,8 @@ This module contains functions that handle the base functionality of the :py:mod
 :doc:`Return to Top <primary-modules>`
 
 |
+
+-----
 
 The previous page addresses :doc:`core-object-methods` within the *khoros* package.
 The next page addresses the :doc:`supporting-modules` within the *khoros* package.

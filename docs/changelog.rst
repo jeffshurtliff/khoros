@@ -3,6 +3,56 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+************
+v3.3.0.post0
+************
+**Release Date: 2021-01-06**
+
+Added
+=====
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added the
+  :ref:`Settings Subclass (khoros.core.Khoros.Settings) <core-object-methods:Settings Subclass (khoros.core.Khoros.Settings)>`
+  section to the :doc:`Khoros Core Object <core-object-methods>` page.
+* Added the
+  :ref:`Settings Module (khoros.objects.settings) <primary-modules:Settings Module (khoros.objects.settings)>`
+  section to the :doc:`Primary Modules <primary-modules>` page.
+
+Changed
+=======
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Alphabetized the sections on the :doc:`Khoros Core Object <core-object-methods>` page.
+* Removed the introductory sentence for each of the modules on the :doc:`Primary Modules <primary-modules>` page
+  as they had become redundant with the same information already present in the docstrings.
+* Moved the
+  :ref:`Studio Subclass (khoros.core.Khoros.Studio) <core-object-methods:Studio Subclass (khoros.core.Khoros.Studio)>`
+  section out of the
+  :ref:`Core Object Subclasses (khoros.core.Khoros) <core-object-methods:Core Object Subclasses (khoros.core.Khoros)>`
+  section and into its own, similar to where it is located on the :doc:`Primary Modules <primary-modules>` page.
+
+
+Fixed
+=====
+
+Documentation
+-------------
+Fixes in the documentation.
+
+* A minor fix was made to the docstring in the :py:func:`khoros.objects.settings.define_node_setting` function
+  to correct a Sphinx parsing issue. The function itself was not changed.
+
+|
+
+-----
+
 ******
 v3.3.0
 ******
