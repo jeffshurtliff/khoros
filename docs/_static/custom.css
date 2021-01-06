@@ -9,3 +9,30 @@ div.sphinxsidebarwrapper p.logo {
 .ethical-alabaster {
     display: none;
 }
+
+/* Add spacing and a horizontal rule between methods and functions */
+.section dl > dd .py.method,
+.section dl > dd .py.function {
+    margin-top: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Style the Version Added and Version Changed docstrings */
+.versionadded,
+.versionchanged {
+    border: 1px solid #ddd;
+    padding: 0.5em 1em;
+
+}
+.versionadded p,
+.versionchanged p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.versionadded {
+    background-color: #e4fae4;
+}
+.versionchanged {
+    background-color: #fffacd;
+}
