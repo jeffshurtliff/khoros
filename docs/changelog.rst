@@ -3,6 +3,40 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+********
+v3.3.2b1
+********
+**Release Date: TBD**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the optional ``skip_env_variables`` argument  to the ``__init__`` method of the
+  :py:class:`khoros.core.Khoros` class to explicitly ignore valid environment variables
+  when instantiating the core object.
+* Added the optional ``empty`` argument to the ``__init__`` method of the
+  :py:class:`khoros.core.Khoros` class to instantiate an empty core object with default values.
+* Added the method :py:meth:`khoros.core.Khoros._populate_empty_object` to populates necessary
+  fields to allow an empty object to be instantiated successfully.
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes in the :doc:`core-object-methods`.
+
+* Updated the ``__init__`` method for the :py:class:`khoros.core.Khoros` class to only skip method arguments
+  when they explicitly have a ``None`` value and are not just implicitly ``False``.
+
+|
+
+-----
+
 ******
 v3.3.1
 ******

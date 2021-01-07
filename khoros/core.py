@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Dec 2020
+:Modified Date:     07 Jan 2021
 """
 
 import sys
@@ -25,6 +25,7 @@ from .utils.helper import get_helper_settings
 logger = log_utils.initialize_logging(__name__)
 
 
+# noinspection PyUnresolvedReferences,PyTypeChecker
 class Khoros(object):
     """This is the class for the core object leveraged in this library."""
     # Define default configuration information
@@ -42,8 +43,14 @@ class Khoros(object):
     # Define the function that initializes the object instance (i.e. instantiates the object)
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
-                 use_community_name=False, prefer_json=True, debug_mode=False):
+                 use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 3.3.2
+           Method arguments are no longer ignored if they are implicitly ``False`` and instead only the
+           arguments that explicitly have a ``None`` value are ignored. The ``skip_env_variables`` argument
+           has also been introduced to explicitly ignore any valid environment variables, as well as the
+           ``empty`` argument to optionally instantiate an empty instantiated object.
 
         .. versionchanged:: 3.3.0
            Changed ``settings`` to ``defined_settings`` and ``_settings`` to ``_core_settings``.
@@ -76,6 +83,10 @@ class Khoros(object):
         :type prefer_json: bool
         :param debug_mode: Determines if Debug Mode should be enabled for development purposes (``False`` by default)
         :type debug_mode: bool
+        :param skip_env_variables: Explicitly ignores any valid environment variables (``False`` by default)
+        :type skip_env_variables: bool
+        :param empty: Instantiates an empty object to act as a placeholder with default values (``False`` by default)
+        :type empty: bool
         """
         # Define the current version
         self.version = version.get_full_version()
@@ -101,10 +112,12 @@ class Khoros(object):
             'auto_connect': auto_connect,
             'use_community_name': use_community_name,
             'prefer_json': prefer_json,
-            'debug_mode': debug_mode
+            'debug_mode': debug_mode,
+            'skip_env_variables': skip_env_variables,
+            'empty': empty
         }
         for _arg_key, _arg_val in _individual_arguments.items():
-            if _arg_val:
+            if _arg_val is not None:
                 defined_settings[_arg_key] = _arg_val
 
         # Creates the private core_settings attribute using the default settings as a base
@@ -112,7 +125,7 @@ class Khoros(object):
         self.core_settings.update(Khoros.DEFAULT_AUTH)
 
         # Capture any relevant environment variables if defined
-        if not helper:
+        if not helper and not skip_env_variables and not empty:
             # Only define the environment variables if a helper file was not supplied as the file takes precedence
             environment.update_env_variable_names(env_variables)
             self._env_settings = environment.get_env_variables()
@@ -173,7 +186,10 @@ class Khoros(object):
             self.core_settings['auth_type'] = 'oauth2'
             self.auth['type'] = self.core_settings['auth_type']
         else:
-            if session_auth is not None:
+            if empty:
+                self._populate_empty_object()
+            if session_auth is not None or empty:
+                # Session authentication is selected as the auth type when instantiating an empty object
                 self.core_settings['auth_type'] = 'session_auth'
             elif self._session_auth_credentials_defined():
                 self.core_settings['auth_type'] = 'session_auth'
@@ -195,13 +211,14 @@ class Khoros(object):
         self._populate_core_settings()
 
         # Populate the khoros.auth dictionary with authentication settings
-        self._populate_auth_settings()
+        if not empty:
+            self._populate_auth_settings()
 
         # Populate the khoros.construct dictionary with query and syntax constructors
         self._populate_construct_settings()
 
         # Auto-connect to the environment if specified (default)
-        if auto_connect:
+        if auto_connect and not empty:
             if 'session_auth' in self.core_settings['auth_type']:
                 self._connect_with_session_key()
             else:
@@ -221,6 +238,22 @@ class Khoros(object):
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.users = self._import_user_class()
+
+    def _populate_empty_object(self):
+        """This method populates necessary fields to allow an empty object to be instantiated successfully.
+
+        .. versionadded:: 3.3.2
+        """
+        # Populate the core settings
+        self.core_settings['auth_type'] = 'session_auth'
+        self.core_settings['session_auth'] = {'username': 'anonymous', 'password': 'anonymous'}
+        self.core_settings['session_auth']['session_key'] = ''
+        self.core_settings['auth_header'] = {'li-api-session-key': ''}
+        self.core_settings['auto_connect'] = False
+
+        # Populate the authentication settings
+        self.auth['session_key'] = ''
+        self.auth['header'] = {'li-api-session-key': ''}
 
     def _populate_core_settings(self):
         """This method populates the khoros.core dictionary with the core public settings used by the object."""
