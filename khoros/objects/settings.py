@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Jan 2021
+:Modified Date:     08 Jan 2021
 """
 
 import json
@@ -62,7 +62,11 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     # Convert the setting value to a dictionary when requested and applicable
     if convert_json and isinstance(setting_value, str):
         if setting_value.startswith('{"') and setting_value.endswith('}'):
-            setting_value = json.loads(setting_value)
+            try:
+                setting_value = json.loads(setting_value)
+            except json.decoder.JSONDecodeError:
+                logger.error(f"Failed to convert the setting value for '{setting_name}' from a JSON string to a "
+                             "dictionary and therefore it will remain a string when returned.")
     return setting_value
 
 

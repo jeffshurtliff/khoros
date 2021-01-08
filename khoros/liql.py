@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Dec 2020
+:Modified Date:     08 Jan 2021
 """
 
 from . import api, errors
@@ -190,6 +190,10 @@ def get_total_count(khoros_object, collection, where_filter="", verify_success=T
 def get_returned_items(liql_response, only_first=False):
     """This function prunes a full LiQL API response down to only the returned item(s).
 
+    .. versionchanged:: 3.3.2
+       The error handling has been improved to avoid :py:exc:`IndexError` exceptions from being raised when no items
+       were found in the LiQL response.
+
     .. versionadded:: 3.2.0
 
     :param liql_response: The full JSON response from the LiQL query as a dictionary
@@ -205,7 +209,16 @@ def get_returned_items(liql_response, only_first=False):
         raise errors.exceptions.LiQLParseError(message=liql_response.get('message'))
     liql_items = liql_response['data']['items']
     if only_first:
-        liql_items = liql_items[0]
+        fail_msg = "No items were found in the LiQL response and therefore a NoneType value will be returned."
+        try:
+            if len(liql_items) > 0:
+                liql_items = liql_items[0]
+            else:
+                logger.error(fail_msg)
+                liql_items = None
+        except IndexError:
+            logger.error(fail_msg)
+            liql_items = None
     return liql_items
 
 

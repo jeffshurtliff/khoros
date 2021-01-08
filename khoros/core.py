@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Jan 2021
+:Modified Date:     08 Jan 2021
 """
 
 import sys
@@ -50,7 +50,8 @@ class Khoros(object):
            Method arguments are no longer ignored if they are implicitly ``False`` and instead only the
            arguments that explicitly have a ``None`` value are ignored. The ``skip_env_variables`` argument
            has also been introduced to explicitly ignore any valid environment variables, as well as the
-           ``empty`` argument to optionally instantiate an empty instantiated object.
+           ``empty`` argument to optionally instantiate an empty instantiated object. Logging was also added
+           in various locations throughout the method.
 
         .. versionchanged:: 3.3.0
            Changed ``settings`` to ``defined_settings`` and ``_settings`` to ``_core_settings``.
@@ -149,7 +150,9 @@ class Khoros(object):
             elif type(helper) == dict:
                 file_path, file_type = helper.values()
             else:
-                raise TypeError("The 'helper' argument can only be supplied as tuple, string, list or dict.")
+                error_msg = "The 'helper' argument can only be supplied as tuple, string, list or dict."
+                logger.error(error_msg)
+                raise TypeError(error_msg)
             self._helper_settings = get_helper_settings(file_path, file_type)
 
             # Parse the helper settings
@@ -173,9 +176,11 @@ class Khoros(object):
                 self.auth['type'] = auth_type
                 if auth_map.get(auth_type) is None and auth_type not in self._helper_settings['connection']:
                     error_msg = f"The '{auth_type}' authentication type was specified but no associated data was found."
+                    logger.error(error_msg)
                     raise errors.exceptions.MissingAuthDataError(error_msg)
             else:
                 error_msg = f"'{auth_type}' is an invalid authentication type. Reverting to default. ('session_auth')"
+                logger.warn(error_msg)
                 errors.handlers.eprint(error_msg)
                 self.core_settings.update(Khoros.DEFAULT_AUTH)
                 self.auth['type'] = self.core_settings['auth_type']
@@ -195,6 +200,7 @@ class Khoros(object):
                 self.core_settings['auth_type'] = 'session_auth'
             elif 'session_auth' not in self._helper_settings['connection']:
                 error_msg = f"No data was found for the default '{auth_type}' authentication type."
+                logger.error(error_msg)
                 raise errors.exceptions.MissingAuthDataError(error_msg)
 
         # Capture the version information
@@ -222,8 +228,10 @@ class Khoros(object):
             if 'session_auth' in self.core_settings['auth_type']:
                 self._connect_with_session_key()
             else:
-                errors.handlers.eprint("Unable to auto-connect to the instance with the given " +
-                                       f"'{self.core_settings['auth_type']}' authentication type.")
+                error_msg = f"Unable to auto-connect to the instance with the given " \
+                            f"'{self.core_settings['auth_type']}' authentication type."
+                logger.error(error_msg)
+                errors.handlers.eprint(error_msg)
 
         # Import inner object classes so their methods can be called from the primary object
         self.v1 = self._import_v1_class()
@@ -357,10 +365,15 @@ class Khoros(object):
         return _defined
 
     def _connect_with_session_key(self):
-        """This method establishes a connection to the Khoros environment using basic / session key authentication."""
+        """This method establishes a connection to the Khoros environment using basic / session key authentication.
+
+        .. versionchanged:: 3.3.2
+           Added logging for the :py:exc:`khoros.errors.exceptions.MissingAuthDataError` exception.
+        """
         if ('username' not in self.core_settings['session_auth']) or \
                 ('password' not in self.core_settings['session_auth']):
             error_msg = f"The username and/or password for session key authentication cannot be found."
+            logger.error(error_msg)
             raise errors.exceptions.MissingAuthDataError(error_msg)
         self.core_settings['session_auth']['session_key'] = auth.get_session_key(self)
         self.core_settings['auth_header'] = auth.get_session_header(self.core_settings['session_auth']['session_key'])
@@ -462,6 +475,9 @@ class Khoros(object):
     def connect(self, connection_type=None):
         """This method establishes a connection to the environment using a specified authentication type.
 
+        .. versionchanged:: 3.3.2
+           Added logging for the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception.
+
         :param connection_type: The type of authentication method (e.g. ``session_auth``)
         :type connection_type: str
         :returns: None
@@ -471,8 +487,9 @@ class Khoros(object):
         if connection_type == 'session_auth':
             self._connect_with_session_key()
         else:
-            msg = f"The '{connection_type}' authentication type is currently unsupported."
-            raise errors.exceptions.CurrentlyUnsupportedError(msg)
+            error_msg = f"The '{connection_type}' authentication type is currently unsupported."
+            logger.error(error_msg)
+            raise errors.exceptions.CurrentlyUnsupportedError(error_msg)
 
     def get(self, query_url, relative_url=True, return_json=True, headers=None):
         """This method performs a simple GET request that leverages the Khoros authorization headers.
@@ -656,6 +673,9 @@ class Khoros(object):
     def perform_v1_search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
         """This function performs a search for a particular field value using a Community API v1 call.
 
+        .. versionchanged:: 3.3.2
+           Added logging for the :py:exc:`DeprecationWarning`.
+
         .. deprecated:: 3.0.0
            Use the :py:meth:`khoros.core.Khoros.V1.search` method instead.
 
@@ -672,8 +692,9 @@ class Khoros(object):
         :returns: The API response (optionally in JSON format)
         :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
         """
-        warnings.warn("This method has been deprecated. Use the khoros.core.Khoros.V1.search method instead",
+        warnings.warn("This method has been deprecated. Use the v1.search method instead",
                       DeprecationWarning)
+        logger.warn("The 'perform_v1_search' method has been deprecated. Use the 'v1.search' method instead.")
         return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
 
     @staticmethod
@@ -1200,15 +1221,19 @@ class Khoros(object):
         def get_total_category_count(self):
             """This function returns the total number of categories within the Khoros Community environment.
 
+            .. versionchanged:: 3.3.2
+               Added logging for the :py:exc:`DeprecationWarning`.
+
             .. deprecated:: 2.6.0
                Use the :py:meth:`khoros.core.Khoros.Category.get_total_count` method instead.
 
             :returns: The total number of categories as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            warnings.warn("The 'khoros.core.Khoros.Category.get_total_category_count' method has been replaced"
-                          "with the 'khoros.core.Khoros.Category.get_total_count' method and will be removed in"
-                          "a future release.", DeprecationWarning)
+            deprecation_msg = "The 'categories.get_total_category_count' method has been replaced with the " \
+                              "'categories.get_total_count' method and will be removed in a future release."
+            logger.warn(deprecation_msg)
+            warnings.warn(deprecation_msg, DeprecationWarning)
             return self.get_total_count()
 
         def category_exists(self, category_id=None, category_url=None):
@@ -2309,6 +2334,9 @@ class Khoros(object):
                               message_id=False, message_url=False, message_api_uri=False, v2_base=''):
             """This function parses an API response for a message operation (e.g. creating a message) and returns data.
 
+            .. versionchanged:: 3.3.2
+               Added logging for the :py:exc:`DeprecationWarning`.
+
             .. versionchanged:: 3.2.0
                The lower-level function call now utilizes keyword arguments to fix an argument mismatch issue.
 
@@ -2338,8 +2366,10 @@ class Khoros(object):
             :returns: A string, tuple or dictionary with the parsed data
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
-            warnings.warn(f"This function is deprecated and 'khoros.core.Khoros.parse_v2_response' should be used.",
-                          DeprecationWarning)
+            deprecation_msg = "The 'messages.parse_v2_response' method is deprecated and the 'parse_v2_response' " \
+                              "method should be used instead."
+            warnings.warn(deprecation_msg, DeprecationWarning)
+            logger.warn(deprecation_msg)
             dev_msg = response_msg
             return api.parse_v2_response(json_response, return_dict, status, response_msg, dev_msg, http_code=http_code,
                                          data_id=message_id, data_url=message_url, data_api_uri=message_api_uri,
@@ -3457,10 +3487,15 @@ class Khoros(object):
                                                                  login, email)
 
     def signout(self):
-        """This method invalidates the active session key or SSO authentication session."""
+        """This method invalidates the active session key or SSO authentication session.
+
+        .. versionchanged:: 3.3.2
+           Logging was introduced to report the successful session invalidation.
+        """
         session_terminated = auth.invalidate_session(self)
         if session_terminated:
             self.auth['active'] = False
+        logger.info('The session has been successfully invalidated and the API is no longer connected.')
         return
 
     def __del__(self):

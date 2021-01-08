@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v3.3.2
 ******
-**Release Date: TBD**
+**Release Date: 2021-01-08**
 
 Added
 =====
@@ -22,6 +22,8 @@ Additions to the :doc:`core-object-methods`.
   :py:class:`khoros.core.Khoros` class to instantiate an empty core object with default values.
 * Added the method :py:meth:`khoros.core.Khoros._populate_empty_object` to populates necessary
   fields to allow an empty object to be instantiated successfully.
+* Logging (via the :py:mod:`khoros.utils.log_utils` module) was introduced in methods throughout
+  the :py:mod:`khoros.core` module.
 
 Changed
 =======
@@ -52,6 +54,7 @@ Changes to the documentation.
 
 * Merged the release notes for version ``3.3.0.post0`` into those for the subsequent
   stable version ``3.3.1``.
+* Added an example function call in the header block of the :py:mod:`khoros.utils.log_utils` module.
 
 Fixed
 =====
@@ -62,6 +65,13 @@ Fixes in the :doc:`core-object-methods`.
 
 * Updated the ``__init__`` method for the :py:class:`khoros.core.Khoros` class to only skip method arguments
   when they explicitly have a ``None`` value and are not just implicitly ``False``.
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* The error handling has been improved in the :py:func:`khoros.liql.get_returned_items` function to avoid
+  :py:exc:`IndexError` exceptions from being raised when no items were found in the LiQL response.
 
 |
 

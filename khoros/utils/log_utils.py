@@ -3,10 +3,10 @@
 :Module:            khoros.utils.log_utils
 :Synopsis:          Collection of logging utilities and functions
 :Usage:             ``from khoros.utils import log_utils``
-:Example:           TBD
+:Example:           ``logger = log_utils.initialize_logging(__name__)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     12 Jul 2020
+:Modified Date:     08 Jan 2021
 """
 
 import os
