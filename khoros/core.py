@@ -2861,8 +2861,12 @@ class Khoros(object):
             """
             self.khoros_object = khoros_object
 
-        def get_node_setting(self, setting_name, node_id, node_type='board', v1=None):
+        def get_node_setting(self, setting_name, node_id, node_type='board', v1=None, convert_json=False):
             """This function retrieves the value of a specific node setting.
+
+            .. versionchanged:: 3.3.2
+            The ``convert_json`` parameter has been introduced which optionally converts a JSON string
+            into a dictionary.
 
             .. versionadded:: 3.2.0
 
@@ -2874,6 +2878,8 @@ class Khoros(object):
             :type node_type: str
             :param v1: Optionally defines a specific Community API version to use when retrieving the value
             :type v1: bool, None
+            :param convert_json: Optionally converts a JSON string into a Python dictionary (``False``  by default)
+            :type convert_json: bool
             :returns: The value of the setting for the node
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.APIConnectionError`,
@@ -2881,10 +2887,15 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
                      :py:exc:`khoros.errors.exceptions.LiQLParseError`
             """
-            return objects_module.settings.get_node_setting(self.khoros_object, setting_name, node_id, node_type, v1)
+            return objects_module.settings.get_node_setting(self.khoros_object, setting_name, node_id, node_type, v1,
+                                                            convert_json)
 
-        def define_node_setting(self, setting_name, setting_val, node_id, node_type='board'):
+        def define_node_setting(self, setting_name, setting_val, node_id, node_type='board', return_json=False):
             """This function defines a particular setting value for a given node.
+
+            .. versionchanged:: 3.3.2
+               The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)
+               indicating whether or not the operation was successful. (Currently ``False`` by default)
 
             .. versionadded:: 3.2.0
 
@@ -2896,6 +2907,13 @@ class Khoros(object):
             :type node_id: str
             :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
             :type node_type: str
+            :param return_json: Returns a simple JSON dictionary indicating the operation result (``False`` by default)
+
+                                .. caution:: An unsuccessful REST call will result in the raising of the
+                                             :py:exc:`khoros.errors.exceptions.PostRequestError` exception if the
+                                             ``return_json`` parameter is set to ``False``.
+
+            :type return_json: bool
             :returns: None
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.APIConnectionError`,
@@ -2904,7 +2922,7 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             return objects_module.settings.define_node_setting(self.khoros_object, setting_name, setting_val,
-                                                               node_id, node_type)
+                                                               node_id, node_type, return_json)
 
     class Studio(object):
         """This class includes methods relating to the Lithium SDK and Studio Plugin."""

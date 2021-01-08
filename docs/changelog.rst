@@ -23,6 +23,36 @@ Additions to the :doc:`core-object-methods`.
 * Added the method :py:meth:`khoros.core.Khoros._populate_empty_object` to populates necessary
   fields to allow an empty object to be instantiated successfully.
 
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Introduced the ``return_json`` parameter in the :py:meth:`khoros.core.Khoros.Settings.define_node_setting`
+  method and the :py:func:`khoros.objects.settings.define_node_setting` function to optionally return the
+  Community API response in JSON format. (This option prevents the
+  :py:exc:`khoros.errors.exceptions.POSTRequestError` exception from being raised after an unsuccessful API call.)
+* Introduced the ``convert_json`` parameter in the :py:meth:`khoros.core.Khoros.Settings.get_node_setting` method
+  and the :py:func:`khoros.objects.settings.get_node_setting` function to optionally convert JSON strings into
+  Python dictionaries.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Introduced the ``return_json`` parameter in the :py:func:`khoros.objects.settings.define_node_setting` to
+  optionally return the Community API response in JSON format. (This option prevents the
+  :py:exc:`khoros.errors.exceptions.POSTRequestError` exception from being raised after an unsuccessful API call.)
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Merged the release notes for version ``3.3.0.post0`` into those for the subsequent
+  stable version ``3.3.1``.
+
 Fixed
 =====
 
@@ -40,29 +70,6 @@ Fixes in the :doc:`core-object-methods`.
 ******
 v3.3.1
 ******
-**Release Date: 2021-01-06**
-
-Fixed
-=====
-
-Primary Modules
----------------
-Fixes in the :doc:`primary modules <primary-modules>`.
-
-* Fixed an issue with the :py:func:`khoros.api.make_v1_request` function call within
-  the :py:func:`khoros.objects.settings._get_v2_node_setting` that was resulting in
-  :py:exc:`IndexError` exceptions.
-* Fixed an issue in :py:func:`khoros.objects.settings._get_v2_node_setting` resulting in
-  an :py:exc:`IndexError` exception if the setting field is not found, and made changes
-  to return a ``None`` value in that situation.
-
-|
-
------
-
-************
-v3.3.0.post0
-************
 **Release Date: 2021-01-06**
 
 Added
@@ -96,9 +103,19 @@ Changes to the documentation.
   :ref:`Core Object Subclasses (khoros.core.Khoros) <core-object-methods:Core Object Subclasses (khoros.core.Khoros)>`
   section and into its own, similar to where it is located on the :doc:`Primary Modules <primary-modules>` page.
 
-
 Fixed
 =====
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed an issue with the :py:func:`khoros.api.make_v1_request` function call within
+  the :py:func:`khoros.objects.settings._get_v2_node_setting` that was resulting in
+  :py:exc:`IndexError` exceptions.
+* Fixed an issue in :py:func:`khoros.objects.settings._get_v2_node_setting` resulting in
+  an :py:exc:`IndexError` exception if the setting field is not found, and made changes
+  to return a ``None`` value in that situation.
 
 Documentation
 -------------

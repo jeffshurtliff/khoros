@@ -14,7 +14,7 @@ import requests
 from . import log_utils
 
 # Define special and global variables
-__version__ = "3.3.2b1"
+__version__ = "3.3.2b2"
 latest_version_reported = False
 logger = log_utils.initialize_logging(__name__)
 

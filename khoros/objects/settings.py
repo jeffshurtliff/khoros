@@ -9,6 +9,8 @@
 :Modified Date:     06 Jan 2021
 """
 
+import json
+
 from .. import api, liql, errors
 from ..utils import log_utils
 
@@ -16,8 +18,11 @@ from ..utils import log_utils
 logger = log_utils.initialize_logging(__name__)
 
 
-def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1=None):
+def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1=None, convert_json=False):
     """This function retrieves the value of a specific node setting.
+
+    .. versionchanged:: 3.3.2
+       The ``convert_json`` parameter has been introduced which optionally converts a JSON string into a dictionary.
 
     .. versionadded:: 3.2.0
 
@@ -31,6 +36,8 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     :type node_type: str
     :param v1: Optionally defines a specific Community API version to use when retrieving the value
     :type v1: bool, None
+    :param convert_json: Optionally converts a JSON string into a Python dictionary (``False``  by default)
+    :type convert_json: bool
     :returns: The value of the setting for the node
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
@@ -51,6 +58,11 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
         setting_value = _get_v1_node_setting(khoros_object, setting_name, node_id, node_type)
     else:
         setting_value = _get_v2_node_setting(khoros_object, setting_name, node_id, node_type)
+
+    # Convert the setting value to a dictionary when requested and applicable
+    if convert_json and isinstance(setting_value, str):
+        if setting_value.startswith('{"') and setting_value.endswith('}'):
+            setting_value = json.loads(setting_value)
     return setting_value
 
 
@@ -135,10 +147,14 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     return _setting_value
 
 
-def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board'):
+def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board', return_json=False):
     """This function defines a particular setting value for a given node.
 
-    .. versionchanged:: 3.3.0.post0
+    .. versionchanged:: 3.3.2
+       The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)
+       indicating whether or not the operation was successful. (Currently ``False`` by default)
+
+    .. versionchanged:: 3.3.1
        A minor fix was made to the docstring to correct a Sphinx parsing issue. The function itself was not changed.
 
     .. versionadded:: 3.2.0
@@ -153,7 +169,14 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
     :type node_id: str
     :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
     :type node_type: str
-    :returns: None
+    :param return_json: Returns a simple JSON dictionary indicating the operation result (``False`` by default)
+
+                        .. caution:: An unsuccessful REST call will result in the raising of the
+                                     :py:exc:`khoros.errors.exceptions.PostRequestError` exception if the
+                                     ``return_json`` parameter is set to ``False``.
+
+    :type return_json: bool
+    :returns: None (or a dictionary if function call includes the ``return_json=True`` kwarg)
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
@@ -164,7 +187,8 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
     uri = f'/{node_type}/id/{node_id}/settings/name/{setting_name}/set'
     payload = {'value': str(setting_val)}
     response = api.make_v1_request(khoros_object, uri, payload, 'POST')['response']
-    if response.get('status') != "success":
+    if response.get('status') != "success" and not return_json:
         raise errors.exceptions.POSTRequestError(status_code=response['error']['code'],
                                                  message=response['error']['message'])
-    return
+    response = None if not return_json else response
+    return response
