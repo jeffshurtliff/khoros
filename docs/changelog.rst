@@ -55,6 +55,7 @@ Changes to the documentation.
 * Merged the release notes for version ``3.3.0.post0`` into those for the subsequent
   stable version ``3.3.1``.
 * Added an example function call in the header block of the :py:mod:`khoros.utils.log_utils` module.
+* Made further improvements to the documentation styling in the ``custom.css`` file.
 
 Fixed
 =====
