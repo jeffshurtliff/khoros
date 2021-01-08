@@ -2895,8 +2895,8 @@ class Khoros(object):
             """This function retrieves the value of a specific node setting.
 
             .. versionchanged:: 3.3.2
-            The ``convert_json`` parameter has been introduced which optionally converts a JSON string
-            into a dictionary.
+               The ``convert_json`` parameter has been introduced which optionally converts a JSON string
+               into a dictionary.
 
             .. versionadded:: 3.2.0
 
