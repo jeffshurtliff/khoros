@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Jan 2021
+:Modified Date:     13 Jan 2021
 """
 
 import json
@@ -125,6 +125,9 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v2 and LiQL.
 
+    .. versionchanged:: 3.3.3
+       Error handling has been introduced to avoid an :py:exc:`AttributeError` exception.
+
     .. versionchanged:: 3.3.1
        Error handling has been introduced to avoid an :py:exc:`KeyError` exception if the setting field
        is not found, and to return a ``None`` value in that situation.
@@ -147,7 +150,10 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
     _returned_items = liql.get_returned_items(_settings_data, only_first=True)
-    _setting_value = _returned_items.get(_setting_name) if _returned_items.get(_setting_name) else None
+    try:
+        _setting_value = _returned_items.get(_setting_name) if _returned_items.get(_setting_name) else None
+    except AttributeError:
+        _setting_value = None
     return _setting_value
 
 

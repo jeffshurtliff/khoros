@@ -4,6 +4,25 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.3.3
+******
+**Release Date: 2021-01-25**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Added error handling in the :py:func:`khoros.objects.settings._get_v2_node_setting` function to prevent
+  an :py:exc:`AttributeError` exception from being raised.
+
+|
+
+-----
+
+******
 v3.3.2
 ******
 **Release Date: 2021-01-08**
