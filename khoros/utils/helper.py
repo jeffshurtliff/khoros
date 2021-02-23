@@ -129,9 +129,6 @@ def _get_discussion_styles(_helper_cfg):
 def _get_construct_info(_helper_cfg):
     """This function parses settings that can be leveraged in constructing API responses and similar tasks.
 
-    .. versionchanged:: 3.4.0
-       The function now retrieves the ``ssl_verify`` field as well when present.
-
     .. versionchanged:: 2.8.0
        The function was refactored to leverage the :py:func:`khoros.utils.helper._collect_values` function.
 
@@ -184,6 +181,9 @@ def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None, _ignore_mis
 def get_helper_settings(file_path, file_type='yaml'):
     """This function returns a dictionary of the defined helper settings.
 
+    .. versionchanged:: 3.4.0
+       This function now supports the ``ssl_verify`` key and defines a default value when not found.
+
     .. versionchanged:: 2.8.0
        The function was updated to capture the ``translate_errors`` value when defined.
 
@@ -215,6 +215,9 @@ def get_helper_settings(file_path, file_type='yaml'):
 
     # Populate the enabled discussion styles in the helper dictionary
     helper_settings['discussion_styles'] = _get_discussion_styles(helper_cfg)
+
+    # Populate the SSL certificate verification setting in the helpper dictionary
+    helper_settings.update(_collect_values('ssl_verify', helper_cfg))
 
     # Populate the error translation setting in the helper dictionary
     helper_settings.update(_collect_values('translate_errors', helper_cfg, _ignore_missing=True))
