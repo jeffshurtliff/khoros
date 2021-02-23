@@ -139,7 +139,7 @@ def _get_construct_info(_helper_cfg):
     :type _helper_cfg: dict
     :returns: A dictionary with the key value pair for the ``prefer_json`` key if found in the config file
     """
-    _top_level_keys = ['prefer_json', 'ssl_verify']
+    _top_level_keys = ['prefer_json']
     return _collect_values(_top_level_keys, _helper_cfg)
 
 
@@ -216,7 +216,7 @@ def get_helper_settings(file_path, file_type='yaml'):
     # Populate the enabled discussion styles in the helper dictionary
     helper_settings['discussion_styles'] = _get_discussion_styles(helper_cfg)
 
-    # Populate the SSL certificate verification setting in the helpper dictionary
+    # Populate the SSL certificate verification setting in the helper dictionary
     helper_settings.update(_collect_values('ssl_verify', helper_cfg))
 
     # Populate the error translation setting in the helper dictionary
