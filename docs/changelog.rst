@@ -4,6 +4,24 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.4.0
+******
+**Release Date: TBD**
+
+Changed
+=======
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added support for the ``ssl_verify`` field in the :py:mod:`khoros.utils.helper` module.
+
+|
+
+-----
+
+******
 v3.3.3
 ******
 **Release Date: 2021-01-25**

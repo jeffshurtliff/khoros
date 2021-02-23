@@ -6,7 +6,7 @@
 :Example:           ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Jul 2020
+:Modified Date:     23 Feb 2021
 """
 
 import json
@@ -129,6 +129,9 @@ def _get_discussion_styles(_helper_cfg):
 def _get_construct_info(_helper_cfg):
     """This function parses settings that can be leveraged in constructing API responses and similar tasks.
 
+    .. versionchanged:: 3.4.0
+       The function now retrieves the ``ssl_verify`` field as well when present.
+
     .. versionchanged:: 2.8.0
        The function was refactored to leverage the :py:func:`khoros.utils.helper._collect_values` function.
 
@@ -139,12 +142,15 @@ def _get_construct_info(_helper_cfg):
     :type _helper_cfg: dict
     :returns: A dictionary with the key value pair for the ``prefer_json`` key if found in the config file
     """
-    _top_level_keys = ['prefer_json']
+    _top_level_keys = ['prefer_json', 'ssl_verify']
     return _collect_values(_top_level_keys, _helper_cfg)
 
 
 def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None, _ignore_missing=False):
     """This function loops through a list of top-level keys to collect their corresponding values.
+
+    .. versionchanged:: 3.4.0
+       This function now supports the ``ssl_verify`` key and defines a default value when not found.
 
     .. versionadded:: 2.8.0
 
@@ -166,6 +172,9 @@ def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None, _ignore_mis
             if _key_val in HelperParsing.yaml_boolean_values:
                 _key_val = HelperParsing.yaml_boolean_values.get(_key_val)
             _helper_dict[_key] = _key_val
+        elif _key == "ssl_verify":
+            # Verify SSL certificates by default unless explicitly set to false
+            _helper_dict[_key] = True
         else:
             if not _ignore_missing:
                 _helper_dict[_key] = None
