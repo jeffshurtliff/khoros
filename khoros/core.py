@@ -683,6 +683,30 @@ class Khoros(object):
         """
         return liql.get_total_count(self, collection, where_filter, verify_success)
 
+    def get_platform_version(self, full_release=False, simple=False, commit_id=False, timestamp=False):
+        """This function retrieves the Khoros Community platform version information for a given environment.
+
+        .. versionadded:: 3.4.0
+
+        :param full_release: Defines if the full platform release version should be returned
+
+                             .. note:: If none of the options are enabled then the ``full_release`` option will be
+                                       enabled by default.
+
+        :type full_release: bool
+        :param simple: Defines if the simple X.Y version (e.g. 20.6) should be returned (``False`` by default)
+        :type simple: bool
+        :param commit_id: Defines if the Commit ID (i.e. hash) for the release should be returned (``False`` by default)
+        :type commit_id: bool
+        :param timestamp: Defines if the timestamp of the release (e.g. 2007092156) should be returned
+                          (``False`` by default)
+        :type timestamp: bool
+        :returns: One or more string with version information
+        :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+        """
+        base_url = self.core_settings.get('base_url')
+        return api.get_platform_version(base_url, full_release, simple, commit_id, timestamp, self)
+
     def perform_v1_search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
         """This function performs a search for a particular field value using a Community API v1 call.
 
