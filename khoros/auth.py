@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Dec 2020
+:Modified Date:     24 Feb 2021
 """
 
 import requests
