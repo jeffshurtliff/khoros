@@ -1,5 +1,6 @@
 pytest>=6.2.1
 PyYAML>=5.3.1
+urllib3~=1.26.2
 requests>=2.23.0
 requests-toolbelt>=0.9.1
 Sphinx==3.4.0
@@ -9,3 +10,4 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
+setuptools~=52.0.0
