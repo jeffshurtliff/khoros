@@ -21,6 +21,9 @@ logger = log_utils.initialize_logging(__name__)
 def get_session_key(khoros_object):
     """This function retrieves the session key for an authentication session.
 
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
+
     .. versionchanged:: 3.3.0
        Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
 
@@ -31,6 +34,7 @@ def get_session_key(khoros_object):
     :type khoros_object: class[khoros.Khoros]
     :returns: The session key in string format
     """
+    # Prepare the API call
     community_url = khoros_object.core_settings['community_url']
     username = khoros_object.core_settings['session_auth']['username']
     password = khoros_object.core_settings['session_auth']['password']
@@ -39,9 +43,13 @@ def get_session_key(khoros_object):
         'user.password': password,
         'restapi.response_format': 'json'
     })
+    # Determine if TLS certificates should be verified during API calls
+    verify = api.should_verify_tls(khoros_object)
+
+    # Perform the API call to authorize the session
     uri = f"{community_url}/restapi/vc/authentication/sessions/login/?{query_string}"
     header = {"content-type": "application/x-www-form-urlencoded"}
-    response = requests.post(uri, headers=header)
+    response = requests.post(uri, headers=header, verify=verify)
     if response.status_code != 200:
         if type(response.text) == str and response.text.startswith('<html>'):
             api_error = errors.handlers.get_error_from_html(response.text)
