@@ -124,7 +124,7 @@ def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
     return _query_string
 
 
-def _should_verify_tls(_khoros_object=None):
+def should_verify_tls(_khoros_object=None):
     """This function determines whether or not to verify the server's TLS certificate. (``True`` by default)
 
     :param _khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
@@ -165,7 +165,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
              :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
-    verify = _should_verify_tls(khoros_object)
+    verify = should_verify_tls(khoros_object)
     retries, response = 0, None
     while retries <= 5:
         try:
@@ -410,7 +410,7 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
         raise errors.exceptions.InvalidRequestTypeError()
 
     # Determine if TLS certificates should be verified during API calls
-    verify = _should_verify_tls(khoros_object)
+    verify = should_verify_tls(khoros_object)
 
     # Construct the appropriate headers for the POST call
     if content_type:
@@ -625,7 +625,7 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     :returns: The API response from the DELETE request (optionally in JSON format)
     """
     # Determine if TLS certificates should be verified during API calls
-    verify = _should_verify_tls(khoros_object)
+    verify = should_verify_tls(khoros_object)
 
     # Perform the API call to delete the asset
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
@@ -657,7 +657,7 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     # Determine if TLS certificates should be verified during API calls
-    verify = _should_verify_tls(khoros_object)
+    verify = should_verify_tls(khoros_object)
 
     # Prepare the API call
     headers = define_headers(khoros_object, content_type='application/x-www-form-urlencoded')
@@ -1101,7 +1101,7 @@ def get_platform_version(base_url, full_release=False, simple=False, commit_id=F
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     # Determine if TLS certificates should be verified during API calls
-    verify = _should_verify_tls(khoros_object)
+    verify = should_verify_tls(khoros_object)
 
     # Perform and parse the
     full_release = True if not any((full_release, simple, commit_id, timestamp)) else full_release

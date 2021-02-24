@@ -44,6 +44,7 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.api.get_request_with_retries`
     * :py:func:`khoros.api.payload_request_with_retries`
     * :py:func:`khoros.api.perform_v1_search`
+    * :py:func:`khoros.auth.get_session_key`
 
 Supporting Modules
 ------------------
