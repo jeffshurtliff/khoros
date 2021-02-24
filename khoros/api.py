@@ -137,7 +137,7 @@ def should_verify_tls(_khoros_object=None):
         _verify = _khoros_object.core_settings.get('ssl_verify')
         if _verify is False:
             # Warn that SSL warnings are being suppressed
-            warnings.warn('SSL certificate verification has been explicitly disabled and warning suppressed')
+            warnings.warn('SSL certificate verification has been explicitly disabled and warnings will be suppressed')
 
             # Suppress warnings when performing API calls without verifying SSL certificates
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
