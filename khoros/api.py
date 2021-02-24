@@ -1095,7 +1095,7 @@ def get_platform_version(base_url, full_release=False, simple=False, commit_id=F
     :type commit_id: bool
     :param timestamp: Defines if the timestamp of the release (e.g. 2007092156) should be returned
     :type timestamp: bool
-    :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
+    :param khoros_object: The core Khoros object (Optional unless needing to determine SSL certificate verification)
     :type khoros_object: class[khoros.Khoros], None
     :returns: One or more string with version information
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`

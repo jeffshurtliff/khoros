@@ -4,12 +4,18 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v3.4.0b1
+v3.4.0b2
 ********
 **Release Date: 2021-02-24**
 
 Added
 =====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.get_platform_version` method.
 
 Primary Modules
 ---------------
