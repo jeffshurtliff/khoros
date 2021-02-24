@@ -6,15 +6,16 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Feb 2021
+:Modified Date:     24 Feb 2021
 """
 
-import requests
+import json
+import urllib.request
 
 from . import log_utils
 
 # Define special and global variables
-__version__ = "3.4.0"
+__version__ = "3.4.0b1"
 latest_version_reported = False
 logger = log_utils.initialize_logging(__name__)
 
@@ -49,13 +50,17 @@ def get_major_minor_version():
 def get_latest_stable():
     """This function returns the latest stable version of the khoros package.
 
+    .. versionchanged:: 3.4.0
+       This function has been refactored to leverage the standard library instead of the ``requests`` library.
+
     .. versionchanged:: 3.0.0
        Error handling and logging was added to avoid an exception if PyPI cannot be queried successfully.
 
     :returns: The latest stable version in string format
     """
     try:
-        pypi_data = requests.get('https://pypi.org/pypi/khoros/json').json()
+        response = urllib.request.urlopen('https://pypi.org/pypi/khoros/json')
+        pypi_data = json.loads(response.read().decode(response.info().get_param('charset') or 'utf-8'))
         latest_stable = pypi_data['info']['version']
         global latest_version_reported
         if not latest_version_reported:
