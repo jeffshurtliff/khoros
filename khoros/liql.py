@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Jan 2021
+:Modified Date:     24 Feb 2021
 """
 
 from . import api, errors
@@ -118,8 +118,11 @@ def get_query_url(core_dict, query, pretty_print=False, track_in_lsi=False, alwa
 
 
 def perform_query(khoros_object, query_url=None, liql_query=None, return_json=True, verify_success=False,
-                  allow_exceptions=True):
+                  allow_exceptions=True, verify=None):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
+
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``verify`` parameter to determine if SSL certificate verification is needed.
 
     .. versionchanged:: 2.3.0
        Added the ``allow_exceptions`` argument (``True`` by default) to allow exceptions to be disabled
@@ -144,11 +147,17 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
                              .. caution:: This does not apply to exceptions for missing required data.
 
     :type allow_exceptions: bool
+    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :type verify: bool, None
     :returns: The API response (in JSON format by default)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
              :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
+    # Determine if TLS certificates should be verified during API calls
+    verify = api.should_verify_tls(khoros_object) if verify is None else verify
+
+    # Validate the LiQL query
     if not query_url and not liql_query:
         raise errors.exceptions.MissingRequiredDataError("An API query URL or a raw LiQL query must be provided.")
     if liql_query:
@@ -156,7 +165,9 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     if 'header' not in khoros_object.auth:
         error_msg = f"Cannot perform the query as an authorization header is not configured."
         raise errors.exceptions.MissingAuthDataError(error_msg)
-    response = api.get_request_with_retries(query_url, return_json, auth_dict=khoros_object.auth)
+
+    # Perform the API call and validate the data
+    response = api.get_request_with_retries(query_url, return_json, auth_dict=khoros_object.auth, verify=verify)
     if verify_success:
         if not api.query_successful(response):
             error_msg = errors.handlers.get_error_from_json(response, include_error_bool=False)[2]
@@ -242,14 +253,14 @@ def parse_query_elements(select_fields, from_source, where_filter="", order_by=N
              :py:exc:`khoros.errors.exceptions.InvalidOperatorError`
     """
     # Properly format the provided SELECT fields
-    select_fields = __parse_select_fields(select_fields)
+    select_fields = _parse_select_fields(select_fields)
 
     # Establish the base syntax to return
     full_syntax = f"SELECT {select_fields} FROM {from_source}"
 
     # Append the WHERE clause to the syntax if provided
     if type(where_filter) != str:
-        where_filter = __parse_where_clause(where_filter)
+        where_filter = parse_where_clause(where_filter)
     if where_filter != "":
         full_syntax = f"{full_syntax} WHERE {where_filter}"
 
@@ -272,8 +283,11 @@ def parse_query_elements(select_fields, from_source, where_filter="", order_by=N
     return full_syntax
 
 
-def __parse_select_fields(_select_fields):
+def _parse_select_fields(_select_fields):
     """This function parses the fields to be used in the SELECT statement of the LiQL query.
+
+    .. versionchanged:: 3.4.0
+       Renamed the function to adhere to PEP8 guidelines.
 
     :param _select_fields: The field(s) to be used in the SELECT statement
     :type _select_fields: str, tuple, list, set
@@ -287,8 +301,11 @@ def __parse_select_fields(_select_fields):
     return _select_fields
 
 
-def __wrap_string_vales(_where_value):
+def _wrap_string_values(_where_value):
     """This function wraps values going in the WHERE clause in single-quotes if they are not integers.
+
+    .. versionchanged:: 3.4.0
+       Renamed the function to adhere to PEP8 guidelines.
 
     :param _where_value: The value to be evaluated and potentially wrapped in single-quotes
     :returns: The value in int or string format
@@ -300,8 +317,11 @@ def __wrap_string_vales(_where_value):
     return _where_value
 
 
-def __convert_where_dicts_to_lists(_dict_list):
+def _convert_where_dicts_to_lists(_dict_list):
     """This function converts dictionaries supplied as WHERE clause filters into properly formatted lists.
+
+    .. versionchanged:: 3.4.0
+       Renamed the function to adhere to PEP8 guidelines.
 
     :param _dict_list: A list of dictionaries with the WHERE clause information
     :type _dict_list: list
@@ -324,13 +344,16 @@ def __convert_where_dicts_to_lists(_dict_list):
     return _master_list
 
 
-def __parse_where_clause(_where, _join_logic='AND'):
+def parse_where_clause(where, join_logic='AND'):
     """This function parses the data supplied for the WHERE clause of a LiQL query.
 
-    :param _where: The WHERE clause information
-    :type _where: str, tuple, list, set, dict
-    :param _join_logic: The logic to use
-    :type _join_logic: str, tuple, list
+    .. versionchanged:: 3.4.0
+       Renamed the function to adhere to PEP8 guidelines and converted from a private to a public function.
+
+    :param where: The WHERE clause information
+    :type where: str, tuple, list, set, dict
+    :param join_logic: The logic to use
+    :type join_logic: str, tuple, list
     :returns: A properly formatted WHERE clause (excluding the WHERE statement at the beginning)
     :raises: InvalidOperatorError, OperatorMismatchError
     """
@@ -344,61 +367,61 @@ def __parse_where_clause(_where, _join_logic='AND'):
     #   _where = {'id': ('>', 5), 'id': ('<', 10)}      # one-to-two dict
 
     # Add them into a list as needed
-    if type(_where) != list:
-        if type(_where) == dict:
-            _where = __convert_where_dicts_to_lists([_where])
-        if (type(_where) == tuple or type(_where) == set) and len(_where) > 1:
-            _where = convert_set(_where)
-            if type(_where[0]) not in LiQLSyntax.container_types:
-                _where = [_where]
+    if type(where) != list:
+        if type(where) == dict:
+            where = _convert_where_dicts_to_lists([where])
+        if (type(where) == tuple or type(where) == set) and len(where) > 1:
+            where = convert_set(where)
+            if type(where[0]) not in LiQLSyntax.container_types:
+                where = [where]
 
     # Determine the multi-clause logic to use
     # TODO: Figure out how to allow where clause grouping with logic
-    if type(_join_logic) == str:
-        if _join_logic not in LiQLSyntax.logic_operators:
+    if type(join_logic) == str:
+        if join_logic not in LiQLSyntax.logic_operators:
             raise errors.exceptions.InvalidOperatorError
-        _join_logic = [_join_logic]
-    elif len(_join_logic) == 1:
-        if _join_logic[0] not in LiQLSyntax.logic_operators:
+        join_logic = [join_logic]
+    elif len(join_logic) == 1:
+        if join_logic[0] not in LiQLSyntax.logic_operators:
             raise errors.exceptions.InvalidOperatorError
         else:
-            _join_logic = [_join_logic[0]]
+            join_logic = [join_logic[0]]
     else:
-        if len(_join_logic) != len(_where) - 1:
+        if len(join_logic) != len(where) - 1:
             raise errors.exceptions.OperatorMismatchError
-        if type(_join_logic) != list:
-            _join_logic = list(_join_logic)
+        if type(join_logic) != list:
+            join_logic = list(join_logic)
 
     # Parse the where clause
-    _full_clause = ""
-    _num_clauses = len(_where)
-    while _num_clauses > 0:
-        for _clause in _where:
+    full_clause = ""
+    num_clauses = len(where)
+    while num_clauses > 0:
+        for clause in where:
             # Adjust spacing between existing parsed clause and new clause section
-            if len(_full_clause) > 0:
-                _full_clause = f"{_full_clause} "
+            if len(full_clause) > 0:
+                full_clause = f"{full_clause} "
 
             # Parse the individual clause
-            if len(_clause) == 2:
-                _full_clause = f"{_full_clause}{_clause[0]} = {__wrap_string_vales(_clause[-1])}"
-            elif len(_clause) == 3:
-                if _clause[1] not in LiQLSyntax.comparison_operators:
+            if len(clause) == 2:
+                full_clause = f"{full_clause}{clause[0]} = {_wrap_string_values(clause[-1])}"
+            elif len(clause) == 3:
+                if clause[1] not in LiQLSyntax.comparison_operators:
                     raise errors.exceptions.InvalidOperatorError
-                _full_clause = f"{_full_clause}{_clause[0]} {_clause[1]} {__wrap_string_vales(_clause[-1])}"
-            elif type(_clause) == str:
-                _full_clause = f"{_full_clause}{_clause}"
+                full_clause = f"{full_clause}{clause[0]} {clause[1]} {_wrap_string_values(clause[-1])}"
+            elif type(clause) == str:
+                full_clause = f"{full_clause}{clause}"
 
             # Add the logic statement to join multiple clauses as necessary
-            if _num_clauses > 1:
-                _multi_clause_logic = _join_logic[0]
-                _join_logic.remove(_join_logic[0])
-                _full_clause = f"{_full_clause} {_multi_clause_logic}"
+            if num_clauses > 1:
+                multi_clause_logic = join_logic[0]
+                join_logic.remove(join_logic[0])
+                full_clause = f"{full_clause} {multi_clause_logic}"
 
             # Decrement the number of clauses
-            _num_clauses -= 1
+            num_clauses -= 1
 
     # Return the fully parsed WHERE clause
-    return _full_clause
+    return full_clause
 
 
 class LiQLSyntax:

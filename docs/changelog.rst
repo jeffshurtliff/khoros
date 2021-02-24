@@ -4,7 +4,7 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v3.4.0b2
+v3.4.0b3
 ********
 **Release Date: 2021-02-24**
 
@@ -21,8 +21,9 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the :py:func:`khoros.api._should_verify_tls` function to determine if SSL/TLS certificates should
+* Added the :py:func:`khoros.api.should_verify_tls` function to determine if SSL/TLS certificates should
   be verified when making REST API calls.
+* Added a warning to the :py:func:`khoros.api.should_verify_tls` to inform of the suppressed warnings.
 
 Changed
 =======
@@ -50,7 +51,16 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.api.get_request_with_retries`
     * :py:func:`khoros.api.payload_request_with_retries`
     * :py:func:`khoros.api.perform_v1_search`
+    * :py:func:`khoros.api.post_request_with_retries`
+    * :py:func:`khoros.api.put_request_with_retries`
     * :py:func:`khoros.auth.get_session_key`
+    * :py:func:`khoros.liql.perform_query`
+* Renamed the function :py:func:`khoros.liql.__parse_select_fields` to be :py:func:`khoros.liql.__parse_select_fields`.
+* Renamed the function :py:func:`khoros.liql.__wrap_string_vales` to be :py:func:`khoros.liql._wrap_string_values`.
+* Renamed the function :py:func:`khoros.liql.__convert_where_dicts_to_lists` to be
+  :py:func:`khoros.liql._convert_where_dicts_to_lists`.
+* Renamed the function :py:func:`khoros.liql.__parse_where_clause` to be :py:func:`khoros.liql.parse_where_clause`
+  and converted it from a private to a public function.
 
 Supporting Modules
 ------------------

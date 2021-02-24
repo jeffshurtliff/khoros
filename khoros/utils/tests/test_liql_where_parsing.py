@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that LiQL WHERE clauses can be parsed successfully.
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  01 Mar 2020
+:Modified Date:  24 Feb 2021
 """
 
 import os
@@ -18,7 +18,11 @@ def set_package_path():
 
 
 def parse_where_clauses():
-    """This function runs through several parsing examples to ensure they all complete successfully."""
+    """This function runs through several parsing examples to ensure they all complete successfully.
+
+    .. versionchanged:: 3.4.0
+       Updated the name of the :py:func:`khoros.liql.parse_where_clause` function in its respective call.
+    """
     # Import the liql module
     from khoros import liql
 
@@ -56,7 +60,7 @@ def parse_where_clauses():
         except (KeyError, TypeError):
             pass
         print(f"Example:\t{print_example}")
-        where = liql.__parse_where_clause(example, logic)
+        where = liql.parse_where_clause(example, logic)
         print(f"Parsed:\t\t{where}\n")
     return True
 
