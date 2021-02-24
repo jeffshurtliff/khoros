@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Jan 2021
+:Modified Date:     23 Feb 2021
 """
 
 import sys
@@ -43,8 +43,13 @@ class Khoros(object):
     # Define the function that initializes the object instance (i.e. instantiates the object)
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
-                 use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False):
+                 use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
+                 ssl_verify=True):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 3.4.0
+           Introduced the ``ssl_verify`` parameter and established a key-value pair for it in the
+           ``core_settings`` dictionary for the object.
 
         .. versionchanged:: 3.3.2
            Method arguments are no longer ignored if they are implicitly ``False`` and instead only the
@@ -88,6 +93,8 @@ class Khoros(object):
         :type skip_env_variables: bool
         :param empty: Instantiates an empty object to act as a placeholder with default values (``False`` by default)
         :type empty: bool
+        :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+        :type ssl_verify: bool
         """
         # Define the current version
         self.version = version.get_full_version()
@@ -115,7 +122,8 @@ class Khoros(object):
             'prefer_json': prefer_json,
             'debug_mode': debug_mode,
             'skip_env_variables': skip_env_variables,
-            'empty': empty
+            'empty': empty,
+            'ssl_verify': ssl_verify
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val is not None:
@@ -141,6 +149,7 @@ class Khoros(object):
         if helper is None:
             self._helper_settings['connection'] = {}
             self._helper_settings['discussion_styles'] = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
+            self._helper_settings['ssl_verify'] = True
         else:
             self.core_settings['helper'] = helper
             if type(helper) == tuple or type(helper) == list:
@@ -157,6 +166,10 @@ class Khoros(object):
 
             # Parse the helper settings
             self._parse_helper_settings()
+
+        # Add the SSL verification setting if applicable
+        if 'ssl_verify' in self._helper_settings:
+            self.core_settings['ssl_verify'] = self._helper_settings.get('ssl_verify')
 
         # Add the authentication status
         if 'active' not in self.auth:

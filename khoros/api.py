@@ -6,12 +6,13 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Dec 2020
+:Modified Date:     24 Feb 2021
 """
 
 import json
 import os.path
 
+import urllib3
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
@@ -123,8 +124,28 @@ def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
     return _query_string
 
 
+def _should_verify_tls(_khoros_object=None):
+    """This function determines whether or not to verify the server's TLS certificate. (``True`` by default)
+
+    :param _khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
+    :type _khoros_object: class[khoros.Khoros], None
+    :returns: Boolean value indicating if the verification should occur
+    """
+    _verify = True
+    if _khoros_object and 'ssl_verify' in _khoros_object.core_settings:
+        _verify = _khoros_object.core_settings.get('ssl_verify')
+        if _verify is False:
+            # Suppress warnings when performing API calls without verifying SSL certificates
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    return _verify
+
+
 def get_request_with_retries(query_url, return_json=True, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.4.0
+       Removed an unnecessary ``pass`` statement and initially defined the ``response`` variable with a ``NoneType``
+       value to prevent a linting error from being reported. Also leveraged the ``ssl_verify`` core setting.
 
     .. versionchanged:: 2.5.0
        Leverages new private functions and has improved error handling of JSON conversion attempts.
@@ -144,15 +165,15 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
              :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
-    retries = 0
+    verify = _should_verify_tls(khoros_object)
+    retries, response = 0, None
     while retries <= 5:
         try:
-            response = requests.get(query_url, headers=headers)
+            response = requests.get(query_url, headers=headers, verify=verify)
             break
         except Exception as exc_msg:
             _report_failed_attempt(exc_msg, 'get', retries)
             retries += 1
-            pass
     if retries == 6:
         _raise_exception_for_repeated_timeouts()
     return _attempt_json_conversion(response, return_json)
@@ -176,8 +197,11 @@ def _is_plaintext_payload(_headers, _payload=None):
     return _is_plaintext
 
 
-def _api_request_with_payload(_url, _payload=None, _request_type='post', _headers=None, _multipart=False):
+def _api_request_with_payload(_url, _payload=None, _request_type='post', _headers=None, _multipart=False, _verify=True):
     """This function performs an API request while supplying a JSON payload.
+
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``verify`` parameter to determine if SSL certificate verification is needed.
 
     .. versionchanged:: 3.1.0
        The function now supports plaintext payloads.
@@ -198,12 +222,14 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
     :type _headers: dict
     :param _multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
     :type _multipart: bool
+    :param _verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :type _verify: bool
     :returns: The API response
     :raises: :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
     _headers = {} if not _headers else _headers
-    _retries = 0
+    _retries, _response = 0, None
     if not _payload:
         _response = _api_request_without_payload(_url, _request_type, _headers)
     else:
@@ -212,16 +238,16 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
             try:
                 if _request_type.lower() == "put":
                     if _multipart:
-                        _response = requests.put(_url, files=_payload, headers=_headers)
+                        _response = requests.put(_url, files=_payload, headers=_headers, verify=_verify)
                     else:
                         _payload = json.dumps(_payload, default=str) if not _is_plaintext else _payload
-                        _response = requests.put(_url, data=_payload, headers=_headers)
+                        _response = requests.put(_url, data=_payload, headers=_headers, verify=_verify)
                 elif _request_type.lower() == "post":
                     if _multipart:
-                        _response = requests.post(_url, files=_payload, headers=_headers)
+                        _response = requests.post(_url, files=_payload, headers=_headers, verify=_verify)
                     else:
                         _payload = json.dumps(_payload, default=str) if not _is_plaintext else _payload
-                        _response = requests.post(_url, data=_payload, headers=_headers)
+                        _response = requests.post(_url, data=_payload, headers=_headers, verify=_verify)
                 else:
                     raise errors.exceptions.InvalidRequestTypeError()
                 break
@@ -234,8 +260,11 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
     return _response
 
 
-def _api_request_without_payload(_url, _request_type, _headers):
+def _api_request_without_payload(_url, _request_type, _headers, _verify=True):
     """This function performs a ``POST`` or ``PUT`` request without an accompanying JSON payload.
+
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``_verify`` parameter to determine if SSL certificate verification is needed.
 
     :param _url: The URL for the API request
     :type _url: str
@@ -243,17 +272,19 @@ def _api_request_without_payload(_url, _request_type, _headers):
     :type _request_type: str
     :param _headers: The headers associated with the API request
     :type _headers: dict
+    :param _verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :type _verify: bool
     :returns: The API response
     :raises: :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
-    _retries = 0
+    _retries, _response = 0, None
     while _retries <= 5:
         try:
             if _request_type.lower() == "post":
-                _response = requests.post(_url, headers=_headers)
+                _response = requests.post(_url, headers=_headers, verify=_verify)
             elif _request_type.lower() == "put":
-                _response = requests.put(_url, headers=_headers)
+                _response = requests.put(_url, headers=_headers, verify=_verify)
             else:
                 raise errors.exceptions.InvalidRequestTypeError()
             break
@@ -333,6 +364,9 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
                                  content_type=None):
     """This function performs an API request that includes a payload with up to three reties as necessary.
 
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
+
     .. versionchanged:: 3.2.0
        Support has been introduced for URL-encoded string payloads in POST and PUT requests.
 
@@ -375,6 +409,9 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
     if request_type not in valid_request_types:
         raise errors.exceptions.InvalidRequestTypeError()
 
+    # Determine if TLS certificates should be verified during API calls
+    verify = _should_verify_tls(khoros_object)
+
     # Construct the appropriate headers for the POST call
     if content_type:
         headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
@@ -398,7 +435,7 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
         payload = json_payload
     else:
         raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
-    response = _api_request_with_payload(url, payload, request_type, headers, multipart)
+    response = _api_request_with_payload(url, payload, request_type, headers, multipart, verify)
     return _attempt_json_conversion(response, return_json)
 
 
@@ -572,6 +609,9 @@ def get_items_list(api_response):
 def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=None):
     """This function performs a DELETE request against the Core API.
 
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
+
     :param url: The URI against which the DELETE request will be issued
     :type url: str
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
@@ -584,8 +624,12 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     :type headers: dict, None
     :returns: The API response from the DELETE request (optionally in JSON format)
     """
+    # Determine if TLS certificates should be verified during API calls
+    verify = _should_verify_tls(khoros_object)
+
+    # Perform the API call to delete the asset
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
-    response = requests.delete(url, headers=headers)
+    response = requests.delete(url, headers=headers, verify=verify)
     if return_json:
         response = response.json()
     return response
@@ -593,6 +637,9 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
 
 def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
     """This function performs a search for a particular field value using a Community API v1 call.
+
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
@@ -609,12 +656,18 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
     :returns: The API response (optionally in JSON format)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
+    # Determine if TLS certificates should be verified during API calls
+    verify = _should_verify_tls(khoros_object)
+
+    # Prepare the API call
     headers = define_headers(khoros_object, content_type='application/x-www-form-urlencoded')
     if type(filter_value) == str:
         filter_value = core_utils.url_encode(filter_value)
     uri = f"{khoros_object.core['v1_base']}/search/{endpoint}?q={filter_field}:{filter_value}"
     uri = f"{uri}{_get_json_query_string(return_json)}"
-    response = requests.get(uri, headers=headers)
+
+    # Perform the API call
+    response = requests.get(uri, headers=headers, verify=verify)
     if return_json:
         response = response.json()
         response = response['response'] if 'response' in response else response
@@ -1019,8 +1072,12 @@ def _normalize_base_url(_base_url):
     return _base_url
 
 
-def get_platform_version(base_url, full_release=False, simple=False, commit_id=False, timestamp=False):
+def get_platform_version(base_url, full_release=False, simple=False, commit_id=False, timestamp=False,
+                         khoros_object=None):
     """This function retrieves the Khoros Community platform version information for a given environment.
+
+    .. versionchanged:: 3.4.0
+       Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
 
     .. versionadded:: 3.0.0
 
@@ -1038,12 +1095,18 @@ def get_platform_version(base_url, full_release=False, simple=False, commit_id=F
     :type commit_id: bool
     :param timestamp: Defines if the timestamp of the release (e.g. 2007092156) should be returned
     :type timestamp: bool
+    :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
+    :type khoros_object: class[khoros.Khoros], None
     :returns: One or more string with version information
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
+    # Determine if TLS certificates should be verified during API calls
+    verify = _should_verify_tls(khoros_object)
+
+    # Perform and parse the
     full_release = True if not any((full_release, simple, commit_id, timestamp)) else full_release
     base_url = _normalize_base_url(base_url)
-    version_info = requests.get(f'{base_url}/status/version')
+    version_info = requests.get(f'{base_url}/status/version', verify=verify)
     if version_info.status_code != 200:
         fail_msg = f'The attempt to get the platform version failed with a {version_info.status_code} status code.'
         logger.error(fail_msg)

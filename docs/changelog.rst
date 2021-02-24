@@ -3,19 +3,57 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-******
-v3.4.0
-******
-**Release Date: TBD**
+********
+v3.4.0b1
+********
+**Release Date: 2021-02-24**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.api._should_verify_tls` function to determine if SSL/TLS certificates should
+  be verified when making REST API calls.
 
 Changed
 =======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the ``__init__`` method for the :py:class:`khoros.core.Khoros` object class to include the ``ssl_verify``
+  parameter and to establish a key-value pair for it in the ``core_settings`` dictionary.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Removed an unnecessary ``pass`` statement from the :py:func:`khoros.api.get_request_with_retries` function
+  and initially defined the ``response`` variable with a ``NoneType`` value to prevent a linting error from
+  being reported.
+* Introduced support for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object within
+  the following functions:
+    * :py:func:`khoros.api._api_request_with_payload`
+    * :py:func:`khoros.api._api_request_without_payload`
+    * :py:func:`khoros.api.delete`
+    * :py:func:`khoros.api.get_platform_version`
+    * :py:func:`khoros.api.get_request_with_retries`
+    * :py:func:`khoros.api.payload_request_with_retries`
+    * :py:func:`khoros.api.perform_v1_search`
 
 Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Added support for the ``ssl_verify`` field in the :py:mod:`khoros.utils.helper` module.
+* Refactored the :py:func:`khoros.utils.version.get_latest_stable` function to leverage the
+  Python `standard library <https://docs.python.org/3/library/urllib.request.html#module-urllib.request>`_
+  instead of the `requests <https://requests.readthedocs.io/>`_ library which helps address
+  issue `#28 <https://github.com/jeffshurtliff/khoros/issues/28>`_.
 
 |
 
