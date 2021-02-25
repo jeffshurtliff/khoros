@@ -23,6 +23,9 @@ from .utils import core_utils, log_utils
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
 
+# Define global variable to determine if suppressed message warning has been displayed
+ssl_warning_shown = False
+
 
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
                    default_content_type=False):
@@ -132,12 +135,14 @@ def should_verify_tls(_khoros_object=None):
     :type _khoros_object: class[khoros.Khoros], None
     :returns: Boolean value indicating if the verification should occur
     """
+    global ssl_warning_shown
     _verify = True
     if _khoros_object is not None and 'ssl_verify' in _khoros_object.core_settings:
         _verify = _khoros_object.core_settings.get('ssl_verify')
-        if _verify is False:
+        if _verify is False and ssl_warning_shown is False:
             # Warn that SSL warnings are being suppressed
             warnings.warn('SSL certificate verification has been explicitly disabled and warnings will be suppressed')
+            ssl_warning_shown = True
 
             # Suppress warnings when performing API calls without verifying SSL certificates
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
