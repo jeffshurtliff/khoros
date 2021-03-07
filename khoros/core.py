@@ -525,6 +525,9 @@ class Khoros(object):
              multipart=False):
         """This method performs a simple POST request that leverages the Khoros authorization headers.
 
+        .. versionchanged:: 3.5.0
+           The ``query_url`` no longer gets prefixed with a slash (``/``) if ``relative_url`` is set to ``False``.
+
         .. versionchanged:: 3.1.1
            The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
 
@@ -554,7 +557,7 @@ class Khoros(object):
         :returns: The API response from the GET request
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
+        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url[1:]
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
         content_type = '' if not content_type else content_type

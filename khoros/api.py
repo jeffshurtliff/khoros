@@ -438,17 +438,20 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
         headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
 
     # Perform the API call and retrieve the response
-    if any((plaintext_payload, url_encoded_payload)) and not json_payload:
-        if plaintext_payload and not url_encoded_payload:
-            payload = plaintext_payload
-        elif url_encoded_payload and not plaintext_payload:
-            payload = url_encoded_payload
+    if any((plaintext_payload, url_encoded_payload, json_payload)):
+        if any((plaintext_payload, url_encoded_payload)) and not json_payload:
+            if plaintext_payload and not url_encoded_payload:
+                payload = plaintext_payload
+            elif url_encoded_payload and not plaintext_payload:
+                payload = url_encoded_payload
+            else:
+                raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
+        elif json_payload and not any((plaintext_payload, url_encoded_payload)):
+            payload = json_payload
         else:
             raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
-    elif json_payload and not any((plaintext_payload, url_encoded_payload)):
-        payload = json_payload
     else:
-        raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
+        payload = None
     response = _api_request_with_payload(url, payload, request_type, headers, multipart, verify)
     return _attempt_json_conversion(response, return_json)
 
@@ -664,8 +667,34 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     return response
 
 
+def get_v1_node_collection(node_type):
+    """This function retrieves the appropriate API v1 collection name for a given node type.
+
+    .. versionadded:: 3.5.0
+
+    :param node_type: The node type for which to retrieve the collection (e.g. ``board``, ``category``)
+    :type node_type: str
+    :returns: The associated API v2 collection for the node type
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`
+    """
+    # TODO: Find out how group hubs are handled
+    node_collections = {
+        'board': 'boards',
+        'category': 'categories'
+    }
+    node_collection = node_type if node_type in node_collections.values() else ''
+    if 'grouphub' in node_type:
+        raise errors.exceptions.UnsupportedNodeTypeError(node_type=node_type)
+    elif node_type not in node_collections:
+        raise errors.exceptions.InvalidNodeTypeError(val=node_type)
+    return node_collections.get(node_type) if not node_collection else node_collection
+
+
 def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id=None, trailing_slash=False):
     """This function returns the segment of an API v1 endpoint that is the path to define a user.
+
+    .. versionadded:: 3.5.0
 
     :param user_id: The numeric User ID associated with a user
     :type user_id: str, int, None

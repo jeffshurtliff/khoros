@@ -4,6 +4,44 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.5.0
+******
+**Release Date: TBD**
+
+Added
+=====
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.api.get_v1_user_path` and :py:func:`khoros.api.get_v1_node_collection`
+  functions to facilitate crafting API v1 endpoint URIs.
+* Added the new :py:mod:`khoros.objects.subscriptions` module with the following functions:
+    * :py:func:`khoros.objects.subscriptions.subscribe_user_to_node`
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Updated the :py:meth:`khoros.core.Khoros.post` function so that the ``query_url``
+  no longer gets prefixed with a slash (``/``) if the ``relative_url`` parameter is
+  set to ``False``.
+
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed an issue with the :py:func:`khoros.api.payload_request_with_retries` function
+  where non-payload API calls (including those with query parameters defined in the URI)
+  were incorrectly raising a :py:exc:`khoros.errors.exceptions.PayloadMismatchError` exception.
+
+|
+
+-----
+
+******
 v3.4.0
 ******
 **Release Date: 2021-03-06**
