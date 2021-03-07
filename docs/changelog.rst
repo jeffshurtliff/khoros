@@ -3,19 +3,29 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-******
-v3.5.0
-******
-**Release Date: TBD**
+********
+v3.5.0b1
+********
+**Release Date: 2021-03-07**
 
 Added
 =====
+
+Primary Modules
+---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.api.get_v1_user_path` and :py:func:`khoros.api.get_v1_node_collection`
   functions to facilitate crafting API v1 endpoint URIs.
 * Added the new :py:mod:`khoros.objects.subscriptions` module with the following functions:
     * :py:func:`khoros.objects.subscriptions.subscribe_user_to_node`
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added a badge for the latest beta / release candidate (RC) release on the
+  `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
 
 Fixed
 =====

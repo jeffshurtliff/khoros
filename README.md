@@ -12,6 +12,14 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         </td>
     </tr>
     <tr>
+        <td>Latest Beta/RC Release</td>
+        <td>
+            <a href='https://pypi.org/project/khoros/'>
+                <img alt="PyPI" src="https://img.shields.io/badge/pypi-3.5.0b1-blue">
+            </a>
+        </td>
+    </tr>
+    <tr>
         <td>Build Status</td>
         <td>
             <a href="https://github.com/jeffshurtliff/khoros/blob/master/.github/workflows/pythonpackage.yml">
