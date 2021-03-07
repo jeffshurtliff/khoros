@@ -664,6 +664,36 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     return response
 
 
+def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id=None, trailing_slash=False):
+    """This function returns the segment of an API v1 endpoint that is the path to define a user.
+
+    :param user_id: The numeric User ID associated with a user
+    :type user_id: str, int, None
+    :param user_email: The email address associated with a user
+    :type user_email: str, None
+    :param user_login: The username (i.e. login) associated with a user
+    :type user_login: str, None
+    :param user_sso_id: The Single Sign-On (SSO) ID associated with a user
+    :type user_sso_id: str, None
+    :param trailing_slash: Determines if the returned path should end with a slash (``False`` by default)
+    :type trailing_slash: bool
+    :returns: The API user path (e.g. ``/users/id/1234``)
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not any((user_id, user_email, user_login, user_sso_id)):
+        raise errors.exceptions.MissingRequiredDataError("A user identifier must be provided")
+    slash = '/' if trailing_slash else ''
+    if user_email:
+        user_path = f"/users/email/{user_email}{slash}"
+    elif user_login:
+        user_path = f"/users/login/{user_login}{slash}"
+    elif user_sso_id:
+        user_path = f"/users/sso_id/{user_sso_id}{slash}"
+    else:
+        user_path = f"/users/id/{user_id}{slash}"
+    return user_path
+
+
 def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
     """This function performs a search for a particular field value using a Community API v1 call.
 
