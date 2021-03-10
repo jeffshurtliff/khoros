@@ -329,7 +329,7 @@ def structure_cursor_clause(cursor=None, liql_response=None):
         if not cursor.lower().startswith('cursor'):
             cursor = f"CURSOR {cursor}"
     else:
-        cursor: ''
+        cursor = ''
         if liql_response.get('data') and liql_response['data'].get('next_cursor'):
             cursor = f"CURSOR {liql_response['data'].get('next_cursor')}"
     return cursor
