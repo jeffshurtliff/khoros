@@ -39,6 +39,11 @@ Additions to the documentation.
 * Added a badge for the latest beta / release candidate (RC) release on the
   `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
 
+General
+-------
+* Added the `wemake-python-styleguide <https://github.com/marketplace/actions/wemake-python-styleguide>`_
+  GitHub Action to the ``.github/workflows/pythonpackage.yml`` file.
+
 Changed
 =======
 
@@ -64,6 +69,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.liql.parse_select_fields` instead. (i.e. private to public function)
 * Refactored the :py:func:`khoros.liql.parse_select_fields` function to leverage the :py:func:`isinstance`
   built-in function.
+
+General
+-------
+* Removed the stale branch ``3.0.0`` from the ``.github/workflows/codeql-analysis.yml`` file.
 
 Fixed
 =====

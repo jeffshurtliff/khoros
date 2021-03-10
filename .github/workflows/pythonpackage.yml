@@ -53,5 +53,8 @@ jobs:
         pytest --cov-report=xml --cov=khoros khoros/utils/tests/
         codecov -t cf4db87f-2b53-498c-92a6-1eb55d00a8a7
 
+    - name: Wemake Python Styleguide
+      uses: wemake-services/wemake-python-styleguide@0.15.2
+
     - name: PyCharm Python Security Scanner
       uses: tonybaloney/pycharm-security@1.14.0
