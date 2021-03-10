@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 Feb 2021
+:Modified Date:     09 Mar 2021
 """
 
 import requests
@@ -18,8 +18,12 @@ from .utils import core_utils, log_utils
 logger = log_utils.initialize_logging(__name__)
 
 
-def get_session_key(khoros_object):
+def get_session_key(khoros_object, username=None, password=None):
     """This function retrieves the session key for an authentication session.
+
+    .. versionchanged:: 3.5.0
+       This function can now be used to authenticate secondary users with either a username and password or with
+       only a username if calling the function with a previously authenticated user with Administrator privileges.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -32,34 +36,86 @@ def get_session_key(khoros_object):
 
     :param khoros_object: The core Khoros object
     :type khoros_object: class[khoros.Khoros]
+    :param username: The username (i.e. login) of a secondary user to authenticate *(optional)*
+    :type username:  str, None
+    :param password: The password of a secondary user to authentication *(optional)*
     :returns: The session key in string format
+    :raises: :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
     """
     # Prepare the API call
     community_url = khoros_object.core_settings['community_url']
-    username = khoros_object.core_settings['session_auth']['username']
-    password = khoros_object.core_settings['session_auth']['password']
-    query_string = core_utils.encode_query_string({
-        'user.login': username,
-        'user.password': password,
-        'restapi.response_format': 'json'
-    })
+    password = khoros_object.core_settings['session_auth']['password'] if not username else password
+    username = khoros_object.core_settings['session_auth']['username'] if not username else username
+    payload = _get_session_key_payload(username, password)
+    query_string = core_utils.encode_query_string(payload)
+
     # Determine if TLS certificates should be verified during API calls
     verify = api.should_verify_tls(khoros_object)
 
     # Perform the API call to authorize the session
     uri = f"{community_url}/restapi/vc/authentication/sessions/login/?{query_string}"
-    header = {"content-type": "application/x-www-form-urlencoded"}
+    secondary_user = False if password else True
+    header = _get_session_key_header(khoros_object, secondary_user)
     response = requests.post(uri, headers=header, verify=verify)
     if response.status_code != 200:
         if type(response.text) == str and response.text.startswith('<html>'):
             api_error = errors.handlers.get_error_from_html(response.text)
             error_msg = f"The authentication attempt failed with the following error:\n\t{api_error}"
             raise errors.exceptions.SessionAuthenticationError(error_msg)
-        raise errors.exceptions.SessionAuthenticationError
+        raise errors.exceptions.SessionAuthenticationError()
     else:
         response = response.json()
-        session_key = response['response']['value']['$']
+        try:
+            session_key = response['response']['value']['$']
+        except KeyError:
+            raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
     return session_key
+
+
+def _get_session_key_payload(_username, _password=None, _return_json=True):
+    """This function constructs the payload used to request a session key.
+
+    .. versionadded:: 3.5.0
+
+    :param _username: The username (i.e. login) for the user being authenticated
+    :type _username: str
+    :param _password: The password for the user being authenticated
+
+                      .. note:: A password is not required if authenticating a secondary user with a previously
+                                authenticated Administrator account.
+
+    :type _password: str, None
+    :param _return_json: Determines if the session key should be returned in JSON format (``True`` by default)
+    :type _return_json: bool
+    :returns: A dictionary with the authentication request payload
+    """
+    _auth_payload = {'user.login': _username}
+    if _password:
+        _auth_payload.update({'user.password': _password})
+    if _return_json:
+        _auth_payload.update({'restapi.response_format': 'json'})
+    return _auth_payload
+
+
+def _get_session_key_header(_khoros_object, _secondary=False):
+    """This function retrieves the header for an API call to retrieve a session key.
+
+    .. versionadded:: 3.5.0
+
+    :param _khoros_object: The core Khoros object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _secondary: Indicates that the authentication request is for a secondary user (``False`` by default)
+    :returns: A dictionary with the header information
+    :raises: :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
+    """
+    _header = {"content-type": "application/x-www-form-urlencoded"}
+    if _secondary:
+        if _khoros_object.auth.get('header'):
+            _header.update(_khoros_object.auth.get('header'))
+        else:
+            _error_msg = "Unable to retrieve a session key for secondary users without an existing session key"
+            raise errors.exceptions.SessionAuthenticationError(_error_msg)
+    return _header
 
 
 def get_session_header(session_key):

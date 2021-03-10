@@ -253,7 +253,7 @@ def parse_query_elements(select_fields, from_source, where_filter="", order_by=N
              :py:exc:`khoros.errors.exceptions.InvalidOperatorError`
     """
     # Properly format the provided SELECT fields
-    select_fields = _parse_select_fields(select_fields)
+    select_fields = parse_select_fields(select_fields)
 
     # Establish the base syntax to return
     full_syntax = f"SELECT {select_fields} FROM {from_source}"
@@ -283,8 +283,11 @@ def parse_query_elements(select_fields, from_source, where_filter="", order_by=N
     return full_syntax
 
 
-def _parse_select_fields(_select_fields):
+def parse_select_fields(_select_fields):
     """This function parses the fields to be used in the SELECT statement of the LiQL query.
+
+    .. versionchanged:: 3.5.0
+       Refactored the function to leverage the :py:func:`isinstance` built-in function.
 
     .. versionchanged:: 3.4.0
        Renamed the function to adhere to PEP8 guidelines.
@@ -292,13 +295,44 @@ def _parse_select_fields(_select_fields):
     :param _select_fields: The field(s) to be used in the SELECT statement
     :type _select_fields: str, tuple, list, set
     :returns: The properly formatted SELECT fields in string format (comma-separated)
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`
     """
-    if type(_select_fields) == tuple or type(_select_fields) == list or type(_select_fields) == set:
+    if not any((isinstance(_select_fields, list), isinstance(_select_fields, str), isinstance(_select_fields, tuple),
+                isinstance(_select_fields, set))):
+        raise errors.exceptions.InvalidFieldError("Fields must be in string or iterable format when explicitly defined")
+    if any((isinstance(_select_fields, tuple), isinstance(_select_fields, list), isinstance(_select_fields, set))):
         _select_fields = convert_set(_select_fields)
         _select_fields = ",".join(_select_fields)
-    elif type(_select_fields) == str:
+    elif isinstance(_select_fields, str):
         _select_fields = _select_fields.replace(';', ',').replace(', ', ',')
     return _select_fields
+
+
+def structure_cursor_clause(cursor=None, liql_response=None):
+    """This function structures the CURSOR clause for a LiQL query.
+
+    .. versionadded:: 3.5.0
+
+    :param cursor: A cursor value from the ``next_cursor`` key in a LiQL response
+    :type cursor: str, None
+    :param liql_response: A full LiQL query response in dictionary format
+    :type liql_response: dict, None
+    :returns: The properly formatted CURSOR clause for use in a new LiQL query
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not cursor and not liql_response:
+        raise errors.exceptions.MissingRequiredDataError('Must provide cursor value or LiQL response')
+    if cursor:
+        if not isinstance(cursor, str):
+            raise errors.exceptions.InvalidFieldError('Cursor value must be a string')
+        if not cursor.lower().startswith('cursor'):
+            cursor = f"CURSOR {cursor}"
+    else:
+        cursor: ''
+        if liql_response.get('data') and liql_response['data'].get('next_cursor'):
+            cursor = f"CURSOR {liql_response['data'].get('next_cursor')}"
+    return cursor
 
 
 def _wrap_string_values(_where_value):

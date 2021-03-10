@@ -4,12 +4,18 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v3.5.0b1
+v3.5.0b2
 ********
-**Release Date: 2021-03-07**
+**Release Date: TBD**
 
 Added
 =====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.get_session_key` method.
 
 Primary Modules
 ---------------
@@ -19,6 +25,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
   functions to facilitate crafting API v1 endpoint URIs.
 * Added the new :py:mod:`khoros.objects.subscriptions` module with the following functions:
     * :py:func:`khoros.objects.subscriptions.subscribe_user_to_node`
+* Added the :py:func:`khoros.auth._get_session_key_payload` function.
+* Added the :py:func:`khoros.auth._get_session_key_header` function.
+* Added the following functions to the :py:mod:`khoros.objects.roles` module:
+    * :py:func:`khoros.objects.roles._get_role_type_prefix`
+    * :py:func:`khoros.objects.roles.get_users_with_role`
+* Added the :py:func:`khoros.errors.exceptions.structure_cursor_clause` function.
 
 Documentation
 -------------
@@ -26,6 +38,32 @@ Additions to the documentation.
 
 * Added a badge for the latest beta / release candidate (RC) release on the
   `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the :py:meth:`khoros.core.Khoros.Role.get_roles_for_user` method to allow SELECT fields
+  to be explicitly defined.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* The :py:func:`khoros.auth.get_session_key` function has been updated to allow a secondary user to be
+  authenticated by passing either a username and password or by passing only a username when calling the
+  function as a previously authenticated user with Administrator privileges.
+* Added the ``community``, ``grouphub`` and ``global`` keys to the ``ROLE_TYPES`` dictionary constant in
+  the :py:mod:`khoros.objects.roles` module.
+* Updated the :py:func:`khoros.objects.roles.get_roles_for_user` function to allow SELECT fields to be
+  explicitly defined.
+* Renamed the :py:func:`khoros.liql._parse_select_fields` function to be
+  :py:func:`khoros.liql.parse_select_fields` instead. (i.e. private to public function)
+* Refactored the :py:func:`khoros.liql.parse_select_fields` function to leverage the :py:func:`isinstance`
+  built-in function.
 
 Fixed
 =====

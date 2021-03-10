@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Feb 2021
+:Modified Date:     09 Mar 2021
 """
 
 import sys
@@ -503,6 +503,19 @@ class Khoros(object):
             error_msg = f"The '{connection_type}' authentication type is currently unsupported."
             logger.error(error_msg)
             raise errors.exceptions.CurrentlyUnsupportedError(error_msg)
+
+    def get_session_key(self, username=None, password=None):
+        """This function retrieves the session key for an authentication session.
+
+        .. versionadded:: 3.5.0
+
+        :param username: The username (i.e. login) of a secondary user to authenticate *(optional)*
+        :type username:  str, None
+        :param password: The password of a secondary user to authentication *(optional)*
+        :returns: The session key in string format
+        :raises: :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
+        """
+        return auth.get_session_key(self, username, password)
 
     def get(self, query_url, relative_url=True, return_json=True, headers=None):
         """This method performs a simple GET request that leverages the Khoros authorization headers.
@@ -2907,16 +2920,30 @@ class Khoros(object):
             return objects_module.roles.get_total_role_count(self.khoros_object, return_dict, total, top_level, board,
                                                              category, group_hub)
 
-        def get_roles_for_user(self, user_id):
+        def get_roles_for_user(self, user_id, fields=None):
             """This function returns all roles associated with a given User ID.
+
+            .. versionchanged:: 3.5.0
+               Fields to return in the LiQL query can now be explicitly defined.
 
             .. versionadded:: 2.4.0
 
             :param user_id: The User ID for which to retrieve the roles data
+            :type user_id: str
+            :param fields: The field(s) to retrieve from the LiQL query as a string or list
+
+                   .. note:: All fields (i.e. ``SELECT *``) are returned unless fields are explicitly defined.
+
+            :type fields: str, list, tuple, set, None
             :returns: A dictionary with data for each role associated with the given User ID
             :raises: :py:exc:`khoros.errors.exceptions.GETResponseError`
             """
-            return objects_module.roles.get_roles_for_user(self.khoros_object, user_id)
+            return objects_module.roles.get_roles_for_user(self.khoros_object, user_id, fields)
+
+        def get_users_with_role(self, fields='login', role_id=None, role_name=None, scope=None, node_id=None,
+                                limit_per_query=1000):
+            # TODO: Finish populating the docstring and adding this function to the changelog
+            pass
 
     class Settings(object):
         """This class includes methods relating to the retrieval and defining of various settings.

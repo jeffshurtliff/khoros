@@ -6,7 +6,7 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     09 Mar 2021
 """
 
 from .. import api, liql, errors
@@ -18,9 +18,31 @@ logger = log_utils.initialize_logging(__name__)
 ROLE_TYPES = {
     'board': 'b',
     'category': 'c',
+    'community': 't',
+    'global': 't',
+    'grouphub': 'g',
     'group_hub': 'g',
     'top_level': 't'
 }
+NODE_SPECIFIC_ROLES = {'b', 'board', 'c', 'category', 'g', 'grouphub', 'group_hub'}
+
+
+def _get_role_type_prefix(_role_type=None):
+    """This function identifies the appropriate prefix for a given role type. (Top-level prefix returned by default)
+
+    .. versionadded:: 3.5.0
+
+    :param _role_type: The role type associated with a role (e.g. ``board``, ``category``, etc.)
+    :type _role_type: str, None
+    :returns: The prefix associated with the role type (e.g. ``b``, ``c``, etc.)
+    :raises: :py:exc:`TypeError`
+    """
+    _prefix = 't'
+    if _role_type in ROLE_TYPES.values():
+        _prefix = _role_type
+    elif _role_type in ROLE_TYPES:
+        _prefix = ROLE_TYPES.get(_role_type)
+    return _prefix
 
 
 def get_total_role_count(khoros_object, return_dict=False, total=True, top_level=False, board=False, category=False,
@@ -89,17 +111,99 @@ def count_role_types(role_type, roles_dict):
     return count
 
 
-def get_roles_for_user(khoros_object, user_id):
+def get_roles_for_user(khoros_object, user_id, fields=None):
     """This function returns all roles associated with a given User ID.
+
+    .. versionchanged:: 3.5.0
+       Fields to return in the LiQL query can now be explicitly defined.
 
     .. versionadded:: 2.4.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param user_id: The User ID for which to retrieve the roles data
+    :type user_id: str, int
+    :param fields: The field(s) to retrieve from the LiQL query as a string or list
+
+                   .. note:: All fields (i.e. ``SELECT *``) are returned unless fields are explicitly defined.
+
+    :type fields: str, list, tuple, set, None
     :returns: A dictionary with data for each role associated with the given User ID
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    response = liql.perform_query(khoros_object, liql_query=f"SELECT * FROM roles WHERE users.id = '{user_id}'",
+    fields = "*" if not fields else liql.parse_select_fields(fields)
+    response = liql.perform_query(khoros_object, liql_query=f"SELECT {fields} FROM roles WHERE users.id = '{user_id}'",
                                   verify_success=True)
     return api.get_items_list(response)
+
+
+def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=None, scope=None, node_id=None,
+                        limit_per_query=1000, cursor=None, where_clause=None, users_list=None):
+    """This function retrieves a list of all users that have a specific role.
+
+    # TODO: Finish populating the docstring and adding this function to the changelog
+
+    :param khoros_object:
+    :param fields:
+    :param role_id:
+    :param role_name:
+    :param scope:
+    :param node_id:
+    :param limit_per_query:
+    :param cursor:
+    :param where_clause:
+    :param users_list:
+    :return:
+    """
+    # Initialize the users list if not provided
+    users_list = [] if not users_list else users_list
+
+    # Define the WHERE clause if not already defined
+    if not where_clause:
+        # Ensure appropriate data has been provided
+        if not role_id and not role_name:
+            raise errors.exceptions.MissingRequiredDataError('A role ID or role name must be provided')
+        elif role_id and role_name:
+            raise errors.exceptions.DataMismatchError('Only a role ID or role name should be provided and not both')
+        elif not node_id and scope in NODE_SPECIFIC_ROLES:
+            raise errors.exceptions.MissingRequiredDataError('A node ID must be supplied with node-specific roles')
+
+        # Define the constraint
+        prefix = _get_role_type_prefix(scope)
+        if role_name:
+            if scope in NODE_SPECIFIC_ROLES:
+                constraint = f"roles.id = '{prefix}:{node_id}:{role_name}'"
+            elif scope is not None:
+                constraint = f"roles.id = '{prefix}:{role_id}'"
+            else:
+                constraint = f"roles.name = '{role_name}'"
+        elif ':' not in role_id and scope not in NODE_SPECIFIC_ROLES:
+            constraint = f"roles.name = '{role_name}'"
+        else:
+            constraint = f"roles.id = '{role_id}'"
+
+        # Define the full WHERE clause if not already define4d
+        if not any((isinstance(limit_per_query, int), isinstance(limit_per_query, str))):
+            raise errors.exceptions.InvalidFieldError('Limit per query value must be a number (integer or string)')
+        elif int(limit_per_query) < 0:
+            raise errors.exceptions.InvalidFieldError('Limit per query value must be a positive number')
+        where_clause = f"WHERE {constraint} LIMIT {limit_per_query}"
+
+    # Properly parse the SELECT statement
+    fields = liql.parse_select_fields(fields)
+
+    # Construct the entire LiQL query
+    cursor = '' if not cursor else liql.structure_cursor_clause(cursor)
+    query = f"SELECT {fields} FROM users {where_clause} {cursor}"
+
+    # Perform the API call and retrieve the data
+    response = liql.perform_query(khoros_object, liql_query=query)
+    users_list.extend(liql.get_returned_items(response))
+
+    # Call the function recursively if a cursor is found
+    if response.get('data') and response['data'].get('next_cursor'):
+        users_list = get_users_with_role(khoros_object, fields, cursor=cursor, where_clause=where_clause,
+                                         users_list=users_list)
+
+    # Return the populated users list
+    return users_list
