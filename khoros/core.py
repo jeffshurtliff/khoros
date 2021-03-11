@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Mar 2021
+:Modified Date:     10 Mar 2021
 """
 
 import sys
@@ -152,11 +152,11 @@ class Khoros(object):
             self._helper_settings['ssl_verify'] = True
         else:
             self.core_settings['helper'] = helper
-            if type(helper) == tuple or type(helper) == list:
+            if any((isinstance(helper, tuple), isinstance(helper, list))):
                 file_path, file_type = helper
-            elif type(helper) == str:
+            elif isinstance(helper, str):
                 file_path, file_type = (helper, 'yaml')
-            elif type(helper) == dict:
+            elif isinstance(helper, dict):
                 file_path, file_type = helper.values()
             else:
                 error_msg = "The 'helper' argument can only be supplied as tuple, string, list or dict."
@@ -3105,6 +3105,9 @@ class Khoros(object):
                    biography=None, sso_id=None, web_page_url=None, cover_image=None):
             """This function creates a new user in the Khoros Community environment.
 
+            .. versionchanged:: 3.5.0
+               The unnecessary ``return`` statement at the end of the method has been removed.
+
             :param user_settings: Allows all user settings to be passed to the function within a single dictionary
             :type user_settings: dict, None
             :param login: The username (i.e. ``login``) for the user (**required**)
@@ -3130,7 +3133,6 @@ class Khoros(object):
             """
             objects_module.users.create(self.khoros_object, user_settings, login, email, password, first_name,
                                         last_name, biography, sso_id, web_page_url, cover_image)
-            return
 
         def delete(self, user_id, return_json=False):
             """This function deletes a user from the Khoros Community environment.
@@ -3556,6 +3558,9 @@ class Khoros(object):
     def signout(self):
         """This method invalidates the active session key or SSO authentication session.
 
+        .. versionchanged:: 3.5.0
+           The unnecessary ``return`` statement at the end of the method has been removed.
+
         .. versionchanged:: 3.3.2
            Logging was introduced to report the successful session invalidation.
         """
@@ -3563,12 +3568,14 @@ class Khoros(object):
         if session_terminated:
             self.auth['active'] = False
         logger.info('The session has been successfully invalidated and the API is no longer connected.')
-        return
 
     def __del__(self):
         """This method fully destroys the instance."""
         self.close()
 
     def close(self):
-        """This core method destroys the instance."""
-        pass
+        """This core method destroys the instance.
+
+        .. versionchanged:: 3.5.0
+           The unnecessary ``pass`` statement at the end of the method has been removed.
+        """

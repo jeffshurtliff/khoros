@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 Feb 2021
+:Modified Date:     10 Mar 2021
 """
 
 import json
@@ -30,6 +30,10 @@ ssl_warning_shown = False
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
                    default_content_type=False):
     """This function defines the headers to use in an API call.
+
+    .. versionchanged:: 3.5.0
+       An unnecessary ``else`` statement after the :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+       exception is raised has been removed.
 
     .. versionchanged:: 2.7.5
        Added the ``default_content_type`` argument which is defined as ``False`` by default.
@@ -60,11 +64,10 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     """
     if not khoros_object and not auth_dict:
         raise errors.exceptions.MissingAuthDataError()
+    if auth_dict:
+        headers = auth_dict['header']
     else:
-        if auth_dict:
-            headers = auth_dict['header']
-        else:
-            headers = khoros_object.auth['header']
+        headers = khoros_object.auth['header']
     if 'content-type' not in headers and default_content_type:
         headers['content-type'] = 'application/json'
     if params:
@@ -678,7 +681,7 @@ def get_v1_node_collection(node_type):
     :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`
     """
-    # TODO: Find out how group hubs are handled
+    # TODO: Find out how group hubs are handled in v1 API calls and take action accordingly
     node_collections = {
         'board': 'boards',
         'category': 'categories'
@@ -686,7 +689,7 @@ def get_v1_node_collection(node_type):
     node_collection = node_type if node_type in node_collections.values() else ''
     if 'grouphub' in node_type:
         raise errors.exceptions.UnsupportedNodeTypeError(node_type=node_type)
-    elif node_type not in node_collections:
+    if node_type not in node_collections:
         raise errors.exceptions.InvalidNodeTypeError(val=node_type)
     return node_collections.get(node_type) if not node_collection else node_collection
 

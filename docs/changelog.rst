@@ -48,6 +48,11 @@ Changes to the :doc:`core-object-methods`.
 
 * Updated the :py:meth:`khoros.core.Khoros.Role.get_roles_for_user` method to allow SELECT fields
   to be explicitly defined.
+* Removed the unnecessary ``pass`` statement in the :py:meth:`khoros.core.Khoros.close` method.
+* Removed the unnecessary ``return`` statements in the :py:meth:`khoros.core.Khoros.signout` and
+  :py:meth:`khoros.core.Khoros.User.create` methods.
+* Replaced ``type()`` with ``isinstance()`` when performing typechecks throughout the
+  :py:mod:`khoros.core` module.
 
 Primary Modules
 ---------------
@@ -64,6 +69,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.liql.parse_select_fields` instead. (i.e. private to public function)
 * Refactored the :py:func:`khoros.liql.parse_select_fields` function to leverage the :py:func:`isinstance`
   built-in function.
+* Removed an unnecessary ``else`` statement in the :py:func:`khoros.api.define_headers` function after the
+  :py:exc:`khoros.errors.exceptions.MissingAuthDataError` exception is raised.
 
 General
 -------
