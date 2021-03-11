@@ -6,6 +6,7 @@ on:
       - 'docs/**'
       - 'examples/**'
       - '**/tests/**'
+      - '**/test_*.py'
 
 jobs:
   build:
