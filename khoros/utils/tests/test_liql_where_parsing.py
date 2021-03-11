@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that LiQL WHERE clauses can be parsed successfully.
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Feb 2021
+:Modified Date:  11 Mar 2021
 """
 
 import os
@@ -68,4 +68,4 @@ def parse_where_clauses():
 def test_where_clause_parsing():
     """This function tests to confirm that LiQL WHERE clauses are getting parsed properly without failing."""
     set_package_path()
-    assert parse_where_clauses() is True
+    assert parse_where_clauses() is True        # nosec

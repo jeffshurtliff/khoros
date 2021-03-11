@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that HTTP headers are formatted appropriately
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  18 Jun 2020
+:Modified Date:  11 Mar 2021
 """
 
 import pytest
@@ -38,7 +38,7 @@ def test_normalize_headers():
         'Some-Integer': 234
     }
     headers = api._normalize_headers(headers)
-    assert compare_headers(headers) is True
+    assert compare_headers(headers) is True     # nosec
     return
 
 
@@ -49,7 +49,7 @@ def test_normalize_empty_headers():
     .. versionadded:: 2.7.4
     """
     headers = api._normalize_headers({})
-    assert headers == {}
+    assert headers == {}        # nosec
     return
 
 

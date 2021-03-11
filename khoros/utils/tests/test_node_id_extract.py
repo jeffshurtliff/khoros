@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Apr 2020
+:Modified Date:     11 Mar 2021
 :Version:           1.0.2
 """
 
@@ -58,7 +58,7 @@ def test_with_valid_node_types():
     # Perform the test for each key value pair
     for node_type, url in test_data.items():
         node_id = nodes.get_node_id(url, node_type)
-        assert (node_id is not False) and (len(node_id) != 0)
+        assert (node_id is not False) and (len(node_id) != 0)       # nosec
     return
 
 
@@ -104,7 +104,7 @@ def test_with_only_url():
     # Test getting the Node ID for each URL type
     for url in test_data:
         node_id = nodes.get_node_id(url)
-        assert (node_id is not False) and (len(node_id) != 0)
+        assert (node_id is not False) and (len(node_id) != 0)       # nosec
     return
 
 

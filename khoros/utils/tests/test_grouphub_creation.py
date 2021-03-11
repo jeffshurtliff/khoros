@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the group hub creation process works properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  18 Jun 2020
+:Modified Date:  11 Mar 2021
 """
 
 import pytest
@@ -44,20 +44,8 @@ def test_only_id():
     """This function tests to ensure passing only the ID references the ``group_title`` argument in the exception."""
     with pytest.raises(TypeError) as exc:
         grouphubs.structure_payload()
-        assert 'group_title' in str(exc.value)
+        assert 'group_title' in str(exc.value)      # nosec
     return
-
-
-# def test_required_fields():
-#     """This function tests that the payload is structured properly with only the required fields supplied."""
-#     payload = grouphubs.structure_payload(khoros, 'test-forum', 'Test Forum', 'forum')
-#     data_fields_to_check = {
-#         'conversation_style': 'forum',
-#         'id': 'test-forum',
-#         'title': 'Test Forum'
-#     }
-#     assert verify_data_fields(payload, data_fields_to_check) is True
-#     return
 
 
 # Import modules and initialize the core object

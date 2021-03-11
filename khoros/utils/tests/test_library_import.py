@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the primary package can be imported successfully
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  31 Jan 2020
+:Modified Date:  11 Mar 2021
 """
 
 import os
@@ -28,4 +28,4 @@ def import_pkg_operation():
 def test_library_import():
     """This function tests to confirm that the primary package can be imported successfully."""
     set_package_path()
-    assert import_pkg_operation() is True
+    assert import_pkg_operation() is True       # nosec

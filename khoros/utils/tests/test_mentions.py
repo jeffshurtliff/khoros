@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that user and content mentions work properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 May 2020
+:Modified Date:  11 Mar 2021
 """
 
 import os
@@ -106,7 +106,7 @@ def test_content_mention_with_all_arguments():
     """
     title, url, content_id = get_content_test_data()
     response = messages.format_content_mention(content_id=content_id, title=title, url=url)
-    assert response == CORRECT_CONTENT_MENTION
+    assert response == CORRECT_CONTENT_MENTION      # nosec
     return
 
 
@@ -125,7 +125,7 @@ def test_content_mention_with_full_dict():
         'url': url
     }
     response = messages.format_content_mention(content_info=content_info)
-    assert response == CORRECT_CONTENT_MENTION
+    assert response == CORRECT_CONTENT_MENTION      # nosec
     return
 
 
@@ -139,7 +139,7 @@ def test_content_mention_with_no_id_arg():
     """
     title, url = get_content_test_data(include_id=False)
     response = messages.format_content_mention(title=title, url=url)
-    assert response == CORRECT_CONTENT_MENTION
+    assert response == CORRECT_CONTENT_MENTION      # nosec
     return
 
 
@@ -154,7 +154,7 @@ def test_content_mention_with_no_id_dict():
     title, url = get_content_test_data(include_id=False)
     content_info = {'title': title, 'url': url}
     response = messages.format_content_mention(content_info=content_info)
-    assert response == CORRECT_CONTENT_MENTION
+    assert response == CORRECT_CONTENT_MENTION      # nosec
     return
 
 
@@ -168,7 +168,7 @@ def test_content_mention_with_false_id_arg():
     title, url, content_id = get_content_test_data(false_id=True)
     with pytest.warns(UserWarning):
         response = messages.format_content_mention(content_id=content_id, title=title, url=url)
-    assert response == CORRECT_CONTENT_MENTION
+    assert response == CORRECT_CONTENT_MENTION      # nosec
     return
 
 
@@ -187,7 +187,7 @@ def test_content_mention_with_false_id_dict():
     }
     with pytest.warns(UserWarning):
         response = messages.format_content_mention(content_info=content_info)
-    assert response == CORRECT_CONTENT_MENTION
+    assert response == CORRECT_CONTENT_MENTION      # nosec
     return
 
 
@@ -251,21 +251,21 @@ def test_relative_content_url_with_object():
 
     # Testing arguments without a Content ID
     response = messages.format_content_mention(khoros, title=title, url=url)
-    assert expected_content_response(response)
+    assert expected_content_response(response)      # nosec
 
     # Testing arguments with a Content ID
     response = messages.format_content_mention(khoros, content_id=content_id, title=title, url=url)
-    assert expected_content_response(response)
+    assert expected_content_response(response)      # nosec
 
     # Testing dictionary without a Content ID
     content_info = {'title': title, 'url': url}
     response = messages.format_content_mention(khoros, content_info)
-    assert expected_content_response(response)
+    assert expected_content_response(response)      # nosec
 
     # Testing dictionary with a Content ID
     content_info['id'] = content_id
     response = messages.format_content_mention(khoros, content_info)
-    assert expected_content_response(response)
+    assert expected_content_response(response)      # nosec
     return
 
 

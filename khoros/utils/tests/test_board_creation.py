@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the board creation works properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  18 Jun 2020
+:Modified Date:  11 Mar 2021
 """
 
 import pytest
@@ -76,7 +76,7 @@ def test_required_fields():
         'id': 'test-forum',
         'title': 'Test Forum'
     }
-    assert verify_data_fields(payload, data_fields_to_check) is True
+    assert verify_data_fields(payload, data_fields_to_check) is True    # nosec
     return
 
 
@@ -91,7 +91,7 @@ def test_valid_board_types():
             'id': board_id,
             'title': board_title
         }
-        assert verify_data_fields(payload, data_fields_to_check) is True
+        assert verify_data_fields(payload, data_fields_to_check) is True    # nosec
     return
 
 
@@ -118,7 +118,7 @@ def test_description():
         payload = boards.structure_payload(khoros, board_id, board_title, board_type, description)
         expected_fields = get_dict_for_required_fields(fields)
         expected_fields['description'] = description
-        assert verify_data_fields(payload, expected_fields) is True
+        assert verify_data_fields(payload, expected_fields) is True     # nosec
     return
 
 

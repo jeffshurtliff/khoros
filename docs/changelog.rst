@@ -49,7 +49,9 @@ General
   to leverage the
   `Python security check using Bandit <https://github.com/marketplace/actions/python-security-check-using-bandit>`_
   action to perform security audits with each push event.
-* Added badges in the
+* Added badges in the `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
+* Added comments in multiple scripts within the library to address how the bandit GitHub Action
+  will identify users.
 
 Changed
 =======

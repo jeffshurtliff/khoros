@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the helper configuration files work properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  26 Apr 2020
+:Modified Date:  11 Mar 2021
 """
 
 import os
@@ -40,4 +40,4 @@ def test_yaml_file():
     khoros = Khoros(helper=yaml_file, auto_connect=False)
 
     # Verify that the helper configuration was imported successfully
-    assert 'connection' in khoros._helper_settings
+    assert 'connection' in khoros._helper_settings      # nosec

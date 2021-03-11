@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that messages function properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  05 Jul 2020
+:Modified Date:  11 Mar 2021
 """
 
 import pytest
@@ -52,7 +52,7 @@ def test_construct_with_node():
     """This function tests constructing payload using properly formatted node data."""
     control_data = get_control_data('node')
     payload = messages.construct_payload('This is the subject line', node={"id": "my-board"})
-    assert payload == control_data
+    assert payload == control_data      # nosec
     return
 
 
@@ -60,7 +60,7 @@ def test_construct_with_node_id():
     """This function tests constructing payload using a Node ID."""
     control_data = get_control_data('node_id')
     payload = messages.construct_payload('This is the subject line', node_id='my-board')
-    assert payload == control_data
+    assert payload == control_data      # nosec
     return
 
 
@@ -69,7 +69,7 @@ def test_construct_with_node_url():
     node_url = 'https://community.khoros.com/t5/Developer-Discussion/bd-p/studio'
     control_data = get_control_data('node_url')
     payload = messages.construct_payload('This is the subject line', node_url=node_url)
-    assert payload == control_data
+    assert payload == control_data      # nosec
     return
 
 
@@ -77,7 +77,7 @@ def test_construct_with_body():
     """This function tests constructing payload using a message body."""
     control_data = get_control_data('body')
     payload = messages.construct_payload('Welcome', node_id='my-board', body='<h1>Hello!</h1>')
-    assert payload == control_data
+    assert payload == control_data      # nosec
     return
 
 
@@ -85,7 +85,7 @@ def test_construct_with_one_str_tag():
     """This function tests constructing payload using a single tag in string format."""
     control_data = get_control_data('welcome_tag')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags='welcome')
-    assert payload == control_data
+    assert payload == control_data      # nosec
     return
 
 
@@ -93,7 +93,7 @@ def test_construct_with_one_int_tag():
     """This function tests constructing payload using a single tag in integer format."""
     control_data = get_control_data('12345_tag')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags=12345)
-    assert payload == control_data
+    assert payload == control_data      # nosec
     return
 
 
@@ -102,7 +102,7 @@ def test_construct_with_str_iter_int_tags():
     control_data = get_control_data('str_iter_int_tags')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags=('hello', ['world'], 12345))
     try:
-        assert payload == control_data
+        assert payload == control_data      # nosec
     except AssertionError:
         assert_tags_present(payload, ['hello', 'world', '12345'])
     return
@@ -115,7 +115,7 @@ def test_construct_with_str_iter_int_tags_ignore():
     payload = messages.construct_payload('Welcome', node_id='my-board', tags=('hello', ['world'], 12345),
                                          ignore_non_string_tags=True)
     try:
-        assert payload == control_data
+        assert payload == control_data      # nosec
     except AssertionError:
         assert_tags_present(payload, ['hello', 'world'])
     return
@@ -129,7 +129,7 @@ def test_construct_with_tag_iterables():
     set_payload = messages.construct_payload('Welcome', node_id='my-board', tags={'hello', 'world'})
     for payload in (list_payload, tuple_payload, set_payload):
         try:
-            assert payload == control_data
+            assert payload == control_data      # nosec
         except AssertionError:
             assert_tags_present(payload, ['hello', 'world'])
     return
@@ -149,11 +149,10 @@ def assert_tags_present(payload, tags_to_find):
     for tag_dict in payload['data']['tags']:
         tags_found.append(tag_dict.get('text'))
     for tag in tags_to_find:
-        assert tag in tags_found
+        assert tag in tags_found        # nosec
     return
 
 
 # Import modules and initialize the core object
 messages, exceptions = resources.import_modules('khoros.objects.messages', 'khoros.errors.exceptions')
 khoros = resources.initialize_khoros_object()
-
