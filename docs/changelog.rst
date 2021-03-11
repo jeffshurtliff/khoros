@@ -38,11 +38,18 @@ Additions to the documentation.
 
 * Added a badge for the latest beta / release candidate (RC) release on the
   `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
+* Added badges for the security audits (bandit and PyCharm Python Security Scanner) to the
+  `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
+* Added a badge for the CodeFactor Grade on the
+  `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
 
 General
 -------
-* Added the `Bandit Check <https://github.com/marketplace/actions/bandit-check>`_
-  GitHub Action to the ``pythonpackage.yml`` file for security checks.
+* Added the ``.github/workflows/bandit.yml`` GitHub Action workflow configuration file
+  to leverage the
+  `Python security check using Bandit <https://github.com/marketplace/actions/python-security-check-using-bandit>`_
+  action to perform security audits with each push event.
+* Added badges in the
 
 Changed
 =======

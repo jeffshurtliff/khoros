@@ -15,7 +15,7 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         <td>Latest Beta/RC Release</td>
         <td>
             <a href='https://pypi.org/project/khoros/'>
-                <img alt="PyPI" src="https://img.shields.io/badge/pypi-3.5.0b1-blue">
+                <img alt="PyPI" src="https://img.shields.io/badge/pypi-3.5.0b2-blue">
             </a>
         </td>
     </tr>
@@ -45,10 +45,18 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         </td>
     </tr>
     <tr>
-        <td>Code Quality</td>
+        <td>Code Quality (LGTM)</td>
         <td>
             <a href="https://lgtm.com/projects/g/jeffshurtliff/khoros">
             <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/jeffshurtliff/khoros">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>CodeFactor Grade</td>
+        <td>
+            <a href="https://lgtm.com/projects/g/jeffshurtliff/khoros">
+            <img alt="CodeFactor Grade" src="https://img.shields.io/codefactor/grade/github/jeffshurtliff/khoros">
             </a>
         </td>
     </tr>
@@ -58,6 +66,17 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
             <a href='https://khoros.readthedocs.io/en/latest/?badge=latest'>
                 <img src='https://readthedocs.org/projects/khoros/badge/?version=latest' alt='Documentation Status' /><br />
                 <img src="https://raw.githubusercontent.com/jeffshurtliff/khoros/master/docs/_static/interrogate_badge.svg">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Security Audits</td>
+        <td>
+            <a href="https://github.com/marketplace/actions/python-security-check-using-bandit">
+                <img alt="Bandit" src="https://img.shields.io/badge/security-bandit-yellow.svg">
+            </a><br />
+            <a href="https://github.com/marketplace/actions/pycharm-python-security-scanner">
+                <img alt="PyCharm Security Scanner" src="https://img.shields.io/badge/security-pycharm%20security%20scanner-green">
             </a>
         </td>
     </tr>
