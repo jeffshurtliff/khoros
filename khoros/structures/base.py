@@ -6,7 +6,7 @@
 :Example:           ``details = base.get_details(khoros_object, 'category', 'category-id')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     10 Mar 2021
 """
 
 from .. import liql, errors
@@ -65,7 +65,8 @@ def get_details(khoros_object, identifier='', structure_type=None, first_item=No
     if '/' in identifier and structure_type == 'node':
         identifier = get_structure_id(identifier)
     try:
-        query = f'SELECT * FROM {liql_table}'
+        # TODO: Update the query below to be less greedy or at least to provide the option to define fields
+        query = f'SELECT * FROM {liql_table}'       # nosec
         if not community and structure_type != 'community':
             query = f'{query} WHERE {where_filter.get(is_href)} = "{identifier}"'
         response = liql.perform_query(khoros_object, liql_query=query, verify_success=True)

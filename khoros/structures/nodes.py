@@ -6,7 +6,7 @@
 :Example:           ``node_id = nodes.get_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     10 Mar 2021
 """
 
 import re
@@ -182,7 +182,7 @@ def get_url(khoros_object, node_id=None, node_details=None):
         raise errors.exceptions.MissingRequiredDataError("A Node ID or a dictionary with node details must be given.")
     elif not node_id or ('/' in node_id and node_details):
         node_id = get_node_id(node_details=node_details)
-    query = f"SELECT view_href FROM nodes WHERE id = '{node_id}'"
+    query = f"SELECT view_href FROM nodes WHERE id = '{node_id}'"       # nosec
     response = liql.perform_query(khoros_object, liql_query=query)
     return response['data']['items'][0]['view_href']
 

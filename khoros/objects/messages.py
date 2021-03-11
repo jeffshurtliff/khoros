@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     10 Mar 2021
 """
 
 import warnings
@@ -629,7 +629,7 @@ def is_read_only(khoros_object=None, msg_id=None, msg_url=None, api_response=Non
     else:
         errors.handlers.verify_core_object_present(khoros_object)
         msg_id = _verify_message_id(msg_id, msg_url)
-        query = f'SELECT read_only FROM messages WHERE id = "{msg_id}"'
+        query = f'SELECT read_only FROM messages WHERE id = "{msg_id}"'     # nosec
         api_response = liql.perform_query(khoros_object, liql_query=query, verify_success=True)
         current_status = api_response['data']['items'][0]['read_only']
     return current_status

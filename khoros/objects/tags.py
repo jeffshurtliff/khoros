@@ -6,7 +6,7 @@
 :Example:           ``tags.add_single_tag_to_message('tutorial', 123)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     10 Mar 2021
 """
 
 from .. import api, liql, errors
@@ -79,7 +79,7 @@ def get_tags_for_message(khoros_object, msg_id):
     :returns: A list of tags associated with the message
     """
     tag_list = []
-    query = f"SELECT text FROM tags WHERE messages.id = '{msg_id}'"
+    query = f"SELECT text FROM tags WHERE messages.id = '{msg_id}'"     # nosec
     response = liql.perform_query(khoros_object, liql_query=query, verify_success=True)
     entries = api.get_items_list(response)
     for entry in entries:
