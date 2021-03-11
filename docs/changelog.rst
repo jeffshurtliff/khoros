@@ -39,11 +39,6 @@ Additions to the documentation.
 * Added a badge for the latest beta / release candidate (RC) release on the
   `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
 
-General
--------
-* Added the `wemake-python-styleguide <https://github.com/marketplace/actions/wemake-python-styleguide>`_
-  GitHub Action to the ``.github/workflows/pythonpackage.yml`` file.
-
 Changed
 =======
 
