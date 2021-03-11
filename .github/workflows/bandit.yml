@@ -1,6 +1,6 @@
 name: Bandit Security Audit
 
-on: [push]
+on:
   push:
     paths-ignore:
       - 'docs/**'
