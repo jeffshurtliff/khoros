@@ -215,6 +215,9 @@ def _is_plaintext_payload(_headers, _payload=None):
 def _api_request_with_payload(_url, _payload=None, _request_type='post', _headers=None, _multipart=False, _verify=True):
     """This function performs an API request while supplying a JSON payload.
 
+    .. versionchanged:: 3.5.0
+       Removed the unnecessary ``pass`` statement.
+
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``verify`` parameter to determine if SSL certificate verification is needed.
 
@@ -269,7 +272,6 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
             except Exception as _exc_msg:
                 _report_failed_attempt(_exc_msg, _request_type, _retries)
                 _retries += 1
-                pass
         if _retries == 6:
             _raise_exception_for_repeated_timeouts()
     return _response
@@ -306,7 +308,6 @@ def _api_request_without_payload(_url, _request_type, _headers, _verify=True):
         except Exception as _exc_msg:
             _report_failed_attempt(_exc_msg, _request_type, _retries)
             _retries += 1
-            pass
     if _retries == 6:
         _raise_exception_for_repeated_timeouts()
     return _response
@@ -729,6 +730,9 @@ def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id
 def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
     """This function performs a search for a particular field value using a Community API v1 call.
 
+    .. versionchanged:: 3.5.0
+       The typecheck was updated to utilize ``isinstance()`` instead of ``type()``.
+
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
 
@@ -752,7 +756,7 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
 
     # Prepare the API call
     headers = define_headers(khoros_object, content_type='application/x-www-form-urlencoded')
-    if type(filter_value) == str:
+    if isinstance(filter_value, str):
         filter_value = core_utils.url_encode(filter_value)
     uri = f"{khoros_object.core['v1_base']}/search/{endpoint}?q={filter_field}:{filter_value}"
     uri = f"{uri}{_get_json_query_string(return_json)}"

@@ -39,6 +39,11 @@ Additions to the documentation.
 * Added a badge for the latest beta / release candidate (RC) release on the
   `README <https://github.com/jeffshurtliff/khoros/blob/master/README.md>`_ page.
 
+General
+-------
+* Added the `Bandit Check <https://github.com/marketplace/actions/bandit-check>`_
+  GitHub Action to the ``pythonpackage.yml`` file for security checks.
+
 Changed
 =======
 
@@ -71,6 +76,22 @@ Changes to the :doc:`primary modules <primary-modules>`.
   built-in function.
 * Removed an unnecessary ``else`` statement in the :py:func:`khoros.api.define_headers` function after the
   :py:exc:`khoros.errors.exceptions.MissingAuthDataError` exception is raised.
+* Replaced ``type()`` with ``isinstance()`` when performing the typecheck in the
+  :py:func:`khoros.api.perform_v1_search` function.
+* Removed the unnecessary ``pass`` statement in the following functions:
+    * :py:func:`khoros.api._api_request_with_payload`
+    * :py:func:`khoros.api._api_request_without_payload`
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.log_utils.initialize_logging` function call to initialize logging within
+  the :py:mod:`khoros.utils.core_utils` module.
+* Changed the default value for the ``shell`` parameter to be ``False`` in the
+  :py:func:`khoros.utils.core_utils.run_cmd` function to improve overall
+  `security <https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html>`_
+  of the library.
 
 General
 -------

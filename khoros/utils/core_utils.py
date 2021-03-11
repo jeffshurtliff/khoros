@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Dec 2020
+:Modified Date:     10 Mar 2021
 """
 
 import os
@@ -19,6 +19,10 @@ import urllib.parse
 from html import unescape
 
 from .. import errors
+from . import log_utils
+
+# Initialize the logger for this module
+logger = log_utils.initialize_logging(__name__)
 
 
 def url_encode(raw_string):
@@ -88,9 +92,14 @@ def encode_base64(object_to_encode, str_encoding='utf-8', url_encode_object=Fals
     return base64_object
 
 
-def run_cmd(cmd, return_type='dict', shell=True, decode_output=True, strip_output=False,
+def run_cmd(cmd, return_type='dict', shell=False, decode_output=True, strip_output=False,
             exclude_stdout=False, exclude_stderr=False, exclude_return_code=False):
     """This function executes a shell command on the operating system.
+
+    .. versionchanged:: 3.5.0
+       The default value of the ``shell`` parameter has been changed to ``False`` to avoid unnecessary
+       `security <https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html>`_
+       risk and added a logged warning if the value is manually set to ``True``.
 
     .. versionadded:: 2.5.1
 
@@ -115,6 +124,10 @@ def run_cmd(cmd, return_type='dict', shell=True, decode_output=True, strip_outpu
     """
     if exclude_stdout and exclude_stderr and exclude_return_code:
         raise errors.exceptions.MissingRequiredDataError("At least one output type must be enabled.")
+    if shell:
+        warn_msg = "It is recommended that the shell parameter be set to False to avoid introducing risk of " \
+                   "shell injection attacks in your code."
+        logger.warning(warn_msg)
     output = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
     stdout, stderr, return_code = output.stdout, output.stderr, output.returncode
     results = {
