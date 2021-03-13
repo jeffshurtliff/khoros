@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v3.5.0b2
+v3.5.0b3
 ********
-**Release Date: 2021-03-12**
+**Release Date: TBD**
 
 Added
 =====
@@ -83,6 +83,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.liql.parse_select_fields` instead. (i.e. private to public function)
 * Refactored the :py:func:`khoros.liql.parse_select_fields` function to leverage the :py:func:`isinstance`
   built-in function.
+* Removed the mandatory dependency on the ``requests_toolbelt`` package by leveraging the :py:mod:`importlib`
+  package to attempt to import it locally as needed within the :py:func:`khoros.api.encode_multipart_data` function.
 * Removed an unnecessary ``else`` statement in the :py:func:`khoros.api.define_headers` function after the
   :py:exc:`khoros.errors.exceptions.MissingAuthDataError` exception is raised.
 * Replaced ``type()`` with ``isinstance()`` when performing the typecheck in the
@@ -105,6 +107,7 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 General
 -------
 * Removed the stale branch ``3.0.0`` from the ``.github/workflows/codeql-analysis.yml`` file.
+* Removed ``requests_toolbelt`` from ``requirements.txt``.
 
 Fixed
 =====

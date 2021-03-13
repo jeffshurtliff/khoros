@@ -6,16 +6,16 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Mar 2021
+:Modified Date:     13 Mar 2021
 """
 
 import json
 import os.path
 import warnings
+import importlib
 
 import urllib3
 import requests
-from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from . import errors
 from .utils import core_utils, log_utils
@@ -773,6 +773,9 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
 def encode_multipart_data(data_fields):
     """This function uses the Streaming Multipart Data Encoder to encode the payload for a multipart/form-data API call.
 
+    .. versionchanged:: 3.5.0
+       This function now import the ``requests_toolbelt`` module locally to avoid dependency errors during installation.
+
     .. versionadded:: 2.3.0
 
     .. seealso:: This function follows the `requests_toolbelt <https://rsa.im/3dg7QiZ>`_ documentation.
@@ -781,7 +784,15 @@ def encode_multipart_data(data_fields):
     :type data_fields: dict
     :returns: The encoded data for use by the :py:mod:`requests` library
     """
-    return MultipartEncoder(fields=data_fields)
+    try:
+        toolbelt_encoder = importlib.import_module('requests_toolbelt.multipart.encoder')
+        multipart_data = toolbelt_encoder.MultipartEncoder(fields=data_fields)
+    except ModuleNotFoundError:
+        error_msg = "The 'requests_toolbelt' module is required to encode multipart data. " \
+                    "Install with pip and try again."
+        logger.error(error_msg)
+        raise ModuleNotFoundError(error_msg)
+    return multipart_data
 
 
 def encode_payload_values(payload_dict):
