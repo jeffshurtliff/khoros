@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Mar 2021
+:Modified Date:     14 Mar 2021
 """
 
 import sys
@@ -2941,9 +2941,48 @@ class Khoros(object):
             return objects_module.roles.get_roles_for_user(self.khoros_object, user_id, fields)
 
         def get_users_with_role(self, fields='login', role_id=None, role_name=None, scope=None, node_id=None,
-                                limit_per_query=1000):
-            # TODO: Finish populating the docstring and adding this function to the changelog
-            pass
+                                limit_per_query=1000, simple=False):
+            """This function retrieves a list of all users that have a specific role.
+
+            .. versionadded:: 3.5.0
+
+            :param fields: One or more fields from the ``Users`` object to return (``login`` field by default)
+            :type fields: str, tuple, list, set
+            :param role_id: The identifier for the role in ``node_type:node_id:role_name`` format
+            :type role_id: str, None
+            :param role_name: The simple role name (e.g. ``Administrator``)
+
+                              .. caution:: This option should only be used when the role name is unique within the
+                                           community at all node levels.
+
+            :type role_name: str, None
+            :param scope: The scope of the role (e.g. ``board``, ``category``, ``community``, ``grouphub``)
+
+                          .. note:: If a value is not supplied and only a role name is defined then the role scope is
+                                    assumed to be at the ``community`` level. (i.e. global)
+
+            :type scope: str, None
+            :param node_id: The Node ID associated with the role (where applicable)
+
+                            .. note:: If a value is not supplied and only a role name is defined then the role scope is
+                                      assumed to be at the ``community`` level. (i.e. global)
+
+            :type node_id: str, None
+            :param limit_per_query: Defines a ``LIMIT`` constraint other than the default ``1000`` limit per LiQL query
+
+                                    .. note:: Unless modified by Khoros Support or Professional Services, ``1000`` is
+                                              the maximum number of entries that can be returned in a single LiQL query.
+
+            :type limit_per_query: int, str
+            :param simple: Returns a simple list of the strings or tuples of the value(s) for each user
+                           (``False`` by default)
+            :type simple: bool
+            :returns: A list of users as strings, tuples or dictionaries depending if ``simple`` mode is enabled
+            :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return objects_module.roles.get_users_with_role(self.khoros_object, fields, role_id, role_name, scope,
+                                                            node_id, limit_per_query, simple=simple)
 
     class Settings(object):
         """This class includes methods relating to the retrieval and defining of various settings.

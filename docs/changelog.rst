@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ********
 v3.5.0b3
 ********
-**Release Date: TBD**
+**Release Date: 2021-03-14**
 
 Added
 =====
@@ -16,6 +16,7 @@ Core Object
 Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.get_session_key` method.
+* Added the :py:meth:`khoros.core.Khoros.Role.get_users_with_role` method.
 
 Primary Modules
 ---------------
@@ -31,6 +32,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.roles._get_role_type_prefix`
     * :py:func:`khoros.objects.roles.get_users_with_role`
 * Added the :py:func:`khoros.errors.exceptions.structure_cursor_clause` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.core_utils.convert_dict_list_to_simple_list` function.
 
 Documentation
 -------------
@@ -103,6 +110,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   :py:func:`khoros.utils.core_utils.run_cmd` function to improve overall
   `security <https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html>`_
   of the library.
+* Added the optional ``delimiter`` parameter to the :py:func:`khoros.utils.core_utils.convert_string_to_tuple`
+  function and added functionality to convert delimited strings.
 
 General
 -------

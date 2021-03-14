@@ -6,11 +6,11 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Mar 2021
+:Modified Date:     14 Mar 2021
 """
 
 from .. import api, liql, errors
-from ..utils import log_utils
+from ..utils import log_utils, core_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
@@ -138,22 +138,61 @@ def get_roles_for_user(khoros_object, user_id, fields=None):
 
 
 def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=None, scope=None, node_id=None,
-                        limit_per_query=1000, cursor=None, where_clause=None, users_list=None):
+                        limit_per_query=1000, cursor=None, where_clause=None, users_list=None, simple=False):
     """This function retrieves a list of all users that have a specific role.
 
-    # TODO: Finish populating the docstring and adding this function to the changelog
+    .. versionadded:: 3.5.0
 
-    :param khoros_object:
-    :param fields:
-    :param role_id:
-    :param role_name:
-    :param scope:
-    :param node_id:
-    :param limit_per_query:
-    :param cursor:
-    :param where_clause:
-    :param users_list:
-    :return:
+    :param khoros_object: he core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param fields: One or more fields from the ``Users`` object to return (``login`` field by default)
+    :type fields: str, tuple, list, set
+    :param role_id: The identifier for the role in ``node_type:node_id:role_name`` format
+    :type role_id: str, None
+    :param role_name: The simple role name (e.g. ``Administrator``)
+
+                      .. caution:: This option should only be used when the role name is unique within the community.
+
+    :type role_name: str, None
+    :param scope: The scope of the role (e.g. ``board``, ``category``, ``community``, ``grouphub``)
+
+                  .. note:: If a value is not supplied and only a role name is defined then the role scope is
+                            assumed to be at the ``community`` level. (i.e. global)
+
+    :type scope: str, None
+    :param node_id: The Node ID associated with the role (where applicable)
+
+                    .. note:: If a value is not supplied and only a role name is defined then the role scope is
+                              assumed to be at the ``community`` level. (i.e. global)
+
+    :type node_id: str, None
+    :param limit_per_query: Defines a ``LIMIT`` constraint other than the default ``1000`` limit per LiQL query
+
+                            .. note:: Unless modified by Khoros Support or Professional Services, ``1000`` is the
+                                      maximum number of entries that can be returned in a single LiQL query.
+
+    :type limit_per_query: int, str
+    :param cursor: Specifies a cursor to be referenced in a LiQL query
+
+                   .. note:: This parameter is intended for use by the function when calling itself recursively to
+                             retrieve users that exceed the ``limit_per_query`` value and will not be leveraged
+                             directly in standalone function calls.
+
+    :type cursor: str, None
+    :param where_clause: Specifies an exact WHERE clause for the query to be performed
+
+                         .. note:: While technically possible to leverage this parameter in function calls, its
+                                   primary use is by the function when calling itself recursively to retrieve users
+                                   that exceed the ``limit_per_query`` value.
+
+    :type where_clause: str, None
+    :param users_list: Provides an existing list of users that is leveraged when the function is called recursively
+    :type users_list: list, None
+    :param simple: Returns a simple list of the strings or tuples of the value(s) for each user (``False`` by default)
+    :type simple: bool
+    :returns: A list of users as strings, tuples or dictionaries depending if ``simple`` mode is enabled
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     # Initialize the users list if not provided
     users_list = [] if not users_list else users_list
@@ -201,9 +240,14 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
     users_list.extend(liql.get_returned_items(response))
 
     # Call the function recursively if a cursor is found
-    if response.get('data') and response['data'].get('next_cursor'):
+    has_cursor = True if response.get('data') and response['data'].get('next_cursor') else False
+    if has_cursor:
         users_list = get_users_with_role(khoros_object, fields, cursor=cursor, where_clause=where_clause,
                                          users_list=users_list)
+
+    # Convert to simple list when requested
+    if simple and not has_cursor:
+        users_list = core_utils.convert_dict_list_to_simple_list(users_list, fields)
 
     # Return the populated users list
     return users_list

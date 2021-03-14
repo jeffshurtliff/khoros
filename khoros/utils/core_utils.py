@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Mar 2021
+:Modified Date:     14 Mar 2021
 """
 
 import os
@@ -254,16 +254,24 @@ def convert_single_value_to_tuple(value):
     return value
 
 
-def convert_string_to_tuple(value):
+def convert_string_to_tuple(value, delimiter=''):
     """THis function converts a value to a tuple if in string format.
+
+    .. versionchanged:: 3.5.0
+       The typecheck has been updated to use ``isinstance`` and the function can now split delimited strings as needed.
 
     .. versionadded:: 2.3.0
 
     :param value: The potential string to convert
+    :type value: str
+    :param delimiter: The value (e.g. ``,``) used to separate values in a delimited string (empty by default)
     :returns: The tuple (if original value was in string format) or the original value/type
     """
-    if type(value) == str:
-        value = convert_single_value_to_tuple(value)
+    if isinstance(value, str):
+        if delimiter and delimiter in value:
+            value = value.split(delimiter)
+        else:
+            value = convert_single_value_to_tuple(value)
     return value
 
 
@@ -342,6 +350,31 @@ def convert_dict_id_values_to_strings(dict_list):
             single_dict['id'] = str(single_dict.get('id'))
         new_dict_list.append(single_dict)
     return new_dict_list
+
+
+def convert_dict_list_to_simple_list(dict_list, fields):
+    """This function converts a list of dictionaries into a simple list consisting of the provided field(s).
+
+    .. versionadded:: 3.5.0
+
+    :param dict_list: The original list of dictionaries
+    :type dict_list: list
+    :param fields: The field(s) with which to filter the dictionary list into a simple list
+    :type fields: str, tuple, list
+    :returns: The simple list of stings or tuples depending on the number of fields
+    """
+    new_list = []
+    fields = convert_string_to_tuple(fields, ',')
+    for field_dict in dict_list:
+        field_list = []
+        for field in fields:
+            if field_dict.get(field):
+                field_list.append(field_dict.get(field))
+        if not field_list:
+            field_list[0] = ''
+        new_field = field_list[0] if len(field_list) == 1 else tuple(field_list)
+        new_list.append(new_field)
+    return new_list
 
 
 def convert_list_values(values_list, convert_to='str', split_values=False, split_delimiter=','):
