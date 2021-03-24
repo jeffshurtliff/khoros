@@ -275,6 +275,19 @@ def convert_string_to_tuple(value, delimiter=''):
     return value
 
 
+def is_iterable(var):
+    """This function identifies if a given variable is an iterable.
+
+    .. versionadded:: 3.5.0
+
+    :param var: The variable to check
+    :returns: A boolean value indicating whether or not the variable is an iterable
+    """
+    is_iter = any((isinstance(var, list), isinstance(var, tuple), isinstance(var, set),
+                   isinstance(var, type({}.keys())), isinstance(var, type({}.values()))))
+    return is_iter
+
+
 def get_random_string(length=32, prefix_string=""):
     """This function returns a random alphanumeric string to use as a salt or password.
 

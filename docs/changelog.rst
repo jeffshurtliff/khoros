@@ -38,6 +38,7 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.utils.core_utils.convert_dict_list_to_simple_list` function.
+* Added the :py:func:`khoros.utils.core_utils.is_iterable` function.
 
 Documentation
 -------------
