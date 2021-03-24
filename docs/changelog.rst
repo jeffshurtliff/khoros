@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ********
 v3.5.0b3
 ********
-**Release Date: 2021-03-14**
+**Release Date: 2021-03-24**
 
 Added
 =====
