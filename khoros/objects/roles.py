@@ -213,7 +213,7 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
             if scope in NODE_SPECIFIC_ROLES:
                 constraint = f"roles.id = '{prefix}:{node_id}:{role_name}'"
             elif scope is not None:
-                constraint = f"roles.id = '{prefix}:{role_id}'"
+                constraint = f"roles.id = '{prefix}:{role_name}'"
             else:
                 constraint = f"roles.name = '{role_name}'"
         elif ':' not in role_id and scope not in NODE_SPECIFIC_ROLES:
