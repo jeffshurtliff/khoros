@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Mar 2021
+:Modified Date:     24 Mar 2021
 """
 
 import requests
@@ -141,6 +141,9 @@ def invalidate_session(khoros_object, user_id=None, sso_id=None):
     :param sso_id: The SSO ID of the service account (Single Sign-On)
     :type sso_id: str, int, None
     :returns: Boolean value defining if the session was invalidated successfully
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
     session_terminated = False
     payload = {}

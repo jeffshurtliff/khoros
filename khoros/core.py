@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     14 Mar 2021
+:Modified Date:     25 Mar 2021
 """
 
 import sys
@@ -258,6 +258,7 @@ class Khoros(object):
         self.roles = self._import_role_class()
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
+        self.subscriptions = self._import_subscription_class()
         self.users = self._import_user_class()
 
     def _populate_empty_object(self):
@@ -476,6 +477,14 @@ class Khoros(object):
         .. versionadded:: 2.5.1
         """
         return Khoros.Studio(self)
+
+    def _import_subscription_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Subscription` inner class to be utilized
+           in the core object.
+
+        .. versionadded:: 3.5.0
+        """
+        return Khoros.Subscription(self)
 
     def _import_user_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
@@ -3129,6 +3138,37 @@ class Khoros(object):
             :returns: The version as a string or ``None`` if not installed
             """
             return studio_module.base.get_npm_version()
+
+    class Subscription(object):
+        """This class includes methods relating to subscriptions."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Subscription` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def subscribe_to_category(self, node_id, included_boards=None, excluded_boards=None):
+            """This function subscribes the current user to a full or partial category.
+
+            .. versionadded:: 3.5.0
+
+            :param node_id: The unique identifier (i.e. Node ID) for the category
+            :type node_id: str
+            :param included_boards: One or more boards (represented by Node ID) to be included in
+                                    the partial subscription
+            :type included_boards: list, tuple, set, str, None
+            :param excluded_boards: One or more boards (represented by Node ID) to be excluded from
+                                    the partial subscription
+            :type excluded_boards: list, tuple, set, str, None
+            :returns: The API response in JSON format
+            :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+            """
+            return objects_module.subscriptions.subscribe_to_category(self.khoros_object, node_id, included_boards,
+                                                                      excluded_boards)
 
     class User(object):
         """This class includes methods for interacting with users."""
