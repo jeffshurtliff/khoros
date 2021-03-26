@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-********
-v3.5.0b4
-********
-**Release Date: 2021-03-24**
+*********
+v3.5.0rc1
+*********
+**Release Date: 2021-03-26**
 
 Added
 =====
@@ -18,7 +18,13 @@ Additions to the :doc:`core-object-methods`.
 * Added the :py:meth:`khoros.core.Khoros.get_session_key` method.
 * Added the :py:meth:`khoros.core.Khoros.Role.get_users_with_role` method.
 * Added the :py:class:`khoros.core.Khoros.Subscription` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Subscription.add_subscription`
+    * :py:meth:`khoros.core.Khoros.Subscription.get_subscription_uri`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_board`
     * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_category`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_label`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_message`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_product`
 * Added the :py:meth:`khoros.core.Khoros._import_subscription_class` method and leveraged it to
   allow subscription-related methods to be called with the ``khoros.subscriptions`` namespace.
 
@@ -29,15 +35,20 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.api.get_v1_user_path` and :py:func:`khoros.api.get_v1_node_collection`
   functions to facilitate crafting API v1 endpoint URIs.
 * Added the new :py:mod:`khoros.objects.subscriptions` module with the following functions:
-    * :py:func:`khoros.objects.subscriptions.subscribe_to_node`
+    * :py:func:`khoros.objects.subscriptions.add_subscription`
+    * :py:func:`khoros.objects.subscriptions.get_subscription_uri`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_board`
     * :py:func:`khoros.objects.subscriptions.subscribe_to_category`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_label`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_message`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_product`
     * :py:func:`khoros.objects.subscriptions._construct_category_payload`
     * :py:func:`khoros.objects.subscriptions._construct_target_subscription`
 * Updated the ``__init__.py`` file for the :py:mod:`khoros.objects` module to import the new
   :py:mod:`khoros.objects.subscriptions` module and add it to the ``__all__`` variable.
 * Added the :py:func:`khoros.auth._get_session_key_payload` function.
 * Added the :py:func:`khoros.auth._get_session_key_header` function.
-* Added the following functions to the :py:mod:`khorosefix`
+* Added the following functions to the :py:mod:`khoros.objects.roles` module.
     * :py:func:`khoros.objects.roles.get_users_with_role`
 * Added the :py:func:`khoros.errors.exceptions.structure_cursor_clause` function.
 

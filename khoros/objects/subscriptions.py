@@ -3,10 +3,10 @@
 :Module:            khoros.objects.sub
 :Synopsis:          This module includes functions that handle tags within a Khoros Community environment
 :Usage:             ``from khoros.objects import subscriptions``
-:Example:           TBD
+:Example:           ``response = subscribe_to_board(khoros_object, 'my-forum')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     25 Mar 2021
+:Modified Date:     26 Mar 2021
 """
 
 from .. import api, errors
@@ -16,12 +16,59 @@ from ..utils import core_utils, log_utils
 logger = log_utils.initialize_logging(__name__)
 
 
-def subscribe_to_node(khoros_object, node_id, node_type='board', included_boards=None, excluded_boards=None):
-    # TODO: Add docstring
-    if node_type not in ['board', 'category', 'grouphub']:
-        raise errors.exceptions.InvalidNodeTypeError(val=node_type)
-    # TODO: Finish the function
-    return
+def add_subscription(khoros_object, target_id, target_type='board', payload=None, included_boards=None,
+                     excluded_boards=None, label_board=None):
+    """This function adds a subscription to a given target for the current user.
+
+    .. versionadded:: 3.5.0
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :param target_id: The unique identifier for the target (e.g. Node ID, Message ID, etc.)
+    :type target_id: str, int
+    :param target_type: The target type such as ``board`` (default), ``message``, ``category``, etc.
+    :param payload: Pre-constructed payload to use in the API call
+    :type payload: dict, None
+    :param included_boards: One or more boards (represented by Node ID) to be included in the partial subscription
+    :type included_boards: list, tuple, set, str, None
+    :param excluded_boards: One or more boards (represented by Node ID) to be excluded from the partial subscription
+    :type excluded_boards: list, tuple, set, str, None
+    :param label_board: The Board ID associated with a label (required for label subscriptions)
+    :type label_board: str, int, None
+    :returns: The API response in JSON format
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
+    if not payload:
+        if target_type == 'category':
+            payload = {"data": _construct_category_payload(target_id, included_boards, excluded_boards)}
+        elif target_type == 'label':
+            if not label_board:
+                raise errors.exceptions.MissingRequiredDataError("A board ID is required when subscribing to labels")
+            payload = {
+                "data": _construct_target_subscription(target_id, target_type),
+                "board": {"id": f"{label_board}"}
+            }
+        else:
+            payload = {"data": _construct_target_subscription(target_id, target_type)}
+    else:
+        payload = {"data": payload} if not payload.get('data') else payload
+    uri = get_subscription_uri(khoros_object)
+    response = api.post_request_with_retries(uri, json_payload=payload, khoros_object=khoros_object)
+    return response
+
+
+def get_subscription_uri(khoros_object):
+    """This function returns the subscriptions URI for the v2 API to perform API calls.
+
+    .. versionadded:: 3.5.0
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The full (absolute) URI for the ``subscriptions`` v2 API endpoint
+    """
+    return f"{khoros_object.core_settings.get('v2_base')}/subscriptions"
 
 
 def _construct_target_subscription(_target_id, _target_type='board'):
@@ -40,7 +87,7 @@ def _construct_target_subscription(_target_id, _target_type='board'):
         "type": "subscription",
         "target": {
             "type": _target_type,
-            "id": _target_id
+            "id": f"{_target_id}"
         }
     }
     return _target
@@ -87,6 +134,23 @@ def _construct_category_payload(_node_id, _included_boards=None, _excluded_board
     return _payload
 
 
+def subscribe_to_board(khoros_object, node_id):
+    """This function subscribes the current user to an individual message.
+
+    .. versionadded:: 3.5.0
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :param node_id: The unique identifier for a board (i.e. Board ID)
+    :type node_id: str
+    :returns: The API response in JSON format
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
+    return add_subscription(khoros_object, node_id, 'board')
+
+
 def subscribe_to_category(khoros_object, node_id, included_boards=None, excluded_boards=None):
     """This function subscribes the current user to a full or partial category.
 
@@ -105,9 +169,60 @@ def subscribe_to_category(khoros_object, node_id, included_boards=None, excluded
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    uri = f"{khoros_object.core_settings.get('v2_base')}/subscriptions"
-    payload = _construct_category_payload(node_id, included_boards, excluded_boards)
-    response = api.post_request_with_retries(uri, json_payload=payload, khoros_object=khoros_object)
-    return response
+    return add_subscription(khoros_object, node_id, 'category',
+                            included_boards=included_boards, excluded_boards=excluded_boards)
+
+
+def subscribe_to_label(khoros_object, label, board_id):
+    """This function subscribes the current user to label found on a board.
+
+    .. versionadded:: 3.5.0
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :param label: The label to which to subscribe
+    :type label: str, int
+    :param board_id: The unique identifier (i.e. Node ID) for the board where the label is found
+    :type board_id: str
+    :returns: The API response in JSON format
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
+    return add_subscription(khoros_object, label, 'label', label_board=board_id)
+
+
+def subscribe_to_message(khoros_object, msg_id):
+    """This function subscribes the current user to an individual message.
+
+    .. versionadded:: 3.5.0
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The unique identifier for an individual message
+    :type msg_id: str, int
+    :returns: The API response in JSON format
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
+    return add_subscription(khoros_object, msg_id, 'message')
+
+
+def subscribe_to_product(khoros_object, product_id):
+    """This function subscribes the current user to a product.
+
+    .. versionadded:: 3.5.0
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :param product_id: The unique identifier for a product
+    :type product_id: str, int
+    :returns: The API response in JSON format
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+    """
+    return add_subscription(khoros_object, product_id, 'product')
 
 
