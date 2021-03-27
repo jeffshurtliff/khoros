@@ -177,18 +177,8 @@ Settings Subclass (khoros.core.Khoros.Settings)
 
 |
 
-Studio Subclass (khoros.core.Khoros.Studio)
-===========================================
-.. autoclass:: khoros.core::Khoros.Studio
-   :members:
-   :noindex:
-
-:doc:`Return to Top <core-object-methods>`
-
-|
-
 Subscription Subclass (khoros.core.Khoros.Subscription)
-=======================================================
+-------------------------------------------------------
 .. autoclass:: khoros.core::Khoros.Subscription
    :members:
    :noindex:
@@ -200,6 +190,16 @@ Subscription Subclass (khoros.core.Khoros.Subscription)
 User Subclass (khoros.core.Khoros.User)
 ---------------------------------------
 .. autoclass:: khoros.core::Khoros.User
+   :members:
+   :noindex:
+
+:doc:`Return to Top <core-object-methods>`
+
+|
+
+Studio Subclass (khoros.core.Khoros.Studio)
+===========================================
+.. autoclass:: khoros.core::Khoros.Studio
    :members:
    :noindex:
 
