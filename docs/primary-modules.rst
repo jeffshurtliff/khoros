@@ -17,6 +17,7 @@ which are listed below.
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
     * `Settings Module (khoros.objects.settings)`_
+    * `Subscriptions Module (khoros.objects.subscriptions)`_
     * `Tags Module (khoros.objects.tags)`_
     * `Users Module (khoros.objects.users)`_
 * `Structures Module (khoros.structures)`_
@@ -164,6 +165,17 @@ Settings Module (khoros.objects.settings)
 This module includes functions that handle community, node and user settings.
 
 .. automodule:: khoros.objects.settings
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Subscriptions Module (khoros.objects.subscriptions)
+===================================================
+This module includes functions that handle subscriptions.
+
+.. automodule:: khoros.objects.subscriptions
    :members:
 
 :doc:`Return to Top <primary-modules>`
