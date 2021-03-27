@@ -60,6 +60,16 @@ These classes below are inner/nested classes within the core :py:class:`khoros.c
           names used to call the inner class methods are all *lowercase* (or *snake_case*) and plural.
           (e.g. ``core_object.nodes.get_node_id()``, ``core_object.categories.get_category_id()``, etc.)
 
+Studio Subclass (khoros.core.Khoros.Studio)
+-------------------------------------------
+.. autoclass:: khoros.core::Khoros.Studio
+   :members:
+   :noindex:
+
+:doc:`Return to Top <core-object-methods>`
+
+|
+
 V1 Subclass (khoros.core.Khoros.V1)
 -----------------------------------
 .. autoclass:: khoros.core::Khoros.V1
@@ -190,16 +200,6 @@ Subscription Subclass (khoros.core.Khoros.Subscription)
 User Subclass (khoros.core.Khoros.User)
 ---------------------------------------
 .. autoclass:: khoros.core::Khoros.User
-   :members:
-   :noindex:
-
-:doc:`Return to Top <core-object-methods>`
-
-|
-
-Studio Subclass (khoros.core.Khoros.Studio)
-===========================================
-.. autoclass:: khoros.core::Khoros.Studio
    :members:
    :noindex:
 
