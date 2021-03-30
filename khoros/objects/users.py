@@ -3,19 +3,95 @@
 :Module:            khoros.objects.users
 :Synopsis:          This module includes functions that handle user-related operations.
 :Usage:             ``from khoros.objects import users``
-:Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
+:Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Dec 2020
+:Modified Date:     29 Mar 2021
 """
 
 import warnings
 
-from .. import api, liql, errors
+from .. import api, auth, liql, errors
 from ..utils import core_utils, log_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
+
+
+# Create an ImpersonatedUser class to pass to other functions
+class ImpersonatedUser(object):
+    """This class is used for impersonating another user when performing other functions throughout the library.
+
+    .. versionadded:: 4.0.0
+    """
+    def __init__(self, user_login=None, admin_object=None):
+        """This method instantiates the :py:class:`khoros.objects.users.ImpersonatedUser` object.
+
+        .. versionadded:: 4.0.0
+
+        :param user_login: The username (i.e. login) of the user to be impersonated
+        :type user_login: str, None
+        :param admin_object: The :py:class:`khoros.core.Khoros` object of a user with an Administrator role
+        :type admin_object: class[khoros.Khoros], None
+        """
+        # Define default object values
+        self.configured = False
+        self.login = user_login
+        self.session_key = None
+        self.session_header = None
+
+        # Authenticate the user if possible
+        if not user_login:
+            logger.error('The ImpersonatedUser object cannot be configured as no user login was provided')
+        else:
+            if not admin_object:
+                logger.error('The ImpersonatedUser object cannot be configured as no admin-level Khoros object '
+                             'was provided to authenticate the new user')
+            else:
+                if not admin_object.core_settings.get('session_auth') \
+                        or not admin_object.auth.get('session_key'):
+                    logger.error('The ImpersonatedUser object cannot be configured as the admin-level Khoros object '
+                                 'has not been authenticated using a session key.')
+                else:
+                    self.session_key = auth.get_session_key(admin_object, user_login)
+                    if self.session_key:
+                        self.session_header = auth.get_session_header(self.session_key)
+                        self.configured = True
+                    else:
+                        logger.warning('The session header for the impersonated user was not populated because a '
+                                       'session key was not successfully acquired')
+
+    def __del__(self):
+        """This method fully destroys the instance.
+
+        .. versionadded:: 4.0.0
+        """
+        self.close()
+
+    def close(self):
+        """This method destroys the instance.
+
+        .. versionadded:: 4.0.0
+        """
+
+
+def impersonate_user(khoros_object, user_login):
+    """This function instantiates and returns the :py:class`khoros.objects.users.ImpersonatedUser` object which
+       can then be passed to other methods and functions to perform operations as a secondary user.
+
+    .. versionadded:: 4.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+
+                          .. note:: The authenticated user must have the **Administrator** role and/or have the
+                                    **Switch User** permission enabled.
+
+    :type khoros_object: class[khoros.Khoros]
+    :param user_login: The username (i.e. login) of ther user to be impersonated
+    :type user_login: str
+    :returns: The instantiated :py:class`khoros.objects.users.ImpersonatedUser` object
+    """
+    return ImpersonatedUser(user_login=user_login, admin_object=khoros_object)
 
 
 def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
@@ -301,7 +377,7 @@ def _get_where_clause_for_user_id(_user_settings):
     elif _user_settings['first_name'] or _user_settings['last_name']:
         if _user_settings['first_name'] and _user_settings['last_name']:
             _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
-                           f'last_name = "{_user_settings["last_name"]}"'
+                            f'last_name = "{_user_settings["last_name"]}"'
         elif _user_settings['last_name']:
             _where_clause = f'last_name = "{_user_settings["last_name"]}"'
         else:
@@ -327,7 +403,7 @@ def _get_where_clause_for_username(_user_settings):
     elif _user_settings['first_name'] or _user_settings['last_name']:
         if _user_settings['first_name'] and _user_settings['last_name']:
             _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
-                           f'last_name = "{_user_settings["last_name"]}"'
+                            f'last_name = "{_user_settings["last_name"]}"'
         elif _user_settings['last_name']:
             _where_clause = f'last_name = "{_user_settings["last_name"]}"'
         else:
@@ -353,7 +429,7 @@ def _get_where_clause_for_email(_user_settings):
     elif _user_settings['first_name'] or _user_settings['last_name']:
         if _user_settings['first_name'] and _user_settings['last_name']:
             _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
-                           f'last_name = "{_user_settings["last_name"]}"'
+                            f'last_name = "{_user_settings["last_name"]}"'
         elif _user_settings['last_name']:
             _where_clause = f'last_name = "{_user_settings["last_name"]}"'
         else:

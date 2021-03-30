@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Mar 2021
+:Modified Date:     29 Mar 2021
 """
 
 import sys
@@ -259,6 +259,7 @@ class Khoros(object):
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.subscriptions = self._import_subscription_class()
+        # TODO: Add the tags module
         self.users = self._import_user_class()
 
     def _populate_empty_object(self):
@@ -486,6 +487,8 @@ class Khoros(object):
         """
         return Khoros.Subscription(self)
 
+    # TODO: Add the _import_tag_class method
+
     def _import_user_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
 
@@ -501,8 +504,9 @@ class Khoros(object):
            Added logging for the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception.
 
         :param connection_type: The type of authentication method (e.g. ``session_auth``)
-        :type connection_type: str
+        :type connection_type: str, None
         :returns: None
+        :raises: :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`
         """
         if connection_type is None:
             connection_type = self.core_settings['auth_type']
@@ -520,14 +524,23 @@ class Khoros(object):
 
         :param username: The username (i.e. login) of a secondary user to authenticate *(optional)*
         :type username:  str, None
-        :param password: The password of a secondary user to authentication *(optional)*
+        :param password: The password of a secondary user to authenticate *(optional)*
+
+                         .. caution:: It is recommended that the :py:func:`khoros.core.Khoros.users.impersonate_user``
+                                      method be used instead of authenticating as a secondary user with this method.
+
+        :type password: str, None
         :returns: The session key in string format
         :raises: :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
         """
         return auth.get_session_key(self, username, password)
 
-    def get(self, query_url, relative_url=True, return_json=True, headers=None):
+    def get(self, query_url, relative_url=True, return_json=True, headers=None, proxy_user_object=None):
         """This method performs a simple GET request that leverages the Khoros authorization headers.
+
+        .. versionchanged:: 4.0.0
+           Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+           of other users.
 
         :param query_url: The relative (default) or fully-qualified URL for the API call
         :type query_url: str
@@ -537,15 +550,26 @@ class Khoros(object):
         :type return_json: bool
         :param headers: Allows the API call headers to be manually defined rather than using only the core object
         :type headers: dict, None
+        :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                                  API request on behalf of a secondary user.
+        :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
         :returns: The API response from the GET request
+        :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                 :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                 :py:exc:`khoros.errors.exceptions.GETRequestError`
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
         query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
-        return api.get_request_with_retries(query_url, return_json=return_json, headers=headers, khoros_object=self)
+        return api.get_request_with_retries(query_url, return_json=return_json, headers=headers, khoros_object=self,
+                                            proxy_user_object=proxy_user_object)
 
     def post(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
-             multipart=False):
+             multipart=False, proxy_user_object=None):
         """This method performs a simple POST request that leverages the Khoros authorization headers.
+
+        .. versionchanged:: 4.0.0
+           Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+           of other users.
 
         .. versionchanged:: 3.5.0
            The ``query_url`` no longer gets prefixed with a slash (``/``) if ``relative_url`` is set to ``False``.
@@ -576,7 +600,13 @@ class Khoros(object):
         :type headers: dict, None
         :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
         :type multipart: bool
-        :returns: The API response from the GET request
+        :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                                  API request on behalf of a secondary user.
+        :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
+        :returns: The API response from the POST request
+        :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                 :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                 :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
         query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url[1:]
@@ -585,11 +615,16 @@ class Khoros(object):
         content_type = '' if not content_type else content_type
         return api.post_request_with_retries(query_url, json_payload=json_payload, plaintext_payload=plaintext_payload,
                                              return_json=return_json, headers=headers, multipart=multipart,
-                                             content_type=content_type.lower(), khoros_object=self)
+                                             content_type=content_type.lower(), khoros_object=self,
+                                             proxy_user_object=proxy_user_object)
 
     def put(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
-            multipart=False):
+            multipart=False, proxy_user_object=None):
         """This method performs a simple PUT request that leverages the Khoros authorization headers.
+
+        .. versionchanged:: 4.0.0
+           Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+           of other users.
 
         .. versionchanged:: 3.1.1
            The ``content_type`` parameter now gets defined as an empty string prior to calling the sub-function.
@@ -617,7 +652,13 @@ class Khoros(object):
         :type headers: dict, None
         :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
         :type multipart: bool
-        :returns: The API response from the GET request
+        :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                                  API request on behalf of a secondary user.
+        :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
+        :returns: The API response from the PUT request
+        :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                 :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+                 :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
         """
         query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
         query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
@@ -626,7 +667,8 @@ class Khoros(object):
         content_type = '' if not content_type else content_type
         return api.put_request_with_retries(query_url, json_payload=json_payload, plaintext_payload=plaintext_payload,
                                             return_json=return_json, headers=headers, multipart=multipart,
-                                            content_type=content_type.lower(), khoros_object=self)
+                                            content_type=content_type.lower(), khoros_object=self,
+                                            proxy_user_object=proxy_user_object)
 
     def query(self, query, return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False,
               error_code='', format_statements=True):
@@ -806,8 +848,12 @@ class Khoros(object):
             """
             self.khoros_object = khoros_object
 
-        def get(self, endpoint, query_params=None, return_json=True):
+        def get(self, endpoint, query_params=None, return_json=True, proxy_user_object=None):
             """This function makes a Community API v1 GET request.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.0.0
 
@@ -817,6 +863,9 @@ class Khoros(object):
             :type query_params: dict
             :param return_json: Determines if the response should be returned in JSON format rather than the default
             :type return_json: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.GETRequestError`,
@@ -825,10 +874,16 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`
             """
             query_params = {} if not query_params else query_params
-            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'GET', return_json)
+            return api.make_v1_request(self.khoros_object, endpoint, query_params, 'GET', return_json,
+                                       proxy_user_object=proxy_user_object)
 
-        def post(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False):
+        def post(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False,
+                 proxy_user_object=None):
             """This function makes a Community API v1 POST request.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionchanged:: 3.2.0
                Introduced the ability to pass the query parameters as payload to avoid URI length limits.
@@ -851,6 +906,9 @@ class Khoros(object):
                                               at this time.
 
             :type json_payload: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
@@ -861,10 +919,16 @@ class Khoros(object):
             """
             query_params = {} if not query_params else query_params
             return api.make_v1_request(self.khoros_object, endpoint, query_params, 'POST', return_json=return_json,
-                                       params_in_uri=params_in_uri, json_payload=json_payload)
+                                       params_in_uri=params_in_uri, json_payload=json_payload,
+                                       proxy_user_object=proxy_user_object)
 
-        def put(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False):
+        def put(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False,
+                proxy_user_object=None):
             """This function makes a Community API v1 PUT request.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionchanged:: 3.2.0
                Introduced the ability to pass the query parameters as payload to avoid URI length limits.
@@ -890,6 +954,9 @@ class Khoros(object):
                                               at this time.
 
             :type json_payload: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.PUTRequestError`,
@@ -900,10 +967,16 @@ class Khoros(object):
             """
             query_params = {} if not query_params else query_params
             return api.make_v1_request(self.khoros_object, endpoint, query_params, 'PUT', return_json=return_json,
-                                       params_in_uri=params_in_uri, json_payload=json_payload)
+                                       params_in_uri=params_in_uri, json_payload=json_payload,
+                                       proxy_user_object=proxy_user_object)
 
-        def search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
+        def search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False,
+                   proxy_user_object=None):
             """This function performs a search for a particular field value using a Community API v1 call.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.0.0
 
@@ -917,10 +990,14 @@ class Khoros(object):
             :type return_json: bool
             :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
             :type fail_on_no_results: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response (optionally in JSON format)
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results)
+            return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results,
+                                         proxy_user_object=proxy_user_object)
 
     class Album(object):
         """This class includes methods for interacting with the `albums <https://rsa.im/2WAewBP>`_ collection."""
@@ -3150,8 +3227,12 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def add_subscription(self, target_id, target_type='board', payload=None, included_boards=None,
-                             excluded_boards=None):
+                             excluded_boards=None, proxy_user_object=None):
             """This function adds a subscription to a given target for the current user.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.5.0
 
@@ -3166,13 +3247,17 @@ class Khoros(object):
             :param excluded_boards: One or more boards (represented by Node ID) to be excluded from the
                                     partial subscription
             :type excluded_boards: list, tuple, set, str, None
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response in JSON format
             :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             return objects_module.subscriptions.add_subscription(self.khoros_object, target_id, target_type, payload,
-                                                                 included_boards, excluded_boards)
+                                                                 included_boards, excluded_boards,
+                                                                 proxy_user_object=proxy_user_object)
 
         def get_subscription_uri(self):
             """This function returns the subscriptions URI for the v2 API to perform API calls.
@@ -3183,22 +3268,33 @@ class Khoros(object):
             """
             return objects_module.subscriptions.get_subscription_uri(self.khoros_object)
 
-        def subscribe_to_board(self, node_id):
+        def subscribe_to_board(self, node_id, proxy_user_object=None):
             """This function subscribes the current user to an individual message.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.5.0
 
             :param node_id: The unique identifier for a board (i.e. Board ID)
             :type node_id: str
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response in JSON format
             :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
-            return objects_module.subscriptions.subscribe_to_board(self.khoros_object, node_id)
+            return objects_module.subscriptions.subscribe_to_board(self.khoros_object, node_id, proxy_user_object)
 
-        def subscribe_to_category(self, node_id, included_boards=None, excluded_boards=None):
+        def subscribe_to_category(self, node_id, included_boards=None, excluded_boards=None, proxy_user_object=None):
             """This function subscribes the current user to a full or partial category.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.5.0
 
@@ -3210,16 +3306,23 @@ class Khoros(object):
             :param excluded_boards: One or more boards (represented by Node ID) to be excluded from
                                     the partial subscription
             :type excluded_boards: list, tuple, set, str, None
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response in JSON format
             :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             return objects_module.subscriptions.subscribe_to_category(self.khoros_object, node_id, included_boards,
-                                                                      excluded_boards)
+                                                                      excluded_boards, proxy_user_object)
 
-        def subscribe_to_label(self, label, board_id):
+        def subscribe_to_label(self, label, board_id, proxy_user_object=None):
             """This function subscribes the current user to label found on a board.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.5.0
 
@@ -3227,39 +3330,58 @@ class Khoros(object):
             :type label: str, int
             :param board_id: The unique identifier (i.e. Node ID) for the board where the label is found
             :type board_id: str
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response in JSON format
             :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
-            return objects_module.subscriptions.subscribe_to_label(self.khoros_object, label, board_id)
+            return objects_module.subscriptions.subscribe_to_label(self.khoros_object, label, board_id,
+                                                                   proxy_user_object)
 
-        def subscribe_to_message(self, msg_id):
+        def subscribe_to_message(self, msg_id, proxy_user_object=None):
             """This function subscribes the current user to an individual message.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.5.0
 
             :param msg_id: The unique identifier for an individual message
+            :type msg_id: str, int
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response in JSON format
             :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
-            return objects_module.subscriptions.subscribe_to_message(self.khoros_object, msg_id)
+            return objects_module.subscriptions.subscribe_to_message(self.khoros_object, msg_id, proxy_user_object)
 
-        def subscribe_to_product(self, product_id):
+        def subscribe_to_product(self, product_id, proxy_user_object=None):
             """This function subscribes the current user to a product.
+
+            .. versionchanged:: 4.0.0
+               Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
+               of other users.
 
             .. versionadded:: 3.5.0
 
             :param product_id: The unique identifier for a product
             :type product_id: str, int
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform
+                                      the API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: The API response in JSON format
             :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
-            return objects_module.subscriptions.subscribe_to_product(self.khoros_object, product_id)
+            return objects_module.subscriptions.subscribe_to_product(self.khoros_object, product_id, proxy_user_object)
 
     class User(object):
         """This class includes methods for interacting with users."""
@@ -3270,6 +3392,21 @@ class Khoros(object):
             :type khoros_object: class[khoros.Khoros]
             """
             self.khoros_object = khoros_object
+
+        def impersonate_user(self, user_login):
+            """This function instantiates and returns the :py:class`khoros.objects.users.ImpersonatedUser` object which
+               can then be passed to other methods and functions to perform operations as a secondary user.
+
+               .. note:: The authenticated user must have the **Administrator** role and/or have the
+                         **Switch User** permission enabled.
+
+            .. versionadded:: 4.0.0
+
+            :param user_login: The username (i.e. login) of ther user to be impersonated
+            :type user_login: str
+            :returns: The instantiated :py:class`khoros.objects.users.ImpersonatedUser` object
+            """
+            return objects_module.users.impersonate_user(self.khoros_object, user_login)
 
         def create(self, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
                    biography=None, sso_id=None, web_page_url=None, cover_image=None):

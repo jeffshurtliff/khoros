@@ -3,6 +3,88 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+**********
+v4.0.0dev1
+**********
+**Release Date: 2021-03-29**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:func:`khoros.core.Khoros.User.impersonate_user` function.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:class:`khoros.objects.users.ImpersonatedUser` object class for performing API calls
+  as other users.
+* Added the :py:func:`khoros.objects.users.impersonate_user` function to assist in instantiating
+  the :py:class:`khoros.objects.users.ImpersonatedUser` object.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the methods below to introduce the ``proxy_user_object`` parameter to allow API requests
+  to be performed on behalf of other users.
+    * :py:meth:`khoros.core.Khoros.get`
+    * :py:meth:`khoros.core.Khoros.post`
+    * :py:meth:`khoros.core.Khoros.put`
+    * :py:meth:`khoros.core.Khoros.Subscription.add_subscription`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_board`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_category`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_label`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_message`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_product`
+    * :py:meth:`khoros.core.Khoros.V1.get`
+    * :py:meth:`khoros.core.Khoros.V1.post`
+    * :py:meth:`khoros.core.Khoros.V1.put`
+    * :py:meth:`khoros.core.Khoros.V1.search`
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the functions below to introduce the ``proxy_user_object`` parameter to allow API requests
+  to be performed on behalf of other users.
+    * :py:func:`khoros.api.define_headers`
+    * :py:func:`khoros.api.get_request_with_retries`
+    * :py:func:`khoros.api.payload_request_with_retries`
+    * :py:func:`khoros.api.post_request_with_retries`
+    * :py:func:`khoros.api.put_request_with_retries`
+    * :py:func:`khoros.api.delete`
+    * :py:func:`khoros.api.perform_v1_search`
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.objects.subscriptions.add_subscription`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_board`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_category`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_label`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_message`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_product`
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added missing information to the docstring for the following methods and functions:
+    * :py:meth:`khoros.core.Khoros.connect`
+    * :py:meth:`khoros.core.Khoros.get_session_key`
+    * :py:meth:`khoros.core.Khoros.put`
+    * :py:func:`khoros.api._confirm_field_supplied`
+* Updated the example in the header block for the :py:mod:`khoros.objects.users` module.
+
+|
+
+-----
+
 ******
 v3.5.0
 ******

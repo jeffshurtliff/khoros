@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Mar 2021
+:Modified Date:     29 Mar 2021
 """
 
 import json
@@ -28,8 +28,11 @@ ssl_warning_shown = False
 
 
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
-                   default_content_type=False):
+                   default_content_type=False, proxy_user_object=None):
     """This function defines the headers to use in an API call.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.5.0
        An unnecessary ``else`` statement after the :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
@@ -60,11 +63,17 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :param default_content_type: Determines if ``application/json`` should be used as the default ``content-type``
                                  value if the key does not exist (``False`` by default)
     :type default_content_type: bool
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: A dictionary with the header fields and associated values
+    :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
     """
-    if not khoros_object and not auth_dict:
+    if not khoros_object and not auth_dict and not proxy_user_object:
         raise errors.exceptions.MissingAuthDataError()
-    if auth_dict:
+    if proxy_user_object:
+        headers = proxy_user_object.session_header
+    elif auth_dict:
         headers = auth_dict['header']
     else:
         headers = khoros_object.auth['header']
@@ -153,8 +162,11 @@ def should_verify_tls(_khoros_object=None):
 
 
 def get_request_with_retries(query_url, return_json=True, khoros_object=None, auth_dict=None, headers=None,
-                             verify=None):
+                             verify=None, proxy_user_object=None):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.4.0
        Removed an unnecessary ``pass`` statement and initially defined the ``response`` variable with a ``NoneType``
@@ -175,11 +187,16 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     :type headers: dict, None
     :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response from the GET request (optionally in JSON format)
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
-             :py:exc:`khoros.errors.exceptions.APIConnectionError`
+             :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
+    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers,
+                             proxy_user_object=proxy_user_object)
     verify = should_verify_tls(khoros_object) if verify is None else verify
     retries, response = 0, None
     while retries <= 5:
@@ -377,8 +394,11 @@ def _raise_exception_for_repeated_timeouts():
 
 def payload_request_with_retries(url, request_type, json_payload=None, plaintext_payload=None, url_encoded_payload=None,
                                  return_json=True, khoros_object=None, auth_dict=None, headers=None, multipart=False,
-                                 content_type=None, verify=None):
+                                 content_type=None, verify=None, proxy_user_object=None):
     """This function performs an API request that includes a payload with up to three reties as necessary.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -388,7 +408,7 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
 
     :param url: The URI to be queried
     :type url: str
-    :param request_type: Defines the API call as a ``GET``, ``POST`` or ``PUT`` request
+    :param request_type: Defines the API call as a ``POST`` or ``PUT`` request
     :type request_type: str
     :param json_payload: The payload for the POST or PUT request in JSON format
     :type json_payload: dict, None
@@ -414,11 +434,14 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
     :type content_type: str, None
     :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response from the API request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
-             :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+             :py:exc:`khoros.errors.exceptions.InvalidRequestTypeError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
     # Ensure that the request type is valid
@@ -433,13 +456,14 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
     # Construct the appropriate headers for the POST call
     if content_type:
         headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
-                                 content_type=content_type.lower())
+                                 content_type=content_type.lower(), proxy_user_object=proxy_user_object)
     elif plaintext_payload and not json_payload:
         multipart = False
         headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
-                                 content_type='text/plain')
+                                 content_type='text/plain', proxy_user_object=proxy_user_object)
     else:
-        headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart)
+        headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers, multipart=multipart,
+                                 proxy_user_object=proxy_user_object)
 
     # Perform the API call and retrieve the response
     if any((plaintext_payload, url_encoded_payload, json_payload)):
@@ -462,8 +486,11 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
 
 def post_request_with_retries(url, json_payload=None, plaintext_payload=None, url_encoded_payload=None,
                               return_json=True, khoros_object=None, auth_dict=None, headers=None, multipart=False,
-                              content_type=None, verify=None):
+                              content_type=None, verify=None, proxy_user_object=None):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -510,6 +537,9 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
     :type content_type: str, None
     :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response from the POST request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
@@ -523,13 +553,17 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
     return payload_request_with_retries(url, 'post', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         url_encoded_payload=url_encoded_payload, return_json=return_json,
                                         khoros_object=khoros_object, auth_dict=auth_dict, headers=headers,
-                                        multipart=multipart, content_type=content_type.lower(), verify=verify)
+                                        multipart=multipart, content_type=content_type.lower(), verify=verify,
+                                        proxy_user_object=proxy_user_object)
 
 
 def put_request_with_retries(url, json_payload=None, plaintext_payload=None, return_json=True, url_encoded_payload=None,
                              khoros_object=None, auth_dict=None, headers=None, multipart=False, content_type=None,
-                             verify=None):
+                             verify=None, proxy_user_object=None):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -576,6 +610,9 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :type content_type: str, None
     :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response from the PUT request
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.PUTRequestError`,
@@ -585,7 +622,8 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     return payload_request_with_retries(url, 'put', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         url_encoded_payload=url_encoded_payload, return_json=return_json,
                                         khoros_object=khoros_object, auth_dict=auth_dict, headers=headers,
-                                        multipart=multipart, content_type=content_type.lower(), verify=verify)
+                                        multipart=multipart, content_type=content_type.lower(), verify=verify,
+                                        proxy_user_object=proxy_user_object)
 
 
 def _attempt_json_conversion(_response, _return_json):
@@ -642,8 +680,11 @@ def get_items_list(api_response):
     return api_response['data']['items']
 
 
-def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=None):
+def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=None, proxy_user_object=None):
     """This function performs a DELETE request against the Core API.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -658,13 +699,17 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response from the DELETE request (optionally in JSON format)
     """
     # Determine if TLS certificates should be verified during API calls
     verify = should_verify_tls(khoros_object)
 
     # Perform the API call to delete the asset
-    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers)
+    headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers,
+                             proxy_user_object=proxy_user_object)
     response = requests.delete(url, headers=headers, verify=verify)
     if return_json:
         response = response.json()
@@ -727,8 +772,12 @@ def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id
     return user_path
 
 
-def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
+def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False,
+                      proxy_user_object=None):
     """This function performs a search for a particular field value using a Community API v1 call.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.5.0
        The typecheck was updated to utilize ``isinstance()`` instead of ``type()``.
@@ -748,6 +797,9 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
     :type return_json: bool
     :param fail_on_no_results: Raises an exception if no results are returned (``False`` by default)
     :type fail_on_no_results: bool
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response (optionally in JSON format)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -755,7 +807,8 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
     verify = should_verify_tls(khoros_object)
 
     # Prepare the API call
-    headers = define_headers(khoros_object, content_type='application/x-www-form-urlencoded')
+    headers = define_headers(khoros_object, content_type='application/x-www-form-urlencoded',
+                             proxy_user_object=proxy_user_object)
     if isinstance(filter_value, str):
         filter_value = core_utils.url_encode(filter_value)
     uri = f"{khoros_object.core['v1_base']}/search/{endpoint}?q={filter_field}:{filter_value}"
@@ -836,8 +889,11 @@ def encode_v1_query_string(query_dict, return_json=True, json_payload=False):
 
 
 def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GET', return_json=True,
-                    params_in_uri=False, json_payload=False):
+                    params_in_uri=False, json_payload=False, proxy_user_object=None):
     """This function makes a Community API v1 request.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionchanged:: 3.2.0
        Introduced the new default ability to pass the query parameters as payload to avoid URI length limits,
@@ -877,6 +933,9 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
                          .. caution:: This is not yet fully supported and therefore should not be used at this time.
 
     :type json_payload: bool
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
              :py:exc:`khoros.errors.exceptions.GETRequestError`,
@@ -908,29 +967,34 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
 
     # Determine the request type and perform the appropriate call
     if request_type.upper() == 'GET':
-        response = get_request_with_retries(url, return_json, khoros_object, headers=header)
+        response = get_request_with_retries(url, return_json, khoros_object, headers=header,
+                                            proxy_user_object=proxy_user_object)
     elif request_type.upper() == 'POST':
         if params_in_uri:
             response = post_request_with_retries(url, return_json=return_json, khoros_object=khoros_object,
-                                                 headers=header)
+                                                 headers=header, proxy_user_object=proxy_user_object)
         elif json_payload:
             # TODO: Finish testing and adding support for this type of payload (may just need different header)
             response = post_request_with_retries(url, json_payload=query_params, return_json=return_json,
-                                                 khoros_object=khoros_object, headers=header)
+                                                 khoros_object=khoros_object, headers=header,
+                                                 proxy_user_object=proxy_user_object)
         else:
             response = post_request_with_retries(url, url_encoded_payload=query_string, return_json=return_json,
-                                                 khoros_object=khoros_object, headers=header)
+                                                 khoros_object=khoros_object, headers=header,
+                                                 proxy_user_object=proxy_user_object)
     elif request_type.upper() == 'PUT':
         if params_in_uri:
             response = put_request_with_retries(url, return_json=return_json, khoros_object=khoros_object,
-                                                headers=header)
+                                                headers=header, proxy_user_object=proxy_user_object)
         elif json_payload:
             # TODO: Finish testing and adding support for this type of payload (may just need different header)
             response = put_request_with_retries(url, json_payload=query_params, return_json=return_json,
-                                                khoros_object=khoros_object, headers=header)
+                                                khoros_object=khoros_object, headers=header,
+                                                proxy_user_object=proxy_user_object)
         else:
             response = put_request_with_retries(url, url_encoded_payload=query_string, return_json=return_json,
-                                                khoros_object=khoros_object, headers=header)
+                                                khoros_object=khoros_object, headers=header,
+                                                proxy_user_object=proxy_user_object)
     elif request_type.upper() in currently_unsupported_types:
         raise errors.exceptions.CurrentlyUnsupportedError()
     else:
@@ -1153,6 +1217,11 @@ def _confirm_field_supplied(_fields_dict):
        Moved from the :py:mod:`khoros.objects.messages` module to :py:mod:`khoros.api`.
 
     .. versionadded:: 2.3.0
+
+    :param _fields_dict: A dictionary made up of API fields and corresponding values
+    :type _fields_dict: dict
+    :returns: None
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     _field_supplied = False
     for _field_value in _fields_dict.values():
