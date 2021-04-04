@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Dec 2020
+:Modified Date:     04 Apr 2021
 """
 
 #################
@@ -163,12 +163,16 @@ class InvalidURLError(KhorosError):
 class MissingRequiredDataError(KhorosError):
     """This exception is used when a function or method is missing one or more required arguments.
 
+    .. versionchanged:: 4.0.0
+       The exception can now accept the ``param`` keyword argument.
+
     .. versionadded:: 2.0.0
     """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "Missing one or more required parameters"
         init_msg = "The object failed to initialize as it is missing one or more required arguments."
+        param_msg = "The required parameter 'PARAMETER_NAME' is not defined"
         if not (args or kwargs):
             args = (default_msg,)
         elif 'init' in args or 'initialize' in args:
@@ -177,6 +181,10 @@ class MissingRequiredDataError(KhorosError):
                 args = (custom_msg,)
             else:
                 args = (init_msg,)
+        elif 'param' in kwargs:
+            args = (param_msg.replace('PARAMETER_NAME', kwargs['param']),)
+        else:
+            args = (default_msg,)
         super().__init__(*args)
 
 

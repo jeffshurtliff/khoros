@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Jan 2021
+:Modified Date:     03 Apr 2021
 """
 
 import json
@@ -157,8 +157,11 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     return _setting_value
 
 
-def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board', return_json=False):
+def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board', return_json=True):
     """This function defines a particular setting value for a given node.
+
+    .. versionchanged:: 4.0.0
+       The default value for the ``return_json`` parameter is now ``True``.
 
     .. versionchanged:: 3.3.2
        The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)

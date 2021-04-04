@@ -6,9 +6,10 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     14 Mar 2021
+:Modified Date:     04 Apr 2021
 """
 
+from . import users
 from .. import api, liql, errors
 from ..utils import log_utils, core_utils
 
@@ -43,6 +44,33 @@ def _get_role_type_prefix(_role_type=None):
     elif _role_type in ROLE_TYPES:
         _prefix = ROLE_TYPES.get(_role_type)
     return _prefix
+
+
+def get_role_id(role_name, scope='community', node_id=None):
+    """This function constructs and returns the Role ID associated with a given role name and scope.
+
+    .. versionadded:: 4.0.0
+
+    :param role_name: The name of the role (e.g. ``Administrator``, ``Moderator``, ``Owner``, etc.)
+    :type role_name: str
+    :param scope: The scope of the role (``community`` by default)
+    :type scope: str
+    :param node_id: The associated Node ID for any role that does not have a global/community scope.
+    :type node_id: str, None
+    :returns: The properly constructed Role ID where applicable
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidRoleError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if scope not in ROLE_TYPES:
+        raise errors.exceptions.InvalidRoleError(f"The scope '{scope}' is not valid")
+    prefix = _get_role_type_prefix(scope)
+    if prefix == "t":
+        role_id = f"{prefix}:{role_name}"
+    else:
+        if not node_id:
+            raise errors.exceptions.MissingRequiredDataError(param='node_id')
+        role_id = f"{prefix}:{node_id}:{role_name}"
+    return role_id
 
 
 def get_total_role_count(khoros_object, return_dict=False, total=True, top_level=False, board=False, category=False,
@@ -143,7 +171,7 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
 
     .. versionadded:: 3.5.0
 
-    :param khoros_object: he core :py:class:`khoros.Khoros` object
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param fields: One or more fields from the ``Users`` object to return (``login`` field by default)
     :type fields: str, tuple, list, set
@@ -251,3 +279,181 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
 
     # Return the populated users list
     return users_list
+
+
+def _validate_node_type(_node_type=None, _param_name='node_type'):
+    """This function verifies that a provided node type (i.e. role scope) is valid for role-related functions.
+
+    .. versionadded:: 4.0.0
+
+    :param _node_type: The node type to be validated
+    :type _node_type: str, None
+    :param _param_name: The name of the parameter in the parent function in which the node type is stored
+                        (Default: ``node_type``)
+
+                        .. note:: This value is used when raising the
+                                  :py:exc:`khoros.errors.exceptions.MissingRequiredDataError` exception.
+
+    :type _param_name: str
+    :returns: The validated node type
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
+    """
+    if not _node_type:
+        raise errors.exceptions.MissingRequiredDataError(param=_param_name)
+    if _node_type not in ROLE_TYPES:
+        raise errors.exceptions.InvalidNodeTypeError()
+    _node_type = 'grouphub' if _node_type == 'group_hub' else _node_type
+    return _node_type
+
+
+def _assign_role_with_v1(_khoros_object, _user, _lookup_type, _role, _node=None, _node_type='board', _return_json=True):
+    """This function assigns a role to a user via REST API call using the Community API v1.
+
+    .. versionadded:: 4.0.0
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _user: The identifier (i.e. ID, login or email) of the user to be assigned to the role
+    :type _user: str
+    :param _lookup_type: The lookup type for the user identifier (``id``, ``login`` or ``email``)
+    :type _lookup_type: str
+    :param _role: The name of the role to which the user will be assigned
+    :type _role: str, tuple, list, set
+    :param _node: The Node ID of the node to which the role is scoped when applicable
+    :type _node: str, None
+    :param _node_type: The type of node to which the role is scoped (e.g. ``board`` (default), ``category``, etc.)
+    :type _node_type: str
+    :param _return_json: Determines if the response should be returned as JSON rather than XML (``True`` by default)
+    :type _return_json: bool
+    :returns: The response of the API call to assign the user to the role
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    # Ensure the role has been supplied properly
+    if not isinstance(_role, str) and len(_role) > 1:
+        raise errors.exceptions.CurrentlyUnsupportedError('Only individual roles can currently be assigned with API v1')
+    _role = _role[0] if not isinstance(_role, str) else _role
+
+    # Define the API URI
+    _user_path = api.get_v1_user_path(user_and_type=(_user, _lookup_type))
+    _uri_role_portion = f"/roles/name/{_role}/users/add?role.user={_user_path}"
+    if not _node:
+        _uri = f"{_khoros_object.core.get('v1_base')}/{_uri_role_portion}"
+    else:
+        # TODO: Identify the appropriate URI for grouphub membership additions
+        if _node_type == 'grouphub':
+            raise errors.exceptions.CurrentlyUnsupportedError('Group hub membership should be added via API v2 calls')
+        _collection = api.get_v1_node_collection(_node_type)
+        _uri = f"{_khoros_object.core.get('v1_base')}/{_collection}/id/{_node}/{_uri_role_portion}"
+
+    # Perform the POST request and return the response
+    return api.post_request_with_retries(_uri, return_json=_return_json, khoros_object=_khoros_object)
+
+
+def _assign_role_with_v2(_khoros_object, _user, _lookup_type, _roles, _node=None, _node_type='board'):
+    """This function assigns one or more roles to a user via REST API call using the Community API v2.
+
+    :param _khoros_object:The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _user: The identifier (i.e. ID, login or email) of the user to be assigned to the role
+    :type _user: str
+    :param _lookup_type: The lookup type for the user identifier (``id``, ``login`` or ``email``)
+    :type _lookup_type: str
+    :param _roles: The name of the role(s) to which the user will be assigned
+    :type _roles: str, tuple, list, set
+    :param _node: The Node ID of the node to which the role is scoped when applicable
+    :type _node: str, None
+    :param _node_type: The type of node to which the role is scoped (e.g. ``board`` (default), ``category``, etc.)
+    :type _node_type: str
+    :returns: The response of the API call to assign the user to the role
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`
+    """
+    # Get the User ID if not already provided
+    _user_id = _user if _lookup_type == 'id' else None
+    if not _user_id:
+        if _lookup_type == 'email':
+            _user_id = users.get_user_id(_khoros_object, email=_user)
+        else:
+            _user_id = users.get_user_id(_khoros_object, login=_user)
+
+    # Construct the URI for the API call
+    _uri = f"{_khoros_object.core.get('v2_base')}/users/{_user_id}"
+
+    # Define the roles_to_add list within the payload
+    _roles_to_add = []
+    if isinstance(_roles, str):
+        _roles = [_roles]
+    for _role in _roles:
+        _role_id = _role if ":" in _role else None
+        if not _role_id:
+            if _node and _node_type:
+                _role_id = get_role_id(_role, _node_type, _node)
+            else:
+                _role_id = get_role_id(_role)
+        _roles_to_add.append(_role_id)
+
+    # Construct the full payload
+    _payload = {
+        "data": {
+            "type": "user",
+            "roles_to_add": _roles_to_add
+        }
+    }
+
+    # Perform and return the API call
+    return api.put_request_with_retries(_uri, _payload, khoros_object=_khoros_object)
+
+
+def assign_roles_to_user(khoros_object, user, lookup_type='id', roles_to_add=None, node=None, node_type='board',
+                         v1=False, return_json=True):
+    """This function assigns a user to one or more roles.
+
+    .. versionadded:: 4.0.0
+
+    :param khoros_object:_khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param user: The identifier (i.e. ID, login or email) of the user to be assigned to the role
+    :type user: str
+    :param lookup_type: The lookup type for the user identifier (``id``, ``login`` or ``email``)
+    :type lookup_type: str
+    :param roles_to_add: One or more roles (Role IDs or Role Names) to which the user will be assigned
+    :type roles_to_add: str, list, tuple, set
+    :param node: The Node ID of the node to which the role is scoped when applicable
+    :type node: str, None
+    :param node_type: The type of node to which the role is scoped (e.g. ``board`` (default), ``category``, etc.)
+    :type node_type: str
+    :param v1: Determines if the Community API v1 should be used to perform the operation (``False`` by default)
+    :type v1: bool
+    :param return_json: Determines if the response should be returned as JSON rather than XML (``True`` by default)
+    :type return_json: bool
+    :returns: The response from the API request
+    :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+             :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+             :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+             :py:exc:`khoros.errors.exceptions.PUTRequestError`
+    """
+    # Validate the parameters
+    if not roles_to_add:
+        raise errors.exceptions.MissingRequiredDataError(param='roles_to_add')
+    if lookup_type not in ['id', 'login', 'email']:
+        raise errors.exceptions.InvalidLookupTypeError()
+    node_type = _validate_node_type(node_type) if node else node_type
+
+    # Call sub-functions depending on API version needed
+    if v1:
+        response = _assign_role_with_v1(khoros_object, user, lookup_type, roles_to_add, node, node_type, return_json)
+    else:
+        response = _assign_role_with_v2(khoros_object, user, lookup_type, roles_to_add, node, node_type)
+    return response

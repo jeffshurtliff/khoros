@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Mar 2021
+:Modified Date:     04 Apr 2021
 """
 
 import sys
@@ -2980,6 +2980,59 @@ class Khoros(object):
             """
             self.khoros_object = khoros_object
 
+        @staticmethod
+        def get_role_id(role_name, scope='community', node_id=None):
+            """This function constructs and returns the Role ID associated with a given role name and scope.
+
+            .. versionadded:: 4.0.0
+
+            :param role_name: The name of the role (e.g. ``Administrator``, ``Moderator``, ``Owner``, etc.)
+            :type role_name: str
+            :param scope: The scope of the role (``community`` by default)
+            :type scope: str
+            :param node_id: The associated Node ID for any role that does not have a global/community scope.
+            :type node_id: str, None
+            :returns: The properly constructed Role ID where applicable
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidRoleError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return objects_module.roles.get_role_id(role_name, scope, node_id)
+
+        def assign_roles_to_user(self, user, lookup_type='id', roles_to_add=None, node=None, node_type='board',
+                                 v1=False, return_json=True):
+            """This function assigns a user to one or more roles.
+
+            .. versionadded:: 4.0.0
+
+            :param user: The identifier (i.e. ID, login or email) of the user to be assigned to the role
+            :type user: str
+            :param lookup_type: The lookup type for the user identifier (``id``, ``login`` or ``email``)
+            :type lookup_type: str
+            :param roles_to_add: One or more roles (Role IDs or Role Names) to which the user will be assigned
+            :type roles_to_add: str, list, tuple, set
+            :param node: The Node ID of the node to which the role is scoped when applicable
+            :type node: str, None
+            :param node_type: The type of node to which the role is scoped
+                              (e.g. ``board`` (default), ``category``, etc.)
+            :type node_type: str
+            :param v1: Determines if the Community API v1 should be used to perform the operation
+                       (``False`` by default)
+            :type v1: bool
+            :param return_json: Determines if the response should be returned as JSON rather than XML
+                                (``True`` by default)
+            :type return_json: bool
+            :returns: The response from the API request
+            :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+                     :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.PUTRequestError`
+            """
+            return objects_module.roles.assign_roles_to_user(self.khoros_object, user, lookup_type, roles_to_add,
+                                                             node, node_type, v1, return_json)
+
         def get_total_role_count(self, return_dict=False, total=True, top_level=False, board=False,
                                  category=False, group_hub=False):
             """This function retrieves the total role count for one or more role type(s).
@@ -3112,8 +3165,11 @@ class Khoros(object):
             return objects_module.settings.get_node_setting(self.khoros_object, setting_name, node_id, node_type, v1,
                                                             convert_json)
 
-        def define_node_setting(self, setting_name, setting_val, node_id, node_type='board', return_json=False):
+        def define_node_setting(self, setting_name, setting_val, node_id, node_type='board', return_json=True):
             """This function defines a particular setting value for a given node.
+
+            .. versionchanged:: 4.0.0
+               The default value for the ``return_json`` parameter is now ``True``.
 
             .. versionchanged:: 3.3.2
                The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)

@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Mar 2021
+:Modified Date:     04 Apr 2021
 """
 
 import json
@@ -140,6 +140,27 @@ def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
     return _query_string
 
 
+def _add_json_query_to_uri(_uri, _return_json=True):
+    """This function appends the v1 query parameter to return a JSON response when appropriate.
+
+    .. versionadded:: 4.0.0
+
+    .. note:: No action will be taken if the URI is not recognized as a Community API v1 URI.
+
+    :param _uri: The current URI against which the REST API call will be made
+    :type _uri: str
+    :param _return_json: Indicates whether or not the response should be in JSON format (``True`` by default)
+    :type _return_json: bool
+    :returns: The URI either untouched or with the added query parameter string where appropriate
+    :raises: :py:exc:`TypeError`
+    """
+    if 'restapi/vc' in _uri and 'restapi.response_format' not in _uri and _return_json:
+        _has_queries = True if '?' in _uri else False
+        _uri = f"{_uri}?" if '?' not in _uri else _uri
+        _uri = f"{_uri}{_get_json_query_string(_return_json, _has_queries)}"
+    return _uri
+
+
 def should_verify_tls(_khoros_object=None):
     """This function determines whether or not to verify the server's TLS certificate. (``True`` by default)
 
@@ -167,6 +188,8 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
 
     .. versionchanged:: 4.0.0
        Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
+       A function call was also introduced to ensure that v1 requests that should return JSON responses are formatted
+       correctly.
 
     .. versionchanged:: 3.4.0
        Removed an unnecessary ``pass`` statement and initially defined the ``response`` variable with a ``NoneType``
@@ -198,6 +221,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     headers = define_headers(khoros_object=khoros_object, auth_dict=auth_dict, params=headers,
                              proxy_user_object=proxy_user_object)
     verify = should_verify_tls(khoros_object) if verify is None else verify
+    query_url = _add_json_query_to_uri(query_url, return_json)
     retries, response = 0, None
     while retries <= 5:
         try:
@@ -491,6 +515,8 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
 
     .. versionchanged:: 4.0.0
        Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
+       A function call was also introduced to ensure that v1 requests that should return JSON responses are formatted
+       correctly.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -548,7 +574,10 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
     # Determine if TLS certificates should be verified during API calls
     verify = should_verify_tls(khoros_object) if verify is None else verify
 
-    # Define teh content type as necessary and perform the API call
+    # Ensure the v1 URIs are formatted properly if the response must be in JSON format
+    url = _add_json_query_to_uri(url, return_json)
+
+    # Define the content type as necessary and perform the API call
     content_type = '' if not content_type else content_type
     return payload_request_with_retries(url, 'post', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         url_encoded_payload=url_encoded_payload, return_json=return_json,
@@ -564,6 +593,8 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
 
     .. versionchanged:: 4.0.0
        Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
+       A function call was also introduced to ensure that v1 requests that should return JSON responses are formatted
+       correctly.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``ssl_verify`` core setting in the :py:class:`khoros.core.Khoros` object.
@@ -618,6 +649,7 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
              :py:exc:`khoros.errors.exceptions.PUTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
+    url = _add_json_query_to_uri(url, return_json)
     content_type = '' if not content_type else content_type
     return payload_request_with_retries(url, 'put', json_payload=json_payload, plaintext_payload=plaintext_payload,
                                         url_encoded_payload=url_encoded_payload, return_json=return_json,
@@ -740,8 +772,12 @@ def get_v1_node_collection(node_type):
     return node_collections.get(node_type) if not node_collection else node_collection
 
 
-def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id=None, trailing_slash=False):
+def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id=None, user_and_type=None,
+                     trailing_slash=False):
     """This function returns the segment of an API v1 endpoint that is the path to define a user.
+
+    .. versionadded:: 4.0.0
+       Introduced the ``user_and_type`` parameter that can be passed instead of a parameter for a specific type.
 
     .. versionadded:: 3.5.0
 
@@ -753,11 +789,21 @@ def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id
     :type user_login: str, None
     :param user_sso_id: The Single Sign-On (SSO) ID associated with a user
     :type user_sso_id: str, None
+    :param user_and_type: A tuple with the first value being the user value and the second being the user type.
+                          (Accepted types: ``id``, ``email``, ``login`` and ``sso_id``)
+    :type user_and_type: tuple, None
     :param trailing_slash: Determines if the returned path should end with a slash (``False`` by default)
     :type trailing_slash: bool
     :returns: The API user path (e.g. ``/users/id/1234``)
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
+    # Parse the user_and_type parameter when present
+    user_id = user_and_type[0] if user_and_type[1] == 'id' else user_id
+    user_email = user_and_type[0] if user_and_type[1] == 'email' else user_email
+    user_login = user_and_type[0] if user_and_type[1] == 'login' else user_login
+    user_sso_id = user_and_type[0] if user_and_type[1] == 'sso_id' else user_sso_id
+
+    # Validate the data and return the path
     if not any((user_id, user_email, user_login, user_sso_id)):
         raise errors.exceptions.MissingRequiredDataError("A user identifier must be provided")
     slash = '/' if trailing_slash else ''

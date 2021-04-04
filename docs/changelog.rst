@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 **********
-v4.0.0dev1
+v4.0.0dev2
 **********
-**Release Date: 2021-03-29**
+**Release Date: 2021-04-04**
 
 Added
 =====
@@ -15,7 +15,8 @@ Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
 
-* Added the :py:func:`khoros.core.Khoros.User.impersonate_user` function.
+* Added the :py:meth:`khoros.core.Khoros.User.impersonate_user` method.
+* Added the :py:meth:`khoros.core.Khoros.Role.get_role_id` method.
 
 Primary Modules
 ---------------
@@ -25,6 +26,13 @@ Additions to the :doc:`primary modules <primary-modules>`.
   as other users.
 * Added the :py:func:`khoros.objects.users.impersonate_user` function to assist in instantiating
   the :py:class:`khoros.objects.users.ImpersonatedUser` object.
+* Added the following functions to the :py:func:`khoros.objects.roles` module:
+    * :py:func:`khoros.objects.roles.get_role_id`
+    * :py:func:`khoros.objects.roles.assign_roles_to_user`
+    * :py:func:`khoros.objects.roles._assign_role_with_v1`
+    * :py:func:`khoros.objects.roles._assign_role_with_v2`
+    * :py:func:`khoros.objects.roles._validate_node_type`
+* Added the :py:func:`khoros.api._add_json_query_to_uri` function.
 
 Changed
 =======
@@ -48,6 +56,8 @@ Changes to the :doc:`core-object-methods`.
     * :py:meth:`khoros.core.Khoros.V1.post`
     * :py:meth:`khoros.core.Khoros.V1.put`
     * :py:meth:`khoros.core.Khoros.V1.search`
+* Changed the default value of the ``return_json`` parameter to ``True`` in the
+  :py:meth:`khoros.core.Khoros.Settings.define_node_setting` function.
 
 Primary Modules
 ---------------
@@ -69,6 +79,17 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.subscriptions.subscribe_to_label`
     * :py:func:`khoros.objects.subscriptions.subscribe_to_message`
     * :py:func:`khoros.objects.subscriptions.subscribe_to_product`
+* Introduced the ``user_and_type`` parameter in the :py:func:`khoros.api.get_v1_user_path` function
+  that can be passed instead of a parameter for a specific type.
+* Changed the default value of the ``return_json`` parameter to ``True`` in the
+  :py:func:`khoros.objects.settings.define_node_setting` function.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+ * Introduced the ability for the :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+   exception to accept the ``param`` keyword argument and display a more specific message.
 
 Documentation
 -------------
@@ -80,6 +101,17 @@ Changes to the documentation.
     * :py:meth:`khoros.core.Khoros.put`
     * :py:func:`khoros.api._confirm_field_supplied`
 * Updated the example in the header block for the :py:mod:`khoros.objects.users` module.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed issues with the primary functions in the :py:mod:`khoros.api` module that was resulting
+  in raised exceptions if JSON responses were requested in v1 API calls without explicitly
+  including the ``restapi.response_format=json`` query string.
 
 |
 
