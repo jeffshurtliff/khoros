@@ -6,7 +6,7 @@
 :Example:           ``response = subscribe_to_board(khoros_object, 'my-forum')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Mar 2021
+:Modified Date:     07 Apr 2021
 """
 
 from .. import api, errors
@@ -104,6 +104,9 @@ def _construct_target_subscription(_target_id, _target_type='board'):
 def _construct_category_payload(_node_id, _included_boards=None, _excluded_boards=None):
     """This function constructs the payload for a full or partial category subscription.
 
+    .. versionchanged:: 4.0.0
+       Fixed an issue where the payload was getting double-wrapped with the ``data`` dictionary key.
+
     .. versionadded:: 3.5.0
 
     :param _node_id: The unique identifier (i.e. Node ID) of the category
@@ -116,7 +119,7 @@ def _construct_category_payload(_node_id, _included_boards=None, _excluded_board
     :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
     # Construct the base data dictionary
-    _data = _construct_target_subscription(_node_id, 'category')
+    _payload = _construct_target_subscription(_node_id, 'category')
 
     # Ensure that only one populated partial option has been provided
     if _included_boards and _excluded_boards:
@@ -134,10 +137,7 @@ def _construct_category_payload(_node_id, _included_boards=None, _excluded_board
             _container = []
             for _board in _boards:
                 _container.append(_construct_target_subscription(_board))
-            _data[_partial_field] = _container
-
-    # Wrap the data within the 'data' field in the payload
-    _payload = {'data': _data}
+            _payload[_partial_field] = _container
     return _payload
 
 

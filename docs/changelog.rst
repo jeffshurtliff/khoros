@@ -4,7 +4,7 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.0.0b1
+v4.0.0b2
 ********
 **Release Date: 2021-04-07**
 
@@ -130,6 +130,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 * Added the missing ``type`` key to the payload dictionary in the
   :py:func:`khoros.objects.users.structure_payload` function that was preventing users from
   getting created successfully.
+* Fixed an issue in the :py:func:`khoros.objects.subscriptions._construct_category_payload`
+  where the payload was getting double-wrapped with the ``data`` dictionary key.
 
 |
 
