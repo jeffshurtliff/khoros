@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-**********
-v4.0.0dev2
-**********
-**Release Date: 2021-04-04**
+********
+v4.0.0b1
+********
+**Release Date: 2021-04-07**
 
 Added
 =====
@@ -34,6 +34,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.roles._validate_node_type`
 * Added the :py:func:`khoros.api._add_json_query_to_uri` function.
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError` exception.
+
 Changed
 =======
 
@@ -58,6 +64,8 @@ Changes to the :doc:`core-object-methods`.
     * :py:meth:`khoros.core.Khoros.V1.search`
 * Changed the default value of the ``return_json`` parameter to ``True`` in the
   :py:meth:`khoros.core.Khoros.Settings.define_node_setting` function.
+* Updated the :py:meth:`khoros.core.Khoros.User.create` method to return the API
+  response and introduced the ``ignore_exceptions`` parameter.
 
 Primary Modules
 ---------------
@@ -83,6 +91,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
   that can be passed instead of a parameter for a specific type.
 * Changed the default value of the ``return_json`` parameter to ``True`` in the
   :py:func:`khoros.objects.settings.define_node_setting` function.
+* Updated the :py:func:`khoros.objects.users.create` function to return the API response and
+  introduced the ``ignore_exceptions`` parameter.
+* Updated the :py:func:`khoros.objects.users.delete` function to raise the new
+  :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError` exception when appropriate.
 
 Supporting Modules
 ------------------
@@ -112,6 +124,12 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 * Fixed issues with the primary functions in the :py:mod:`khoros.api` module that was resulting
   in raised exceptions if JSON responses were requested in v1 API calls without explicitly
   including the ``restapi.response_format=json`` query string.
+* Fixed issues in the :py:func:`khoros.objects.users.structure_payload` and
+  :py:func:`khoros.objects.users.process_user_settings` functions that were resulting
+  in a :py:exc:`KeyError` exception potentially getting raised.
+* Added the missing ``type`` key to the payload dictionary in the
+  :py:func:`khoros.objects.users.structure_payload` function that was preventing users from
+  getting created successfully.
 
 |
 

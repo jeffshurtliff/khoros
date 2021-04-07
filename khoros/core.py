@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     04 Apr 2021
+:Modified Date:     07 Apr 2021
 """
 
 import sys
@@ -3458,15 +3458,18 @@ class Khoros(object):
 
             .. versionadded:: 4.0.0
 
-            :param user_login: The username (i.e. login) of ther user to be impersonated
+            :param user_login: The username (i.e. login) of the user to be impersonated
             :type user_login: str
             :returns: The instantiated :py:class`khoros.objects.users.ImpersonatedUser` object
             """
             return objects_module.users.impersonate_user(self.khoros_object, user_login)
 
         def create(self, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
-                   biography=None, sso_id=None, web_page_url=None, cover_image=None):
+                   biography=None, sso_id=None, web_page_url=None, cover_image=None, ignore_exceptions=False):
             """This function creates a new user in the Khoros Community environment.
+
+            .. versionchanged:: 4.0.0
+               This function now returns the API response and the ``ignore_exceptions`` parameter has been introduced.
 
             .. versionchanged:: 3.5.0
                The unnecessary ``return`` statement at the end of the method has been removed.
@@ -3491,11 +3494,15 @@ class Khoros(object):
             :type web_page_url: str, None
             :param cover_image: The cover image to be used on the user's profile
             :type cover_image: str, None
-            :returns: None
+            :param ignore_exceptions: Defines whether to raise the :py:exc:`khoros.errors.exceptions.UserCreationError`
+                                      exception if the creation attempt fails (``False`` by default)
+            :type ignore_exceptions: bool
+            :returns: The response to the user creation API request
             :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
             """
-            objects_module.users.create(self.khoros_object, user_settings, login, email, password, first_name,
-                                        last_name, biography, sso_id, web_page_url, cover_image)
+            return objects_module.users.create(self.khoros_object, user_settings, login, email, password, first_name,
+                                               last_name, biography, sso_id, web_page_url, cover_image,
+                                               ignore_exceptions)
 
         def delete(self, user_id, return_json=False):
             """This function deletes a user from the Khoros Community environment.
@@ -3505,6 +3512,7 @@ class Khoros(object):
             :param return_json: Determines if the API response should be returned in JSON format (``False`` by default)
             :type return_json: bool
             :returns: The API response (optionally in JSON format)
+            :raises: :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError`
             """
             return objects_module.users.delete(self.khoros_object, user_id, return_json)
 

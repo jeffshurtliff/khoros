@@ -3,10 +3,10 @@
 :Module:            khoros.errors.exceptions
 :Synopsis:          Collection of exception classes relating to the khoros library
 :Usage:             ``import khoros.errors.exceptions``
-:Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
+:Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     04 Apr 2021
+:Modified Date:     07 Apr 2021
 """
 
 #################
@@ -236,6 +236,25 @@ class DELETERequestError(KhorosError):
         default_msg = "The DELETE request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
+        super().__init__(*args)
+
+
+class FeatureNotConfiguredError(KhorosError):
+    """This exception is used when an API request fails because a feature is not configured.
+
+    .. versionadded:: 4.0.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        exc_msg = "The feature is not configured."
+        if 'identifier' in kwargs or 'feature' in kwargs:
+            if 'identifier' in kwargs:
+                exc_msg += f" Identifier: {kwargs['identifier']}"
+            if 'feature' in kwargs:
+                exc_msg = exc_msg.replace("feature", f"{kwargs['feature']} feature")
+            args = (exc_msg,)
+        elif not (args or kwargs):
+            args = (exc_msg,)
         super().__init__(*args)
 
 
