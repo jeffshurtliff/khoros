@@ -40,4 +40,10 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     python_requires='>=3.6',
+    install_requires=[
+        "PyYAML>=5.3.1",
+        "urllib3~=1.26.2",
+        "requests>=2.23.0",
+        "setuptools~=52.0.0",
+    ],
 )
