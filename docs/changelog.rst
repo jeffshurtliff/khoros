@@ -40,6 +40,15 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError` exception.
 
+General
+-------
+* Added the :py:func:`read` and :py:func:`get_version` functions to ``setup.py``
+  to address `Issue #28 <https://github.com/jeffshurtliff/khoros/issues/28>`_.
+
+  .. note:: This change was introduced by
+            `truthbyron <https://github.com/truthbyron>`_ via
+            `Pull Request #31 <https://github.com/jeffshurtliff/khoros/pull/31>`_.
+
 Changed
 =======
 
@@ -113,6 +122,17 @@ Changes to the documentation.
     * :py:meth:`khoros.core.Khoros.put`
     * :py:func:`khoros.api._confirm_field_supplied`
 * Updated the example in the header block for the :py:mod:`khoros.objects.users` module.
+* Updated the header block in the ``setup.py`` script to have more information.
+
+General
+-------
+* Moved the ``PyYAML``, ``urllib3``, ``requests`` and ``setuptools`` packages from the
+  ``requirements.txt`` file to the ``setup.py`` file within the ``install_requires`` list
+  to address `Issue #28 <https://github.com/jeffshurtliff/khoros/issues/28>`_.
+
+  .. note:: This change was introduced by
+            `truthbyron <https://github.com/truthbyron>`_ via
+            `Pull Request #31 <https://github.com/jeffshurtliff/khoros/pull/31>`_.
 
 Fixed
 =====

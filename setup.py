@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""This script is the primary configuration file for the khoros project."""
+"""
+:Synopsis:          This script is the primary configuration file for the khoros project
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     07 Apr 2021
+"""
 
 import setuptools
 import codecs
@@ -7,17 +12,26 @@ import os.path
 
 
 def read(rel_path):
+    """This function reads the ``version.py`` script in order to retrieve the version.
+
+    .. versionadded:: 4.0.0
+    """
     here = os.path.abspath(os.path.dirname(__file__))
     with codecs.open(os.path.join(here, rel_path), 'r') as fp:
         return fp.read()
 
 
 def get_version(rel_path):
+    """This function retrieves the current version of the package without needing to import the
+       :py:mod:`khoros.utils.version` module in order to avoid dependency issues.
+
+    .. versionadded:: 4.0.0
+    """
     for line in read(rel_path).splitlines():
         if line.startswith('__version__'):
-            delim = '"' if '"' in line else "'"
-            return line.split(delim)[1]
-    raise RuntimeError("Unable to find version string.")
+            delimiter = '"' if '"' in line else "'"
+            return line.split(delimiter)[1]
+    raise RuntimeError("Unable to find the version string")
 
 
 with open("README.md", "r") as fh:
