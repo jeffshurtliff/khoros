@@ -111,6 +111,9 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
  * Introduced the ability for the :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
    exception to accept the ``param`` keyword argument and display a more specific message.
+ * Updated the :py:mod:`khoros.utils.environment` module to no longer import the ``PyYAML``
+   package directly and instead to leverage the :py:mod:`importlib` module in the
+   :py:func:`khoros.utils.environment._import_custom_names_file` function as necessary.
 
 Documentation
 -------------
