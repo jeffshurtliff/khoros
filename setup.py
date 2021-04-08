@@ -2,13 +2,28 @@
 """This script is the primary configuration file for the khoros project."""
 
 import setuptools
+import codecs
+import os.path
 
-import khoros.utils.version
+
+def read(rel_path):
+    here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
+        return fp.read()
+
+
+def get_version(rel_path):
+    for line in read(rel_path).splitlines():
+        if line.startswith('__version__'):
+            delim = '"' if '"' in line else "'"
+            return line.split(delim)[1]
+    raise RuntimeError("Unable to find version string.")
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-version = khoros.utils.version.__version__
+version = get_version("khoros/utils/version.py")
 
 setuptools.setup(
     name="khoros",
@@ -40,4 +55,10 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     python_requires='>=3.6',
+    install_requires=[
+        "PyYAML>=5.3.1",
+        "urllib3~=1.26.2",
+        "requests>=2.23.0",
+        "setuptools~=52.0.0",
+    ],
 )
