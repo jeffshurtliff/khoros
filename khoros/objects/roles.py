@@ -6,7 +6,7 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     04 Apr 2021
+:Modified Date:     08 Apr 2021
 """
 
 from . import users
@@ -169,6 +169,10 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
                         limit_per_query=1000, cursor=None, where_clause=None, users_list=None, simple=False):
     """This function retrieves a list of all users that have a specific role.
 
+    .. versionchanged:: 4.0.0
+       The function now leverages a ``while`` loop instead of recursion in order to avoid raising a
+       :py:exc:`RecursionError` exception with larger queries.
+
     .. versionadded:: 3.5.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -259,26 +263,55 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
     # Properly parse the SELECT statement
     fields = liql.parse_select_fields(fields)
 
-    # Construct the entire LiQL query
-    cursor = '' if not cursor else liql.structure_cursor_clause(cursor)
-    query = f"SELECT {fields} FROM users {where_clause} {cursor}"
+    # Perform the first LiQL query and add to the master users list
+    user_data, cursor = _query_for_users(khoros_object, fields, where_clause, cursor)
+    users_list.extend(user_data)
 
-    # Perform the API call and retrieve the data
-    response = liql.perform_query(khoros_object, liql_query=query)
-    users_list.extend(liql.get_returned_items(response))
-
-    # Call the function recursively if a cursor is found
-    has_cursor = True if response.get('data') and response['data'].get('next_cursor') else False
-    if has_cursor:
-        users_list = get_users_with_role(khoros_object, fields, cursor=cursor, where_clause=where_clause,
-                                         users_list=users_list)
+    # Continue looping as long as a cursor is present
+    while cursor:
+        user_data, cursor = _query_for_users(khoros_object, fields, where_clause, cursor)
+        users_list.extend(user_data)
 
     # Convert to simple list when requested
-    if simple and not has_cursor:
+    if simple:
         users_list = core_utils.convert_dict_list_to_simple_list(users_list, fields)
 
     # Return the populated users list
     return users_list
+
+
+def _query_for_users(_khoros_object, _fields, _where_clause, _cursor):
+    """This function performs a LiQL query to retrieve users with a specific role.
+
+    .. versionadded:: 4.0.0
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _fields: One or more fields from the ``Users`` object to return (``login`` field by default)
+    :type _fields: str, tuple, list, set
+    :param _where_clause: Specifies an exact WHERE clause for the query to be performed
+    :type _where_clause: str, None
+    :param _cursor: Specifies a cursor to be referenced in a LiQL query
+    :type _cursor: str, None
+    :returns: The API response with the user data and the next LiQL cursor when applicable
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.LiQLParseError`
+    """
+    # Construct the entire LiQL query
+    _cursor = '' if not _cursor else liql.structure_cursor_clause(_cursor)
+    _query = f"SELECT {_fields} FROM users {_where_clause} {_cursor}"
+
+    # Perform the API call and retrieve the data
+    _response = liql.perform_query(_khoros_object, liql_query=_query)
+    _user_data = liql.get_returned_items(_response)
+
+    # Get the cursor when present
+    _cursor = None
+    if _response.get('data') and _response['data'].get('next_cursor'):
+        _cursor = _response['data'].get('next_cursor')
+
+    # Return the user data and cursor
+    return _user_data, _cursor
 
 
 def _validate_node_type(_node_type=None, _param_name='node_type'):

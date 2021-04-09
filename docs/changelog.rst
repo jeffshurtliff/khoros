@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.0.0b2
+v4.0.0b3
 ********
-**Release Date: 2021-04-07**
+**Release Date: 2021-04-08**
 
 Added
 =====
@@ -32,6 +32,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.roles._assign_role_with_v1`
     * :py:func:`khoros.objects.roles._assign_role_with_v2`
     * :py:func:`khoros.objects.roles._validate_node_type`
+    * :py:func:`khoros.objects.roles._query_for_users`
 * Added the :py:func:`khoros.api._add_json_query_to_uri` function.
 
 Supporting Modules
@@ -155,6 +156,12 @@ Fixes to the :doc:`primary modules <primary-modules>`.
   getting created successfully.
 * Fixed an issue in the :py:func:`khoros.objects.subscriptions._construct_category_payload`
   where the payload was getting double-wrapped with the ``data`` dictionary key.
+* Refactored the :py:func:`khoros.objects.roles.get_users_with_role` function to leverage a
+  ``while`` loop instead of recursion in order to avoid raising a :py:exc:`RecursionError`
+  exception with larger queries.
+* Wrapped the cursor string in the :py:func:`khoros.liql.structure_cursor_clause` function
+  in single quotes to fix an ``Invalid query syntax`` error that was raising the
+  :py:exc:`khoros.errors.exceptions.LiQLParseError` exception.
 
 |
 

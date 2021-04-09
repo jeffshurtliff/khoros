@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 Feb 2021
+:Modified Date:     08 Apr 2021
 """
 
 from . import api, errors
@@ -311,6 +311,10 @@ def parse_select_fields(_select_fields):
 def structure_cursor_clause(cursor=None, liql_response=None):
     """This function structures the CURSOR clause for a LiQL query.
 
+    .. versionchanged:: 4.0.0
+       The cursor string has been wrapped in single quotes to prevent the
+       :py:exc:`khoros.errors.exceptions.LiQLParseError` exception from being raised.
+
     .. versionadded:: 3.5.0
 
     :param cursor: A cursor value from the ``next_cursor`` key in a LiQL response
@@ -327,7 +331,7 @@ def structure_cursor_clause(cursor=None, liql_response=None):
         if not isinstance(cursor, str):
             raise errors.exceptions.InvalidFieldError('Cursor value must be a string')
         if not cursor.lower().startswith('cursor'):
-            cursor = f"CURSOR {cursor}"
+            cursor = f"CURSOR '{cursor}'"
     else:
         cursor = ''
         if liql_response.get('data') and liql_response['data'].get('next_cursor'):
