@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.0.0b3
+v4.0.0b4
 ********
-**Release Date: 2021-04-08**
+**Release Date: 2021-04-18**
 
 Added
 =====
@@ -17,6 +17,11 @@ Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.User.impersonate_user` method.
 * Added the :py:meth:`khoros.core.Khoros.Role.get_role_id` method.
+* Added the :py:class:`khoros.core.Khoros.V2` class with the following methods:
+    * :py:meth:`khoros.core.Khoros.V2.get`
+    * :py:meth:`khoros.core.Khoros.V2.post`
+    * :py:meth:`khoros.core.Khoros.V2.put`
+* Added and called the :py:meth:`khoros.core.Khoros._import_v2_class` protected class.
 
 Primary Modules
 ---------------

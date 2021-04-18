@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     18 Apr 2021
 """
 
 import sys
@@ -248,6 +248,7 @@ class Khoros(object):
 
         # Import inner object classes so their methods can be called from the primary object
         self.v1 = self._import_v1_class()
+        self.v2 = self._import_v2_class()
         self.albums = self._import_album_class()
         self.boards = self._import_board_class()
         self.categories = self._import_category_class()
@@ -403,6 +404,14 @@ class Khoros(object):
         .. versionadded:: 3.0.0
         """
         return Khoros.V1(self)
+
+    def _import_v2_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.V2` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 4.0.0
+        """
+        return Khoros.V2(self)
 
     def _import_album_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Album` inner class to be utilized in the
@@ -998,6 +1007,130 @@ class Khoros(object):
             """
             return api.perform_v1_search(self, endpoint, filter_field, filter_value, return_json, fail_on_no_results,
                                          proxy_user_object=proxy_user_object)
+
+    class V2(object):
+        """This class includes methods for performing base Community API v2 requests."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.V2` inner class object.
+
+            .. versionadded:: 4.0.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get(self, endpoint, return_json=True, headers=None, proxy_user_object=None):
+            """This method performs a Community API v2 GET request that leverages the Khoros authorization headers.
+
+            .. versionadded:: 4.0.0
+
+            :param endpoint: The API v2 endpoint aginst which to query
+            :type endpoint: str
+            :param return_json: Determines if the API response should be converted into JSON format (``True`` by default)
+            :type return_json: bool
+            :param headers: Allows the API call headers to be manually defined rather than using only the core object
+            :type headers: dict, None
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                                      API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
+            :returns: The API response from the GET request
+            :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            endpoint = f"/{endpoint}" if not endpoint.startswith('/') else endpoint
+            query_url = f"{self.khoros_object.core.get('v2_base')}{endpoint}"
+            return api.get_request_with_retries(query_url, return_json=return_json, headers=headers,
+                                                khoros_object=self.khoros_object, proxy_user_object=proxy_user_object)
+
+        def post(self, endpoint, payload=None, return_json=True, content_type=None, headers=None, multipart=False,
+                 proxy_user_object=None):
+            """This method performs a Community API v2 POST request that leverages the Khoros authorization headers.
+
+            .. versionadded:: 4.0.0
+
+            :param endpoint: The relative (default) or fully-qualified URL for the API call
+            :type endpoint: str
+            :param payload: The JSON or plaintext payload (if any) to be supplied with the API request
+
+                            .. todo:: Add support for other payload formats such as binary, etc.
+
+            :type payload: dict, str, None
+            :param return_json: Determines if the API response should be converted into JSON format (``True`` by default)
+            :type return_json: bool
+            :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                                 .. note:: If this parameter is not defined then the content type will be identified based
+                                           on the payload format and/or type of request.
+
+            :type content_type: str, None
+            :param headers: Allows the API call headers to be manually defined rather than using only the core object
+            :type headers: dict, None
+            :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+            :type multipart: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                                      API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
+            :returns: The API response from the POST request
+            :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+            """
+            endpoint = f"/{endpoint}" if not endpoint.startswith('/') else endpoint
+            query_url = f"{self.khoros_object.core('v2_base')}{endpoint}"
+            json_payload = payload if isinstance(payload, dict) else None
+            plaintext_payload = payload if isinstance(payload, str) else None
+            content_type = '' if not content_type else content_type
+            return api.post_request_with_retries(query_url, json_payload=json_payload,
+                                                 plaintext_payload=plaintext_payload,
+                                                 return_json=return_json, headers=headers, multipart=multipart,
+                                                 content_type=content_type.lower(), khoros_object=self.khoros_object,
+                                                 proxy_user_object=proxy_user_object)
+
+        def put(self, endpoint, payload=None, return_json=True, content_type=None, headers=None, multipart=False,
+                proxy_user_object=None):
+            """This method performs a Community API v2 PUT request that leverages the Khoros authorization headers.
+
+            .. versionadded:: 4.0.0
+
+            :param endpoint: The relative (default) or fully-qualified URL for the API call
+            :type endpoint: str
+            :param payload: The JSON or plaintext payload (if any) to be supplied with the API request
+
+                            .. todo:: Add support for other payload formats such as binary, etc.
+
+            :type payload: dict, str, None
+            :param return_json: Determines if the API response should be converted into JSON format (``True`` by default)
+            :type return_json: bool
+            :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
+
+                                 .. note:: If this parameter is not defined then the content type will be identified based
+                                           on the payload format and/or type of request.
+
+            :type content_type: str, None
+            :param headers: Allows the API call headers to be manually defined rather than using only the core object
+            :type headers: dict, None
+            :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+            :type multipart: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                                      API request on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
+            :returns: The API response from the PUT request
+            :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.PUTRequestError`,
+                     :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
+            """
+            endpoint = f"/{endpoint}" if not endpoint.startswith('/') else endpoint
+            query_url = f"{self.khoros_object.core.get('v2_base')}{endpoint}"
+            json_payload = payload if isinstance(payload, dict) else None
+            plaintext_payload = payload if isinstance(payload, str) else None
+            content_type = '' if not content_type else content_type
+            return api.put_request_with_retries(query_url, json_payload=json_payload,
+                                                plaintext_payload=plaintext_payload,
+                                                return_json=return_json, headers=headers, multipart=multipart,
+                                                content_type=content_type.lower(), khoros_object=self.khoros_object,
+                                                proxy_user_object=proxy_user_object)
 
     class Album(object):
         """This class includes methods for interacting with the `albums <https://rsa.im/2WAewBP>`_ collection."""
