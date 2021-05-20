@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 Apr 2021
+:Modified Date:     19 May 2021
 """
 
 import json
@@ -95,6 +95,10 @@ def _validate_node_type(_node_type):
 def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v1.
 
+    .. versionchanged:: 4.0.0
+       Support has been introduced for group hubs by leveraging the
+       :py:func:`khoros.api.get_v1_node_collection` function.
+
     .. versionchanged:: 3.3.1
        Fixed an issue with the :py:func:`khoros.api.make_v1_request` function call that was resulting
        in :py:exc:`IndexError` exceptions.
@@ -114,7 +118,8 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    _uri = f"/{_node_type}/id/{_node_id}/settings/name/{_setting_name}"
+    _collection_uri = api.get_v1_node_collection(_node_type)
+    _uri = f"/{_collection_uri}/id/{_node_id}/settings/name/{_setting_name}"
     _settings_data = api.make_v1_request(_khoros_object, _uri, request_type='GET')['response']
     if _settings_data.get('status') == 'error':
         raise errors.exceptions.GETRequestError(status_code=_settings_data['error']['code'],
@@ -161,7 +166,7 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
     """This function defines a particular setting value for a given node.
 
     .. versionchanged:: 4.0.0
-       The default value for the ``return_json`` parameter is now ``True``.
+       The default value for the ``return_json`` parameter is now ``True`` and group hubs are now supported.
 
     .. versionchanged:: 3.3.2
        The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)
@@ -196,8 +201,8 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
              :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    node_type = _validate_node_type(node_type)
-    uri = f'/{node_type}/id/{node_id}/settings/name/{setting_name}/set'
+    collection_uri = api.get_v1_node_collection(node_type)
+    uri = f'/{collection_uri}/id/{node_id}/settings/name/{setting_name}/set'
     payload = {'value': str(setting_val)}
     response = api.make_v1_request(khoros_object, uri, payload, 'POST')['response']
     if response.get('status') != "success" and not return_json:
