@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-*********
-v4.0.0rc1
-*********
-**Release Date: 2021-05-19**
+******
+v4.0.0
+******
+**Release Date: 2021-05-20**
 
 Added
 =====
@@ -109,6 +109,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Added proper support for group hubs in the
   :py:func:`khoros.objects.settings.define_node_setting` and
   :py:func:`khoros.objects.settings._get_v1_node_setting` functions.
+* Removed node type validation from the :py:func:`khoros.objects.settings.define_node_setting` function.
+* Added node type validation in the :py:func:`khoros.objects.settings._get_v2_node_setting` function.
 * Updated the :py:func:`khoros.objects.users.create` function to return the API response and
   introduced the ``ignore_exceptions`` parameter.
 * Updated the :py:func:`khoros.objects.users.delete` function to raise the new

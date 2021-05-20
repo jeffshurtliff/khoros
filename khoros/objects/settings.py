@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     19 May 2021
+:Modified Date:     20 May 2021
 """
 
 import json
@@ -20,6 +20,9 @@ logger = log_utils.initialize_logging(__name__)
 
 def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1=None, convert_json=False):
     """This function retrieves the value of a specific node setting.
+
+    .. versionchanged:: 4.0.0
+       The node type validation has been moved form this function to the lower-level private functions.
 
     .. versionchanged:: 3.3.2
        The ``convert_json`` parameter has been introduced which optionally converts a JSON string into a dictionary.
@@ -49,9 +52,6 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     if v1 is None:
         # Leverage APIv2 if the setting name follows the standard v2 naming convention for custom metadata fields
         v1 = False if setting_name.startswith("c_") else True
-
-    # Get the proper URI syntax for the given node type
-    node_type = _validate_node_type(node_type)
 
     # Perform the appropriate API request based on required version
     if v1:
@@ -130,6 +130,9 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v2 and LiQL.
 
+    .. versionchanged:: 4.0.0
+       The node type is now validated before constructing the LiQL query.
+
     .. versionchanged:: 3.3.3
        Error handling has been introduced to avoid an :py:exc:`AttributeError` exception.
 
@@ -152,6 +155,7 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
+    _node_type = _validate_node_type(_node_type)
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
     _returned_items = liql.get_returned_items(_settings_data, only_first=True)
