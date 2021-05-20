@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     04 Apr 2021
+:Modified Date:     19 May 2021
 """
 
 import json
@@ -751,22 +751,23 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
 def get_v1_node_collection(node_type):
     """This function retrieves the appropriate API v1 collection name for a given node type.
 
+    .. versionchanged:: 4.0.0
+       Group Hubs are now supported by the function by passing the ``grouphub`` or ``group hub`` string.
+
     .. versionadded:: 3.5.0
 
     :param node_type: The node type for which to retrieve the collection (e.g. ``board``, ``category``)
     :type node_type: str
     :returns: The associated API v2 collection for the node type
-    :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
-             :py:exc:`khoros.errors.exceptions.UnsupportedNodeTypeError`
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
     """
-    # TODO: Find out how group hubs are handled in v1 API calls and take action accordingly
     node_collections = {
         'board': 'boards',
-        'category': 'categories'
+        'category': 'categories',
+        'grouphub': 'nodes/type/key/grouphub',
+        'group hub': 'nodes/type/key/grouphub',
     }
     node_collection = node_type if node_type in node_collections.values() else ''
-    if 'grouphub' in node_type:
-        raise errors.exceptions.UnsupportedNodeTypeError(node_type=node_type)
     if node_type not in node_collections:
         raise errors.exceptions.InvalidNodeTypeError(val=node_type)
     return node_collections.get(node_type) if not node_collection else node_collection
