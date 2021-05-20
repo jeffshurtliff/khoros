@@ -4,6 +4,181 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v4.0.0
+******
+**Release Date: 2021-05-20**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.User.impersonate_user` method.
+* Added the :py:meth:`khoros.core.Khoros.Role.get_role_id` method.
+* Added the :py:class:`khoros.core.Khoros.V2` class with the following methods:
+    * :py:meth:`khoros.core.Khoros.V2.get`
+    * :py:meth:`khoros.core.Khoros.V2.post`
+    * :py:meth:`khoros.core.Khoros.V2.put`
+* Added and called the :py:meth:`khoros.core.Khoros._import_v2_class` protected class.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:class:`khoros.objects.users.ImpersonatedUser` object class for performing API calls
+  as other users.
+* Added the :py:func:`khoros.objects.users.impersonate_user` function to assist in instantiating
+  the :py:class:`khoros.objects.users.ImpersonatedUser` object.
+* Added the following functions to the :py:func:`khoros.objects.roles` module:
+    * :py:func:`khoros.objects.roles.get_role_id`
+    * :py:func:`khoros.objects.roles.assign_roles_to_user`
+    * :py:func:`khoros.objects.roles._assign_role_with_v1`
+    * :py:func:`khoros.objects.roles._assign_role_with_v2`
+    * :py:func:`khoros.objects.roles._validate_node_type`
+    * :py:func:`khoros.objects.roles._query_for_users`
+* Added the :py:func:`khoros.api._add_json_query_to_uri` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError` exception.
+
+General
+-------
+* Added the :py:func:`read` and :py:func:`get_version` functions to ``setup.py``
+  to address `Issue #28 <https://github.com/jeffshurtliff/khoros/issues/28>`_.
+
+  .. note:: This change was introduced by
+            `truthbyron <https://github.com/truthbyron>`_ via
+            `Pull Request #31 <https://github.com/jeffshurtliff/khoros/pull/31>`_.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the methods below to introduce the ``proxy_user_object`` parameter to allow API requests
+  to be performed on behalf of other users.
+    * :py:meth:`khoros.core.Khoros.get`
+    * :py:meth:`khoros.core.Khoros.post`
+    * :py:meth:`khoros.core.Khoros.put`
+    * :py:meth:`khoros.core.Khoros.Subscription.add_subscription`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_board`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_category`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_label`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_message`
+    * :py:meth:`khoros.core.Khoros.Subscription.subscribe_to_product`
+    * :py:meth:`khoros.core.Khoros.V1.get`
+    * :py:meth:`khoros.core.Khoros.V1.post`
+    * :py:meth:`khoros.core.Khoros.V1.put`
+    * :py:meth:`khoros.core.Khoros.V1.search`
+* Changed the default value of the ``return_json`` parameter to ``True`` in the
+  :py:meth:`khoros.core.Khoros.Settings.define_node_setting` function.
+* Updated the :py:meth:`khoros.core.Khoros.User.create` method to return the API
+  response and introduced the ``ignore_exceptions`` parameter.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the functions below to introduce the ``proxy_user_object`` parameter to allow API requests
+  to be performed on behalf of other users.
+    * :py:func:`khoros.api.define_headers`
+    * :py:func:`khoros.api.get_request_with_retries`
+    * :py:func:`khoros.api.payload_request_with_retries`
+    * :py:func:`khoros.api.post_request_with_retries`
+    * :py:func:`khoros.api.put_request_with_retries`
+    * :py:func:`khoros.api.delete`
+    * :py:func:`khoros.api.perform_v1_search`
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.objects.subscriptions.add_subscription`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_board`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_category`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_label`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_message`
+    * :py:func:`khoros.objects.subscriptions.subscribe_to_product`
+* Introduced the ``user_and_type`` parameter in the :py:func:`khoros.api.get_v1_user_path` function
+  that can be passed instead of a parameter for a specific type.
+* Changed the default value of the ``return_json`` parameter to ``True`` in the
+  :py:func:`khoros.objects.settings.define_node_setting` function.
+* Added proper support for group hubs in the
+  :py:func:`khoros.objects.settings.define_node_setting` and
+  :py:func:`khoros.objects.settings._get_v1_node_setting` functions.
+* Removed node type validation from the :py:func:`khoros.objects.settings.define_node_setting` function.
+* Added node type validation in the :py:func:`khoros.objects.settings._get_v2_node_setting` function.
+* Updated the :py:func:`khoros.objects.users.create` function to return the API response and
+  introduced the ``ignore_exceptions`` parameter.
+* Updated the :py:func:`khoros.objects.users.delete` function to raise the new
+  :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError` exception when appropriate.
+* Added group hub support in the :py:func:`khoros.api.get_v1_node_collection` function.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+ * Introduced the ability for the :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+   exception to accept the ``param`` keyword argument and display a more specific message.
+ * Updated the :py:mod:`khoros.utils.environment` module to no longer import the ``PyYAML``
+   package directly and instead to leverage the :py:mod:`importlib` module in the
+   :py:func:`khoros.utils.environment._import_custom_names_file` function as necessary.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added missing information to the docstring for the following methods and functions:
+    * :py:meth:`khoros.core.Khoros.connect`
+    * :py:meth:`khoros.core.Khoros.get_session_key`
+    * :py:meth:`khoros.core.Khoros.put`
+    * :py:func:`khoros.api._confirm_field_supplied`
+* Updated the example in the header block for the :py:mod:`khoros.objects.users` module.
+* Updated the header block in the ``setup.py`` script to have more information.
+
+General
+-------
+* Moved the ``PyYAML``, ``urllib3``, ``requests`` and ``setuptools`` packages from the
+  ``requirements.txt`` file to the ``setup.py`` file within the ``install_requires`` list
+  to address `Issue #28 <https://github.com/jeffshurtliff/khoros/issues/28>`_.
+
+  .. note:: This change was introduced by
+            `truthbyron <https://github.com/truthbyron>`_ via
+            `Pull Request #31 <https://github.com/jeffshurtliff/khoros/pull/31>`_.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed issues with the primary functions in the :py:mod:`khoros.api` module that was resulting
+  in raised exceptions if JSON responses were requested in v1 API calls without explicitly
+  including the ``restapi.response_format=json`` query string.
+* Fixed issues in the :py:func:`khoros.objects.users.structure_payload` and
+  :py:func:`khoros.objects.users.process_user_settings` functions that were resulting
+  in a :py:exc:`KeyError` exception potentially getting raised.
+* Added the missing ``type`` key to the payload dictionary in the
+  :py:func:`khoros.objects.users.structure_payload` function that was preventing users from
+  getting created successfully.
+* Fixed an issue in the :py:func:`khoros.objects.subscriptions._construct_category_payload`
+  where the payload was getting double-wrapped with the ``data`` dictionary key.
+* Refactored the :py:func:`khoros.objects.roles.get_users_with_role` function to leverage a
+  ``while`` loop instead of recursion in order to avoid raising a :py:exc:`RecursionError`
+  exception with larger queries.
+* Wrapped the cursor string in the :py:func:`khoros.liql.structure_cursor_clause` function
+  in single quotes to fix an ``Invalid query syntax`` error that was raising the
+  :py:exc:`khoros.errors.exceptions.LiQLParseError` exception.
+
+|
+
+-----
+
+******
 v3.5.0
 ******
 **Release Date: 2021-03-26**

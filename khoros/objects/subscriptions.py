@@ -6,7 +6,7 @@
 :Example:           ``response = subscribe_to_board(khoros_object, 'my-forum')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Mar 2021
+:Modified Date:     07 Apr 2021
 """
 
 from .. import api, errors
@@ -17,8 +17,11 @@ logger = log_utils.initialize_logging(__name__)
 
 
 def add_subscription(khoros_object, target_id, target_type='board', payload=None, included_boards=None,
-                     excluded_boards=None, label_board=None):
+                     excluded_boards=None, label_board=None, proxy_user_object=None):
     """This function adds a subscription to a given target for the current user.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionadded:: 3.5.0
 
@@ -35,6 +38,9 @@ def add_subscription(khoros_object, target_id, target_type='board', payload=None
     :type excluded_boards: list, tuple, set, str, None
     :param label_board: The Board ID associated with a label (required for label subscriptions)
     :type label_board: str, int, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response in JSON format
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
@@ -55,7 +61,8 @@ def add_subscription(khoros_object, target_id, target_type='board', payload=None
     else:
         payload = {"data": payload} if not payload.get('data') else payload
     uri = get_subscription_uri(khoros_object)
-    response = api.post_request_with_retries(uri, json_payload=payload, khoros_object=khoros_object)
+    response = api.post_request_with_retries(uri, json_payload=payload, khoros_object=khoros_object,
+                                             proxy_user_object=proxy_user_object)
     return response
 
 
@@ -97,6 +104,9 @@ def _construct_target_subscription(_target_id, _target_type='board'):
 def _construct_category_payload(_node_id, _included_boards=None, _excluded_boards=None):
     """This function constructs the payload for a full or partial category subscription.
 
+    .. versionchanged:: 4.0.0
+       Fixed an issue where the payload was getting double-wrapped with the ``data`` dictionary key.
+
     .. versionadded:: 3.5.0
 
     :param _node_id: The unique identifier (i.e. Node ID) of the category
@@ -109,7 +119,7 @@ def _construct_category_payload(_node_id, _included_boards=None, _excluded_board
     :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
     # Construct the base data dictionary
-    _data = _construct_target_subscription(_node_id, 'category')
+    _payload = _construct_target_subscription(_node_id, 'category')
 
     # Ensure that only one populated partial option has been provided
     if _included_boards and _excluded_boards:
@@ -127,15 +137,15 @@ def _construct_category_payload(_node_id, _included_boards=None, _excluded_board
             _container = []
             for _board in _boards:
                 _container.append(_construct_target_subscription(_board))
-            _data[_partial_field] = _container
-
-    # Wrap the data within the 'data' field in the payload
-    _payload = {'data': _data}
+            _payload[_partial_field] = _container
     return _payload
 
 
-def subscribe_to_board(khoros_object, node_id):
+def subscribe_to_board(khoros_object, node_id, proxy_user_object=None):
     """This function subscribes the current user to an individual message.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionadded:: 3.5.0
 
@@ -143,16 +153,22 @@ def subscribe_to_board(khoros_object, node_id):
     :type khoros_object: class[khoros.Khoros]
     :param node_id: The unique identifier for a board (i.e. Board ID)
     :type node_id: str
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response in JSON format
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    return add_subscription(khoros_object, node_id, 'board')
+    return add_subscription(khoros_object, node_id, 'board', proxy_user_object=proxy_user_object)
 
 
-def subscribe_to_category(khoros_object, node_id, included_boards=None, excluded_boards=None):
+def subscribe_to_category(khoros_object, node_id, included_boards=None, excluded_boards=None, proxy_user_object=None):
     """This function subscribes the current user to a full or partial category.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionadded:: 3.5.0
 
@@ -164,17 +180,24 @@ def subscribe_to_category(khoros_object, node_id, included_boards=None, excluded
     :type included_boards: list, tuple, set, str, None
     :param excluded_boards: One or more boards (represented by Node ID) to be excluded from the partial subscription
     :type excluded_boards: list, tuple, set, str, None
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response in JSON format
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
     return add_subscription(khoros_object, node_id, 'category',
-                            included_boards=included_boards, excluded_boards=excluded_boards)
+                            included_boards=included_boards, excluded_boards=excluded_boards,
+                            proxy_user_object=proxy_user_object)
 
 
-def subscribe_to_label(khoros_object, label, board_id):
+def subscribe_to_label(khoros_object, label, board_id, proxy_user_object=None):
     """This function subscribes the current user to label found on a board.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionadded:: 3.5.0
 
@@ -184,16 +207,22 @@ def subscribe_to_label(khoros_object, label, board_id):
     :type label: str, int
     :param board_id: The unique identifier (i.e. Node ID) for the board where the label is found
     :type board_id: str
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response in JSON format
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    return add_subscription(khoros_object, label, 'label', label_board=board_id)
+    return add_subscription(khoros_object, label, 'label', label_board=board_id, proxy_user_object=proxy_user_object)
 
 
-def subscribe_to_message(khoros_object, msg_id):
+def subscribe_to_message(khoros_object, msg_id, proxy_user_object=None):
     """This function subscribes the current user to an individual message.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionadded:: 3.5.0
 
@@ -201,16 +230,22 @@ def subscribe_to_message(khoros_object, msg_id):
     :type khoros_object: class[khoros.Khoros]
     :param msg_id: The unique identifier for an individual message
     :type msg_id: str, int
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response in JSON format
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    return add_subscription(khoros_object, msg_id, 'message')
+    return add_subscription(khoros_object, msg_id, 'message', proxy_user_object=proxy_user_object)
 
 
-def subscribe_to_product(khoros_object, product_id):
+def subscribe_to_product(khoros_object, product_id, proxy_user_object=None):
     """This function subscribes the current user to a product.
+
+    .. versionchanged:: 4.0.0
+       Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
 
     .. versionadded:: 3.5.0
 
@@ -218,11 +253,12 @@ def subscribe_to_product(khoros_object, product_id):
     :type khoros_object: class[khoros.Khoros]
     :param product_id: The unique identifier for a product
     :type product_id: str, int
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
+                              API request on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: The API response in JSON format
     :raises: :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    return add_subscription(khoros_object, product_id, 'product')
-
-
+    return add_subscription(khoros_object, product_id, 'product', proxy_user_object=proxy_user_object)

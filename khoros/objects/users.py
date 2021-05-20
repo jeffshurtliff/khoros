@@ -3,24 +3,103 @@
 :Module:            khoros.objects.users
 :Synopsis:          This module includes functions that handle user-related operations.
 :Usage:             ``from khoros.objects import users``
-:Example:           ``users.create(khoros_object, username='john_doe', email='john.doe@example.com')``
+:Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Dec 2020
+:Modified Date:     07 Apr 2021
 """
 
 import warnings
 
-from .. import api, liql, errors
+from .. import api, auth, liql, errors
 from ..utils import core_utils, log_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
 
 
+# Create an ImpersonatedUser class to pass to other functions
+class ImpersonatedUser(object):
+    """This class is used for impersonating another user when performing other functions throughout the library.
+
+    .. versionadded:: 4.0.0
+    """
+    def __init__(self, user_login=None, admin_object=None):
+        """This method instantiates the :py:class:`khoros.objects.users.ImpersonatedUser` object.
+
+        .. versionadded:: 4.0.0
+
+        :param user_login: The username (i.e. login) of the user to be impersonated
+        :type user_login: str, None
+        :param admin_object: The :py:class:`khoros.core.Khoros` object of a user with an Administrator role
+        :type admin_object: class[khoros.Khoros], None
+        """
+        # Define default object values
+        self.configured = False
+        self.login = user_login
+        self.session_key = None
+        self.session_header = None
+
+        # Authenticate the user if possible
+        if not user_login:
+            logger.error('The ImpersonatedUser object cannot be configured as no user login was provided')
+        else:
+            if not admin_object:
+                logger.error('The ImpersonatedUser object cannot be configured as no admin-level Khoros object '
+                             'was provided to authenticate the new user')
+            else:
+                if not admin_object.core_settings.get('session_auth') \
+                        or not admin_object.auth.get('session_key'):
+                    logger.error('The ImpersonatedUser object cannot be configured as the admin-level Khoros object '
+                                 'has not been authenticated using a session key.')
+                else:
+                    self.session_key = auth.get_session_key(admin_object, user_login)
+                    if self.session_key:
+                        self.session_header = auth.get_session_header(self.session_key)
+                        self.configured = True
+                    else:
+                        logger.warning('The session header for the impersonated user was not populated because a '
+                                       'session key was not successfully acquired')
+
+    def __del__(self):
+        """This method fully destroys the instance.
+
+        .. versionadded:: 4.0.0
+        """
+        self.close()
+
+    def close(self):
+        """This method destroys the instance.
+
+        .. versionadded:: 4.0.0
+        """
+
+
+def impersonate_user(khoros_object, user_login):
+    """This function instantiates and returns the :py:class`khoros.objects.users.ImpersonatedUser` object which
+       can then be passed to other methods and functions to perform operations as a secondary user.
+
+    .. versionadded:: 4.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+
+                          .. note:: The authenticated user must have the **Administrator** role and/or have the
+                                    **Switch User** permission enabled.
+
+    :type khoros_object: class[khoros.Khoros]
+    :param user_login: The username (i.e. login) of ther user to be impersonated
+    :type user_login: str
+    :returns: The instantiated :py:class`khoros.objects.users.ImpersonatedUser` object
+    """
+    return ImpersonatedUser(user_login=user_login, admin_object=khoros_object)
+
+
 def create(khoros_object, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
-           biography=None, sso_id=None, web_page_url=None, cover_image=None):
+           biography=None, sso_id=None, web_page_url=None, cover_image=None, ignore_exceptions=False):
     """This function creates a new user in the Khoros Community environment.
+
+    .. versionchanged:: 4.0.0
+       This function now returns the API response and the ``ignore_exceptions`` parameter has been introduced.
 
     .. versionchanged:: 3.3.0
        Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
@@ -50,18 +129,21 @@ def create(khoros_object, user_settings=None, login=None, email=None, password=N
     :type web_page_url: str, None
     :param cover_image: The cover image to be used on the user's profile
     :type cover_image: str, None
-    :returns: None
-    :raises: :py:exc:`khoros.errors.exceptions.UserCreationError`
+    :param ignore_exceptions: Defines whether to raise the :py:exc:`khoros.errors.exceptions.UserCreationError`
+                              exception if the creation attempt fails (``False`` by default)
+    :type ignore_exceptions: bool
+    :returns: The response to the user creation API request
+    :raises: :py:exc:`KeyError`, :py:exc:`khoros.errors.exceptions.UserCreationError`
     """
     # TODO: Add functionality for followers, following, rank, roles, user_avatar and user_badges
     payload = structure_payload(user_settings, login, email, password, first_name, last_name, biography, sso_id,
                                 web_page_url, cover_image)
-    query_url = f"{khoros_object.core_settings['v2_base']}/users"
+    query_url = f"{khoros_object.core_settings.get('v2_base')}/users"
     headers = {'content-type': 'application/json'}
     response = api.post_request_with_retries(query_url, payload, auth_dict=khoros_object.auth, headers=headers)
-    if not api.query_successful(response):
-        raise errors.exceptions.UserCreationError(user=payload['login'], exc_msg=response['message'])
-    return
+    if not api.query_successful(response) and not ignore_exceptions:
+        raise errors.exceptions.UserCreationError(user=payload.get('login'), exc_msg=response.get('message'))
+    return response
 
 
 def process_user_settings(user_settings=None, user_id=None, albums=None, avatar=None, banned=None, biography=None,
@@ -209,7 +291,7 @@ def process_user_settings(user_settings=None, user_id=None, albums=None, avatar=
 
     # Overwrite any settings where fields are explicitly passed as arguments
     for field_name, field_value in default_settings.items():
-        if default_settings[field_name]:
+        if default_settings.get(field_name):
             user_settings[field_name] = field_value
 
     # Ensure the User ID uses 'id' rather than 'user_id' as the field name
@@ -222,6 +304,10 @@ def process_user_settings(user_settings=None, user_id=None, albums=None, avatar=
 def structure_payload(user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
                       biography=None, sso_id=None, web_page_url=None, cover_image=None):
     """This function properly structures the payload to be passed when creating or manipulating users via the API.
+
+    .. versionchanged:: 4.0.0
+       Fixed an issue that was resulting in a :py:exc:`KeyError` exception potentially getting raised, and added
+       the missing ``type`` key that was preventing users from getting created successfully.
 
     :param user_settings: Allows all user settings to be passed to the function within a single dictionary
     :type user_settings: dict, None
@@ -246,6 +332,7 @@ def structure_payload(user_settings=None, login=None, email=None, password=None,
     :returns: The properly formatted payload within a dictionary
     """
     payload_mapping = {
+        'type': 'user',
         'biography': biography,
         'cover_image': cover_image,
         'email': email,
@@ -260,7 +347,7 @@ def structure_payload(user_settings=None, login=None, email=None, password=None,
     if user_settings:
         payload.update(user_settings)
     for field_name, field_value in payload_mapping.items():
-        if payload_mapping[field_name]:
+        if payload_mapping.get(field_name):
             payload[field_name] = field_value
     payload = {'data': payload}
     return payload
@@ -279,11 +366,20 @@ def delete(khoros_object, user_id, return_json=False):
     :param return_json: Determines if the API response should be returned in JSON format (``False`` by default)
     :type return_json: bool
     :returns: The API response (optionally in JSON format)
+    :raises: :py:exc:`khoros.errors.exceptions.FeatureNotConfiguredError`
     """
     # TODO: Allow other identifiers (e.g. login, email, etc.) to be provided instead of just the User ID
-    # TODO: Add a confirmation prompt that can be optionally disabled
     query_url = f"{khoros_object.core_settings['v2_base']}/users/{user_id}"
-    return api.delete(query_url, return_json, auth_dict=khoros_object.auth)
+    response = api.delete(query_url, return_json, auth_dict=khoros_object.auth)
+    if response.status_code == 403 and 'Feature is not configured' in response.text:
+        try:
+            identifier = response.text.split('identifier: ')[1].split('"')[0]
+            raise errors.exceptions.FeatureNotConfiguredError(identifier=identifier)
+        except IndexError:
+            raise errors.exceptions.FeatureNotConfiguredError()
+    if return_json:
+        response = response.json()
+    return response
 
 
 def _get_where_clause_for_user_id(_user_settings):
@@ -301,7 +397,7 @@ def _get_where_clause_for_user_id(_user_settings):
     elif _user_settings['first_name'] or _user_settings['last_name']:
         if _user_settings['first_name'] and _user_settings['last_name']:
             _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
-                           f'last_name = "{_user_settings["last_name"]}"'
+                            f'last_name = "{_user_settings["last_name"]}"'
         elif _user_settings['last_name']:
             _where_clause = f'last_name = "{_user_settings["last_name"]}"'
         else:
@@ -327,7 +423,7 @@ def _get_where_clause_for_username(_user_settings):
     elif _user_settings['first_name'] or _user_settings['last_name']:
         if _user_settings['first_name'] and _user_settings['last_name']:
             _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
-                           f'last_name = "{_user_settings["last_name"]}"'
+                            f'last_name = "{_user_settings["last_name"]}"'
         elif _user_settings['last_name']:
             _where_clause = f'last_name = "{_user_settings["last_name"]}"'
         else:
@@ -353,7 +449,7 @@ def _get_where_clause_for_email(_user_settings):
     elif _user_settings['first_name'] or _user_settings['last_name']:
         if _user_settings['first_name'] and _user_settings['last_name']:
             _where_clause = f'first_name = "{_user_settings["first_name"]}" and ' + \
-                           f'last_name = "{_user_settings["last_name"]}"'
+                            f'last_name = "{_user_settings["last_name"]}"'
         elif _user_settings['last_name']:
             _where_clause = f'last_name = "{_user_settings["last_name"]}"'
         else:

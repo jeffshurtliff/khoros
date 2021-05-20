@@ -6,7 +6,7 @@
 :Example:           ``value = settings.get_node_settings(khoros_object, 'custom.purpose', 'my-board')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Jan 2021
+:Modified Date:     20 May 2021
 """
 
 import json
@@ -20,6 +20,9 @@ logger = log_utils.initialize_logging(__name__)
 
 def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1=None, convert_json=False):
     """This function retrieves the value of a specific node setting.
+
+    .. versionchanged:: 4.0.0
+       The node type validation has been moved form this function to the lower-level private functions.
 
     .. versionchanged:: 3.3.2
        The ``convert_json`` parameter has been introduced which optionally converts a JSON string into a dictionary.
@@ -49,9 +52,6 @@ def get_node_setting(khoros_object, setting_name, node_id, node_type='board', v1
     if v1 is None:
         # Leverage APIv2 if the setting name follows the standard v2 naming convention for custom metadata fields
         v1 = False if setting_name.startswith("c_") else True
-
-    # Get the proper URI syntax for the given node type
-    node_type = _validate_node_type(node_type)
 
     # Perform the appropriate API request based on required version
     if v1:
@@ -95,6 +95,10 @@ def _validate_node_type(_node_type):
 def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v1.
 
+    .. versionchanged:: 4.0.0
+       Support has been introduced for group hubs by leveraging the
+       :py:func:`khoros.api.get_v1_node_collection` function.
+
     .. versionchanged:: 3.3.1
        Fixed an issue with the :py:func:`khoros.api.make_v1_request` function call that was resulting
        in :py:exc:`IndexError` exceptions.
@@ -114,7 +118,8 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    _uri = f"/{_node_type}/id/{_node_id}/settings/name/{_setting_name}"
+    _collection_uri = api.get_v1_node_collection(_node_type)
+    _uri = f"/{_collection_uri}/id/{_node_id}/settings/name/{_setting_name}"
     _settings_data = api.make_v1_request(_khoros_object, _uri, request_type='GET')['response']
     if _settings_data.get('status') == 'error':
         raise errors.exceptions.GETRequestError(status_code=_settings_data['error']['code'],
@@ -124,6 +129,9 @@ def _get_v1_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
 
 def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     """This function retrieves a node setting value using the Community API v2 and LiQL.
+
+    .. versionchanged:: 4.0.0
+       The node type is now validated before constructing the LiQL query.
 
     .. versionchanged:: 3.3.3
        Error handling has been introduced to avoid an :py:exc:`AttributeError` exception.
@@ -147,6 +155,7 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
+    _node_type = _validate_node_type(_node_type)
     _query = f"SELECT {_setting_name} FROM {_node_type} WHERE id = '{_node_id}'"
     _settings_data = liql.perform_query(_khoros_object, liql_query=_query)
     _returned_items = liql.get_returned_items(_settings_data, only_first=True)
@@ -157,8 +166,11 @@ def _get_v2_node_setting(_khoros_object, _setting_name, _node_id, _node_type):
     return _setting_value
 
 
-def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board', return_json=False):
+def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_type='board', return_json=True):
     """This function defines a particular setting value for a given node.
+
+    .. versionchanged:: 4.0.0
+       The default value for the ``return_json`` parameter is now ``True`` and group hubs are now supported.
 
     .. versionchanged:: 3.3.2
        The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)
@@ -193,8 +205,8 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
              :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
     """
-    node_type = _validate_node_type(node_type)
-    uri = f'/{node_type}/id/{node_id}/settings/name/{setting_name}/set'
+    collection_uri = api.get_v1_node_collection(node_type)
+    uri = f'/{collection_uri}/id/{node_id}/settings/name/{setting_name}/set'
     payload = {'value': str(setting_val)}
     response = api.make_v1_request(khoros_object, uri, payload, 'POST')['response']
     if response.get('status') != "success" and not return_json:

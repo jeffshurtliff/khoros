@@ -6,13 +6,12 @@
 :Example:           TBD
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Jul 2020
+:Modified Date:     07 Apr 2021
 """
 
 import os
 import json
-
-import yaml
+import importlib
 
 from .. import errors
 from ..utils.core_utils import get_file_type
@@ -139,6 +138,9 @@ def update_env_variable_names(custom_names):
 def _import_custom_names_file(file_path):
     """This function imports a YAML (.yml) helper config file.
 
+    .. versionchanged:: 4.0.0
+       The :py:mod:`importlib` module is now utilized to import the ``PyYAML`` package where necessary.
+
     .. versionadded:: 2.2.0
 
     :param file_path: The file path to the YAML file
@@ -149,6 +151,7 @@ def _import_custom_names_file(file_path):
     file_type = get_file_type(file_path)
     with open(file_path, 'r') as cfg_file:
         if file_type == 'yaml':
+            yaml = importlib.import_module('yaml')
             custom_names_cfg = yaml.safe_load(cfg_file)
         elif file_type == 'json':
             custom_names_cfg = json.load(cfg_file)

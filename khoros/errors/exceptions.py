@@ -3,10 +3,10 @@
 :Module:            khoros.errors.exceptions
 :Synopsis:          Collection of exception classes relating to the khoros library
 :Usage:             ``import khoros.errors.exceptions``
-:Example:           ``raise khoros.errors.exceptions.BadCredentialsError``
+:Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Dec 2020
+:Modified Date:     07 Apr 2021
 """
 
 #################
@@ -163,12 +163,16 @@ class InvalidURLError(KhorosError):
 class MissingRequiredDataError(KhorosError):
     """This exception is used when a function or method is missing one or more required arguments.
 
+    .. versionchanged:: 4.0.0
+       The exception can now accept the ``param`` keyword argument.
+
     .. versionadded:: 2.0.0
     """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "Missing one or more required parameters"
         init_msg = "The object failed to initialize as it is missing one or more required arguments."
+        param_msg = "The required parameter 'PARAMETER_NAME' is not defined"
         if not (args or kwargs):
             args = (default_msg,)
         elif 'init' in args or 'initialize' in args:
@@ -177,6 +181,10 @@ class MissingRequiredDataError(KhorosError):
                 args = (custom_msg,)
             else:
                 args = (init_msg,)
+        elif 'param' in kwargs:
+            args = (param_msg.replace('PARAMETER_NAME', kwargs['param']),)
+        else:
+            args = (default_msg,)
         super().__init__(*args)
 
 
@@ -228,6 +236,25 @@ class DELETERequestError(KhorosError):
         default_msg = "The DELETE request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
+        super().__init__(*args)
+
+
+class FeatureNotConfiguredError(KhorosError):
+    """This exception is used when an API request fails because a feature is not configured.
+
+    .. versionadded:: 4.0.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        exc_msg = "The feature is not configured."
+        if 'identifier' in kwargs or 'feature' in kwargs:
+            if 'identifier' in kwargs:
+                exc_msg += f" Identifier: {kwargs['identifier']}"
+            if 'feature' in kwargs:
+                exc_msg = exc_msg.replace("feature", f"{kwargs['feature']} feature")
+            args = (exc_msg,)
+        elif not (args or kwargs):
+            args = (exc_msg,)
         super().__init__(*args)
 
 
