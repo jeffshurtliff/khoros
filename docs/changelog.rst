@@ -4,6 +4,36 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v4.1.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:class:`khoros.core.Khoros.Archives` inner class within the
+  core :py:class:`khoros.Khoros` object with the following methods:
+    * :py:meth:`khoros.core.Khoros.Archives.archive`
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Some minor docstring adjustments were made in the `khoros.objects.archives.archive`
+  and `khoros.objects.archives.unarchive` functions.
+
+|
+
+-----
+
+******
 v4.0.0
 ******
 **Release Date: 2021-05-20**

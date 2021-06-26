@@ -6,7 +6,7 @@
 :Example:           ``archives.archive(khoros_obj, '123', suggested_url, return_status=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     26 Jun 2021
 """
 
 import warnings
@@ -24,14 +24,18 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
             return_status=None, return_error_messages=None, split_errors=False):
     """This function archives one or more messages while providing an optional suggested URL as a placeholder.
 
+    .. versionchanged:: 4.1.0
+       Some minor adjustments were made to the docstring for this function.
+
     .. versionadded:: 2.7.0
 
-    :param khoros_object:
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
     :param message_id: The message ID for the content to be archived
     :type message_id: str, int, None
     :param message_url: The URL of the message to be archived (as an alternative to the ``message_id`` argument)
     :type message_url: str, None
-    :param suggested_url: The full URL to suggest to the user if the user tries to access the archived message
+    :param suggested_url: The full URL to suggest to the user when navigating to the archived message
     :type suggested_url: str, None
     :param archive_entries: A dictionary mapping one or more message IDs with accompanying suggested URLs
 
@@ -82,9 +86,13 @@ def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=Non
               return_status=None, return_error_messages=None, split_errors=False):
     """This function archives one or more messages while providing an optional suggested URL as a placeholder.
 
+    .. versionchanged:: 4.1.0
+       Some minor adjustments were made to the docstring for this function.
+
     .. versionadded:: 2.7.0
 
-    :param khoros_object:
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
     :param message_id: The message ID for the content to be archived
     :type message_id: str, int, None
     :param message_url: The URL of the message to be archived (as an alternative to the ``message_id`` argument)
