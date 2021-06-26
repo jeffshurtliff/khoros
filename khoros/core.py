@@ -3259,6 +3259,9 @@ class Khoros(object):
         def get_roles_for_user(self, user_id, fields=None):
             """This function returns all roles associated with a given User ID.
 
+            .. versionchanged:: 4.1.0
+               The docstring has been updated to reference the correct exception raised by this method.
+
             .. versionchanged:: 3.5.0
                Fields to return in the LiQL query can now be explicitly defined.
 

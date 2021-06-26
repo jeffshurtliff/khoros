@@ -29,6 +29,20 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Some minor docstring adjustments were made in the `khoros.objects.archives.archive`
   and `khoros.objects.archives.unarchive` functions.
 
+Fixed
+=====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Corrected an issue in the :py:meth:`khoros.core.Khoros.Role.get_roles_for_user` docstring
+  where the wrong raised exception was referenced.
+
+    .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #33 <https://github.com/jeffshurtliff/khoros/pull/33>`_.
+
 |
 
 -----
