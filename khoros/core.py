@@ -3272,7 +3272,7 @@ class Khoros(object):
 
             :type fields: str, list, tuple, set, None
             :returns: A dictionary with data for each role associated with the given User ID
-            :raises: :py:exc:`khoros.errors.exceptions.GETResponseError`
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return objects_module.roles.get_roles_for_user(self.khoros_object, user_id, fields)
 
