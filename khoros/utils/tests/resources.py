@@ -6,8 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Jun 2020
-:Version:           1.0.0
+:Modified Date:     27 Jun 2021
 """
 
 import os
@@ -53,3 +52,19 @@ def initialize_khoros_object():
     return core_module.Khoros(community_url='https://example.community.com', auto_connect=False,
                               tenant_id='example', auth_type='session_auth',
                               session_auth={'username': 'testuser', 'password': 'fakePassword123'})
+
+
+def local_helper_exist(production=False):
+    """This function checks to see if a helper file is present in the ``local/`` directory.
+
+    .. versionadded:: 4.1.0
+
+    :param production: Defines whether or not the helper file is associated with a Production environment
+    :type production: bool, None
+    :returns: Boolean value indicating whether or not the local helper file was found
+    """
+    if production is None:
+        file_name = 'helper.yml'
+    else:
+        file_name = 'prod_helper.yml' if production else 'stage_helper.yml'
+    return os.path.exists(f'local/{file_name}')
