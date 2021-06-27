@@ -118,8 +118,11 @@ def get_query_url(core_dict, query, pretty_print=False, track_in_lsi=False, alwa
 
 
 def perform_query(khoros_object, query_url=None, liql_query=None, return_json=True, verify_success=False,
-                  allow_exceptions=True, verify=None):
+                  allow_exceptions=True, verify=None, return_items=False):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
+
+    .. versionchanged:: 4.1.0
+       The JSON response can now be reduced to just the returned items by passing ``return_items=True``.
 
     .. versionchanged:: 3.4.0
        Support has been introduced for the ``verify`` parameter to determine if SSL certificate verification is needed.
@@ -149,6 +152,12 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     :type allow_exceptions: bool
     :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
+    :param return_items: Reduces the JSON response to be only the list of items returned from the LiQL response
+                         (``False`` by default)
+
+                         .. note:: If an error response is returned then an empty list will be returned.
+
+    :type return_items: bool
     :returns: The API response (in JSON format by default)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
@@ -163,7 +172,7 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     if liql_query:
         query_url = get_query_url(khoros_object.core, liql_query)
     if 'header' not in khoros_object.auth:
-        error_msg = f"Cannot perform the query as an authorization header is not configured."
+        error_msg = "Cannot perform the query as an authorization header is not configured."
         raise errors.exceptions.MissingAuthDataError(error_msg)
 
     # Perform the API call and validate the data
@@ -174,8 +183,19 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
             if allow_exceptions:
                 raise errors.exceptions.GETRequestError(error_msg)
             errors.handlers.eprint(error_msg)
-    if return_json and type(response) != dict:
-        response = response.json()
+    if return_json:
+        # Convert the response to JSON as needed
+        if not isinstance(response, dict):
+            response = response.json()
+
+        # Reduce teh scope to just the returned items when requested
+        if return_items:
+            if response.get('data') and response.get('data').get('items'):
+                response = response.get('data').get('items')
+            else:
+                # Return an empty list as no items were found
+                response = []
+                # TODO: Log an entry stating that the LiQL query failed
     return response
 
 

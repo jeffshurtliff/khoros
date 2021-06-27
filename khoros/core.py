@@ -680,8 +680,11 @@ class Khoros(object):
                                             proxy_user_object=proxy_user_object)
 
     def query(self, query, return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False,
-              error_code='', format_statements=True):
+              error_code='', format_statements=True, return_items=False):
         """This method performs a Community API v2 query using LiQL with the full LiQL syntax.
+
+        .. versionchanged:: 4.1.0
+           The JSON response can now be reduced to just the returned items by passing ``return_items=True``.
 
         :param query: The full LiQL query in its standard syntax (not URL-encoded)
         :type query: str
@@ -695,16 +698,23 @@ class Khoros(object):
         :type always_ok: bool
         :param error_code: Allows an error code to optionally be supplied for testing purposes (ignored by default)
         :type error_code: str
-        :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
-                                  all caps (``True`` by default)
+        :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be
+                                  in all caps (``True`` by default)
         :type format_statements: bool
+        :param return_items: Reduces the JSON response to be only the list of items returned from the LiQL response
+                             (``False`` by default)
+
+                             .. note:: If an error response is returned then an empty list will be returned.
+
+        :type return_items: bool
         :returns: The query response from the API in JSON format (unless defined otherwise)
-        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                 :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                 :py:exc:`khoros.errors.exceptions.GETRequestError`
         """
         query_url = liql.get_query_url(self.core, query, pretty_print, track_in_lsi, always_ok,
                                        error_code, format_statements)
-        response = liql.perform_query(self, query_url, return_json=return_json)
-        return response
+        return liql.perform_query(self, query_url, return_json=return_json, return_items=return_items)
 
     def search(self, select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0,
                return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='',

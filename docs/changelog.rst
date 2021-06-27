@@ -29,12 +29,23 @@ Documentation
 Changed
 =======
 
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Introduced the ``return_items`` parameter in the :py:meth:`khoros.core.Khoros.query`
+  function to automatically reduce the JSON response to only the returned items when
+  desired. (``False`` by default)
+
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
 * Some minor docstring adjustments were made in the `khoros.objects.archives.archive`
   and `khoros.objects.archives.unarchive` functions.
+* Introduced the ``return_items`` parameter in the :py:func:`khoros.liql.perform_query`
+  function to automatically reduce the JSON response to only the returned items when
+  desired. (``False`` by default)
 
 Fixed
 =====
@@ -49,6 +60,8 @@ Fixes to the :doc:`core-object-methods`.
     .. note:: This change was introduced by
             `stevenspasbo <https://github.com/stevenspasbo>`_ via
             `Pull Request #33 <https://github.com/jeffshurtliff/khoros/pull/33>`_.
+
+* Added some missing exception references in the :py:meth:`khoros.core.Khoros.query` docstring.
 
 |
 
