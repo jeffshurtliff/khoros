@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.1.0b1
+v4.1.0b2
 ********
-**Release Date: 2021-06-27**
+**Release Date: TBD**
 
 Added
 =====
@@ -19,6 +19,13 @@ Additions to the :doc:`core-object-methods`.
   core :py:class:`khoros.Khoros` object with the following methods:
     * :py:meth:`khoros.core.Khoros.Archives.archive`
     * :py:meth:`khoros.core.Khoros.Archives.unarchive`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.tests.resources.local_helper_exists` function to
+  utilize with the :py:mod:`pytest` package for unit testing.
 
 Documentation
 -------------
@@ -46,6 +53,19 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Introduced the ``return_items`` parameter in the :py:func:`khoros.liql.perform_query`
   function to automatically reduce the JSON response to only the returned items when
   desired. (``False`` by default)
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Renamed the :py:mod:`khoros.utils.tests.test_liql_where_parsing` module to be
+  :py:mod:`khoros.utils.tests.test_liql` to allow other LiQL tests to be performed
+  within the same module.
+
+Documentation
+-------------
+* Updated the :doc:`supporting modules <supporting-modules>` to account for the
+  renamed :py:mod:`khoros.utils.tests.test_liql` module.
 
 General
 -------
