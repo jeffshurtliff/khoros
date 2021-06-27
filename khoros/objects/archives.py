@@ -84,7 +84,7 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
 def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=None, archive_entries=None,
               full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
               return_status=None, return_error_messages=None, split_errors=False):
-    """This function archives one or more messages while providing an optional suggested URL as a placeholder.
+    """This function unarchives one or more messages and moves them to a given board.
 
     .. versionchanged:: 4.1.0
        Some minor adjustments were made to the docstring for this function.

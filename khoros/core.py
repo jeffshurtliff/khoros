@@ -1217,49 +1217,106 @@ class Khoros(object):
                     return_status=None, return_error_messages=None, split_errors=False):
             """This function archives one or more messages while providing an optional suggested URL as a placeholder.
 
-                .. versionadded:: 4.1.0
+            .. versionadded:: 4.1.0
 
-                :param message_id: The message ID for the content to be archived
-                :type message_id: str, int, None
-                :param message_url: The URL of the message to be archived (as an alternative to the ``message_id``
-                                    argument)
-                :type message_url: str, None
-                :param suggested_url: The full URL to suggest to the user when navigating to the archived message
-                :type suggested_url: str, None
-                :param archive_entries: A dictionary mapping one or more message IDs with accompanying suggested URLs
+            :param message_id: The message ID for the content to be archived
+            :type message_id: str, int, None
+            :param message_url: The URL of the message to be archived (as an alternative to the ``message_id``
+                                argument)
+            :type message_url: str, None
+            :param suggested_url: The full URL to suggest to the user when navigating to the archived message
+            :type suggested_url: str, None
+            :param archive_entries: A dictionary mapping one or more message IDs with accompanying suggested URLs
 
-                                        .. note:: Alternatively, a list, tuple or set of message IDs can be supplied
-                                                  which will be converted into a dictionary with blank suggested URLs.
+                                    .. note:: Alternatively, a list, tuple or set of message IDs can be supplied
+                                              which will be converted into a dictionary with blank suggested URLs.
 
-                :type archive_entries: dict, list, tuple, set, None
-                :param full_response: Determines whether the full, raw API response should be returned by the function
+            :type archive_entries: dict, list, tuple, set, None
+            :param full_response: Determines whether the full, raw API response should be returned by the function
 
-                                      .. caution:: This argument overwrites the ``return_id``, ``return_url``,
-                                                   ``return_api_url``, ``return_http_code``, ``return_status`` and
-                                                   ``return_error_messages`` arguments.
+                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
+                                               ``return_api_url``, ``return_http_code``, ``return_status`` and
+                                               ``return_error_messages`` arguments.
 
-                :type full_response: bool, None
-                :param return_id: Determines if the **ID** of the new group hub should be returned by the function
-                :type return_id: bool, None
-                :param return_url: Determines if the **URL** of the new group hub should be returned by the function
-                :type return_url: bool, None
-                :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
-                :type return_api_url: bool, None
-                :param return_http_code: Determines if the **HTTP Code** of the API response should be returned by the function
-                :type return_http_code: bool, None
-                :param return_status: Determines if the **Status** of the API response should be returned by the function
-                :type return_status: bool, None
-                :param return_error_messages: Determines if any error messages associated with the API response should be
-                                              returned by the function
-                :type return_error_messages: bool, None
-                :param split_errors: Defines whether or not error messages should be merged when applicable
-                :type split_errors: bool
-                :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
-                          fields defined by function arguments
-                :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
-                         :py:exc:`khoros.errors.exceptions.APIConnectionError`,
-                         :py:exc:`khoros.errors.exceptions.POSTRequestError`
-                """
+            :type full_response: bool, None
+            :param return_id: Determines if the **ID** of the new group hub should be returned by the function
+            :type return_id: bool, None
+            :param return_url: Determines if the **URL** of the new group hub should be returned by the function
+            :type return_url: bool, None
+            :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
+            :type return_api_url: bool, None
+            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_error_messages: Determines if any error messages associated with the API response should be
+                                          returned by the function
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.archives.archive(self.khoros_object, message_id, message_url, suggested_url,
+                                                   archive_entries, full_response, return_id, return_url,
+                                                   return_api_url, return_http_code, return_status,
+                                                   return_error_messages, split_errors)
+
+        def unarchive(self, message_id=None, message_url=None, new_board_id=None, archive_entries=None,
+                      full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
+                      return_status=None, return_error_messages=None, split_errors=False):
+            """This function unarchives one or more messages and moves them to a given board.
+
+            .. versionadded:: 4.1.0
+
+            :param message_id: The message ID for the content to be archived
+            :type message_id: str, int, None
+            :param message_url: The URL of the message to be archived (as an alternative to the ``message_id`` argument)
+            :type message_url: str, None
+            :param new_board_id: The board ID of what will be the new parent board of a message getting unarchived
+            :type new_board_id: str, None
+            :param archive_entries: A dictionary mapping one or more message IDs with accompanying board IDs
+
+                                    .. note:: Alternatively, a list, tuple or set of message IDs can be supplied which
+                                              will be converted into a dictionary with blank board IDs.
+
+            :type archive_entries: dict, list, tuple, set, None
+            :param full_response: Determines whether the full, raw API response should be returned by the function
+
+                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
+                                               ``return_api_url``, ``return_http_code``, ``return_status``
+                                               and ``return_error_messages`` arguments.
+
+            :type full_response: bool, None
+            :param return_id: Determines if the **ID** of the new group hub should be returned by the function
+            :type return_id: bool, None
+            :param return_url: Determines if the **URL** of the new group hub should be returned by the function
+            :type return_url: bool, None
+            :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
+            :type return_api_url: bool, None
+            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned
+                                     by the function
+            :type return_http_code: bool, None
+            :param return_status: Determines if the **Status** of the API response should be returned by the function
+            :type return_status: bool, None
+            :param return_error_messages: Determines if any error messages associated with the API response should be
+                                          returned by the function
+            :type return_error_messages: bool, None
+            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :type split_errors: bool
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.archives.unarchive(self.khoros_object, message_id, message_url, new_board_id,
+                                                     archive_entries, full_response, return_id, return_url,
+                                                     return_api_url, return_http_code, return_status,
+                                                     return_error_messages, split_errors)
 
     class Board(object):
         """This class includes methods for interacting with boards.

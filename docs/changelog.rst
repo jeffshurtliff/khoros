@@ -18,6 +18,13 @@ Additions to the :doc:`core-object-methods`.
 * Added the :py:class:`khoros.core.Khoros.Archives` inner class within the
   core :py:class:`khoros.Khoros` object with the following methods:
     * :py:meth:`khoros.core.Khoros.Archives.archive`
+    * :py:meth:`khoros.core.Khoros.Archives.unarchive`
+
+Documentation
+-------------
+
+* Added a section for the :py:class:`khoros.core.Khoros.Archives` inner class
+  on the :doc:`core-object-methods` page.
 
 Changed
 =======
