@@ -23,7 +23,7 @@ which are listed below.
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
         * `Test HTTP Headers Module (khoros.utils.tests.test_http_headers)`_
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
-        * `Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)`_
+        * `Test LiQL Module (khoros.utils.tests.test_liql_where_parsing)`_
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
         * `Test Messages Module (khoros.utils.tests.test_messages)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
@@ -233,11 +233,11 @@ This module tests importing each of the primary modules in the library.
 
 |
 
-Test LiQL WHERE Parsing Module (khoros.utils.tests.test_liql_where_parsing)
+Test LiQL Module (khoros.utils.tests.test_liql)
 ---------------------------------------------------------------------------
-This module tests parsing the WHERE clause of a LiQL query.
+This module tests parsing and/or executing LiQL queries.
 
-.. automodule:: khoros.utils.tests.test_liql_where_parsing
+.. automodule:: khoros.utils.tests.test_liql
    :members:
 
 :doc:`Return to Top <supporting-modules>`
