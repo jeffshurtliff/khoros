@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-******
-v4.1.0
-******
-**Release Date: TBD**
+********
+v4.1.0b1
+********
+**Release Date: 2021-06-27**
 
 Added
 =====
@@ -46,6 +46,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Introduced the ``return_items`` parameter in the :py:func:`khoros.liql.perform_query`
   function to automatically reduce the JSON response to only the returned items when
   desired. (``False`` by default)
+
+General
+-------
+* Adjusted the Sphinx-related package versions in ``requirements.txt``.
 
 Fixed
 =====
