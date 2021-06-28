@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 :Module:         khoros.utils.tests.test_liql
-:Synopsis:       This module is used by pytest to verify that LiQL WHERE clauses can be parsed successfully.
+:Synopsis:       This module is used by pytest to verify that LiQL queries can be performed and parsed successfully.
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
 :Modified Date:  27 Jun 2021
