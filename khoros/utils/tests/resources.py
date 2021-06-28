@@ -54,7 +54,23 @@ def initialize_khoros_object():
                               session_auth={'username': 'testuser', 'password': 'fakePassword123'})
 
 
-def local_helper_exist(production=False):
+def _get_local_helper_file_name(_production=False):
+    """This function defines the file name of the local helper file to be used with unit testing.
+
+    .. versionadded:: 4.1.0
+
+    :param _production: Defines whether or not the helper file is associated with a Production environment
+    :type _production: bool, None
+    :returns: The file name for the local helper file
+    """
+    if _production is None:
+        _file_name = 'helper.yml'
+    else:
+        _file_name = 'prod_helper.yml' if _production else 'stage_helper.yml'
+    return _file_name
+
+
+def local_helper_exists(production=False):
     """This function checks to see if a helper file is present in the ``local/`` directory.
 
     .. versionadded:: 4.1.0
@@ -63,8 +79,21 @@ def local_helper_exist(production=False):
     :type production: bool, None
     :returns: Boolean value indicating whether or not the local helper file was found
     """
-    if production is None:
-        file_name = 'helper.yml'
-    else:
-        file_name = 'prod_helper.yml' if production else 'stage_helper.yml'
+    file_name = _get_local_helper_file_name(production)
     return os.path.exists(f'local/{file_name}')
+
+
+def instantiate_with_local_helper(production=False):
+    """This function instantiates a Khoros object using a local helper file for unit testing.
+
+    .. versionadded:: 4.1.0
+
+    :param production: Defines whether or not the helper file is associated with a Production environment
+    :type production: bool, None
+    :returns: The instantiated :py:class:`khoros.core.Khoros` object
+    """
+    file_name = _get_local_helper_file_name(production)
+    if local_helper_exists():
+        set_package_path()
+        core_module = importlib.import_module('khoros.core')
+        return core_module.Khoros(helper=f"local/{file_name}")
