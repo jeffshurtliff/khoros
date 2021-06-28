@@ -13,6 +13,11 @@ import os
 import sys
 import importlib
 
+import yaml
+
+# Define global variable to store the YAML test ettings
+test_config = {}
+
 
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
@@ -54,6 +59,27 @@ def initialize_khoros_object():
                               session_auth={'username': 'testuser', 'password': 'fakePassword123'})
 
 
+def get_structure_collection(structure_type):
+    """This function identifies the API collection for a given structure type.
+
+    .. versionadded:: 4.1.0
+
+    :param structure_type: The structure type for which to return the corresponding collection.
+    :return:
+    """
+    structure_map = {
+        'board': 'boards',
+        'category': 'categories',
+        'community': 'community',
+        'grouphub': 'grouphubs',
+    }
+    if structure_type in structure_map.values():
+        collection = structure_type
+    else:
+        collection = structure_map.get(structure_type)
+    return collection
+
+
 def _get_local_helper_file_name(_production=False):
     """This function defines the file name of the local helper file to be used with unit testing.
 
@@ -81,6 +107,40 @@ def local_helper_exists(production=False):
     """
     file_name = _get_local_helper_file_name(production)
     return os.path.exists(f'local/{file_name}')
+
+
+def local_test_config_exists():
+    """This function checks to see if the *khorostest.yml* file is present in the ``local/`` directory.
+
+    .. versionadded:: 4.1.0
+
+    :returns: Boolean value indicating whether or not the file was found
+    """
+    return os.path.exists('local/khorostest.py')
+
+
+def parse_testing_config_file():
+    """This function parses the ``local/khorostest.yml`` file when present.
+
+    .. versionadded:: 4.1.0
+
+    :returns: None
+    """
+    global test_config
+    if local_test_config_exists():
+        with open('local/khorostest.yml', 'r') as file:
+            test_config = yaml.safe_load(file)
+    return
+
+
+def get_testing_config():
+    """This function returns the test config data from the ``local/khorostest.yml`` file when present.
+
+    .. versionadded:: 4.1.0
+    """
+    if not test_config and local_test_config_exists():
+        parse_testing_config_file()
+    return test_config
 
 
 def instantiate_with_local_helper(production=False):

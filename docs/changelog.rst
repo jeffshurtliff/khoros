@@ -24,8 +24,22 @@ Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
-* Added the :py:func:`khoros.utils.tests.resources.local_helper_exists` function to
-  utilize with the :py:mod:`pytest` package for unit testing.
+* Added the following functions to utilize with the :py:mod:`pytest` package
+  for unit testing:
+    * :py:func:`khoros.utils.tests.resources.local_helper_exists`
+    * :py:func:`khoros.utils.tests.resources.instantiate_with_local_helper`
+    * :py:func:`khoros.utils.tests.resources._get_local_helper_file_name`
+    * :py:func:`khoros.utils.tests.resources.local_test_config_exists`
+    * :py:func:`khoros.utils.tests.resources.parse_testing_config_file`
+    * :py:func:`khoros.utils.tests.resources.get_testing_config`
+    * :py:func:`khoros.utils.tests.resources.get_structure_collection`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_liql` module:
+    * :py:func:`khoros.utils.tests.test_liql.perform_test_query`
+    * :py:func:`khoros.utils.tests.test_liql.test_liql_query`
+    * :py:func:`khoros.utils.tests.test_liql.test_return_items_option`
+* Added the :py:mod:`khoros.utils.tests.test_settings` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_settings.set_package_path`
+    * :py:func:`khoros.utils.tests.test_settings.test_v1_node_setting_retrieval`
 
 Documentation
 -------------
@@ -61,6 +75,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Renamed the :py:mod:`khoros.utils.tests.test_liql_where_parsing` module to be
   :py:mod:`khoros.utils.tests.test_liql` to allow other LiQL tests to be performed
   within the same module.
+* Updated the :py:func:`khoros.utils.tests.test_liql.set_package_path` function to
+  leverage a global variable to ensure the operation is only performed once.
 
 Documentation
 -------------
