@@ -10,10 +10,27 @@
 import os
 import sys
 
+import pytest
+
+from . import resources
+
+# Define global variables to store LiQL query responses
+liql_response, liql_items = {}, None
+
+# Define a global variable to define when the package path has been set
+package_path_defined = False
+
 
 def set_package_path():
-    """This function adds the high-level khoros directory to the sys.path list."""
-    sys.path.insert(0, os.path.abspath('../..'))
+    """This function adds the high-level khoros directory to the sys.path list.
+
+    .. versionchanged:: 4.1.0
+       This function now leverages a global variable to ensure it only performs the operation once.
+    """
+    global package_path_defined
+    if not package_path_defined:
+        sys.path.insert(0, os.path.abspath('../..'))
+        package_path_defined = True
     return
 
 
@@ -65,7 +82,50 @@ def parse_where_clauses():
     return True
 
 
+def perform_test_query(return_items=False):
+    """This function performs a LiQL query and saves the response in a global variable.
+
+    :param return_items: Determines if the response should be scoped to only the returned items (``False`` by default)
+    :type return_items: bool
+    :returns: None
+    """
+    global liql_response, liql_items
+    khoros_object = resources.instantiate_with_local_helper()
+    query = "SELECT login FROM users WHERE id = '3'"
+    if return_items:
+        liql_items = khoros_object.query(query, return_items=return_items)
+    else:
+        liql_response = khoros_object.query(query, return_items=return_items)
+    return
+
+
 def test_where_clause_parsing():
     """This function tests to confirm that LiQL WHERE clauses are getting parsed properly without failing."""
     set_package_path()
     assert parse_where_clauses() is True        # nosec
+
+
+def test_liql_query():
+    """This function tests to confirm that a standard LiQL query can be performed successfully.
+
+    .. versionadded:: 4.1.0
+    """
+    if not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+    set_package_path()
+    if not liql_response:
+        perform_test_query(return_items=False)
+    assert isinstance(liql_response, dict) and liql_response.get('status') == 'success'         # nosec
+
+
+def test_return_items_option():
+    """This function tests the ``return_items`` argument in the :py:meth:`khoros.core.Khoros.query` method.
+
+    .. versionadded:: 4.1.0
+    """
+    if not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+    set_package_path()
+    if not liql_items:
+        perform_test_query(return_items=True)
+    assert isinstance(liql_items, list)         # nosec
