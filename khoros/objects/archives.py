@@ -28,6 +28,8 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
        response format: ``full_response``, ``return_id``, ``return_url``, ``return_api_url``, ``return_http_code``,
        ``return_status``, ``return_error_messages`` and ``split_errors``
 
+       An issue with the :py:func:`khoros.objects.archives.structure_archive_payload` function call was also resolved.
+
        The optional ``aggregate_results`` parameter has also been introduced.
 
     .. versionadded:: 2.7.0
@@ -65,7 +67,7 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
     if not message_id and message_url:
         message_id = messages.get_id_from_url(message_url)
     api_url = f"{khoros_object.core.get('v2_base')}/archives/archive"
-    payload = structure_archive_payload(message_id, suggested_url, archive_entries)
+    payload = structure_archive_payload(message_id, suggested_url, archive_entries=archive_entries)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object,
                                              content_type='application/json')
     results = api.deliver_v2_results(response, full_response=True)
