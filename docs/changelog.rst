@@ -3,9 +3,9 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-********
-v4.1.0b4
-********
+*********
+v4.1.0rc1
+*********
 **Release Date: 2021-06-29**
 
 Added
@@ -28,6 +28,12 @@ Additions to the :doc:`core-object-methods`.
     * :py:meth:`khoros.core.Khoros.Tag.structure_single_tag_payload`
     * :py:meth:`khoros.core.Khoros.Tag.structure_tags_for_message`
 * Added the :py:meth:`khoros.core.Khoros._import_tag_class` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.objects.archives.aggregate_results_data` function.
 
 Supporting Modules
 ------------------
@@ -65,6 +71,10 @@ Core Object
 -----------
 Changes to the :doc:`core-object-methods`.
 
+* Removed the following parameters from the :py:meth:`khoros.core.Khoros.Archives.archive`
+  and :py:meth:`khoros.core.Khoros.Archives.unarchive` methods: ``full_response``,
+  ``return_id``, ``return_url``, ``return_api_url``, ``return_http_code``, ``return_status``,
+  ``return_error_messages`` and ``split_errors``
 * Introduced the ``return_items`` parameter in the :py:meth:`khoros.core.Khoros.query`
   function to automatically reduce the JSON response to only the returned items when
   desired. (``False`` by default)
@@ -74,6 +84,13 @@ Primary Modules
 Changes to the :doc:`primary modules <primary-modules>`.
 
 * Some minor docstring adjustments were made in the `khoros.objects.archives.archive`
+  and `khoros.objects.archives.unarchive` functions.
+* Explicitly set the ``full_response`` flag in the :py:func:`khoros.objects.archives.archive`
+  and :py:func:`khoros.objects.archives.unarchive` functions because of unique response format
+  and subsequently removed the following parameters: ``full_response``, ``return_id``,
+  ``return_url``, ``return_api_url``, ``return_http_code``, ``return_status``,
+  ``return_error_messages`` and ``split_errors``
+* Introduced the optional ``aggregate_results`` parameter in the `khoros.objects.archives.archive`
   and `khoros.objects.archives.unarchive` functions.
 * Introduced the ``return_items`` parameter in the :py:func:`khoros.liql.perform_query`
   function to automatically reduce the JSON response to only the returned items when

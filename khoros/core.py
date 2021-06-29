@@ -1237,8 +1237,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def archive(self, message_id=None, message_url=None, suggested_url=None, archive_entries=None,
-                    full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-                    return_status=None, return_error_messages=None, split_errors=False):
+                    aggregate_results=False, include_raw=False):
             """This function archives one or more messages while providing an optional suggested URL as a placeholder.
 
             .. versionadded:: 4.1.0
@@ -1256,28 +1255,16 @@ class Khoros(object):
                                               which will be converted into a dictionary with blank suggested URLs.
 
             :type archive_entries: dict, list, tuple, set, None
-            :param full_response: Determines whether the full, raw API response should be returned by the function
+            :param aggregate_results: Aggregates the operation results into an easy-to-parse dictionary
+                                      (``False`` by default)
+            :type aggregate_results: bool
+            :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                                (``False`` by default)
 
-                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
-                                               ``return_api_url``, ``return_http_code``, ``return_status`` and
-                                               ``return_error_messages`` arguments.
+                                .. note:: This parameter is only relevant when the ``aggregate_results``
+                                          parameter is ``True``.
 
-            :type full_response: bool, None
-            :param return_id: Determines if the **ID** of the new group hub should be returned by the function
-            :type return_id: bool, None
-            :param return_url: Determines if the **URL** of the new group hub should be returned by the function
-            :type return_url: bool, None
-            :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
-            :type return_api_url: bool, None
-            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned
-            :type return_http_code: bool, None
-            :param return_status: Determines if the **Status** of the API response should be returned by the function
-            :type return_status: bool, None
-            :param return_error_messages: Determines if any error messages associated with the API response should be
-                                          returned by the function
-            :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
-            :type split_errors: bool
+            :type include_raw: bool
             :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
                       specific fields defined by function arguments
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -1285,13 +1272,10 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`
             """
             return objects_module.archives.archive(self.khoros_object, message_id, message_url, suggested_url,
-                                                   archive_entries, full_response, return_id, return_url,
-                                                   return_api_url, return_http_code, return_status,
-                                                   return_error_messages, split_errors)
+                                                   archive_entries, aggregate_results, include_raw)
 
         def unarchive(self, message_id=None, message_url=None, new_board_id=None, archive_entries=None,
-                      full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-                      return_status=None, return_error_messages=None, split_errors=False):
+                      aggregate_results=False, include_raw=False):
             """This function unarchives one or more messages and moves them to a given board.
 
             .. versionadded:: 4.1.0
@@ -1308,29 +1292,16 @@ class Khoros(object):
                                               will be converted into a dictionary with blank board IDs.
 
             :type archive_entries: dict, list, tuple, set, None
-            :param full_response: Determines whether the full, raw API response should be returned by the function
+            :param aggregate_results: Aggregates the operation results into an easy-to-parse dictionary
+                                      (``False`` by default)
+            :type aggregate_results: bool
+            :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                                (``False`` by default)
 
-                                  .. caution:: This argument overwrites the ``return_id``, ``return_url``,
-                                               ``return_api_url``, ``return_http_code``, ``return_status``
-                                               and ``return_error_messages`` arguments.
+                                .. note:: This parameter is only relevant when the ``aggregate_results``
+                                          parameter is ``True``.
 
-            :type full_response: bool, None
-            :param return_id: Determines if the **ID** of the new group hub should be returned by the function
-            :type return_id: bool, None
-            :param return_url: Determines if the **URL** of the new group hub should be returned by the function
-            :type return_url: bool, None
-            :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
-            :type return_api_url: bool, None
-            :param return_http_code: Determines if the **HTTP Code** of the API response should be returned
-                                     by the function
-            :type return_http_code: bool, None
-            :param return_status: Determines if the **Status** of the API response should be returned by the function
-            :type return_status: bool, None
-            :param return_error_messages: Determines if any error messages associated with the API response should be
-                                          returned by the function
-            :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
-            :type split_errors: bool
+            :type include_raw: bool
             :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
                       specific fields defined by function arguments
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -1338,9 +1309,7 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`
             """
             return objects_module.archives.unarchive(self.khoros_object, message_id, message_url, new_board_id,
-                                                     archive_entries, full_response, return_id, return_url,
-                                                     return_api_url, return_http_code, return_status,
-                                                     return_error_messages, split_errors)
+                                                     archive_entries, aggregate_results, include_raw)
 
     class Board(object):
         """This class includes methods for interacting with boards.
