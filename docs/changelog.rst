@@ -126,20 +126,20 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 
   .. code-block:: json
 
-  {
-    'status': 'error',
-    'message': 'A possible invalid request has been made.
-                Make sure you are following the API spec and have used the correct URL,
-                are included all required parameters and if a request payload is required
-                you have included one.',
-    'data': {
-      'type': 'error_data',
-      'code': 309,
-      'developer_message': '',
-      'more_info': ''
-    },
-    'metadata': {}
-  }
+     {
+       'status': 'error',
+       'message': 'A possible invalid request has been made.
+                   Make sure you are following the API spec and have used the correct URL,
+                   are included all required parameters and if a request payload is required
+                   you have included one.',
+       'data': {
+         'type': 'error_data',
+         'code': 309,
+         'developer_message': '',
+         'more_info': ''
+       },
+       'metadata': {}
+     }
 
 * Added a missing section of the docstring for :py:func:`khoros.objects.tags.
 
