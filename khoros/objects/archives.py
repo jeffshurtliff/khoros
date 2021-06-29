@@ -184,12 +184,12 @@ def aggregate_results_data(results, include_raw=False):
     :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
                         (``False`` by default)
     :type include_raw: bool
-    :returns: A dictionary with fields for ``status``, ``archived``, ``failed`` and ``unknown`` or the raw response
-              when the API call completely fails
+    :returns: A dictionary with fields for ``status``, ``archived``, ``unarchived``, ``failed`` and ``unknown`` or the
+              raw response when the API call completely fails, with the optional raw data when requested
     """
     # Initially define the aggregate data
     aggregate_data = {'status': 'success'}
-    archived, failed, unknown = [], [], 0
+    archived, unarchived, failed, unknown = [], [], [], 0
 
     # Return the raw error response if the entire API call failed
     if isinstance(results, dict) and results.get('status') == 'error':
@@ -199,6 +199,8 @@ def aggregate_results_data(results, include_raw=False):
         for message in results:
             if isinstance(message, dict) and message.get('archivalStatus') == 'ARCHIVING':
                 archived.append(f"{message.get('msgUid')}")
+            elif isinstance(message, dict) and message.get('unarchivalStatus') == 'UNARCHIVING':
+                unarchived.append(f"{message.get('msgUid')}")
             elif isinstance(message, dict) and message.get('msgUid'):
                 failed.append(f"{message.get('msgUid')}")
             else:

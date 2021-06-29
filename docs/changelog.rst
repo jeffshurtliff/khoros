@@ -19,6 +19,7 @@ Additions to the :doc:`core-object-methods`.
   core :py:class:`khoros.Khoros` object with the following methods:
     * :py:meth:`khoros.core.Khoros.Archives.archive`
     * :py:meth:`khoros.core.Khoros.Archives.unarchive`
+    * :py:meth:`khoros.core.Khoros.Archives.aggregate_results`
 * Added the :py:meth:`khoros.core.Khoros._import_archives_class` method.
 * Added the :py:class:`khoros.core.Khoros.Tag` inner class within the core
   :py:class:`khoros.Khoros` object with the following methods:

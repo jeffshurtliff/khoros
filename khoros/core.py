@@ -1311,6 +1311,22 @@ class Khoros(object):
             return objects_module.archives.unarchive(self.khoros_object, message_id, message_url, new_board_id,
                                                      archive_entries, aggregate_results, include_raw)
 
+        @staticmethod
+        def aggregate_results(results, include_raw=False):
+            """This function aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.
+
+            .. versionadded:: 4.1.0
+
+            :param results: The results from an archive or unarchive operation
+            :type results: list, dict
+            :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                                (``False`` by default)
+            :type include_raw: bool
+            :returns: A dictionary with fields for ``status``, ``archived``, ``unarchived``, ``failed`` and ``unknown``
+                      or the raw response when the API call completely fails, with the optional raw data when requested
+            """
+            return objects_module.archives.aggregate_results_data(results, include_raw)
+
     class Board(object):
         """This class includes methods for interacting with boards.
 
