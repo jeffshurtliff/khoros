@@ -6,7 +6,7 @@
 :Example:           ``archives.archive(khoros_obj, '123', suggested_url, return_status=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Jun 2021
+:Modified Date:     29 Jun 2021
 """
 
 import warnings
@@ -25,7 +25,7 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
     """This function archives one or more messages while providing an optional suggested URL as a placeholder.
 
     .. versionchanged:: 4.1.0
-       Some minor adjustments were made to the docstring for this function.
+       Some minor adjustments were made to the docstring for this function, as well as some minor code adjustments.
 
     .. versionadded:: 2.7.0
 
@@ -74,7 +74,7 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
         raise errors.exceptions.MissingRequiredDataError("The message ID or URL must be provided to archive content.")
     if not message_id and message_url:
         message_id = messages.get_id_from_url(message_url)
-    api_url = f"{khoros_object.core['v2_base']}/archives/archive"
+    api_url = f"{khoros_object.core.get('v2_base')}/archives/archive"
     payload = structure_archive_payload(message_id, suggested_url, archive_entries)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object)
     return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
@@ -87,7 +87,7 @@ def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=Non
     """This function unarchives one or more messages and moves them to a given board.
 
     .. versionchanged:: 4.1.0
-       Some minor adjustments were made to the docstring for this function.
+       Some minor adjustments were made to the docstring for this function, as well as some minor code adjustments.
 
     .. versionadded:: 2.7.0
 
@@ -136,7 +136,7 @@ def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=Non
         raise errors.exceptions.MissingRequiredDataError("The message ID or URL must be provided to archive content.")
     if not message_id and message_url:
         message_id = messages.get_id_from_url(message_url)
-    api_url = f"{khoros_object.core['v2_base']}/archives/unarchive"
+    api_url = f"{khoros_object.core.get('v2_base')}/archives/unarchive"
     payload = structure_archive_payload(message_id, new_board_id=new_board_id,
                                         archive_entries=archive_entries, unarchiving=True)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object)
@@ -227,6 +227,9 @@ def _convert_entries_to_dict(_entries):
 def _format_single_archive_entry(_message_id, _suggested_url=None, _new_board_id=None, _unarchiving=False):
     """This function formats a single entry to be archived.
 
+    .. versionchanged:: 4.1.0
+       The ``messageID`` key was incorrect and has been fixed to be ``messageId`` instead.
+
     .. versionadded:: 2.7.0
 
     :param _message_id: The ID of the message to be archived
@@ -239,7 +242,7 @@ def _format_single_archive_entry(_message_id, _suggested_url=None, _new_board_id
     :type _unarchiving: bool
     :returns: The properly formatted archive entry
     """
-    _archive_entry = {"messageID": str(_message_id)}
+    _archive_entry = {"messageId": str(_message_id)}
     if _suggested_url and isinstance(_suggested_url, str) and not _unarchiving:
         _archive_entry['suggestedUrl'] = _suggested_url
     elif (_new_board_id and isinstance(_new_board_id, str)) or \

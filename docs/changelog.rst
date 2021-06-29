@@ -4,7 +4,7 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.1.0b3
+v4.1.0b4
 ********
 **Release Date: 2021-06-29**
 
@@ -119,6 +119,27 @@ Fixes to the :doc:`core-object-methods`.
 Primary Modules
 ---------------
 Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Renamed the incorrect JSON field ``messageID`` to be ``messageId`` instead in the
+  :py:func:`khoros.objects.archives._format_single_archive_entry` function to prevent the
+  following error from getting returned:
+
+  .. code-block:: json
+
+  {
+    'status': 'error',
+    'message': 'A possible invalid request has been made.
+                Make sure you are following the API spec and have used the correct URL,
+                are included all required parameters and if a request payload is required
+                you have included one.',
+    'data': {
+      'type': 'error_data',
+      'code': 309,
+      'developer_message': '',
+      'more_info': ''
+    },
+    'metadata': {}
+  }
 
 * Added a missing section of the docstring for :py:func:`khoros.objects.tags.
 
