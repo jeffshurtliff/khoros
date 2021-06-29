@@ -209,6 +209,7 @@ def aggregate_results_data(results, include_raw=False):
 
         # Update the aggregate data with the parsed results and return the dictionary
         aggregate_data['archived'] = archived
+        aggregate_data['unarchived'] = unarchived
         aggregate_data['failed'] = failed
         aggregate_data['unknown'] = unknown
         if include_raw:
