@@ -6,7 +6,7 @@
 :Example:           ``tags.add_single_tag_to_message('tutorial', 123)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Mar 2021
+:Modified Date:     28 Jun 2021
 """
 
 from .. import api, liql, errors
@@ -90,6 +90,9 @@ def get_tags_for_message(khoros_object, msg_id):
 def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite=False, ignore_non_strings=False):
     """This function structures tags to use within the payload for creating or updating a message.
 
+    .. versionchanged:: 4.1.0
+       The missing type declaration for the ``overwrite`` parameter has been added to the docstring.
+
     .. versionadded:: 2.8.0
 
     :param tags: One or more tags or list of tags to be structured
@@ -104,6 +107,7 @@ def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite
     :type msg_id: str, int, None
     :param overwrite: Determines if tags should overwrite any existing tags (where applicable) or if the tags
                       should be appended to the existing tags (default)
+    :type overwrite: bool
     :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
                                converted to strings (``False`` by default)
     :type ignore_non_strings: bool

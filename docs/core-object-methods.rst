@@ -208,6 +208,16 @@ Subscription Subclass (khoros.core.Khoros.Subscription)
 
 |
 
+Tag Subclass (khoros.core.Khoros.Tag)
+---------------------------------------
+.. autoclass:: khoros.core::Khoros.Tag
+   :members:
+   :noindex:
+
+:doc:`Return to Top <core-object-methods>`
+
+|
+
 User Subclass (khoros.core.Khoros.User)
 ---------------------------------------
 .. autoclass:: khoros.core::Khoros.User

@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Apr 2021
+:Modified Date:     28 Jun 2021
 """
 
 import sys
@@ -250,6 +250,7 @@ class Khoros(object):
         self.v1 = self._import_v1_class()
         self.v2 = self._import_v2_class()
         self.albums = self._import_album_class()
+        self.archives = self._import_archives_class()
         self.boards = self._import_board_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
@@ -260,7 +261,7 @@ class Khoros(object):
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.subscriptions = self._import_subscription_class()
-        # TODO: Add the tags module
+        self.tags = self._import_tag_class()
         self.users = self._import_user_class()
 
     def _populate_empty_object(self):
@@ -421,6 +422,14 @@ class Khoros(object):
         """
         return Khoros.Album(self)
 
+    def _import_archives_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Archives` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 4.1.0
+        """
+        return Khoros.Album(self)
+
     def _import_board_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Board` inner class to be utilized in the
         core object.
@@ -496,7 +505,12 @@ class Khoros(object):
         """
         return Khoros.Subscription(self)
 
-    # TODO: Add the _import_tag_class method
+    def _import_tag_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Tag` inner class to be utilized in the core object.
+
+        .. versionadded:: 4.1.0
+        """
+        return Khoros.Tag(self)
 
     def _import_user_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
@@ -3705,6 +3719,103 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             return objects_module.subscriptions.subscribe_to_product(self.khoros_object, product_id, proxy_user_object)
+
+    class Tag(object):
+        """This class includes methods relating to the tagging of content.
+
+        .. versionadded:: 4.1.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Tag` inner class object.
+
+            .. versionadded:: 4.1.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get_tags_for_message(self, msg_id):
+            """This function retrieves the tags for a given message.
+
+            .. versionadded:: 4.1.0
+
+            :param msg_id: The Message ID for the message from which to retrieve tags
+            :type msg_id: str, int
+            :returns: A list of tags associated with the message
+            """
+            return objects_module.tags.get_tags_for_message(self.khoros_object, msg_id)
+
+        def add_single_tag_to_message(self, tag, msg_id, allow_exceptions=False):
+            """This function adds a single tag to an existing message.
+
+            .. versionadded:: 4.1.0
+
+            :param tag: The tag value to be added
+            :type tag: str
+            :param msg_id: The unique identifier for the message
+            :type msg_id: str, int
+            :param allow_exceptions: Determines if exceptions are permitted to be raised (``False`` by default)
+            :type allow_exceptions: bool
+            :returns: None
+            :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.tags.add_single_tag_to_message(self.khoros_object, tag, msg_id, allow_exceptions)
+
+        def add_tags_to_message(self, tags, msg_id, allow_exceptions=False):
+            """This function adds one or more tags to an existing message.
+
+            .. versionadded:: 4.1.0
+
+            ..caution:: This function is not the most effective way to add multiple tags to a message. It is recommended
+                        that the :py:meth:`khoros.core.Khoros.messages.update` method be used instead with its ``tags``
+                        argument, which is more efficient and performance-conscious.
+
+            :param tags: One or more tags to be added to the message
+            :type tags: str, tuple, list, set
+            :param msg_id: The unique identifier for the message
+            :type msg_id: str, int
+            :param allow_exceptions: Determines if exceptions are permitted to be raised (``False`` by default)
+            :type allow_exceptions: bool
+            :returns: None
+            :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            objects_module.tags.add_tags_to_message(self.khoros_object, tags, msg_id, allow_exceptions)
+            return
+
+        @staticmethod
+        def structure_single_tag_payload(tag_text):
+            """This function structures the payload for a single tag.
+
+            .. versionadded:: 4.1.0
+
+            :param tag_text: The tag to be included in the payload
+            :type tag_text: str
+            :returns: The payload as a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError`
+            """
+            return objects_module.tags.structure_single_tag_payload(tag_text)
+
+        def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False):
+            """This function structures tags to use within the payload for creating or updating a message.
+
+            .. versionadded:: 4.1.0
+
+            :param tags: One or more tags or list of tags to be structured
+            :type tags: str, list, tuple, set
+            :param msg_id: Message ID of an existing message so that its existing tags can be retrieved (optional)
+            :type msg_id: str, int, None
+            :param overwrite: Determines if tags should overwrite any existing tags (where applicable) or if the tags
+                              should be appended to the existing tags (default)
+            :type overwrite: bool
+            :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
+                                       converted to strings (``False`` by default)
+            :type ignore_non_strings: bool
+            :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
+            """
+            return objects_module.tags.structure_tags_for_message(*tags, khoros_object=self.khoros_object,
+                                                                  msg_id=msg_id, overwrite=overwrite,
+                                                                  ignore_non_strings=ignore_non_strings)
 
     class User(object):
         """This class includes methods for interacting with users."""

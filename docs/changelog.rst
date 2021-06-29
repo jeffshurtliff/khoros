@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ********
 v4.1.0b2
 ********
-**Release Date: TBD**
+**Release Date: 2021-06-28**
 
 Added
 =====
@@ -19,6 +19,15 @@ Additions to the :doc:`core-object-methods`.
   core :py:class:`khoros.Khoros` object with the following methods:
     * :py:meth:`khoros.core.Khoros.Archives.archive`
     * :py:meth:`khoros.core.Khoros.Archives.unarchive`
+* Added the :py:meth:`khoros.core.Khoros._import_archives_class` method.
+* Added the :py:class:`khoros.core.Khoros.Tag` inner class within the core
+  :py:class:`khoros.Khoros` object with the following methods:
+    * :py:meth:`khoros.core.Khoros.Tag.get_tags_for_message`
+    * :py:meth:`khoros.core.Khoros.Tag.add_single_tag_to_message`
+    * :py:meth:`khoros.core.Khoros.Tag.add_tags_to_message`
+    * :py:meth:`khoros.core.Khoros.Tag.structure_single_tag_payload`
+    * :py:meth:`khoros.core.Khoros.Tag.structure_tags_for_message`
+* Added the :py:meth:`khoros.core.Khoros._import_tag_class` method.
 
 Supporting Modules
 ------------------
@@ -45,8 +54,9 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 Documentation
 -------------
 
-* Added a section for the :py:class:`khoros.core.Khoros.Archives` inner class
-  on the :doc:`core-object-methods` page.
+* Added sections for the :py:class:`khoros.core.Khoros.Archives` and
+  :py:class:`khoros.core.Khoros.Archives` inner classes on the
+  :doc:`core-object-methods` page.
 
 Changed
 =======
@@ -68,6 +78,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Introduced the ``return_items`` parameter in the :py:func:`khoros.liql.perform_query`
   function to automatically reduce the JSON response to only the returned items when
   desired. (``False`` by default)
+* Imported the :py:mod:`khoros.objects.tags` module within the ``__init__`` file for the
+  :py:mod:`khoros.objects` module and added ``tags`` to the ``__all__`` special variable.
 
 Supporting Modules
 ------------------
@@ -103,6 +115,12 @@ Fixes to the :doc:`core-object-methods`.
             `Pull Request #33 <https://github.com/jeffshurtliff/khoros/pull/33>`_.
 
 * Added some missing exception references in the :py:meth:`khoros.core.Khoros.query` docstring.
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Added a missing section of the docstring for :py:func:`khoros.objects.tags.
 
 |
 
