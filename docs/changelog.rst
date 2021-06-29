@@ -4,7 +4,7 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 *********
-v4.1.0rc1
+v4.1.0rc2
 *********
 **Release Date: 2021-06-29**
 
@@ -138,6 +138,8 @@ Primary Modules
 ---------------
 Fixes to the :doc:`primary modules <primary-modules>`.
 
+* Fixed an issue with the :py:func:`khoros.objects.archives.structure_archive_payload`
+  function call in the :py:func:`khoros.objects.archives.archive` function.
 * Renamed the incorrect JSON field ``messageID`` to be ``messageId`` instead in the
   :py:func:`khoros.objects.archives._format_single_archive_entry` function to prevent the
   following error from getting returned:
