@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 Jun 2021
+:Modified Date:     29 Jun 2021
 """
 
 import sys
@@ -428,7 +428,7 @@ class Khoros(object):
 
         .. versionadded:: 4.1.0
         """
-        return Khoros.Album(self)
+        return Khoros.Archives(self)
 
     def _import_board_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Board` inner class to be utilized in the
