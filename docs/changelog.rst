@@ -141,7 +141,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
        'metadata': {}
      }
 
-* Added a missing section of the docstring for :py:func:`khoros.objects.tags.
+* Added a missing section of the docstring for the
+  :py:func:`khoros.objects.tags.structure_tags_for_message` function.
 
 |
 
