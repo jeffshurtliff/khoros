@@ -39,7 +39,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_liql.test_return_items_option`
 * Added the :py:mod:`khoros.utils.tests.test_settings` module with the following functions:
     * :py:func:`khoros.utils.tests.test_settings.set_package_path`
-    * :py:func:`khoros.utils.tests.test_settings.test_v1_node_setting_retrieval`
+    * :py:func:`khoros.utils.tests.test_settings.test_node_setting_retrieval`
+    * :py:func:`khoros.utils.tests.test_settings.test_invalid_node_type_exception`
 
 Documentation
 -------------

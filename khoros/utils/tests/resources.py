@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     27 Jun 2021
+:Modified Date:     28 Jun 2021
 """
 
 import os
@@ -116,7 +116,7 @@ def local_test_config_exists():
 
     :returns: Boolean value indicating whether or not the file was found
     """
-    return os.path.exists('local/khorostest.py')
+    return os.path.exists('local/khorostest.yml')
 
 
 def parse_testing_config_file():
