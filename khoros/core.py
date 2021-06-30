@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     18 Apr 2021
+:Modified Date:     29 Jun 2021
 """
 
 import sys
@@ -250,6 +250,7 @@ class Khoros(object):
         self.v1 = self._import_v1_class()
         self.v2 = self._import_v2_class()
         self.albums = self._import_album_class()
+        self.archives = self._import_archives_class()
         self.boards = self._import_board_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
@@ -260,7 +261,7 @@ class Khoros(object):
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.subscriptions = self._import_subscription_class()
-        # TODO: Add the tags module
+        self.tags = self._import_tag_class()
         self.users = self._import_user_class()
 
     def _populate_empty_object(self):
@@ -421,6 +422,14 @@ class Khoros(object):
         """
         return Khoros.Album(self)
 
+    def _import_archives_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Archives` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 4.1.0
+        """
+        return Khoros.Archives(self)
+
     def _import_board_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Board` inner class to be utilized in the
         core object.
@@ -496,7 +505,12 @@ class Khoros(object):
         """
         return Khoros.Subscription(self)
 
-    # TODO: Add the _import_tag_class method
+    def _import_tag_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Tag` inner class to be utilized in the core object.
+
+        .. versionadded:: 4.1.0
+        """
+        return Khoros.Tag(self)
 
     def _import_user_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.User` inner class to be utilized in the core object.
@@ -680,8 +694,11 @@ class Khoros(object):
                                             proxy_user_object=proxy_user_object)
 
     def query(self, query, return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False,
-              error_code='', format_statements=True):
+              error_code='', format_statements=True, return_items=False):
         """This method performs a Community API v2 query using LiQL with the full LiQL syntax.
+
+        .. versionchanged:: 4.1.0
+           The JSON response can now be reduced to just the returned items by passing ``return_items=True``.
 
         :param query: The full LiQL query in its standard syntax (not URL-encoded)
         :type query: str
@@ -695,16 +712,23 @@ class Khoros(object):
         :type always_ok: bool
         :param error_code: Allows an error code to optionally be supplied for testing purposes (ignored by default)
         :type error_code: str
-        :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be in
-                                  all caps (``True`` by default)
+        :param format_statements: Determines if statements (e.g. ``SELECT``, ``FROM``, et.) should be formatted to be
+                                  in all caps (``True`` by default)
         :type format_statements: bool
+        :param return_items: Reduces the JSON response to be only the list of items returned from the LiQL response
+                             (``False`` by default)
+
+                             .. note:: If an error response is returned then an empty list will be returned.
+
+        :type return_items: bool
         :returns: The query response from the API in JSON format (unless defined otherwise)
-        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                 :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                 :py:exc:`khoros.errors.exceptions.GETRequestError`
         """
         query_url = liql.get_query_url(self.core, query, pretty_print, track_in_lsi, always_ok,
                                        error_code, format_statements)
-        response = liql.perform_query(self, query_url, return_json=return_json)
-        return response
+        return liql.perform_query(self, query_url, return_json=return_json, return_items=return_items)
 
     def search(self, select_fields, from_source, where_filter="", order_by=None, order_desc=True, limit=0,
                return_json=True, pretty_print=False, track_in_lsi=False, always_ok=False, error_code='',
@@ -1196,6 +1220,112 @@ class Khoros(object):
             """
             return objects_module.albums.get_albums_for_user(self.khoros_object, user_id, login, public, private,
                                                              verify_success, allow_exceptions)
+
+    class Archives(object):
+        """This class includes methods for archiving content.
+
+        .. versionadded:: 4.1.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Archives` inner class object.
+
+            .. versionadded:: 4.1.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def archive(self, message_id=None, message_url=None, suggested_url=None, archive_entries=None,
+                    aggregate_results=False, include_raw=False):
+            """This function archives one or more messages while providing an optional suggested URL as a placeholder.
+
+            .. versionadded:: 4.1.0
+
+            :param message_id: The message ID for the content to be archived
+            :type message_id: str, int, None
+            :param message_url: The URL of the message to be archived (as an alternative to the ``message_id``
+                                argument)
+            :type message_url: str, None
+            :param suggested_url: The full URL to suggest to the user when navigating to the archived message
+            :type suggested_url: str, None
+            :param archive_entries: A dictionary mapping one or more message IDs with accompanying suggested URLs
+
+                                    .. note:: Alternatively, a list, tuple or set of message IDs can be supplied
+                                              which will be converted into a dictionary with blank suggested URLs.
+
+            :type archive_entries: dict, list, tuple, set, None
+            :param aggregate_results: Aggregates the operation results into an easy-to-parse dictionary
+                                      (``False`` by default)
+            :type aggregate_results: bool
+            :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                                (``False`` by default)
+
+                                .. note:: This parameter is only relevant when the ``aggregate_results``
+                                          parameter is ``True``.
+
+            :type include_raw: bool
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.archives.archive(self.khoros_object, message_id, message_url, suggested_url,
+                                                   archive_entries, aggregate_results, include_raw)
+
+        def unarchive(self, message_id=None, message_url=None, new_board_id=None, archive_entries=None,
+                      aggregate_results=False, include_raw=False):
+            """This function unarchives one or more messages and moves them to a given board.
+
+            .. versionadded:: 4.1.0
+
+            :param message_id: The message ID for the content to be archived
+            :type message_id: str, int, None
+            :param message_url: The URL of the message to be archived (as an alternative to the ``message_id`` argument)
+            :type message_url: str, None
+            :param new_board_id: The board ID of what will be the new parent board of a message getting unarchived
+            :type new_board_id: str, None
+            :param archive_entries: A dictionary mapping one or more message IDs with accompanying board IDs
+
+                                    .. note:: Alternatively, a list, tuple or set of message IDs can be supplied which
+                                              will be converted into a dictionary with blank board IDs.
+
+            :type archive_entries: dict, list, tuple, set, None
+            :param aggregate_results: Aggregates the operation results into an easy-to-parse dictionary
+                                      (``False`` by default)
+            :type aggregate_results: bool
+            :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                                (``False`` by default)
+
+                                .. note:: This parameter is only relevant when the ``aggregate_results``
+                                          parameter is ``True``.
+
+            :type include_raw: bool
+            :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
+                      specific fields defined by function arguments
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.archives.unarchive(self.khoros_object, message_id, message_url, new_board_id,
+                                                     archive_entries, aggregate_results, include_raw)
+
+        @staticmethod
+        def aggregate_results(results, include_raw=False):
+            """This function aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.
+
+            .. versionadded:: 4.1.0
+
+            :param results: The results from an archive or unarchive operation
+            :type results: list, dict
+            :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                                (``False`` by default)
+            :type include_raw: bool
+            :returns: A dictionary with fields for ``status``, ``archived``, ``unarchived``, ``failed`` and ``unknown``
+                      or the raw response when the API call completely fails, with the optional raw data when requested
+            """
+            return objects_module.archives.aggregate_results_data(results, include_raw)
 
     class Board(object):
         """This class includes methods for interacting with boards.
@@ -3195,6 +3325,9 @@ class Khoros(object):
         def get_roles_for_user(self, user_id, fields=None):
             """This function returns all roles associated with a given User ID.
 
+            .. versionchanged:: 4.1.0
+               The docstring has been updated to reference the correct exception raised by this method.
+
             .. versionchanged:: 3.5.0
                Fields to return in the LiQL query can now be explicitly defined.
 
@@ -3208,7 +3341,7 @@ class Khoros(object):
 
             :type fields: str, list, tuple, set, None
             :returns: A dictionary with data for each role associated with the given User ID
-            :raises: :py:exc:`khoros.errors.exceptions.GETResponseError`
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return objects_module.roles.get_roles_for_user(self.khoros_object, user_id, fields)
 
@@ -3571,6 +3704,103 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
             """
             return objects_module.subscriptions.subscribe_to_product(self.khoros_object, product_id, proxy_user_object)
+
+    class Tag(object):
+        """This class includes methods relating to the tagging of content.
+
+        .. versionadded:: 4.1.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Tag` inner class object.
+
+            .. versionadded:: 4.1.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get_tags_for_message(self, msg_id):
+            """This function retrieves the tags for a given message.
+
+            .. versionadded:: 4.1.0
+
+            :param msg_id: The Message ID for the message from which to retrieve tags
+            :type msg_id: str, int
+            :returns: A list of tags associated with the message
+            """
+            return objects_module.tags.get_tags_for_message(self.khoros_object, msg_id)
+
+        def add_single_tag_to_message(self, tag, msg_id, allow_exceptions=False):
+            """This function adds a single tag to an existing message.
+
+            .. versionadded:: 4.1.0
+
+            :param tag: The tag value to be added
+            :type tag: str
+            :param msg_id: The unique identifier for the message
+            :type msg_id: str, int
+            :param allow_exceptions: Determines if exceptions are permitted to be raised (``False`` by default)
+            :type allow_exceptions: bool
+            :returns: None
+            :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.tags.add_single_tag_to_message(self.khoros_object, tag, msg_id, allow_exceptions)
+
+        def add_tags_to_message(self, tags, msg_id, allow_exceptions=False):
+            """This function adds one or more tags to an existing message.
+
+            .. versionadded:: 4.1.0
+
+            ..caution:: This function is not the most effective way to add multiple tags to a message. It is recommended
+                        that the :py:meth:`khoros.core.Khoros.messages.update` method be used instead with its ``tags``
+                        argument, which is more efficient and performance-conscious.
+
+            :param tags: One or more tags to be added to the message
+            :type tags: str, tuple, list, set
+            :param msg_id: The unique identifier for the message
+            :type msg_id: str, int
+            :param allow_exceptions: Determines if exceptions are permitted to be raised (``False`` by default)
+            :type allow_exceptions: bool
+            :returns: None
+            :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            objects_module.tags.add_tags_to_message(self.khoros_object, tags, msg_id, allow_exceptions)
+            return
+
+        @staticmethod
+        def structure_single_tag_payload(tag_text):
+            """This function structures the payload for a single tag.
+
+            .. versionadded:: 4.1.0
+
+            :param tag_text: The tag to be included in the payload
+            :type tag_text: str
+            :returns: The payload as a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidPayloadValueError`
+            """
+            return objects_module.tags.structure_single_tag_payload(tag_text)
+
+        def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False):
+            """This function structures tags to use within the payload for creating or updating a message.
+
+            .. versionadded:: 4.1.0
+
+            :param tags: One or more tags or list of tags to be structured
+            :type tags: str, list, tuple, set
+            :param msg_id: Message ID of an existing message so that its existing tags can be retrieved (optional)
+            :type msg_id: str, int, None
+            :param overwrite: Determines if tags should overwrite any existing tags (where applicable) or if the tags
+                              should be appended to the existing tags (default)
+            :type overwrite: bool
+            :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
+                                       converted to strings (``False`` by default)
+            :type ignore_non_strings: bool
+            :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
+            """
+            return objects_module.tags.structure_tags_for_message(*tags, khoros_object=self.khoros_object,
+                                                                  msg_id=msg_id, overwrite=overwrite,
+                                                                  ignore_non_strings=ignore_non_strings)
 
     class User(object):
         """This class includes methods for interacting with users."""

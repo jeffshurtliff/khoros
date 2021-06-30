@@ -4,6 +4,173 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v4.1.0
+******
+**Release Date: 2021-06-29**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:class:`khoros.core.Khoros.Archives` inner class within the
+  core :py:class:`khoros.Khoros` object with the following methods:
+    * :py:meth:`khoros.core.Khoros.Archives.archive`
+    * :py:meth:`khoros.core.Khoros.Archives.unarchive`
+    * :py:meth:`khoros.core.Khoros.Archives.aggregate_results`
+* Added the :py:meth:`khoros.core.Khoros._import_archives_class` method.
+* Added the :py:class:`khoros.core.Khoros.Tag` inner class within the core
+  :py:class:`khoros.Khoros` object with the following methods:
+    * :py:meth:`khoros.core.Khoros.Tag.get_tags_for_message`
+    * :py:meth:`khoros.core.Khoros.Tag.add_single_tag_to_message`
+    * :py:meth:`khoros.core.Khoros.Tag.add_tags_to_message`
+    * :py:meth:`khoros.core.Khoros.Tag.structure_single_tag_payload`
+    * :py:meth:`khoros.core.Khoros.Tag.structure_tags_for_message`
+* Added the :py:meth:`khoros.core.Khoros._import_tag_class` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.objects.archives.aggregate_results_data` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the following functions to utilize with the :py:mod:`pytest` package
+  for unit testing:
+    * :py:func:`khoros.utils.tests.resources.local_helper_exists`
+    * :py:func:`khoros.utils.tests.resources.instantiate_with_local_helper`
+    * :py:func:`khoros.utils.tests.resources._get_local_helper_file_name`
+    * :py:func:`khoros.utils.tests.resources.local_test_config_exists`
+    * :py:func:`khoros.utils.tests.resources.parse_testing_config_file`
+    * :py:func:`khoros.utils.tests.resources.get_testing_config`
+    * :py:func:`khoros.utils.tests.resources.get_structure_collection`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_liql` module:
+    * :py:func:`khoros.utils.tests.test_liql.perform_test_query`
+    * :py:func:`khoros.utils.tests.test_liql.test_liql_query`
+    * :py:func:`khoros.utils.tests.test_liql.test_return_items_option`
+* Added the :py:mod:`khoros.utils.tests.test_settings` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_settings.set_package_path`
+    * :py:func:`khoros.utils.tests.test_settings.test_node_setting_retrieval`
+    * :py:func:`khoros.utils.tests.test_settings.test_invalid_node_type_exception`
+
+Documentation
+-------------
+
+* Added sections for the :py:class:`khoros.core.Khoros.Archives` and
+  :py:class:`khoros.core.Khoros.Archives` inner classes on the
+  :doc:`core-object-methods` page.
+* Added a section for the :py:mod:`khoros.utils.tests.test_settings`
+  module on the :doc:`supporting-modules` page.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Removed the following parameters from the :py:meth:`khoros.core.Khoros.Archives.archive`
+  and :py:meth:`khoros.core.Khoros.Archives.unarchive` methods: ``full_response``,
+  ``return_id``, ``return_url``, ``return_api_url``, ``return_http_code``, ``return_status``,
+  ``return_error_messages`` and ``split_errors``
+* Introduced the ``return_items`` parameter in the :py:meth:`khoros.core.Khoros.query`
+  function to automatically reduce the JSON response to only the returned items when
+  desired. (``False`` by default)
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Some minor docstring adjustments were made in the `khoros.objects.archives.archive`
+  and `khoros.objects.archives.unarchive` functions.
+* Explicitly set the ``full_response`` flag in the :py:func:`khoros.objects.archives.archive`
+  and :py:func:`khoros.objects.archives.unarchive` functions because of unique response format
+  and subsequently removed the following parameters: ``full_response``, ``return_id``,
+  ``return_url``, ``return_api_url``, ``return_http_code``, ``return_status``,
+  ``return_error_messages`` and ``split_errors``
+* Introduced the optional ``aggregate_results`` parameter in the `khoros.objects.archives.archive`
+  and `khoros.objects.archives.unarchive` functions.
+* Introduced the ``return_items`` parameter in the :py:func:`khoros.liql.perform_query`
+  function to automatically reduce the JSON response to only the returned items when
+  desired. (``False`` by default)
+* Imported the :py:mod:`khoros.objects.tags` module within the ``__init__`` file for the
+  :py:mod:`khoros.objects` module and added ``tags`` to the ``__all__`` special variable.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Renamed the :py:mod:`khoros.utils.tests.test_liql_where_parsing` module to be
+  :py:mod:`khoros.utils.tests.test_liql` to allow other LiQL tests to be performed
+  within the same module.
+* Updated the :py:func:`khoros.utils.tests.test_liql.set_package_path` function to
+  leverage a global variable to ensure the operation is only performed once.
+
+Documentation
+-------------
+* Updated the :doc:`supporting modules <supporting-modules>` to account for the
+  renamed :py:mod:`khoros.utils.tests.test_liql` module.
+
+General
+-------
+* Adjusted the Sphinx-related package versions in ``requirements.txt``.
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Corrected an issue in the :py:meth:`khoros.core.Khoros.Role.get_roles_for_user` docstring
+  where the wrong raised exception was referenced.
+
+    .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #33 <https://github.com/jeffshurtliff/khoros/pull/33>`_.
+
+* Added some missing exception references in the :py:meth:`khoros.core.Khoros.query` docstring.
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed an issue with the :py:func:`khoros.objects.archives.structure_archive_payload`
+  function call in the :py:func:`khoros.objects.archives.archive` function.
+* Renamed the incorrect JSON field ``messageID`` to be ``messageId`` instead in the
+  :py:func:`khoros.objects.archives._format_single_archive_entry` function to prevent the
+  following error from getting returned:
+
+  .. code-block:: json
+
+     {
+       'status': 'error',
+       'message': 'A possible invalid request has been made.
+                   Make sure you are following the API spec and have used the correct URL,
+                   are included all required parameters and if a request payload is required
+                   you have included one.',
+       'data': {
+         'type': 'error_data',
+         'code': 309,
+         'developer_message': '',
+         'more_info': ''
+       },
+       'metadata': {}
+     }
+
+* Added a missing section of the docstring for the
+  :py:func:`khoros.objects.tags.structure_tags_for_message` function.
+
+|
+
+-----
+
+******
 v4.0.0
 ******
 **Release Date: 2021-05-20**

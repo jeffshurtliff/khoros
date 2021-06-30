@@ -6,7 +6,7 @@
 :Example:           ``archives.archive(khoros_obj, '123', suggested_url, return_status=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     29 Jun 2021
 """
 
 import warnings
@@ -20,18 +20,27 @@ logger = log_utils.initialize_logging(__name__)
 
 
 def archive(khoros_object, message_id=None, message_url=None, suggested_url=None, archive_entries=None,
-            full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-            return_status=None, return_error_messages=None, split_errors=False):
+            aggregate_results=False, include_raw=False):
     """This function archives one or more messages while providing an optional suggested URL as a placeholder.
+
+    .. versionchanged:: 4.1.0
+       Made some minor docstring and code adjustments and also removed the following parameters due to the unique
+       response format: ``full_response``, ``return_id``, ``return_url``, ``return_api_url``, ``return_http_code``,
+       ``return_status``, ``return_error_messages`` and ``split_errors``
+
+       An issue with the :py:func:`khoros.objects.archives.structure_archive_payload` function call was also resolved.
+
+       The optional ``aggregate_results`` parameter has also been introduced.
 
     .. versionadded:: 2.7.0
 
-    :param khoros_object:
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
     :param message_id: The message ID for the content to be archived
     :type message_id: str, int, None
     :param message_url: The URL of the message to be archived (as an alternative to the ``message_id`` argument)
     :type message_url: str, None
-    :param suggested_url: The full URL to suggest to the user if the user tries to access the archived message
+    :param suggested_url: The full URL to suggest to the user when navigating to the archived message
     :type suggested_url: str, None
     :param archive_entries: A dictionary mapping one or more message IDs with accompanying suggested URLs
 
@@ -39,27 +48,14 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
                                       will be converted into a dictionary with blank suggested URLs.
 
     :type archive_entries: dict, list, tuple, set, None
-    :param full_response: Determines whether the full, raw API response should be returned by the function
+    :param aggregate_results: Aggregates the operation results into an easy-to-parse dictionary (``False`` by default)
+    :type aggregate_results: bool
+    :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                        (``False`` by default)
 
-                          .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``,
-                                       ``return_http_code``, ``return_status`` and ``return_error_messages`` arguments.
+                        .. note:: This parameter is only relevant when the ``aggregate_results`` parameter is ``True``.
 
-    :type full_response: bool, None
-    :param return_id: Determines if the **ID** of the new group hub should be returned by the function
-    :type return_id: bool, None
-    :param return_url: Determines if the **URL** of the new group hub should be returned by the function
-    :type return_url: bool, None
-    :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
-    :type return_api_url: bool, None
-    :param return_http_code: Determines if the **HTTP Code** of the API response should be returned by the function
-    :type return_http_code: bool, None
-    :param return_status: Determines if the **Status** of the API response should be returned by the function
-    :type return_status: bool, None
-    :param return_error_messages: Determines if any error messages associated with the API response should be
-                                  returned by the function
-    :type return_error_messages: bool, None
-    :param split_errors: Defines whether or not error messages should be merged when applicable
-    :type split_errors: bool
+    :type include_raw: bool
     :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
               fields defined by function arguments
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -70,21 +66,29 @@ def archive(khoros_object, message_id=None, message_url=None, suggested_url=None
         raise errors.exceptions.MissingRequiredDataError("The message ID or URL must be provided to archive content.")
     if not message_id and message_url:
         message_id = messages.get_id_from_url(message_url)
-    api_url = f"{khoros_object.core['v2_base']}/archives/archive"
-    payload = structure_archive_payload(message_id, suggested_url, archive_entries)
-    response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object)
-    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
-                                  return_status, return_error_messages, split_errors)
+    api_url = f"{khoros_object.core.get('v2_base')}/archives/archive"
+    payload = structure_archive_payload(message_id, suggested_url, archive_entries=archive_entries)
+    response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object,
+                                             content_type='application/json')
+    results = api.deliver_v2_results(response, full_response=True)
+    return aggregate_results_data(results, include_raw) if aggregate_results else results
 
 
 def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=None, archive_entries=None,
-              full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-              return_status=None, return_error_messages=None, split_errors=False):
-    """This function archives one or more messages while providing an optional suggested URL as a placeholder.
+              aggregate_results=False, include_raw=False):
+    """This function unarchives one or more messages and moves them to a given board.
+
+    .. versionchanged:: 4.1.0
+       Made some minor docstring and code adjustments and also removed the following parameters due to the unique
+       response format: ``full_response``, ``return_id``, ``return_url``, ``return_api_url``, ``return_http_code``,
+       ``return_status``, ``return_error_messages`` and ``split_errors``
+
+       The optional ``aggregate_results`` parameter has also been introduced.
 
     .. versionadded:: 2.7.0
 
-    :param khoros_object:
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
     :param message_id: The message ID for the content to be archived
     :type message_id: str, int, None
     :param message_url: The URL of the message to be archived (as an alternative to the ``message_id`` argument)
@@ -97,27 +101,14 @@ def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=Non
                                       will be converted into a dictionary with blank board IDs.
 
     :type archive_entries: dict, list, tuple, set, None
-    :param full_response: Determines whether the full, raw API response should be returned by the function
+    :param aggregate_results: Aggregates the operation results into an easy-to-parse dictionary (``False`` by default)
+    :type aggregate_results: bool
+    :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                        (``False`` by default)
 
-                          .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``,
-                                       ``return_http_code``, ``return_status`` and ``return_error_messages`` arguments.
+                        .. note:: This parameter is only relevant when the ``aggregate_results`` parameter is ``True``.
 
-    :type full_response: bool, None
-    :param return_id: Determines if the **ID** of the new group hub should be returned by the function
-    :type return_id: bool, None
-    :param return_url: Determines if the **URL** of the new group hub should be returned by the function
-    :type return_url: bool, None
-    :param return_api_url: Determines if the **API URL** of the new group hub should be returned by the function
-    :type return_api_url: bool, None
-    :param return_http_code: Determines if the **HTTP Code** of the API response should be returned by the function
-    :type return_http_code: bool, None
-    :param return_status: Determines if the **Status** of the API response should be returned by the function
-    :type return_status: bool, None
-    :param return_error_messages: Determines if any error messages associated with the API response should be
-                                  returned by the function
-    :type return_error_messages: bool, None
-    :param split_errors: Defines whether or not error messages should be merged when applicable
-    :type split_errors: bool
+    :type include_raw: bool
     :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
               fields defined by function arguments
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -128,12 +119,13 @@ def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=Non
         raise errors.exceptions.MissingRequiredDataError("The message ID or URL must be provided to archive content.")
     if not message_id and message_url:
         message_id = messages.get_id_from_url(message_url)
-    api_url = f"{khoros_object.core['v2_base']}/archives/unarchive"
+    api_url = f"{khoros_object.core.get('v2_base')}/archives/unarchive"
     payload = structure_archive_payload(message_id, new_board_id=new_board_id,
                                         archive_entries=archive_entries, unarchiving=True)
-    response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object)
-    return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
-                                  return_status, return_error_messages, split_errors)
+    response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object,
+                                             content_type='application/json')
+    results = api.deliver_v2_results(response, full_response=True)
+    return aggregate_results_data(results, include_raw) if aggregate_results else results
 
 
 def structure_archive_payload(message_id, suggested_url=None, new_board_id=None, archive_entries=None,
@@ -184,6 +176,49 @@ def structure_archive_payload(message_id, suggested_url=None, new_board_id=None,
     return payload
 
 
+def aggregate_results_data(results, include_raw=False):
+    """This function aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.
+
+    .. versionadded:: 4.1.0
+
+    :param results: The results from an archive or unarchive operation
+    :type results: list, dict
+    :param include_raw: Includes the raw API response in the aggregated data dictionary under the ``raw`` key
+                        (``False`` by default)
+    :type include_raw: bool
+    :returns: A dictionary with fields for ``status``, ``archived``, ``unarchived``, ``failed`` and ``unknown`` or the
+              raw response when the API call completely fails, with the optional raw data when requested
+    """
+    # Initially define the aggregate data
+    aggregate_data = {'status': 'success'}
+    archived, unarchived, failed, unknown = [], [], [], 0
+
+    # Return the raw error response if the entire API call failed
+    if isinstance(results, dict) and results.get('status') == 'error':
+        # TODO: Record a log entry for the failed API call
+        aggregate_data.update(results)
+    elif isinstance(results, list):
+        for message in results:
+            if isinstance(message, dict) and message.get('archivalStatus') == 'ARCHIVING':
+                archived.append(f"{message.get('msgUid')}")
+            elif isinstance(message, dict) and message.get('unarchivalStatus') == 'UNARCHIVING':
+                unarchived.append(f"{message.get('msgUid')}")
+            elif isinstance(message, dict) and message.get('msgUid'):
+                failed.append(f"{message.get('msgUid')}")
+            else:
+                # TODO: Record a log entry for the unknown result
+                unknown += 1
+
+        # Update the aggregate data with the parsed results and return the dictionary
+        aggregate_data['archived'] = archived
+        aggregate_data['unarchived'] = unarchived
+        aggregate_data['failed'] = failed
+        aggregate_data['unknown'] = unknown
+        if include_raw:
+            aggregate_data['raw'] = results
+        return aggregate_data
+
+
 def _valid_entries_type(_entries):
     """This function checks whether or not the ``archive_entries`` argument is a valid type.
 
@@ -219,6 +254,9 @@ def _convert_entries_to_dict(_entries):
 def _format_single_archive_entry(_message_id, _suggested_url=None, _new_board_id=None, _unarchiving=False):
     """This function formats a single entry to be archived.
 
+    .. versionchanged:: 4.1.0
+       The ``messageID`` key was incorrect and has been fixed to be ``messageId`` instead.
+
     .. versionadded:: 2.7.0
 
     :param _message_id: The ID of the message to be archived
@@ -231,7 +269,7 @@ def _format_single_archive_entry(_message_id, _suggested_url=None, _new_board_id
     :type _unarchiving: bool
     :returns: The properly formatted archive entry
     """
-    _archive_entry = {"messageID": str(_message_id)}
+    _archive_entry = {"messageId": str(_message_id)}
     if _suggested_url and isinstance(_suggested_url, str) and not _unarchiving:
         _archive_entry['suggestedUrl'] = _suggested_url
     elif (_new_board_id and isinstance(_new_board_id, str)) or \

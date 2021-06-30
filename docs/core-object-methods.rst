@@ -10,6 +10,7 @@ within the core object for the **khoros** package, which are listed below.
         * `V1 Subclass (khoros.core.Khoros.V1)`_
     * `Core Object Subclasses (khoros.core.Khoros)`_
         * `Album Subclass (khoros.core.Khoros.Album)`_
+        * `Archives Subclass (khoros.core.Khoros.Archives)`_
         * `Message Subclass (khoros.core.Khoros.Message)`_
         * `Role Subclass (khoros.core.Khoros.Role)`_
         * `Settings Subclass (khoros.core.Khoros.Settings)`_
@@ -157,6 +158,16 @@ Album Subclass (khoros.core.Khoros.Album)
 
 |
 
+Archives Subclass (khoros.core.Khoros.Archives)
+-----------------------------------------------
+.. autoclass:: khoros.core::Khoros.Archives
+   :members:
+   :noindex:
+
+:doc:`Return to Top <core-object-methods>`
+
+|
+
 Message Subclass (khoros.core.Khoros.Message)
 ---------------------------------------------
 .. autoclass:: khoros.core::Khoros.Message
@@ -190,6 +201,16 @@ Settings Subclass (khoros.core.Khoros.Settings)
 Subscription Subclass (khoros.core.Khoros.Subscription)
 -------------------------------------------------------
 .. autoclass:: khoros.core::Khoros.Subscription
+   :members:
+   :noindex:
+
+:doc:`Return to Top <core-object-methods>`
+
+|
+
+Tag Subclass (khoros.core.Khoros.Tag)
+---------------------------------------
+.. autoclass:: khoros.core::Khoros.Tag
    :members:
    :noindex:
 
