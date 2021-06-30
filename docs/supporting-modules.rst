@@ -23,10 +23,11 @@ which are listed below.
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
         * `Test HTTP Headers Module (khoros.utils.tests.test_http_headers)`_
         * `Test Library Import Module (khoros.utils.tests.test_library_import)`_
-        * `Test LiQL Module (khoros.utils.tests.test_liql_where_parsing)`_
+        * `Test LiQL Module (khoros.utils.tests.test_liql)`_
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
         * `Test Messages Module (khoros.utils.tests.test_messages)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
+        * `Test Settings Module (khoros.utils.tests.test_settings)`_
         * `Test Tags Module (khoros.utils.tests.test_tags)`_
 
 |
@@ -271,6 +272,17 @@ Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)
 This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
 
 .. automodule:: khoros.utils.tests.test_node_id_extract
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Settings Module (khoros.utils.tests.test_settings)
+-------------------------------------------------------
+This module is used by pytest to verify that settings can be retrieved and updated properly.
+
+.. automodule:: khoros.utils.tests.test_settings
    :members:
 
 :doc:`Return to Top <supporting-modules>`
