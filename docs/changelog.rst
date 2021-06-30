@@ -3,9 +3,9 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-*********
-v4.1.0rc2
-*********
+******
+v4.1.0
+******
 **Release Date: 2021-06-29**
 
 Added
@@ -64,6 +64,8 @@ Documentation
 * Added sections for the :py:class:`khoros.core.Khoros.Archives` and
   :py:class:`khoros.core.Khoros.Archives` inner classes on the
   :doc:`core-object-methods` page.
+* Added a section for the :py:mod:`khoros.utils.tests.test_settings`
+  module on the :doc:`supporting-modules` page.
 
 Changed
 =======
