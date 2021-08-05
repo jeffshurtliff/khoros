@@ -4,6 +4,23 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v4.1.1
+******
+**Release Date: 2021-08-05**
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.objects.archives.aggregate_results_data` function to properly
+  handle the ``ARCHIVED`` status when it is returned.
+
+|
+
+******
 v4.1.0
 ******
 **Release Date: 2021-06-29**

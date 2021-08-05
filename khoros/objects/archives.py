@@ -6,7 +6,7 @@
 :Example:           ``archives.archive(khoros_obj, '123', suggested_url, return_status=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Jun 2021
+:Modified Date:     05 Aug 2021
 """
 
 import warnings
@@ -179,6 +179,9 @@ def structure_archive_payload(message_id, suggested_url=None, new_board_id=None,
 def aggregate_results_data(results, include_raw=False):
     """This function aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.
 
+    .. versionchanged:: 4.1.1
+       This function can now properly handle the ``ARCHIVED`` status when returned.
+
     .. versionadded:: 4.1.0
 
     :param results: The results from an archive or unarchive operation
@@ -191,6 +194,7 @@ def aggregate_results_data(results, include_raw=False):
     """
     # Initially define the aggregate data
     aggregate_data = {'status': 'success'}
+    archived_values = ['ARCHIVING', 'ARCHIVED']
     archived, unarchived, failed, unknown = [], [], [], 0
 
     # Return the raw error response if the entire API call failed
@@ -199,7 +203,7 @@ def aggregate_results_data(results, include_raw=False):
         aggregate_data.update(results)
     elif isinstance(results, list):
         for message in results:
-            if isinstance(message, dict) and message.get('archivalStatus') == 'ARCHIVING':
+            if isinstance(message, dict) and message.get('archivalStatus') in archived_values:
                 archived.append(f"{message.get('msgUid')}")
             elif isinstance(message, dict) and message.get('unarchivalStatus') == 'UNARCHIVING':
                 unarchived.append(f"{message.get('msgUid')}")
