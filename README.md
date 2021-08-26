@@ -158,10 +158,19 @@ The community and connection information can be passed directly into the `Khoros
 demonstrated in the example below.
 
 ```python
+# Using session authentication
 khoros = Khoros(
     community_url='https://community.example.com', 
     session_auth={'username': USERNAME, 'password': PASSWD}
 )
+
+# Using Lithium SSO
+```python
+khoros = Khoros(
+    community_url='https://community.example.com', 
+    sso={'sso.authentication_token': LITHIUM_SSO_TOKEN}
+)
+```
 ```
 
 Alternatively, configuration settings can be passed at once using the `options` argument in the `Khoros` class, as 
