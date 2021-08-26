@@ -28,7 +28,7 @@ def _get_khoros_login_url(khoros_object):
     :returns: The URL string/
     """
     community_url = khoros_object.core_settings['community_url']
-    return f"{community_url}/restapi/vc/authentication/sessions/login"
+    return f'{community_url}/restapi/vc/authentication/sessions/login'
 
 
 def get_session_key(khoros_object, username=None, password=None):
@@ -65,7 +65,7 @@ def get_session_key(khoros_object, username=None, password=None):
     verify = api.should_verify_tls(khoros_object)
 
     # Perform the API call to authorize the session
-    uri = f"{_get_khoros_login_url(khoros_object)}/?{query_string}"
+    uri = f'{_get_khoros_login_url(khoros_object)}/?{query_string}'
     secondary_user = False if password else True
     header = _get_session_key_header(khoros_object, secondary_user)
     response = requests.post(uri, headers=header, verify=verify)
@@ -94,14 +94,17 @@ def get_sso_key(khoros_object):
     khoros_log_in_url = _get_khoros_login_url(khoros_object)
     headers = _get_session_key_header(khoros_object)
 
-    response = requests.post(khoros_log_in_url, headers=headers, data=khoros_object.core_settings["sso"])
+    response = requests.post(
+        khoros_log_in_url,
+        headers=headers,
+        data=khoros_object.core_settings['sso']
+    )
     tree = ElementTree.fromstring(response.text)
-    if "status" in tree.attrib:
-        if tree.attrib["status"] == "success":
-            li_api_session_key = tree.findtext("value")
-            return li_api_session_key
+    if 'status' in tree.attrib:
+        if tree.attrib['status'] == 'success':
+            return tree.findtext('value')
 
-    raise errors.exceptions.SsoAuthenticationError(f"Failed to retrieve a session key with lithium token.")
+    raise errors.exceptions.SsoAuthenticationError('Failed to retrieve a session key with lithium token.')
 
 def _get_session_key_payload(_username, _password=None, _return_json=True):
     """This function constructs the payload used to request a session key.
