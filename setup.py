@@ -3,7 +3,7 @@
 :Synopsis:          This script is the primary configuration file for the khoros project
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     29 Aug 2021
 """
 
 import setuptools
