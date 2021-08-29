@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     29 Aug 2021
 """
 
 #################
@@ -84,7 +84,10 @@ class SessionAuthenticationError(KhorosError):
 
 
 class SsoAuthenticationError(KhorosError):
-    """This exception is used when the SSO authentication attempt failed."""
+    """This exception is used when the SSO authentication attempt failed.
+
+    .. versionadded:: 4.2.0
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The SSO authentication attempt failed."

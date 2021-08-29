@@ -38,6 +38,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
             <https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml>`_
             in the former module.
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.SsoAuthenticationError` exception for use with
+  `LithiumSSO Token authentication <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_.
 
 Documentation
 -------------
