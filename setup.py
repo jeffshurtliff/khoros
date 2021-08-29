@@ -74,5 +74,6 @@ setuptools.setup(
         "urllib3~=1.26.2",
         "requests>=2.23.0",
         "setuptools~=52.0.0",
+        "defusedxml>=0.7.1"
     ],
 )
