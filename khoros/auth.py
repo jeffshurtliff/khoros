@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 Mar 2021
+:Modified Date:     28 Aug 2021
 """
 
 import requests
@@ -22,6 +22,8 @@ logger = log_utils.initialize_logging(__name__)
 
 def _get_khoros_login_url(khoros_object):
     """This function returns the URL for the Khoros login endpoint.
+
+    .. versionadded:: 4.2.0
 
     :param khoros_object: The core Khoros object
     :type khoros_object: class[khoros.Khoros]
