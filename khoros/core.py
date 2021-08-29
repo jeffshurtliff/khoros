@@ -238,8 +238,8 @@ class Khoros(object):
 
         # Auto-connect to the environment if specified (default)
         if auto_connect and not empty:
-            if 'session_auth' in self.core_settings['auth_type']:
-                self._connect_with_session_key()
+            if self.core_settings['auth_type'] in ['sso', 'session_auth']:
+                self.connect(self.core_settings['auth_type'])
             else:
                 error_msg = f"Unable to auto-connect to the instance with the given " \
                             f"'{self.core_settings['auth_type']}' authentication type."
@@ -392,10 +392,24 @@ class Khoros(object):
             error_msg = f"The username and/or password for session key authentication cannot be found."
             logger.error(error_msg)
             raise errors.exceptions.MissingAuthDataError(error_msg)
+
         self.core_settings['session_auth']['session_key'] = auth.get_session_key(self)
         self.core_settings['auth_header'] = auth.get_session_header(self.core_settings['session_auth']['session_key'])
         self.auth['session_key'] = self.core_settings['session_auth']['session_key']
         self.auth['header'] = self.core_settings['auth_header']
+        self.auth['active'] = True
+
+    def _connect_with_lithium_token(self):
+        """This method establishes a connection to the Khoros environment using SSO authentication.
+
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
+        """
+        if "sso.authentication_token" not in self.core_settings["sso"]:
+            raise errors.exceptions.MissingAuthDataError("SSO authentication requires a Lithium SSO token.")
+
+        li_api_session_key = auth.get_sso_key(self)
+        session_key = auth.get_session_header(li_api_session_key)
+        self.auth['header'] = session_key
         self.auth['active'] = True
 
     def _import_v1_class(self):
@@ -535,6 +549,8 @@ class Khoros(object):
             connection_type = self.core_settings['auth_type']
         if connection_type == 'session_auth':
             self._connect_with_session_key()
+        if connection_type == "sso":
+            self._connect_with_lithium_token()
         else:
             error_msg = f"The '{connection_type}' authentication type is currently unsupported."
             logger.error(error_msg)

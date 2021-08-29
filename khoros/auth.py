@@ -10,12 +10,25 @@
 """
 
 import requests
+from xml.etree import ElementTree
+
 
 from . import api, errors
 from .utils import core_utils, log_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
+
+
+def _get_khoros_login_url(khoros_object):
+    """This function returns the URL for the Khoros login endpoint.
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The URL string/
+    """
+    community_url = khoros_object.core_settings['community_url']
+    return f'{community_url}/restapi/vc/authentication/sessions/login'
 
 
 def get_session_key(khoros_object, username=None, password=None):
@@ -43,7 +56,6 @@ def get_session_key(khoros_object, username=None, password=None):
     :raises: :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
     """
     # Prepare the API call
-    community_url = khoros_object.core_settings['community_url']
     password = khoros_object.core_settings['session_auth']['password'] if not username else password
     username = khoros_object.core_settings['session_auth']['username'] if not username else username
     payload = _get_session_key_payload(username, password)
@@ -53,7 +65,7 @@ def get_session_key(khoros_object, username=None, password=None):
     verify = api.should_verify_tls(khoros_object)
 
     # Perform the API call to authorize the session
-    uri = f"{community_url}/restapi/vc/authentication/sessions/login/?{query_string}"
+    uri = f'{_get_khoros_login_url(khoros_object)}/?{query_string}'
     secondary_user = False if password else True
     header = _get_session_key_header(khoros_object, secondary_user)
     response = requests.post(uri, headers=header, verify=verify)
@@ -71,6 +83,28 @@ def get_session_key(khoros_object, username=None, password=None):
             raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
     return session_key
 
+def get_sso_key(khoros_object):
+    """This function retrieves the session key for an SSO session.
+
+    :param khoros_object: The core Khoros object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The session key in string format
+    :raises: :py:exc:`khoros.errors.exceptions.SsoAuthenticationError`
+    """
+    khoros_log_in_url = _get_khoros_login_url(khoros_object)
+    headers = _get_session_key_header(khoros_object)
+
+    response = requests.post(
+        khoros_log_in_url,
+        headers=headers,
+        data=khoros_object.core_settings['sso']
+    )
+    tree = ElementTree.fromstring(response.text)
+    if 'status' in tree.attrib:
+        if tree.attrib['status'] == 'success':
+            return tree.findtext('value')
+
+    raise errors.exceptions.SsoAuthenticationError('Failed to retrieve a session key with lithium token.')
 
 def _get_session_key_payload(_username, _password=None, _return_json=True):
     """This function constructs the payload used to request a session key.

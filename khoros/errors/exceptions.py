@@ -83,6 +83,20 @@ class SessionAuthenticationError(KhorosError):
         super().__init__(*args)
 
 
+class SsoAuthenticationError(KhorosError):
+    """This exception is used when the SSO authentication attempt failed."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The SSO authentication attempt failed."
+        custom_msg = default_msg.replace('.', ' with the following message:')
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'message' in kwargs:
+            custom_msg = f"{custom_msg} {kwargs['message']}"
+            args = (custom_msg,)
+        super().__init__(*args)
+
+
 #####################
 # General Exceptions
 #####################
