@@ -6,7 +6,104 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ********
 v4.2.0b1
 ********
-**Release Date: TBD**
+**Release Date: 2021-08-29**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros._connect_with_lithium_token` method to connect using
+  `LithiumSSO Token authentication <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.auth.get_sso_key` function.
+* Added the :py:func:`khoros.auth._get_khoros_login_url` private function.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
+            However, the use of the :py:mod:`xml.etree.ElementTree` module was replaced
+            with the :py:mod:`defusedxml.ElementTree` module to proactively mitigate a
+            `known XML attack vulnerability
+            <https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml>`_
+            in the former module.
+
+
+Documentation
+-------------
+* Added example syntax for authenticating using a
+  `LithiumSSO token <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Support was introduced in the :py:class:`khoros.core.Khoros` core object class to support
+  `LithiumSSO Token authentication <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
+
+* The following methods within the :py:class:`khoros.core.Khoros` core object class
+  were improved to avoid unnecessary :py:exc:`KeyError` exceptions:
+    * :py:meth:`khoros.core.Khoros._populate_core_settings`
+    * :py:meth:`khoros.core.Khoros._populate_auth_settings`
+    * :py:meth:`khoros.core.Khoros._populate_construct_settings`
+    * :py:meth:`khoros.core.Khoros._parse_helper_settings`
+    * :py:meth:`khoros.core.Khoros._validate_base_url`
+    * :py:meth:`khoros.core.Khoros._define_url_settings`
+    * :py:meth:`khoros.core.Khoros._session_auth_credentials_defined`
+    * :py:meth:`khoros.core.Khoros._connect_with_session_key`
+    * :py:meth:`khoros.core.Khoros.connect`
+    * :py:meth:`khoros.core.Khoros.get`
+* General code improvements were made throughout the ``__init__`` method for the
+  :py:class:`khoros.core.Khoros` core object class.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* The URI in the :py:func:`khoros.auth.get_session_key` function is now generated utilizing the
+  :py:func:`khoros.auth._get_khoros_login_url` function.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
+
+General
+-------
+* Added the :py:mod:`defusedxml` package to ``requirements.txt`` and as a required install package
+  in ``setup.py``.
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Resolved `Issue #41 <https://github.com/jeffshurtliff/khoros/issues/41>`_ which involved the
+  :py:exc:`requests.exceptions.InvalidSchema` exception being raised when using absolute URLs
+  with the :py:meth:`khoros.core.Khoros.get`, :py:meth:`khoros.core.Khoros.post` and
+  :py:meth:`khoros.core.Khoros.put` core methods.
 
 |
 
