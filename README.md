@@ -165,12 +165,10 @@ khoros = Khoros(
 )
 
 # Using Lithium SSO
-```python
 khoros = Khoros(
     community_url='https://community.example.com', 
     sso={'sso.authentication_token': LITHIUM_SSO_TOKEN}
 )
-```
 ```
 
 Alternatively, configuration settings can be passed at once using the `options` argument in the `Khoros` class, as 
