@@ -579,7 +579,8 @@ class Khoros(object):
         """This method establishes a connection to the environment using a specified authentication type.
 
         .. versionchanged:: 4.2.0
-           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+           Introduced support for LithiumSSO Token authentication and made general code improvements to avoid
+           unnecessary :py:exc:`KeyError` exceptions. Also fixed an issue with the exception error message.
 
         .. versionchanged:: 3.3.2
            Added logging for the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception.
@@ -593,12 +594,12 @@ class Khoros(object):
             connection_type = self.core_settings.get('auth_type')
         if connection_type == 'session_auth':
             self._connect_with_session_key()
-        if connection_type == "sso":
+        elif connection_type == 'sso':
             self._connect_with_lithium_token()
         else:
             error_msg = f"The '{connection_type}' authentication type is currently unsupported."
             logger.error(error_msg)
-            raise errors.exceptions.CurrentlyUnsupportedError(error_msg)
+            raise errors.exceptions.CurrentlyUnsupportedError(f"'{connection_type}' authentication type")
 
     def get_session_key(self, username=None, password=None):
         """This function retrieves the session key for an authentication session.
