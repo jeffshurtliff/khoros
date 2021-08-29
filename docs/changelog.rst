@@ -110,6 +110,8 @@ Fixes to the :doc:`core-object-methods`.
   :py:exc:`requests.exceptions.InvalidSchema` exception being raised when using absolute URLs
   with the :py:meth:`khoros.core.Khoros.get`, :py:meth:`khoros.core.Khoros.post` and
   :py:meth:`khoros.core.Khoros.put` core methods.
+* Corrected how the exception error message is defined in the :py:meth:`khoros.core.Khoros.connect`
+  method.
 
 |
 
