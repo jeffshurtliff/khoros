@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Jun 2021
+:Modified Date:     29 Aug 2021
 """
 
 import sys
@@ -46,6 +46,9 @@ class Khoros(object):
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
                  ssl_verify=True):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 4.2.0
+           Introduced support for LithiumSSO Token authentication and made some general code improvements.
 
         .. versionchanged:: 3.4.0
            Introduced the ``ssl_verify`` parameter and established a key-value pair for it in the
@@ -95,6 +98,9 @@ class Khoros(object):
         :type empty: bool
         :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
         :type ssl_verify: bool
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                 :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
+                 :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
         """
         # Define the current version
         self.version = version.get_full_version()
@@ -176,7 +182,7 @@ class Khoros(object):
             self.auth['active'] = False
 
         # Update the default authentication type if necessary
-        self.auth['type'] = self.core_settings['auth_type']
+        self.auth['type'] = self.core_settings.get('auth_type')
         if auth_type is not None:
             accepted_auth_types = ['session_auth', 'oauth2', 'sso']
             auth_map = {
@@ -187,7 +193,7 @@ class Khoros(object):
             if str(auth_type) in accepted_auth_types:
                 self.core_settings['auth_type'] = auth_type
                 self.auth['type'] = auth_type
-                if auth_map.get(auth_type) is None and auth_type not in self._helper_settings['connection']:
+                if auth_map.get(auth_type) is None and auth_type not in self._helper_settings.get('connection'):
                     error_msg = f"The '{auth_type}' authentication type was specified but no associated data was found."
                     logger.error(error_msg)
                     raise errors.exceptions.MissingAuthDataError(error_msg)
@@ -196,13 +202,13 @@ class Khoros(object):
                 logger.warn(error_msg)
                 errors.handlers.eprint(error_msg)
                 self.core_settings.update(Khoros.DEFAULT_AUTH)
-                self.auth['type'] = self.core_settings['auth_type']
+                self.auth['type'] = self.core_settings.get('auth_type')
         elif sso is not None:
             self.core_settings['auth_type'] = 'sso'
-            self.auth['type'] = self.core_settings['auth_type']
+            self.auth['type'] = self.core_settings.get('auth_type')
         elif oauth2 is not None:
             self.core_settings['auth_type'] = 'oauth2'
-            self.auth['type'] = self.core_settings['auth_type']
+            self.auth['type'] = self.core_settings.get('auth_type')
         else:
             if empty:
                 self._populate_empty_object()
@@ -211,7 +217,7 @@ class Khoros(object):
                 self.core_settings['auth_type'] = 'session_auth'
             elif self._session_auth_credentials_defined():
                 self.core_settings['auth_type'] = 'session_auth'
-            elif 'session_auth' not in self._helper_settings['connection']:
+            elif 'session_auth' not in self._helper_settings.get('connection'):
                 error_msg = f"No data was found for the default '{auth_type}' authentication type."
                 logger.error(error_msg)
                 raise errors.exceptions.MissingAuthDataError(error_msg)
@@ -238,11 +244,11 @@ class Khoros(object):
 
         # Auto-connect to the environment if specified (default)
         if auto_connect and not empty:
-            if self.core_settings['auth_type'] in ['sso', 'session_auth']:
-                self.connect(self.core_settings['auth_type'])
+            if self.core_settings.get('auth_type') in ['sso', 'session_auth']:
+                self.connect(self.core_settings.get('auth_type'))
             else:
                 error_msg = f"Unable to auto-connect to the instance with the given " \
-                            f"'{self.core_settings['auth_type']}' authentication type."
+                            f"'{self.core_settings.get('auth_type')}' authentication type."
                 logger.error(error_msg)
                 errors.handlers.eprint(error_msg)
 
@@ -281,14 +287,22 @@ class Khoros(object):
         self.auth['header'] = {'li-api-session-key': ''}
 
     def _populate_core_settings(self):
-        """This method populates the khoros.core dictionary with the core public settings used by the object."""
+        """This method populates the khoros.core dictionary with the core public settings used by the object.
+
+        .. versionchanged:: 4.2.0
+           The way in which the ``_setting`` value is retrieved from ``self.core_settings`` was improved.
+        """
         _core_settings = ['community_url', 'base_url', 'v1_base', 'v2_base']
         for _setting in _core_settings:
             if _setting in self.core_settings:
-                self.core[_setting] = self.core_settings[_setting]
+                self.core[_setting] = self.core_settings.get(_setting)
 
     def _populate_auth_settings(self):
-        """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks."""
+        """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks.
+
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+        """
         _auth_settings = ['auth_type', 'oauth2', 'session_auth', 'sso']
         _setting_keys = {
             'oauth2': ['client_id', 'client_secret', 'redirect_url'],
@@ -298,14 +312,18 @@ class Khoros(object):
             if _setting in self.core_settings:
                 if _setting in _setting_keys:
                     for _setting_key in _setting_keys.get(_setting):
-                        if _setting_key in self.core_settings[_setting]:
-                            self.auth[_setting_key] = self.core_settings[_setting][_setting_key]
+                        if _setting_key in self.core_settings.get(_setting):
+                            self.auth[_setting_key] = self.core_settings.get(_setting).get(_setting_key)
 
     def _populate_construct_settings(self):
-        """This method populates the khoros.construct dictionary to assist in constructing API queries and responses."""
+        """This method populates the khoros.construct dictionary to assist in constructing API queries and responses.
+
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+        """
         if 'prefer_json' in self.core_settings:
             return_formats = {True: '&restapi.response_format=json', False: ''}
-            self.construct['response_format'] = return_formats.get(self.core_settings['prefer_json'])
+            self.construct['response_format'] = return_formats.get(self.core_settings.get('prefer_json'))
 
     def _parse_env_settings(self):
         """This method parses the settings identified from environment variables.
@@ -325,6 +343,9 @@ class Khoros(object):
     def _parse_helper_settings(self):
         """This method parses the settings in the helper configuration file when provided.
 
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+
         .. versionchanged:: 2.8.0
            Support was added for the ``translate_errors`` setting and any other top-level setting.
         """
@@ -337,75 +358,95 @@ class Khoros(object):
                     _connection_keys = ['community_url', 'tenant_id', 'default_auth_type', 'oauth2',
                                         'session_auth', 'sso']
                     for _connection_key in _connection_keys:
-                        if _connection_key in self._helper_settings['connection']:
+                        if _connection_key in self._helper_settings.get('connection'):
                             _new_key = 'auth_type' if _connection_key == 'default_auth_type' else _connection_key
-                            self.core_settings[_new_key] = self._helper_settings['connection'][_connection_key]
+                            self.core_settings[_new_key] = self._helper_settings.get('connection').get(_connection_key)
                 elif _helper_key == 'construct':
                     _construct_keys = ['prefer_json']
                     for _construct_key in _construct_keys:
-                        if _construct_key in self._helper_settings['construct']:
-                            self.core_settings[_construct_key] = self._helper_settings['construct'][_construct_key]
+                        if _construct_key in self._helper_settings.get('construct'):
+                            self.core_settings[_construct_key] = \
+                                self._helper_settings.get('construct').get(_construct_key)
                 else:
                     if _helper_key in self._helper_settings:
-                        self.core_settings[_helper_key] = self._helper_settings[_helper_key]
+                        self.core_settings[_helper_key] = self._helper_settings.get(_helper_key)
         if 'discussion_styles' in self._helper_settings:
             if isinstance(self._helper_settings.get('discussion_styles'), list):
                 self.core_settings['discussion_styles'] = self._helper_settings.get('discussion_styles')
 
     def _validate_base_url(self):
-        """This method ensures that the Community URL is defined appropriately."""
+        """This method ensures that the Community URL is defined appropriately.
+
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+        """
         if ('http://' not in self.core_settings['community_url']) and \
-                ('https://' not in self.core_settings['community_url']):
-            self.core_settings['community_url'] = f"https://{self.core_settings['community_url']}"
-        if self.core_settings['community_url'].endswith('/'):
-            self.core_settings['community_url'] = self.core_settings['community_url'][:-1]
+                ('https://' not in self.core_settings.get('community_url')):
+            self.core_settings['community_url'] = f"https://{self.core_settings.get('community_url')}"
+        if self.core_settings.get('community_url').endswith('/'):
+            self.core_settings['community_url'] = self.core_settings.get('community_url')[:-1]
 
     def _define_url_settings(self):
-        """This method defines the URL settings associated with the Khoros environment."""
-        if 'community_name' in self.core_settings and self.core_settings['use_community_name'] is True:
-            self.core_settings['base_url'] = f"{self.core_settings['community_url']}/" \
-                                             f"{self.core_settings['community_name']}"
+        """This method defines the URL settings associated with the Khoros environment.
+
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+        """
+        if 'community_name' in self.core_settings and self.core_settings.get('use_community_name') is True:
+            self.core_settings['base_url'] = f"{self.core_settings.get('community_url')}/" \
+                                             f"{self.core_settings.get('community_name')}"
         else:
-            self.core_settings['base_url'] = self.core_settings['community_url']
-        self.core_settings['v1_base'] = f"{self.core_settings['community_url']}/restapi/vc"
-        self.core_settings['v2_base'] = f"{self.core_settings['base_url']}/api/2.0"
+            self.core_settings['base_url'] = self.core_settings.get('community_url')
+        self.core_settings['v1_base'] = f"{self.core_settings.get('community_url')}/restapi/vc"
+        self.core_settings['v2_base'] = f"{self.core_settings.get('base_url')}/api/2.0"
 
     def _session_auth_credentials_defined(self):
         """This method checks to see if session authentication credentials have been defined.
+
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
 
         .. versionadded:: 2.2.0
         """
         _defined = False
         if 'session_auth' in self.core_settings:
-            _defined = True if ('username' in self.core_settings['session_auth'] and
-                                'password' in self.core_settings['session_auth']) else _defined
+            _defined = True if ('username' in self.core_settings.get('session_auth') and
+                                'password' in self.core_settings.get('session_auth')) else _defined
         return _defined
 
     def _connect_with_session_key(self):
         """This method establishes a connection to the Khoros environment using basic / session key authentication.
 
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+
         .. versionchanged:: 3.3.2
            Added logging for the :py:exc:`khoros.errors.exceptions.MissingAuthDataError` exception.
+
+        :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
         """
-        if ('username' not in self.core_settings['session_auth']) or \
-                ('password' not in self.core_settings['session_auth']):
+        if ('username' not in self.core_settings.get('session_auth')) or \
+                ('password' not in self.core_settings.get('session_auth')):
             error_msg = f"The username and/or password for session key authentication cannot be found."
             logger.error(error_msg)
             raise errors.exceptions.MissingAuthDataError(error_msg)
 
         self.core_settings['session_auth']['session_key'] = auth.get_session_key(self)
-        self.core_settings['auth_header'] = auth.get_session_header(self.core_settings['session_auth']['session_key'])
-        self.auth['session_key'] = self.core_settings['session_auth']['session_key']
-        self.auth['header'] = self.core_settings['auth_header']
+        self.core_settings['auth_header'] = \
+            auth.get_session_header(self.core_settings.get('session_auth').get('session_key'))
+        self.auth['session_key'] = self.core_settings.get('session_auth').get('session_key')
+        self.auth['header'] = self.core_settings.get('auth_header')
         self.auth['active'] = True
 
     def _connect_with_lithium_token(self):
         """This method establishes a connection to the Khoros environment using SSO authentication.
 
+        .. versionadded:: 4.2.0
+
         :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
         """
-        if "sso.authentication_token" not in self.core_settings["sso"]:
-            raise errors.exceptions.MissingAuthDataError("SSO authentication requires a Lithium SSO token.")
+        if "sso.authentication_token" not in self.core_settings.get('sso'):
+            raise errors.exceptions.MissingAuthDataError("SSO authentication requires a LithiumSSO token.")
 
         li_api_session_key = auth.get_sso_key(self)
         session_key = auth.get_session_header(li_api_session_key)
@@ -537,6 +578,9 @@ class Khoros(object):
     def connect(self, connection_type=None):
         """This method establishes a connection to the environment using a specified authentication type.
 
+        .. versionchanged:: 4.2.0
+           General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
+
         .. versionchanged:: 3.3.2
            Added logging for the :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception.
 
@@ -546,7 +590,7 @@ class Khoros(object):
         :raises: :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`
         """
         if connection_type is None:
-            connection_type = self.core_settings['auth_type']
+            connection_type = self.core_settings.get('auth_type')
         if connection_type == 'session_auth':
             self._connect_with_session_key()
         if connection_type == "sso":
@@ -577,6 +621,10 @@ class Khoros(object):
     def get(self, query_url, relative_url=True, return_json=True, headers=None, proxy_user_object=None):
         """This method performs a simple GET request that leverages the Khoros authorization headers.
 
+        .. versionchanged:: 4.2.0
+           Resolved an issue that caused errors with absolute URLs, and made general code improvements were made
+           to avoid unnecessary :py:exc:`KeyError` exceptions.
+
         .. versionchanged:: 4.0.0
            Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
            of other users.
@@ -597,14 +645,18 @@ class Khoros(object):
                  :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                  :py:exc:`khoros.errors.exceptions.GETRequestError`
         """
-        query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
+        query_url = f"/{query_url}" if not query_url.startswith('/') and relative_url else query_url
+        query_url = f"{self.core_settings.get('community_url')}{query_url}" if relative_url else query_url
         return api.get_request_with_retries(query_url, return_json=return_json, headers=headers, khoros_object=self,
                                             proxy_user_object=proxy_user_object)
 
     def post(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
              multipart=False, proxy_user_object=None):
         """This method performs a simple POST request that leverages the Khoros authorization headers.
+
+        .. versionchanged:: 4.2.0
+           Resolved an issue that caused errors with absolute URLs, and made general code improvements were made
+           to avoid unnecessary :py:exc:`KeyError` exceptions.
 
         .. versionchanged:: 4.0.0
            Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -647,8 +699,8 @@ class Khoros(object):
                  :py:exc:`khoros.errors.exceptions.POSTRequestError`,
                  :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
         """
-        query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url[1:]
+        query_url = f"/{query_url}" if not query_url.startswith('/') and relative_url else query_url
+        query_url = f"{self.core_settings.get('community_url')}{query_url}" if relative_url else query_url[1:]
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
         content_type = '' if not content_type else content_type
@@ -660,6 +712,10 @@ class Khoros(object):
     def put(self, query_url, payload=None, relative_url=True, return_json=True, content_type=None, headers=None,
             multipart=False, proxy_user_object=None):
         """This method performs a simple PUT request that leverages the Khoros authorization headers.
+
+        .. versionchanged:: 4.2.0
+           Resolved an issue that caused errors with absolute URLs, and made general code improvements were made
+           to avoid unnecessary :py:exc:`KeyError` exceptions.
 
         .. versionchanged:: 4.0.0
            Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -699,8 +755,8 @@ class Khoros(object):
                  :py:exc:`khoros.errors.exceptions.PUTRequestError`,
                  :py:exc:`khoros.errors.exceptions.PayloadMismatchError`
         """
-        query_url = f"/{query_url}" if not query_url.startswith('/') else query_url
-        query_url = f"{self.core_settings['community_url']}{query_url}" if relative_url else query_url
+        query_url = f"/{query_url}" if not query_url.startswith('/') and relative_url else query_url
+        query_url = f"{self.core_settings.get('community_url')}{query_url}" if relative_url else query_url
         json_payload = payload if isinstance(payload, dict) else None
         plaintext_payload = payload if isinstance(payload, str) else None
         content_type = '' if not content_type else content_type
