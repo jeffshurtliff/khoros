@@ -48,7 +48,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 Documentation
 -------------
 * Added example syntax for authenticating using a
-  `LithiumSSO token <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_.
+  `LithiumSSO token <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_
+  in the ``README.md`` file.
 
   .. note:: This change was introduced by
             `stevenspasbo <https://github.com/stevenspasbo>`_ via
@@ -115,6 +116,8 @@ Fixes to the :doc:`core-object-methods`.
 
 |
 
+-----
+
 ******
 v4.1.1
 ******
@@ -131,6 +134,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
   handle the ``ARCHIVED`` status when it is returned.
 
 |
+
+-----
 
 ******
 v4.1.0
