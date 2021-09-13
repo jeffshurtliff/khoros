@@ -1,5 +1,5 @@
 # Khoros Communities Python Library
-The **khoros** library acts as a Python software development kit (SDK) to administer and manage 
+The **khoros** library acts as a Python software development kit (SDK) to administer and manage
 [Khoros Communities](https://khoros.com/platform/communities) (formerly Lithium)  online community platforms.
 
 <table>
@@ -23,7 +23,7 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         <td>Build Status</td>
         <td>
             <a href="https://github.com/jeffshurtliff/khoros/blob/master/.github/workflows/pythonpackage.yml">
-                <img alt="GitHub Workflow Status" 
+                <img alt="GitHub Workflow Status"
                 src="https://img.shields.io/github/workflow/status/jeffshurtliff/khoros/Python package">
             </a>
         </td>
@@ -160,18 +160,18 @@ demonstrated in the example below.
 ```python
 # Using Session Key authentication
 khoros = Khoros(
-    community_url='https://community.example.com', 
+    community_url='https://community.example.com',
     session_auth={'username': USERNAME, 'password': PASSWD}
 )
 
 # Using LithiumSSO Token authentication
 khoros = Khoros(
-    community_url='https://community.example.com', 
+    community_url='https://community.example.com',
     sso={'sso.authentication_token': LITHIUM_SSO_TOKEN}
 )
 ```
 
-Alternatively, configuration settings can be passed at once using the `options` argument in the `Khoros` class, as 
+Alternatively, configuration settings can be passed at once using the `options` argument in the `Khoros` class, as
 shown below.
 
 ```python
@@ -324,7 +324,7 @@ The documentation is located here: [https://khoros.readthedocs.io/en/latest/](ht
 Issues can be reported within the [GitHub repository](https://github.com/jeffshurtliff/khoros/issues).
 
 ## Roadmap
-Upcoming improvements to the library can be found in the following locations: 
+Upcoming improvements to the library can be found in the following locations:
  - [2020 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/1)
  - [2021 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/2)
 
