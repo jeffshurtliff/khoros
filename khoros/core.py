@@ -450,6 +450,7 @@ class Khoros(object):
 
         li_api_session_key = auth.get_sso_key(self)
         session_key = auth.get_session_header(li_api_session_key)
+        self.auth['session_key'] = session_key
         self.auth['header'] = session_key
         self.auth['active'] = True
 
