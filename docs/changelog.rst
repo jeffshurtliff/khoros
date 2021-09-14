@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.2.0b1
+v4.2.0rc1
 ********
-**Release Date: 2021-08-29**
+**Release Date: 2021-09-13**
 
 Added
 =====
@@ -69,6 +69,13 @@ Changes to the :doc:`core-object-methods`.
             `stevenspasbo <https://github.com/stevenspasbo>`_ via
             `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
 
+* Support was introduced in the :py:class:`khoros.core.Khoros` core object class to support
+  user impersonation with LithiumSSO token authentication.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #44 <https://github.com/jeffshurtliff/khoros/pull/44>`_.
+
 * The following methods within the :py:class:`khoros.core.Khoros` core object class
   were improved to avoid unnecessary :py:exc:`KeyError` exceptions:
     * :py:meth:`khoros.core.Khoros._populate_core_settings`
@@ -94,6 +101,13 @@ Changes to the :doc:`primary modules <primary-modules>`.
   .. note:: This change was introduced by
             `stevenspasbo <https://github.com/stevenspasbo>`_ via
             `Pull Request #42 <https://github.com/jeffshurtliff/khoros/pull/42>`_.
+
+* Support was introduced in the :py:class:`khoros.objects.users.ImpersonatedUser` object class
+  to support user impersonation with LithiumSSO token authentication.
+
+  .. note:: This change was introduced by
+            `stevenspasbo <https://github.com/stevenspasbo>`_ via
+            `Pull Request #44 <https://github.com/jeffshurtliff/khoros/pull/44>`_.
 
 General
 -------

@@ -6,7 +6,7 @@
 :Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     13 Sep 2021
 """
 
 import warnings
@@ -21,6 +21,9 @@ logger = log_utils.initialize_logging(__name__)
 # Create an ImpersonatedUser class to pass to other functions
 class ImpersonatedUser(object):
     """This class is used for impersonating another user when performing other functions throughout the library.
+
+    .. versionchanged:: 4.2.0
+       Added support for user impersonation with LithiumSSO token authentication.
 
     .. versionadded:: 4.0.0
     """
