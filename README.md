@@ -15,7 +15,7 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         <td>Latest Beta/RC Release</td>
         <td>
             <a href='https://pypi.org/project/khoros/#history'>
-                <img alt="PyPI" src="https://img.shields.io/badge/pypi-4.2.0b1-blue">
+                <img alt="PyPI" src="https://img.shields.io/badge/pypi-4.2.0rc1-blue">
             </a>
         </td>
     </tr>
@@ -158,9 +158,16 @@ The community and connection information can be passed directly into the `Khoros
 demonstrated in the example below.
 
 ```python
+# Using Session Key authentication
 khoros = Khoros(
     community_url='https://community.example.com', 
     session_auth={'username': USERNAME, 'password': PASSWD}
+)
+
+# Using LithiumSSO Token authentication
+khoros = Khoros(
+    community_url='https://community.example.com', 
+    sso={'sso.authentication_token': LITHIUM_SSO_TOKEN}
 )
 ```
 

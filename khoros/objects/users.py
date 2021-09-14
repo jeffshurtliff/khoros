@@ -6,7 +6,7 @@
 :Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     13 Sep 2021
 """
 
 import warnings
@@ -21,6 +21,9 @@ logger = log_utils.initialize_logging(__name__)
 # Create an ImpersonatedUser class to pass to other functions
 class ImpersonatedUser(object):
     """This class is used for impersonating another user when performing other functions throughout the library.
+
+    .. versionchanged:: 4.2.0
+       Added support for user impersonation with LithiumSSO token authentication.
 
     .. versionadded:: 4.0.0
     """
@@ -48,11 +51,7 @@ class ImpersonatedUser(object):
                 logger.error('The ImpersonatedUser object cannot be configured as no admin-level Khoros object '
                              'was provided to authenticate the new user')
             else:
-                if not admin_object.core_settings.get('session_auth') \
-                        or not admin_object.auth.get('session_key'):
-                    logger.error('The ImpersonatedUser object cannot be configured as the admin-level Khoros object '
-                                 'has not been authenticated using a session key.')
-                else:
+                if "session_key" in admin_object.auth:
                     self.session_key = auth.get_session_key(admin_object, user_login)
                     if self.session_key:
                         self.session_header = auth.get_session_header(self.session_key)
@@ -60,6 +59,9 @@ class ImpersonatedUser(object):
                     else:
                         logger.warning('The session header for the impersonated user was not populated because a '
                                        'session key was not successfully acquired')
+                else:
+                    logger.error('The ImpersonatedUser object cannot be configured as the admin-level Khoros object '
+                                 'has not been authenticated.')
 
     def __del__(self):
         """This method fully destroys the instance.

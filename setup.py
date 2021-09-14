@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 :Synopsis:          This script is the primary configuration file for the khoros project
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     29 Aug 2021
 """
 
 import setuptools
@@ -48,6 +49,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/jeffshurtliff/khoros",
+    project_urls={
+        'Changelog': 'https://khoros.readthedocs.io/en/latest/changelog.html',
+        'Documentation': 'https://khoros.readthedocs.io/',
+        'Issue Tracker': 'https://github.com/jeffshurtliff/khoros/issues',
+        'Khoros Dev Docs': 'https://developer.khoros.com/khoroscommunitydevdocs',
+    },
     packages=setuptools.find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -71,8 +78,20 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         "PyYAML>=5.3.1",
-        "urllib3~=1.26.2",
+        "urllib3>=1.26.2",
         "requests>=2.23.0",
         "setuptools~=52.0.0",
+        "defusedxml>=0.7.1"
     ],
+    extras_require={
+        'sphinx': [
+            'Sphinx>=3.4.0',
+            'sphinxcontrib-applehelp>=1.0.2',
+            'sphinxcontrib-devhelp>=1.0.2',
+            'sphinxcontrib-htmlhelp>=1.0.3',
+            'sphinxcontrib-jsmath>=1.0.1',
+            'sphinxcontrib-qthelp>=1.0.3',
+            'sphinxcontrib-serializinghtml>=1.1.4'
+        ],
+    }
 )
