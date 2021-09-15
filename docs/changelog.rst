@@ -4,6 +4,28 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v4.3.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:mod:`khoros.objects.saml` module with the following functions:
+    * :py:func:`khoros.objects.saml.import_assertion`
+    * :py:func:`khoros.objects.saml.send_assertion`
+    * :py:func:`khoros.objects.saml._is_decoded`
+    * :py:func:`khoros.objects.saml._get_api_uri`
+
+|
+
+-----
+
+******
 v4.2.0
 ******
 **Release Date: 2021-09-13**
