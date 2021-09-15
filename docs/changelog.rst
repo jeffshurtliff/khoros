@@ -15,11 +15,23 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the :py:mod:`khoros.objects.saml` module with the following functions:
-    * :py:func:`khoros.objects.saml.import_assertion`
-    * :py:func:`khoros.objects.saml.send_assertion`
-    * :py:func:`khoros.objects.saml._is_decoded`
-    * :py:func:`khoros.objects.saml._get_api_uri`
+* Added the :py:mod:`khoros.saml` module with the following functions:
+    * :py:func:`khoros.saml.import_assertion`
+    * :py:func:`khoros.saml.send_assertion`
+    * :py:func:`khoros.saml._is_decoded`
+    * :py:func:`khoros.saml._get_api_uri`
+
+Documentation
+-------------
+* Added the :py:mod:`khoros.saml` module to the :doc:`Primary Modules <primary-modules>` page.
+
+Changed
+=======
+
+General
+-------
+* Updated the ``pythonpackage.yml`` GitHub Actions workflow to start performing
+  build validations for `Python 3.10 <https://docs.python.org/3.10/>`_.
 
 |
 
