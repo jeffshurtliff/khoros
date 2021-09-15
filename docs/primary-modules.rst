@@ -20,6 +20,7 @@ which are listed below.
     * `Subscriptions Module (khoros.objects.subscriptions)`_
     * `Tags Module (khoros.objects.tags)`_
     * `Users Module (khoros.objects.users)`_
+* `SAML Module (khoros.saml)`_
 * `Structures Module (khoros.structures)`_
     * `Base Structures Module (khoros.structures.base)`_
     * `Boards Module (khoros.structures.boards)`_
@@ -198,6 +199,18 @@ Users Module (khoros.objects.users)
 This module includes functions that handle user-related operations.
 
 .. automodule:: khoros.objects.users
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+*************************
+SAML Module (khoros.saml)
+*************************
+This module includes functions that relate to SAML Single Sign-On (SSO).
+
+.. automodule:: khoros.saml
    :members:
 
 :doc:`Return to Top <primary-modules>`
