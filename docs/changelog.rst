@@ -25,14 +25,6 @@ Documentation
 -------------
 * Added the :py:mod:`khoros.saml` module to the :doc:`Primary Modules <primary-modules>` page.
 
-Changed
-=======
-
-General
--------
-* Updated the ``pythonpackage.yml`` GitHub Actions workflow to start performing
-  build validations for `Python 3.10 <https://docs.python.org/3.10/>`_.
-
 |
 
 -----
