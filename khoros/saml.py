@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 :Module:            khoros.objects.saml
-:Synopsis:          This module includes functions that relate to SAML assertions.
+:Synopsis:          This module includes functions that relate to SAML SSO.
 :Usage:             ``from khoros.objects import saml``
 :Example:           ``assertion = saml.import_assertion(file_path)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     14 Sep 2021
+:Modified Date:     15 Sep 2021
 """
 
-from .. import api, errors
-from ..utils import log_utils, core_utils
+from . import api, errors
+from utils import log_utils, core_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
@@ -18,6 +18,8 @@ logger = log_utils.initialize_logging(__name__)
 
 def send_assertion(khoros_object, assertion=None, file_path=None, base64_encode=True, url_encode=True):
     """This function sends a SAML assertion as a POST request in order to provision a new user.
+
+    .. versionadded:: 4.3.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
