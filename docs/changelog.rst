@@ -30,6 +30,26 @@ Documentation
 -----
 
 ******
+v4.2.1
+******
+**Release Date: 2021-09-24**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api.put_request_with_retries` function call within the
+  :py:func:`khoros.roles._assign_role_with_v2` function to explicitly define the content-type
+  as ``application/json`` in order to resolve `Issue #45 <https://github.com/jeffshurtliff/khoros/issues/45>`_.
+
+|
+
+-----
+
+******
 v4.2.0
 ******
 **Release Date: 2021-09-13**
