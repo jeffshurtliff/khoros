@@ -3,6 +3,24 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+*********
+v4.2.1rc1
+*********
+**Release Date: 2021-09-24**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* TBD
+
+|
+
+-----
+
 ******
 v4.2.0
 ******
