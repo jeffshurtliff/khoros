@@ -15,7 +15,9 @@ Primary Modules
 ---------------
 Fixes to the :doc:`primary modules <primary-modules>`.
 
-* TBD
+* Updated the :py:func:`khoros.api.put_request_with_retries` function call within the
+  :py:func:`khoros.roles._assign_role_with_v2` function to explicitly define the content-type
+  as ``application/json`` in order to resolve `Issue #45 <https://github.com/jeffshurtliff/khoros/issues/45>`_.
 
 |
 
