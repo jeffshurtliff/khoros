@@ -15,6 +15,7 @@ Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
 
+* Added the :py:meth:`khoros.core.Khoros.Message.validate_message_payload` static method.
 * Added the :py:class:`khoros.core.Khoros.SAML` inner class with the following methods:
     * :py:meth:`khoros.core.Khoros.SAML.import_assertion`
     * :py:meth:`khoros.core.Khoros.SAML.send_assertion`
