@@ -6,7 +6,7 @@
 :Example:           ``count = roles.get_total_role_count()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Apr 2021
+:Modified Date:     24 Sep 2021
 """
 
 from . import users
@@ -443,7 +443,7 @@ def _assign_role_with_v2(_khoros_object, _user, _lookup_type, _roles, _node=None
     }
 
     # Perform and return the API call
-    return api.put_request_with_retries(_uri, _payload, khoros_object=_khoros_object)
+    return api.put_request_with_retries(_uri, _payload, khoros_object=_khoros_object, content_type='application/json')
 
 
 def assign_roles_to_user(khoros_object, user, lookup_type='id', roles_to_add=None, node=None, node_type='board',
