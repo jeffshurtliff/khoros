@@ -146,7 +146,6 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
-    # TODO: Add the ability to pass in the full payload rather than generate it from within this function
     api_url = f"{khoros_object.core['v2_base']}/messages"
     if full_payload:
         payload = validate_message_payload(full_payload)
