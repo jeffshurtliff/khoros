@@ -135,6 +135,47 @@ def test_construct_with_tag_iterables():
     return
 
 
+def test_payload_validation():
+    """This function tests the validation of the message payload to ensure invalid data raises an exception.
+
+    .. versionadded:: 4.3.0
+    """
+    # Test null payload
+    with pytest.raises(exceptions.InvalidMessagePayloadError):
+        messages.validate_message_payload(payload=None)
+
+    # Test conversion to dictionary when JSON string
+    payload = '{"data": {"type": "message", "subject": "This is a message subject"}}'
+    payload = messages.validate_message_payload(payload)
+    assert isinstance(payload, dict)
+
+    # Test incorrect data type
+    with pytest.raises(exceptions.InvalidMessagePayloadError):
+        payload = [{'type': 'message'}, {'subject': 'This is a message subject'}]
+        messages.validate_message_payload(payload)
+
+    # Test payload that is not wrapped in the 'data' field
+    with pytest.raises(exceptions.InvalidMessagePayloadError):
+        payload = {'type': 'message', 'subject': 'This is a message subject'}
+        messages.validate_message_payload(payload)
+
+    # Test payload that is missing the 'type' sub-field
+    with pytest.raises(exceptions.InvalidMessagePayloadError):
+        payload = {'subject': 'This is a message subject'}
+        messages.validate_message_payload(payload)
+
+    # Test payload that has the incorrect 'type' value
+    with pytest.raises(exceptions.InvalidMessagePayloadError):
+        payload = {'type': 'article', 'subject': 'This is a message subject'}
+        messages.validate_message_payload(payload)
+
+    # Test valid payload
+    payload = {'data': {'type': 'message', 'subject': 'This is a message subject'}}
+    payload = messages.validate_message_payload(payload)
+    assert payload.get('data').get('type') == 'message'
+    return
+
+
 def assert_tags_present(payload, tags_to_find):
     """This function asserts that specific tags are found within API payload.
 
