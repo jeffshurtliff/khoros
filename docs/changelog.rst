@@ -53,13 +53,15 @@ Core Object
 -----------
 Changes to the :doc:`core-object-methods`.
 
-* TBD
+* Added support for the ``full_payload`` parameter in the :py:meth:`khoros.core.Khoros.Message.create`
+  method to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
 
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* TBD
+* Added support for the ``full_payload`` parameter in the :py:func:`khoros.objects.messages.create`
+  function to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
 
 |
 

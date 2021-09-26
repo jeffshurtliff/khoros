@@ -2586,9 +2586,14 @@ class Khoros(object):
                    context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
                    labels=None, product_category=None, products=None, read_only=None, seo_title=None,
                    seo_description=None, tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None,
-                   attachment_file_paths=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
-                   return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
+                   attachment_file_paths=None, full_payload=None, full_response=None, return_id=None, return_url=None,
+                   return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
+                   split_errors=False):
             """This function creates a new message within a given node.
+
+            .. versionchanged:: 4.3.0
+               It is now possible to pass the pre-constructed full JSON payload into the function via the
+               ``full_payload`` parameter as an alternative to defining each field individually.
 
             .. versionchanged:: 2.8.0
                The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
@@ -2650,6 +2655,21 @@ class Khoros(object):
             :type videos: dict, None
             :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
             :type attachment_file_paths: str, tuple, list, set, None
+            :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string with
+                                 the following syntax:
+
+                                    .. code-block:: json
+
+                                       {
+                                         "data": {
+                                           "type": "message",
+
+                                         }
+                                       }
+
+                                 .. note:: The ``type`` field shown above is essential for the payload to be valid.
+
+            :type full_payload: dict, str, None
             :param full_response: Defines if the full response should be returned instead of the outcome
                                   (``False`` by default)
 
