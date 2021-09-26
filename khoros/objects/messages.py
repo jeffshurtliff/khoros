@@ -198,7 +198,6 @@ def validate_message_payload(payload):
         if 'subject' not in payload.get('data' or 'board' not in payload.get('data') or
                                         'id' not in payload.get('data').get('board')):
             raise errors.exceptions.InvalidMessagePayloadError("A node and subject must be defined.")
-
     except Exception as exc:
         exc_type = type(exc).__name__
         raise errors.exceptions.InvalidMessagePayloadError("The message payload could not be validated due to the "
