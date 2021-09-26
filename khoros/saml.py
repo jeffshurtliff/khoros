@@ -10,7 +10,7 @@
 """
 
 from . import api, errors
-from utils import log_utils, core_utils
+from .utils import log_utils, core_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
