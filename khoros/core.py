@@ -14,7 +14,8 @@ import copy
 import logging
 import warnings
 
-from . import auth, errors, liql, api, saml
+from . import auth, errors, liql, api
+from . import saml as saml_module
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
@@ -264,6 +265,7 @@ class Khoros(object):
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
+        self.saml = self._import_saml_class()
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.subscriptions = self._import_subscription_class()
@@ -538,6 +540,13 @@ class Khoros(object):
         .. versionadded:: 2.4.0
         """
         return Khoros.Role(self)
+
+    def _import_saml_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.SAML` inner class to be utilized in the core object.
+
+        .. versionadded:: 4.3.0
+        """
+        return Khoros.SAML(self)
 
     def _import_settings_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Settings` inner class to be utilized in the core object.
@@ -3463,13 +3472,61 @@ class Khoros(object):
             return objects_module.roles.get_users_with_role(self.khoros_object, fields, role_id, role_name, scope,
                                                             node_id, limit_per_query, simple=simple)
 
+    class SAML(object):
+        """This class includes methods relating to SAML 2.0 authentication and user provisioning.
+
+        .. versionadded:: 4.3.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.SAML` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        @staticmethod
+        def import_assertion(file_path, base64_encode=True, url_encode=True):
+            """This function imports an XML SAML assertion as a string and optionally base64- and/or URL-encodes it.
+
+            .. versionadded:: 4.3.0
+
+            :param file_path: The file path to the XML file to import
+            :type file_path: str
+            :param base64_encode: Determines if the assertion should be base64-encoded (``True`` by default)
+            :type base64_encode: bool
+            :param url_encode: Determines if the assertion should be URL-encoded (``True`` by default)
+            :type url_encode: bool
+            :returns: The SAML assertion string
+            :raises: :py:exc:`FileNotFoundError`
+            """
+            return saml_module.import_assertion(file_path, base64_encode, url_encode)
+
+        def send_assertion(self, assertion=None, file_path=None, base64_encode=True, url_encode=True):
+            """This function sends a SAML assertion as a POST request in order to provision a new user.
+
+            .. versionadded:: 4.3.0
+
+            :param assertion: The SAML assertion in string format and optionally base64- and/or URL-encoded
+            :type assertion: str, None
+            :param file_path: The file path to the XML file to import that contains the SAML assertion
+            :type file_path: str, None
+            :param base64_encode: Determines if the assertion should be base64-encoded (``True`` by default)
+            :type base64_encode: bool
+            :param url_encode: Determines if the assertion should be URL-encoded (``True`` by default)
+            :type url_encode: bool
+            :returns: The API response from the POST request
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return saml_module.send_assertion(self.khoros_object, assertion, file_path, base64_encode, url_encode)
+
     class Settings(object):
         """This class includes methods relating to the retrieval and defining of various settings.
 
         .. versionadded:: 3.2.0
         """
         def __init__(self, khoros_object):
-            """This method initializes the :py:class:`khoros.core.Khoros.Studio` inner class object.
+            """This method initializes the :py:class:`khoros.core.Khoros.Settings` inner class object.
 
             :param khoros_object: The core :py:class:`khoros.Khoros` object
             :type khoros_object: class[khoros.Khoros]
