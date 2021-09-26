@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Sep 2021
+:Modified Date:     26 Sep 2021
 """
 
 import sys
@@ -15,6 +15,7 @@ import logging
 import warnings
 
 from . import auth, errors, liql, api
+from . import saml as saml_module
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
@@ -264,6 +265,7 @@ class Khoros(object):
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
+        self.saml = self._import_saml_class()
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.subscriptions = self._import_subscription_class()
@@ -538,6 +540,13 @@ class Khoros(object):
         .. versionadded:: 2.4.0
         """
         return Khoros.Role(self)
+
+    def _import_saml_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.SAML` inner class to be utilized in the core object.
+
+        .. versionadded:: 4.3.0
+        """
+        return Khoros.SAML(self)
 
     def _import_settings_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Settings` inner class to be utilized in the core object.
@@ -2577,9 +2586,14 @@ class Khoros(object):
                    context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
                    labels=None, product_category=None, products=None, read_only=None, seo_title=None,
                    seo_description=None, tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None,
-                   attachment_file_paths=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
-                   return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
+                   attachment_file_paths=None, full_payload=None, full_response=None, return_id=None, return_url=None,
+                   return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
+                   split_errors=False):
             """This function creates a new message within a given node.
+
+            .. versionchanged:: 4.3.0
+               It is now possible to pass the pre-constructed full JSON payload into the function via the
+               ``full_payload`` parameter as an alternative to defining each field individually.
 
             .. versionchanged:: 2.8.0
                The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
@@ -2641,6 +2655,21 @@ class Khoros(object):
             :type videos: dict, None
             :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
             :type attachment_file_paths: str, tuple, list, set, None
+            :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string with
+                                 the following syntax:
+
+                                    .. code-block:: json
+
+                                       {
+                                         "data": {
+                                           "type": "message",
+
+                                         }
+                                       }
+
+                                 .. note:: The ``type`` field shown above is essential for the payload to be valid.
+
+            :type full_payload: dict, str, None
             :param full_response: Defines if the full response should be returned instead of the outcome
                                   (``False`` by default)
 
@@ -3463,13 +3492,61 @@ class Khoros(object):
             return objects_module.roles.get_users_with_role(self.khoros_object, fields, role_id, role_name, scope,
                                                             node_id, limit_per_query, simple=simple)
 
+    class SAML(object):
+        """This class includes methods relating to SAML 2.0 authentication and user provisioning.
+
+        .. versionadded:: 4.3.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.SAML` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        @staticmethod
+        def import_assertion(file_path, base64_encode=True, url_encode=True):
+            """This function imports an XML SAML assertion as a string and optionally base64- and/or URL-encodes it.
+
+            .. versionadded:: 4.3.0
+
+            :param file_path: The file path to the XML file to import
+            :type file_path: str
+            :param base64_encode: Determines if the assertion should be base64-encoded (``True`` by default)
+            :type base64_encode: bool
+            :param url_encode: Determines if the assertion should be URL-encoded (``True`` by default)
+            :type url_encode: bool
+            :returns: The SAML assertion string
+            :raises: :py:exc:`FileNotFoundError`
+            """
+            return saml_module.import_assertion(file_path, base64_encode, url_encode)
+
+        def send_assertion(self, assertion=None, file_path=None, base64_encode=True, url_encode=True):
+            """This function sends a SAML assertion as a POST request in order to provision a new user.
+
+            .. versionadded:: 4.3.0
+
+            :param assertion: The SAML assertion in string format and optionally base64- and/or URL-encoded
+            :type assertion: str, None
+            :param file_path: The file path to the XML file to import that contains the SAML assertion
+            :type file_path: str, None
+            :param base64_encode: Determines if the assertion should be base64-encoded (``True`` by default)
+            :type base64_encode: bool
+            :param url_encode: Determines if the assertion should be URL-encoded (``True`` by default)
+            :type url_encode: bool
+            :returns: The API response from the POST request
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return saml_module.send_assertion(self.khoros_object, assertion, file_path, base64_encode, url_encode)
+
     class Settings(object):
         """This class includes methods relating to the retrieval and defining of various settings.
 
         .. versionadded:: 3.2.0
         """
         def __init__(self, khoros_object):
-            """This method initializes the :py:class:`khoros.core.Khoros.Studio` inner class object.
+            """This method initializes the :py:class:`khoros.core.Khoros.Settings` inner class object.
 
             :param khoros_object: The core :py:class:`khoros.Khoros` object
             :type khoros_object: class[khoros.Khoros]

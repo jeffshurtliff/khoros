@@ -109,9 +109,8 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :type videos: dict, None
     :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
     :type attachment_file_paths: str, tuple, list, set, None
-    :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string
-
-                         The syntax should be as follows:
+    :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string with the
+                         following syntax:
 
                             .. code-block:: json
 

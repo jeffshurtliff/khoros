@@ -6,10 +6,19 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ********
 v4.3.0b1
 ********
-**Release Date: TBD**
+**Release Date: 2021-09-26**
 
 Added
 =====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:class:`khoros.core.Khoros.SAML` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.SAML.import_assertion`
+    * :py:meth:`khoros.core.Khoros.SAML.send_assertion`
+* Added the :py:meth:`khoros.core.Khoros._import_saml_class` method.
 
 Primary Modules
 ---------------
@@ -44,13 +53,15 @@ Core Object
 -----------
 Changes to the :doc:`core-object-methods`.
 
-* TBD
+* Added support for the ``full_payload`` parameter in the :py:meth:`khoros.core.Khoros.Message.create`
+  method to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
 
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* TBD
+* Added support for the ``full_payload`` parameter in the :py:func:`khoros.objects.messages.create`
+  function to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
 
 |
 

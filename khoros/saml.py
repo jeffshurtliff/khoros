@@ -2,11 +2,11 @@
 """
 :Module:            khoros.objects.saml
 :Synopsis:          This module includes functions that relate to SAML SSO.
-:Usage:             ``from khoros.objects import saml``
+:Usage:             ``from khoros import saml``
 :Example:           ``assertion = saml.import_assertion(file_path)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     15 Sep 2021
+:Modified Date:     26 Sep 2021
 """
 
 from . import api, errors
