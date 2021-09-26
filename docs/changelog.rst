@@ -20,10 +20,57 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.saml.send_assertion`
     * :py:func:`khoros.saml._is_decoded`
     * :py:func:`khoros.saml._get_api_uri`
+* Added the :py:func:`khoros.objects.messages.validate_message_payload` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.InvalidMessagePayloadError` exception class.
+* Added the :py:func:`khoros.utils.tests.test_messages.test_payload_validation` test function.
 
 Documentation
 -------------
 * Added the :py:mod:`khoros.saml` module to the :doc:`Primary Modules <primary-modules>` page.
+* Added a ``TODO`` section in the docstring for the
+  :py:func:`khoros.objects.messages.construct_payload` function to indicate the missing
+  functionality that still remains to be added.
+
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* TBD
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* TBD
+
+|
+
+-----
+
+******
+v4.2.1
+******
+**Release Date: 2021-09-24**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api.put_request_with_retries` function call within the
+  :py:func:`khoros.roles._assign_role_with_v2` function to explicitly define the content-type
+  as ``application/json`` in order to resolve `Issue #45 <https://github.com/jeffshurtliff/khoros/issues/45>`_.
 
 |
 

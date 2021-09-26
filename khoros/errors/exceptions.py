@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Aug 2021
+:Modified Date:     26 Sep 2021
 """
 
 #################
@@ -547,6 +547,16 @@ class MessageTypeNotFoundError(KhorosError):
         elif 'url' in kwargs:
             custom_msg = f"{default_msg.split('provided')[0]}following URL: {kwargs['url']}"
             args = (custom_msg,)
+        super().__init__(*args)
+
+
+class InvalidMessagePayloadError(KhorosError):
+    """This exception is used when the payload for creating a message is invalid."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The message payload is invalid and cannot be utilized."
+        if not (args or kwargs):
+            args = (default_msg,)
         super().__init__(*args)
 
 
