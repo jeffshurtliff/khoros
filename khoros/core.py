@@ -2880,6 +2880,19 @@ class Khoros(object):
                                          data_id=message_id, data_url=message_url, data_api_uri=message_api_uri,
                                          v2_base=v2_base)
 
+        @staticmethod
+        def validate_message_payload(payload):
+            """This function validates the payload for a message to ensure that it can be successfully utilized.
+
+            .. versionadded:: 4.3.0
+
+            :param payload: The message payload to be validated as a dictionary (*preferred*) or a JSON string.
+            :type payload: dict, str
+            :returns: The payload as a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidMessagePayloadError`
+            """
+            return objects_module.messages.validate_message_payload(payload)
+
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This function formats the ``<li-message>`` HTML tag for a content @mention.
 

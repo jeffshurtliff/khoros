@@ -177,31 +177,26 @@ def validate_message_payload(payload):
     :returns: The payload as a dictionary
     :raises: :py:exc:`khoros.errors.exceptions.InvalidMessagePayloadError`
     """
-    try:
-        if not payload and not isinstance(payload, dict) and not isinstance(payload, str):
-            raise errors.exceptions.InvalidMessagePayloadError("The message payload is null.")
-        if isinstance(payload, str):
-            logger.warning("The message payload is defined as a JSON string and will be converted to a dictionary.")
-            payload = json.loads(payload)
-        if not isinstance(payload, dict):
-            raise errors.exceptions.InvalidMessagePayloadError("The message payload must be a dictionary or "
-                                                               "JSON string.")
-        if 'data' not in payload:
-            raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the 'data' key.")
-        if 'type' not in payload.get('data'):
-            raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the `type` key (with "
-                                                               "'message' as the value) within the 'data' parent key.")
-        if payload.get('data').get('type') != 'message':
-            raise errors.exceptions.InvalidMessagePayloadError("The value for the 'type' key in the message payload "
-                                                               "must be defined  as 'message' but was defined as "
-                                                               f"'{payload.get('data').get('type')}' instead.")
-        if 'subject' not in payload.get('data' or 'board' not in payload.get('data') or
-                                        'id' not in payload.get('data').get('board')):
-            raise errors.exceptions.InvalidMessagePayloadError("A node and subject must be defined.")
-    except Exception as exc:
-        exc_type = type(exc).__name__
-        raise errors.exceptions.InvalidMessagePayloadError("The message payload could not be validated due to the "
-                                                           f"following exception: {exc_type} - {exc}")
+    if not payload and not isinstance(payload, dict) and not isinstance(payload, str):
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload is null.")
+    if isinstance(payload, str):
+        logger.warning("The message payload is defined as a JSON string and will be converted to a dictionary.")
+        payload = json.loads(payload)
+    if not isinstance(payload, dict):
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload must be a dictionary or "
+                                                           "JSON string.")
+    if 'data' not in payload:
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the 'data' key.")
+    if 'type' not in payload.get('data'):
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the `type` key (with "
+                                                           "'message' as the value) within the 'data' parent key.")
+    if payload.get('data').get('type') != 'message':
+        raise errors.exceptions.InvalidMessagePayloadError("The value for the 'type' key in the message payload "
+                                                           "must be defined  as 'message' but was defined as "
+                                                           f"'{payload.get('data').get('type')}' instead.")
+    if 'subject' not in payload.get('data' or 'board' not in payload.get('data') or
+                                    'id' not in payload.get('data').get('board')):
+        raise errors.exceptions.InvalidMessagePayloadError("A node and subject must be defined.")
     return payload
 
 
