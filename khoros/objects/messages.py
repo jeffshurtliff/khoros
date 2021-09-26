@@ -189,12 +189,12 @@ def validate_message_payload(payload):
             raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the `type` key (with "
                                                                "'message' as the value) within the 'data' parent key.")
         if payload.get('data').get('type') != 'message':
-            raise errors.exceptions.InvalidMessagePayloadError(f"The value for the 'type' key in the message payload "
-                                                               f"must be defined  as 'message' but was defined as "
+            raise errors.exceptions.InvalidMessagePayloadError("The value for the 'type' key in the message payload "
+                                                               "must be defined  as 'message' but was defined as "
                                                                f"'{payload.get('data').get('type')}' instead.")
     except Exception as exc:
         exc_type = type(exc).__name__
-        raise errors.exceptions.InvalidMessagePayloadError(f"The message payload could not be validated due to the "
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload could not be validated due to the "
                                                            f"following exception: {exc_type} - {exc}")
     return payload
 
