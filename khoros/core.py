@@ -2703,9 +2703,9 @@ class Khoros(object):
                                                   canonical_url, context_id, context_url, cover_image, images,
                                                   is_answer, is_draft, labels, product_category, products, read_only,
                                                   seo_title, seo_description, tags, ignore_non_string_tags, teaser,
-                                                  topic, videos, attachment_file_paths, full_response, return_id,
-                                                  return_url, return_api_url, return_http_code, return_status,
-                                                  return_error_messages, split_errors)
+                                                  topic, videos, attachment_file_paths, full_payload, full_response,
+                                                  return_id, return_url, return_api_url, return_http_code,
+                                                  return_status, return_error_messages, split_errors)
 
         def update(self, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
                    canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
