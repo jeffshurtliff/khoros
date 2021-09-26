@@ -47,18 +47,7 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
 
     .. versionchanged:: 4.3.0
        It is now possible to pass the pre-constructed full JSON payload into the function via the ``full_payload``
-       parameter as an alternative to defining each field individually. The syntax should be as follows:
-
-       .. code-block:: json
-
-          {
-            "data": {
-              "type": "message",
-
-            }
-          }
-
-       .. note:: The ``type`` field shown above is essential for the payload to be processed correctly.
+       parameter as an alternative to defining each field individually.
 
     .. versionchanged:: 2.8.0
        The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
@@ -120,6 +109,22 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :type videos: dict, None
     :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
     :type attachment_file_paths: str, tuple, list, set, None
+    :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string
+
+                         The syntax should be as follows:
+
+                            .. code-block:: json
+
+                               {
+                                 "data": {
+                                   "type": "message",
+
+                                 }
+                               }
+
+                         .. note:: The ``type`` field shown above is essential for the payload to be valid.
+
+    :type full_payload: dict, str, None
     :param full_response: Defines if the full response should be returned instead of the outcome (``False`` by default)
 
                           .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``
