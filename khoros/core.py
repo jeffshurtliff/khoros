@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Sep 2021
+:Modified Date:     26 Sep 2021
 """
 
 import sys
@@ -14,7 +14,7 @@ import copy
 import logging
 import warnings
 
-from . import auth, errors, liql, api
+from . import auth, errors, liql, api, saml
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
