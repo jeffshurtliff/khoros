@@ -4090,7 +4090,7 @@ class Khoros(object):
             :type allow_multiple: bool
             :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
             :type display_warnings: bool
-            :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+            :returns: The username (i.e. login) of the user or a list of usernames if ``allow_multiple`` is ``True``
             """
             return objects_module.users.get_username(self.khoros_object, user_settings, user_id, email, first_name,
                                                      last_name, allow_multiple, display_warnings)

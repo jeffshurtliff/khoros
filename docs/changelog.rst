@@ -64,6 +64,15 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Added support for the ``full_payload`` parameter in the :py:func:`khoros.objects.messages.create`
   function to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
 
+Fixed
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Fixed some incorrect information in the docstring for :py:meth:`khoros.core.Khoros.User.get_username`.
+
 |
 
 -----
