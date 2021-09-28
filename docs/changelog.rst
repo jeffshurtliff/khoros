@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ********
 v4.3.0b4
 ********
-**Release Date: TBD**
+**Release Date: 2021-09-28**
 
 Added
 =====
@@ -56,6 +56,8 @@ Changes to the :doc:`core-object-methods`.
 
 * Added support for the ``full_payload`` parameter in the :py:meth:`khoros.core.Khoros.Message.create`
   method to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
+* Added support for the ``wrap_json`` parameter in the :py:func:`khoros.core.Khoros.Tag.structure_tags_for_message`
+  function to implement the enhancement request `#47 <https://github.com/jeffshurtliff/khoros/issues/47>`_.
 
 Primary Modules
 ---------------
@@ -63,7 +65,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 
 * Added support for the ``full_payload`` parameter in the :py:func:`khoros.objects.messages.create`
   function to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
-
+* Added support for the ``wrap_json`` parameter in the :py:func:`khoros.objects.tags.structure_tags_for_message`
+  function to implement the enhancement request `#47 <https://github.com/jeffshurtliff/khoros/issues/47>`_.
 Fixed
 =====
 
