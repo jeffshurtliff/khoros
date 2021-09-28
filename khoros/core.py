@@ -3945,8 +3945,12 @@ class Khoros(object):
             """
             return objects_module.tags.structure_single_tag_payload(tag_text)
 
-        def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False):
+        def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False,
+                                       wrap_json=False):
             """This function structures tags to use within the payload for creating or updating a message.
+
+            .. versionchanged:: 4.3.0
+               Introduced the ``wrap_json`` parameter to wrap the tags in a dictionary within the ``items`` key.
 
             .. versionadded:: 4.1.0
 
@@ -3960,11 +3964,15 @@ class Khoros(object):
             :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
                                        converted to strings (``False`` by default)
             :type ignore_non_strings: bool
+            :param wrap_json: Determines if the list of tags should be wrapped in the ``{"items": []}`` JSON structure
+                              -- In other words, a dictionary rather than a list (``False`` by default)
+            :type wrap_json: bool
             :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
             """
             return objects_module.tags.structure_tags_for_message(*tags, khoros_object=self.khoros_object,
                                                                   msg_id=msg_id, overwrite=overwrite,
-                                                                  ignore_non_strings=ignore_non_strings)
+                                                                  ignore_non_strings=ignore_non_strings,
+                                                                  wrap_json=wrap_json)
 
     class User(object):
         """This class includes methods for interacting with users."""
@@ -4090,7 +4098,7 @@ class Khoros(object):
             :type allow_multiple: bool
             :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
             :type display_warnings: bool
-            :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+            :returns: The username (i.e. login) of the user or a list of usernames if ``allow_multiple`` is ``True``
             """
             return objects_module.users.get_username(self.khoros_object, user_settings, user_id, email, first_name,
                                                      last_name, allow_multiple, display_warnings)
