@@ -69,6 +69,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
   function to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
 * Added support for the ``wrap_json`` parameter in the :py:func:`khoros.objects.tags.structure_tags_for_message`
   function to implement the enhancement request `#47 <https://github.com/jeffshurtliff/khoros/issues/47>`_.
+* Updated the ``__all__`` variable in the :py:mod:`khoros.objects` init module (``__init__py.``) and
+  added import statements for the :py:mod:`khoros.objects.attachments`, :py:mod:`khoros.objects.base` and
+  :py:mod:`khoros.objects.labels` modules.
+
 Fixed
 =====
 
