@@ -31,6 +31,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.saml._is_decoded`
     * :py:func:`khoros.saml._get_api_uri`
 * Added the :py:func:`khoros.objects.messages.validate_message_payload` function.
+* Added the :py:mod:`khoros.objects.labels` module to begin addressing the enhancement
+  request `#48 <https://github.com/jeffshurtliff/khoros/issues/48>`_.
 
 Supporting Modules
 ------------------
