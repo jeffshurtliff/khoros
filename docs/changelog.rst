@@ -43,7 +43,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 Documentation
 -------------
-* Added the :py:mod:`khoros.saml` module to the :doc:`Primary Modules <primary-modules>` page.
+* Added the :py:mod:`khoros.saml` and :py:mod:`khoros.objects.labels` modules to the
+  :doc:`Primary Modules <primary-modules>` page.
 * Added a ``TODO`` section in the docstring for the
   :py:func:`khoros.objects.messages.construct_payload` function to indicate the missing
   functionality that still remains to be added.

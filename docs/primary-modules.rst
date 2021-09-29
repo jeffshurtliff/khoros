@@ -14,6 +14,7 @@ which are listed below.
     * `Albums Module (khoros.objects.albums)`_
     * `Archives Module (khoros.objects.archives)`_
     * `Attachments Module (khoros.objects.attachments)`_
+    * `Labels Module (khoros.objects.labels)`_
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
     * `Settings Module (khoros.objects.settings)`_
@@ -133,6 +134,17 @@ Attachments Module (khoros.objects.attachments)
 This module includes functions that handle attachments for messages.
 
 .. automodule:: khoros.objects.attachments
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+Labels Module (khoros.objects.labels)
+=====================================
+This module includes functions that handle labels within a Khoros Community environment.
+
+.. automodule:: khoros.objects.labels
    :members:
 
 :doc:`Return to Top <primary-modules>`
