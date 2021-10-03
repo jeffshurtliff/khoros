@@ -1,38 +1,25 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Report an Issue
+about: Report an issue that was encountered
 title: ''
-labels: ''
-assignees: ''
+labels: bug
+assignees: jeffshurtliff
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Related Function(s) or Method(s)
+> **Note:** You can assume that the core object has been instantiated as `khoros` when listing them below.
+- `khoros.CLASS.METHOD`
+- `khoros.objects.MODULE.FUNCTION`
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Details
+Provide any details that describe the issue and its impact.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Steps to Reproduce
+Provide any steps and/or code snippets that explain how to reproduce the issue. (You may also provide screenshots, etc.)
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Expected Behavior
+Where applicable, provide information around what the expected behavior should be.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+## Suggestions or Proposals
+Feel free to provide any suggestions or proposals for how the issue could be addressed.
