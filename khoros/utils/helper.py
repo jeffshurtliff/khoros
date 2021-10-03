@@ -178,8 +178,11 @@ def _collect_values(_top_level_keys, _helper_cfg, _helper_dict=None, _ignore_mis
     return _helper_dict
 
 
-def get_helper_settings(file_path, file_type='yaml'):
+def get_helper_settings(file_path, file_type='yaml', defined_settings=None):
     """This function returns a dictionary of the defined helper settings.
+
+    .. versionchanged:: 4.3.0
+       Fixed an issue where the ``ssl_verify`` field was being overridden even if defined elsewhere.
 
     .. versionchanged:: 3.4.0
        This function now supports the ``ssl_verify`` key and defines a default value when not found.
@@ -194,11 +197,16 @@ def get_helper_settings(file_path, file_type='yaml'):
     :type file_path: str
     :param file_type: Defines the helper configuration file as a ``yaml`` file (default) or a ``json`` file
     :type file_type: str
+    :param defined_settings: Core object settings (if any) defined via the ``defined_settings`` parameter
+    :type defined_settings: dict, None
     :returns: Dictionary of helper variables
     :raises: :py:exc:`khoros.errors.exceptions.InvalidHelperFileTypeError`
     """
     # Initialize the helper_settings dictionary
     helper_settings = {}
+
+    # Convert the defined_settings parameter to an empty dictionary if null
+    defined_settings = {} if not defined_settings else defined_settings
 
     if file_type != 'yaml' and file_type != 'json':
         file_type = get_file_type(file_path)
@@ -207,7 +215,7 @@ def get_helper_settings(file_path, file_type='yaml'):
     helper_cfg = import_helper_file(file_path, file_type)
 
     # Populate the connection information in the helper dictionary
-    if 'connection' in helper_cfg:
+    if 'connection' in helper_cfg and 'connection' not in defined_settings:
         helper_settings['connection'] = _get_connection_info(helper_cfg)
 
     # Populate the construct information in the helper dictionary
@@ -217,7 +225,8 @@ def get_helper_settings(file_path, file_type='yaml'):
     helper_settings['discussion_styles'] = _get_discussion_styles(helper_cfg)
 
     # Populate the SSL certificate verification setting in the helper dictionary
-    helper_settings.update(_collect_values('ssl_verify', helper_cfg))
+    if 'ssl_verify' not in defined_settings:
+        helper_settings.update(_collect_values('ssl_verify', helper_cfg))
 
     # Populate the error translation setting in the helper dictionary
     helper_settings.update(_collect_values('translate_errors', helper_cfg, _ignore_missing=True))

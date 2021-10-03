@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Apr 2021
+:Modified Date:     02 Oct 2021
 """
 
 from . import api, errors
@@ -405,6 +405,10 @@ def _convert_where_dicts_to_lists(_dict_list):
 def parse_where_clause(where, join_logic='AND'):
     """This function parses the data supplied for the WHERE clause of a LiQL query.
 
+    .. versionchanged:: 4.3.0
+       Refactored the function to be more efficient and Pythonic, and added missing parenthesis on the
+       exception classes.
+
     .. versionchanged:: 3.4.0
        Renamed the function to adhere to PEP8 guidelines and converted from a private to a public function.
 
@@ -413,7 +417,8 @@ def parse_where_clause(where, join_logic='AND'):
     :param join_logic: The logic to use
     :type join_logic: str, tuple, list
     :returns: A properly formatted WHERE clause (excluding the WHERE statement at the beginning)
-    :raises: InvalidOperatorError, OperatorMismatchError
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidOperatorError`,
+             :py:exc:`khoros.errors.exceptions.OperatorMismatchError`
     """
     # Examples:
     #   _where = ('id', 5)      #2-length tuple
@@ -425,29 +430,29 @@ def parse_where_clause(where, join_logic='AND'):
     #   _where = {'id': ('>', 5), 'id': ('<', 10)}      # one-to-two dict
 
     # Add them into a list as needed
-    if type(where) != list:
-        if type(where) == dict:
+    if not isinstance(where, list):
+        if isinstance(where, dict):
             where = _convert_where_dicts_to_lists([where])
-        if (type(where) == tuple or type(where) == set) and len(where) > 1:
+        if isinstance(where, tuple) or isinstance(where, set) and where:
             where = convert_set(where)
             if type(where[0]) not in LiQLSyntax.container_types:
                 where = [where]
 
     # Determine the multi-clause logic to use
     # TODO: Figure out how to allow where clause grouping with logic
-    if type(join_logic) == str:
+    if isinstance(join_logic, str):
         if join_logic not in LiQLSyntax.logic_operators:
-            raise errors.exceptions.InvalidOperatorError
+            raise errors.exceptions.InvalidOperatorError()
         join_logic = [join_logic]
     elif len(join_logic) == 1:
         if join_logic[0] not in LiQLSyntax.logic_operators:
-            raise errors.exceptions.InvalidOperatorError
+            raise errors.exceptions.InvalidOperatorError()
         else:
             join_logic = [join_logic[0]]
     else:
         if len(join_logic) != len(where) - 1:
-            raise errors.exceptions.OperatorMismatchError
-        if type(join_logic) != list:
+            raise errors.exceptions.OperatorMismatchError()
+        if not isinstance(join_logic, list):
             join_logic = list(join_logic)
 
     # Parse the where clause
@@ -464,7 +469,7 @@ def parse_where_clause(where, join_logic='AND'):
                 full_clause = f"{full_clause}{clause[0]} = {_wrap_string_values(clause[-1])}"
             elif len(clause) == 3:
                 if clause[1] not in LiQLSyntax.comparison_operators:
-                    raise errors.exceptions.InvalidOperatorError
+                    raise errors.exceptions.InvalidOperatorError()
                 full_clause = f"{full_clause}{clause[0]} {clause[1]} {_wrap_string_values(clause[-1])}"
             elif type(clause) == str:
                 full_clause = f"{full_clause}{clause}"
