@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2021
+:Modified Date:     02 Oct 2021
 """
 
 import sys
@@ -45,8 +45,11 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=True):
+                 ssl_verify=None):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 4.3.0
+           Fixed an issue where the ``ssl_verify`` parameter was being mostly disregarded.
 
         .. versionchanged:: 4.2.0
            Introduced support for LithiumSSO Token authentication and made some general code improvements.
@@ -98,7 +101,7 @@ class Khoros(object):
         :param empty: Instantiates an empty object to act as a placeholder with default values (``False`` by default)
         :type empty: bool
         :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
-        :type ssl_verify: bool
+        :type ssl_verify: bool, None
         :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
                  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
                  :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
@@ -130,10 +133,10 @@ class Khoros(object):
             'debug_mode': debug_mode,
             'skip_env_variables': skip_env_variables,
             'empty': empty,
-            'ssl_verify': ssl_verify
+            'ssl_verify': ssl_verify,
         }
         for _arg_key, _arg_val in _individual_arguments.items():
-            if _arg_val is not None:
+            if _arg_val is not None and defined_settings.get(_arg_key) is None:
                 defined_settings[_arg_key] = _arg_val
 
         # Creates the private core_settings attribute using the default settings as a base
@@ -156,7 +159,8 @@ class Khoros(object):
         if helper is None:
             self._helper_settings['connection'] = {}
             self._helper_settings['discussion_styles'] = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
-            self._helper_settings['ssl_verify'] = True
+            if ssl_verify is None and self.core_settings.get('ssl_verify') is None:
+                self._helper_settings['ssl_verify'] = True
         else:
             self.core_settings['helper'] = helper
             if any((isinstance(helper, tuple), isinstance(helper, list))):
@@ -169,7 +173,7 @@ class Khoros(object):
                 error_msg = "The 'helper' argument can only be supplied as tuple, string, list or dict."
                 logger.error(error_msg)
                 raise TypeError(error_msg)
-            self._helper_settings = get_helper_settings(file_path, file_type)
+            self._helper_settings = get_helper_settings(file_path, file_type, defined_settings)
 
             # Parse the helper settings
             self._parse_helper_settings()
@@ -177,6 +181,12 @@ class Khoros(object):
         # Add the SSL verification setting if applicable
         if 'ssl_verify' in self._helper_settings:
             self.core_settings['ssl_verify'] = self._helper_settings.get('ssl_verify')
+        elif ssl_verify is None and self.core_settings.get('ssl_verify') is None:
+            self.core_settings['ssl_verify'] = True
+
+        # Update the global variable if SSL Verify is explicitly disabled
+        if self.core_settings.get('ssl_verify') is False:
+            api.ssl_verify_disabled = True
 
         # Add the authentication status
         if 'active' not in self.auth:
@@ -244,7 +254,7 @@ class Khoros(object):
         self._populate_construct_settings()
 
         # Auto-connect to the environment if specified (default)
-        if auto_connect and not empty:
+        if self.core_settings.get('auto_connect'):
             if self.core_settings.get('auth_type') in ['sso', 'session_auth']:
                 self.connect(self.core_settings.get('auth_type'))
             else:
