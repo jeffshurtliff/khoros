@@ -8,6 +8,14 @@ using the :py:class:`khoros.core.Khoros.Settings` subclass, which leverages the
 This guide demonstrates various ways that you can retrieve, define and update the
 node settings within your Khoros Communities environment.
 
+* `Prerequisites`_
+* `Retrieving node settings`_
+    * `Retrieving board settings`_
+    * `Retrieving category settings`_
+    * `Retrieving group hub settings`_
+* `Defining node settings`_
+* `Working with JSON strings`_
+
 |
 
 *************
@@ -23,8 +31,9 @@ instantiated as ``khoros`` as shown below.
 
 |
 
+************************
 Retrieving node settings
-========================
+************************
 This section demonstrates how easy it is to retrieve a specific setting value from a node.
 
 .. caution::
@@ -35,7 +44,7 @@ This section demonstrates how easy it is to retrieve a specific setting value fr
 |
 
 Retrieving board settings
--------------------------
+=========================
 A specific setting for a board can be retrieved using the
 :py:class:`khoros.core.Khoros.Settings.get_node_setting` method, which leverages the
 underlying :py:func:`khoros.objects.settings.get_node_setting` function.
@@ -73,7 +82,7 @@ define it using the ``v1`` parameter by defining it as either ``True`` or ``Fals
 |
 
 Retrieving category settings
-----------------------------
+============================
 Retrieving a node setting from a category is nearly identical to retrieving board settings, with the
 one caveat that you must explicitly define the node type in the third parameter, as illustrated below.
 
@@ -92,7 +101,7 @@ one caveat that you must explicitly define the node type in the third parameter,
 |
 
 Retrieving group hub settings
------------------------------
+=============================
 Similar to retrieving category settings, you must explicitly define the node type using the ``grouphub`` value
 to successfully retrieve the value, as demonstrated below.
 
@@ -103,3 +112,20 @@ to successfully retrieve the value, as demonstrated below.
    >>> khoros.settings.get_node_setting('custom.primary_moderator', 'api-users-group', 'grouphub')
    'cmmgr123'
 
+|
+
+**********************
+Defining node settings
+**********************
+
+.. todo:: Write this section
+
+|
+
+*************************
+Working with JSON strings
+*************************
+
+.. todo:: Write this section
+
+|
