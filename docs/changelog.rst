@@ -98,6 +98,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 General
 -------
 * Updated the GitHub issue template ``.github/ISSUE_TEMPLATE/bug_report.md`` to be more intuitive.
+* Added quotes in pythonpackage.yml to avoid issue referenced in
+  `actions/setup-python#160 <https://github.com/actions/setup-python/issues/160>`_.
 
 Fixed
 =====
