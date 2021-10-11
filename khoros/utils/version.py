@@ -15,7 +15,7 @@ import urllib.request
 from . import log_utils
 
 # Define special and global variables
-__version__ = "4.3.0post1"
+__version__ = "4.3.0.post1"
 latest_version_reported = False
 logger = log_utils.initialize_logging(__name__)
 
