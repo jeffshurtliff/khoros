@@ -13,16 +13,16 @@ jobs:
         macos-target: ['10.10']
         exclude:
           -   os: 'ubuntu-20.04'
-              python: '3.10'
+              python-version: '3.10'
         include:
           - os: 'macos-11'
-            python: '3.10'
+            python-version: '3.10'
             macos-target: '11.0'
           - os: 'macos-11'
-            python: '3.9'
+            python-version: '3.9'
             macos-target: '11.0'
           - os: 'macos-11'
-            python: '3.8'
+            python-version: '3.8'
             macos-target: '11.0'
 
     steps:
