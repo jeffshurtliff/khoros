@@ -54,6 +54,10 @@ Documentation
   functionality that still remains to be added.
 * Added the new :doc:`manage-settings` page to the documentation.
 
+General
+-------
+* Created the GitHub issue template ``.github/ISSUE_TEMPLATE/documentation_request.md``.
+
 Changed
 =======
 
