@@ -14,12 +14,14 @@ which are listed below.
     * `Albums Module (khoros.objects.albums)`_
     * `Archives Module (khoros.objects.archives)`_
     * `Attachments Module (khoros.objects.attachments)`_
+    * `Labels Module (khoros.objects.labels)`_
     * `Messages Module (khoros.objects.messages)`_
     * `Roles Module (khoros.objects.roles)`_
     * `Settings Module (khoros.objects.settings)`_
     * `Subscriptions Module (khoros.objects.subscriptions)`_
     * `Tags Module (khoros.objects.tags)`_
     * `Users Module (khoros.objects.users)`_
+* `SAML Module (khoros.saml)`_
 * `Structures Module (khoros.structures)`_
     * `Base Structures Module (khoros.structures.base)`_
     * `Boards Module (khoros.structures.boards)`_
@@ -138,6 +140,17 @@ This module includes functions that handle attachments for messages.
 
 |
 
+Labels Module (khoros.objects.labels)
+=====================================
+This module includes functions that handle labels within a Khoros Community environment.
+
+.. automodule:: khoros.objects.labels
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
 Messages Module (khoros.objects.messages)
 =========================================
 This module includes functions that handle messages within a Khoros Community environment.
@@ -198,6 +211,18 @@ Users Module (khoros.objects.users)
 This module includes functions that handle user-related operations.
 
 .. automodule:: khoros.objects.users
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+*************************
+SAML Module (khoros.saml)
+*************************
+This module includes functions that relate to SAML Single Sign-On (SSO).
+
+.. automodule:: khoros.saml
    :members:
 
 :doc:`Return to Top <primary-modules>`

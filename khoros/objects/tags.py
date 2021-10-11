@@ -87,8 +87,12 @@ def get_tags_for_message(khoros_object, msg_id):
     return tag_list
 
 
-def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite=False, ignore_non_strings=False):
+def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite=False, ignore_non_strings=False,
+                               wrap_json=False):
     """This function structures tags to use within the payload for creating or updating a message.
+
+    .. versionchanged:: 4.3.0
+       Introduced the ``wrap_json`` parameter to wrap the tags in a dictionary within the ``items`` key.
 
     .. versionchanged:: 4.1.0
        The missing type declaration for the ``overwrite`` parameter has been added to the docstring.
@@ -111,7 +115,11 @@ def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite
     :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
                                converted to strings (``False`` by default)
     :type ignore_non_strings: bool
+    :param wrap_json: Determines if the list of tags should be wrapped in the ``{"items": []}`` JSON structure
+                      -- In other words, a dictionary rather than a list (``False`` by default)
+    :type wrap_json: bool
     :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     formatted_list, existing_tags = [], []
     if msg_id and not any((overwrite, khoros_object)):
@@ -122,7 +130,9 @@ def structure_tags_for_message(*tags, khoros_object=None, msg_id=None, overwrite
         existing_tags = get_tags_for_message(khoros_object, msg_id)
     formatted_list = _format_tag_data(tags, ignore_non_strings)
     existing_tags = _format_tag_data(existing_tags, ignore_non_strings)
-    return core_utils.merge_and_dedup(formatted_list, existing_tags)
+    complete_tags = core_utils.merge_and_dedup(formatted_list, existing_tags)
+    complete_tags = {'items': complete_tags} if wrap_json else complete_tags
+    return complete_tags
 
 
 def _format_tag_data(_collection, _ignore_non_strings):

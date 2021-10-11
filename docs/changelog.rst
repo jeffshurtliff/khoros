@@ -4,6 +4,166 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v4.3.0
+******
+**Release Date: 2021-10-10**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.Message.validate_message_payload` static method.
+* Added the :py:class:`khoros.core.Khoros.SAML` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.SAML.import_assertion`
+    * :py:meth:`khoros.core.Khoros.SAML.send_assertion`
+* Added the :py:meth:`khoros.core.Khoros._import_saml_class` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:mod:`khoros.saml` module with the following functions:
+    * :py:func:`khoros.saml.import_assertion`
+    * :py:func:`khoros.saml.send_assertion`
+    * :py:func:`khoros.saml._is_decoded`
+    * :py:func:`khoros.saml._get_api_uri`
+* Added the :py:func:`khoros.objects.messages.validate_message_payload` function.
+* Added the :py:mod:`khoros.objects.labels` module to begin addressing the enhancement
+  request `#48 <https://github.com/jeffshurtliff/khoros/issues/48>`_.
+* Added the global variable ``ssl_verify_disabled`` to the :py:mod:`khoros.api` module
+  to allow the verification to be performed even in functions that do not leverage the
+  instantiated core object.
+* Added the :py:func:`khoros.api._display_ssl_verify_warning` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.InvalidMessagePayloadError` exception class.
+* Added the :py:func:`khoros.utils.tests.test_messages.test_payload_validation` test function.
+
+Documentation
+-------------
+* Added the :py:mod:`khoros.saml` and :py:mod:`khoros.objects.labels` modules to the
+  :doc:`Primary Modules <primary-modules>` page.
+* Added a ``TODO`` section in the docstring for the
+  :py:func:`khoros.objects.messages.construct_payload` function to indicate the missing
+  functionality that still remains to be added.
+* Added the new :doc:`manage-settings` page to the documentation.
+
+General
+-------
+* Created the GitHub issue template ``.github/ISSUE_TEMPLATE/documentation_request.md``.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Added support for the ``full_payload`` parameter in the :py:meth:`khoros.core.Khoros.Message.create`
+  method to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
+* Added support for the ``wrap_json`` parameter in the :py:func:`khoros.core.Khoros.Tag.structure_tags_for_message`
+  function to implement the enhancement request `#47 <https://github.com/jeffshurtliff/khoros/issues/47>`_.
+* Updated the ``__init__`` module for the core object class to define the ``ssl_verify_disabled`` global
+  variable in the :py:mod:`khoros.api` module as ``True`` when the ``ssl_verify`` flag in the core settings are
+  explicitly set to ``False``.  (See line 186)
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added support for the ``full_payload`` parameter in the :py:func:`khoros.objects.messages.create`
+  function to implement the enhancement request `#46 <https://github.com/jeffshurtliff/khoros/issues/46>`_.
+* Added support for the ``wrap_json`` parameter in the :py:func:`khoros.objects.tags.structure_tags_for_message`
+  function to implement the enhancement request `#47 <https://github.com/jeffshurtliff/khoros/issues/47>`_.
+* Updated the ``__all__`` variable in the :py:mod:`khoros.objects` init module (``__init__py.``) and
+  added import statements for the :py:mod:`khoros.objects.attachments`, :py:mod:`khoros.objects.base` and
+  :py:mod:`khoros.objects.labels` modules.
+* Updated the :py:func:`khoros.api.should_verify_tls` function to introduce the ``ssl_verify_disabled`` global
+  variable, which allows the check to be performed even when the core object is not passed to the function.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added support for utilizing the ``defined_settings`` parameter in the
+  :py:func:`khoros.utils.tests.resources.initialize_khoros_object` function.
+
+
+General
+-------
+* Updated the GitHub issue template ``.github/ISSUE_TEMPLATE/bug_report.md`` to be more intuitive.
+* Added quotes in ``pythonpackage.yml`` to avoid issue referenced in
+  `actions/setup-python#160 <https://github.com/actions/setup-python/issues/160>`_.
+* Added `Python v3.10 <https://docs.python.org/3/whatsnew/3.10.html>`_ to ``pythonpackage.yml``.
+* Refactored ``pythonpackage.yml`` to perform macOS builds in order to ensure support for Python
+  v3.10 per request `#50 <https://github.com/jeffshurtliff/khoros/issues/50>`_.
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes in the :doc:`core-object-methods`.
+
+* Fixed some incorrect information in the docstring for :py:meth:`khoros.core.Khoros.User.get_username`.
+* Fixed an issue in the ``__init__`` method of the core object where the ``ssl_verify`` parameter
+  was being mostly disregarded.
+* Fixed an issue in the ``__init__`` method of the core object where the ``auto_connect`` parameter
+  defined via the ``defined_settings`` parameter was being disregarded.
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed an issue in the following functions that prevented the SSL verification from being disabled
+  when configured to do so in the helper settings.
+    * :py:func:`khoros.api._api_request_with_payload`
+    * :py:func:`khoros.api._api_request_without_payload`
+    * :py:func:`khoros.api.delete`
+    * :py:func:`khoros.api.perform_v1_search`
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.api.get_platform_version`
+* Refactored the :py:func:`khoros.liql.parse_where_clause` function to be more efficient and Pythonic,
+  and added missing parenthesis on the exception classes. Docstring syntax errors were also fixed.
+
+Supporting Modules
+------------------
+Fixes in the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed an issue in the :py:func:`khoros.utils.helper.get_helper_settings` function where the
+  ``ssl_verify`` field was being overridden even if defined elsewhere.
+
+|
+
+-----
+
+******
+v4.2.1
+******
+**Release Date: 2021-09-24**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.api.put_request_with_retries` function call within the
+  :py:func:`khoros.roles._assign_role_with_v2` function to explicitly define the content-type
+  as ``application/json`` in order to resolve `Issue #45 <https://github.com/jeffshurtliff/khoros/issues/45>`_.
+
+|
+
+-----
+
+******
 v4.2.1
 ******
 **Release Date: 2021-09-24**
@@ -64,6 +224,11 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:exc:`khoros.errors.exceptions.SsoAuthenticationError` exception for use with
   `LithiumSSO Token authentication <https://developer.khoros.com/khoroscommunitydevdocs/docs/lithiumsso-token>`_.
+* Added the :py:mod:`khoros.utils.tests.test_ssl_verify` module with the following test functions:
+    * :py:func:`khoros.utils.tests.test_ssl_verify.test_default_core_object_setting`
+    * :py:func:`khoros.utils.tests.test_ssl_verify.test_core_object_with_param_setting`
+    * :py:func:`khoros.utils.tests.test_ssl_verify.test_api_global_variable_assignment`
+    * :py:func:`khoros.utils.tests.test_ssl_verify.test_api_should_verify_function`
 
 Documentation
 -------------

@@ -45,18 +45,39 @@ def import_modules(*modules):
     return imported_modules if len(imported_modules) > 1 else imported_modules[0]
 
 
-def initialize_khoros_object():
+def initialize_khoros_object(use_defined_settings=False, defined_settings=None, append_to_default=False):
     """This function imports the :py:class:`khoros.core.Khoros` class and initializes an object.
+
+    .. versionchanged:: 4.3.0
+       Added support for utilizing the ``defined_settings`` parameter.
 
     .. versionadded:: 2.7.4
 
     :returns: The initialized :py:class:`khoros.core.Khoros` object
     """
     set_package_path()
+    default_defined_settings = {
+        'community_url': 'https://community.example.com',
+        'auto_connect': False,
+        'tenant_id': 'example',
+        'auth_type': 'session_auth',
+        'session_auth': {
+            'username': 'testuser',
+            'password': 'fakePassword123',
+        },
+    }
     core_module = importlib.import_module('khoros.core')
-    return core_module.Khoros(community_url='https://example.community.com', auto_connect=False,
-                              tenant_id='example', auth_type='session_auth',
-                              session_auth={'username': 'testuser', 'password': 'fakePassword123'})
+    if use_defined_settings:
+        settings = default_defined_settings if defined_settings is None else defined_settings
+        if defined_settings and append_to_default:
+            settings = default_defined_settings
+            settings.update(defined_settings)
+        instantiated_object = core_module.Khoros(defined_settings=settings)
+    else:
+        instantiated_object = core_module.Khoros(community_url='https://community.example.com', auto_connect=False,
+                                                 tenant_id='example', auth_type='session_auth',
+                                                 session_auth={'username': 'testuser', 'password': 'fakePassword123'})
+    return instantiated_object
 
 
 def get_structure_collection(structure_type):

@@ -7,9 +7,10 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Mar 2021
+:Modified Date:     26 Sep 2021
 """
 
+import json
 import warnings
 
 from . import attachments, users
@@ -40,9 +41,13 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
            context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
            labels=None, product_category=None, products=None, read_only=None, seo_title=None, seo_description=None,
            tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None, attachment_file_paths=None,
-           full_response=False, return_id=False, return_url=False, return_api_url=False, return_http_code=False,
-           return_status=None, return_error_messages=None, split_errors=False):
+           full_payload=None, full_response=False, return_id=False, return_url=False, return_api_url=False,
+           return_http_code=False, return_status=None, return_error_messages=None, split_errors=False):
     """This function creates a new message within a given node.
+
+    .. versionchanged:: 4.3.0
+       It is now possible to pass the pre-constructed full JSON payload into the function via the ``full_payload``
+       parameter as an alternative to defining each field individually.
 
     .. versionchanged:: 2.8.0
        The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
@@ -104,6 +109,21 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :type videos: dict, None
     :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
     :type attachment_file_paths: str, tuple, list, set, None
+    :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string with the
+                         following syntax:
+
+                            .. code-block:: json
+
+                               {
+                                 "data": {
+                                   "type": "message",
+
+                                 }
+                               }
+
+                         .. note:: The ``type`` field shown above is essential for the payload to be valid.
+
+    :type full_payload: dict, str, None
     :param full_response: Defines if the full response should be returned instead of the outcome (``False`` by default)
 
                           .. caution:: This argument overwrites the ``return_id``, ``return_url``, ``return_api_url``
@@ -131,16 +151,53 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
     api_url = f"{khoros_object.core['v2_base']}/messages"
-    payload = construct_payload(subject, body, node, node_id, node_url, canonical_url, context_id, context_url,
-                                is_answer, is_draft, read_only, seo_title, seo_description, teaser, tags, cover_image,
-                                images, labels, product_category, products, topic, videos,
-                                ignore_non_string_tags=ignore_non_string_tags, khoros_object=khoros_object)
+    if full_payload:
+        payload = validate_message_payload(full_payload)
+    else:
+        payload = construct_payload(subject, body, node, node_id, node_url, canonical_url, context_id, context_url,
+                                    is_answer, is_draft, read_only, seo_title, seo_description, teaser, tags,
+                                    cover_image, images, labels, product_category, products, topic, videos,
+                                    ignore_non_string_tags=ignore_non_string_tags, khoros_object=khoros_object)
+        payload = validate_message_payload(payload)
     multipart = True if attachment_file_paths else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
     return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
                                   return_status, return_error_messages, split_errors, khoros_object)
+
+
+def validate_message_payload(payload):
+    """This function validates the payload for a message to ensure that it can be successfully utilized.
+
+    .. versionadded:: 4.3.0
+
+    :param payload: The message payload to be validated as a dictionary (*preferred*) or a JSON string.
+    :type payload: dict, str
+    :returns: The payload as a dictionary
+    :raises: :py:exc:`khoros.errors.exceptions.InvalidMessagePayloadError`
+    """
+    if not payload and not isinstance(payload, dict) and not isinstance(payload, str):
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload is null.")
+    if isinstance(payload, str):
+        logger.warning("The message payload is defined as a JSON string and will be converted to a dictionary.")
+        payload = json.loads(payload)
+    if not isinstance(payload, dict):
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload must be a dictionary or "
+                                                           "JSON string.")
+    if 'data' not in payload:
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the 'data' key.")
+    if 'type' not in payload.get('data'):
+        raise errors.exceptions.InvalidMessagePayloadError("The message payload must include the `type` key (with "
+                                                           "'message' as the value) within the 'data' parent key.")
+    if payload.get('data').get('type') != 'message':
+        raise errors.exceptions.InvalidMessagePayloadError("The value for the 'type' key in the message payload "
+                                                           "must be defined  as 'message' but was defined as "
+                                                           f"'{payload.get('data').get('type')}' instead.")
+    if 'subject' not in payload.get('data' or 'board' not in payload.get('data') or
+                                    'id' not in payload.get('data').get('board')):
+        raise errors.exceptions.InvalidMessagePayloadError("A node and subject must be defined.")
+    return payload
 
 
 def construct_payload(subject=None, body=None, node=None, node_id=None, node_url=None, canonical_url=None,
@@ -150,6 +207,11 @@ def construct_payload(subject=None, body=None, node=None, node_id=None, node_url
                       moderation_status=None, attachments_to_add=None, attachments_to_remove=None, overwrite_tags=False,
                       ignore_non_string_tags=False, msg_id=None, khoros_object=None, action='create'):
     """This function constructs and properly formats the JSON payload for a messages API request.
+
+    .. todo::
+       Add support for the following parameters which are currently present but unsupported: ``cover_image``,
+       ``images``, ``labels``, ``product_category``, ``products``, ``topic``, ``videos``, ``parent``, ``status``,
+       ``attachments_to_add`` and ``attachments to remove``
 
     .. versionchanged:: 2.8.0
        Added the ``parent``, ``status``, ``moderation_status``, ``attachments_to_add``, ``attachments_to_remove``,

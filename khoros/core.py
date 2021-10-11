@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Sep 2021
+:Modified Date:     02 Oct 2021
 """
 
 import sys
@@ -15,6 +15,7 @@ import logging
 import warnings
 
 from . import auth, errors, liql, api
+from . import saml as saml_module
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
@@ -44,8 +45,11 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=True):
+                 ssl_verify=None):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 4.3.0
+           Fixed an issue where the ``ssl_verify`` parameter was being mostly disregarded.
 
         .. versionchanged:: 4.2.0
            Introduced support for LithiumSSO Token authentication and made some general code improvements.
@@ -97,7 +101,7 @@ class Khoros(object):
         :param empty: Instantiates an empty object to act as a placeholder with default values (``False`` by default)
         :type empty: bool
         :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
-        :type ssl_verify: bool
+        :type ssl_verify: bool, None
         :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
                  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
                  :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
@@ -129,10 +133,10 @@ class Khoros(object):
             'debug_mode': debug_mode,
             'skip_env_variables': skip_env_variables,
             'empty': empty,
-            'ssl_verify': ssl_verify
+            'ssl_verify': ssl_verify,
         }
         for _arg_key, _arg_val in _individual_arguments.items():
-            if _arg_val is not None:
+            if _arg_val is not None and defined_settings.get(_arg_key) is None:
                 defined_settings[_arg_key] = _arg_val
 
         # Creates the private core_settings attribute using the default settings as a base
@@ -155,7 +159,8 @@ class Khoros(object):
         if helper is None:
             self._helper_settings['connection'] = {}
             self._helper_settings['discussion_styles'] = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
-            self._helper_settings['ssl_verify'] = True
+            if ssl_verify is None and self.core_settings.get('ssl_verify') is None:
+                self._helper_settings['ssl_verify'] = True
         else:
             self.core_settings['helper'] = helper
             if any((isinstance(helper, tuple), isinstance(helper, list))):
@@ -168,7 +173,7 @@ class Khoros(object):
                 error_msg = "The 'helper' argument can only be supplied as tuple, string, list or dict."
                 logger.error(error_msg)
                 raise TypeError(error_msg)
-            self._helper_settings = get_helper_settings(file_path, file_type)
+            self._helper_settings = get_helper_settings(file_path, file_type, defined_settings)
 
             # Parse the helper settings
             self._parse_helper_settings()
@@ -176,6 +181,12 @@ class Khoros(object):
         # Add the SSL verification setting if applicable
         if 'ssl_verify' in self._helper_settings:
             self.core_settings['ssl_verify'] = self._helper_settings.get('ssl_verify')
+        elif ssl_verify is None and self.core_settings.get('ssl_verify') is None:
+            self.core_settings['ssl_verify'] = True
+
+        # Update the global variable if SSL Verify is explicitly disabled
+        if self.core_settings.get('ssl_verify') is False:
+            api.ssl_verify_disabled = True
 
         # Add the authentication status
         if 'active' not in self.auth:
@@ -243,7 +254,7 @@ class Khoros(object):
         self._populate_construct_settings()
 
         # Auto-connect to the environment if specified (default)
-        if auto_connect and not empty:
+        if self.core_settings.get('auto_connect'):
             if self.core_settings.get('auth_type') in ['sso', 'session_auth']:
                 self.connect(self.core_settings.get('auth_type'))
             else:
@@ -264,6 +275,7 @@ class Khoros(object):
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
+        self.saml = self._import_saml_class()
         self.settings = self._import_settings_class()
         self.studio = self._import_studio_class()
         self.subscriptions = self._import_subscription_class()
@@ -538,6 +550,13 @@ class Khoros(object):
         .. versionadded:: 2.4.0
         """
         return Khoros.Role(self)
+
+    def _import_saml_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.SAML` inner class to be utilized in the core object.
+
+        .. versionadded:: 4.3.0
+        """
+        return Khoros.SAML(self)
 
     def _import_settings_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Settings` inner class to be utilized in the core object.
@@ -2577,9 +2596,14 @@ class Khoros(object):
                    context_id=None, context_url=None, cover_image=None, images=None, is_answer=None, is_draft=None,
                    labels=None, product_category=None, products=None, read_only=None, seo_title=None,
                    seo_description=None, tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None,
-                   attachment_file_paths=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
-                   return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
+                   attachment_file_paths=None, full_payload=None, full_response=None, return_id=None, return_url=None,
+                   return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
+                   split_errors=False):
             """This function creates a new message within a given node.
+
+            .. versionchanged:: 4.3.0
+               It is now possible to pass the pre-constructed full JSON payload into the function via the
+               ``full_payload`` parameter as an alternative to defining each field individually.
 
             .. versionchanged:: 2.8.0
                The ``ignore_non_string_tags``, ``return_status``, ``return_error_messages`` and ``split_errors``
@@ -2641,6 +2665,21 @@ class Khoros(object):
             :type videos: dict, None
             :param attachment_file_paths: The full path(s) to one or more attachment (e.g. ``path/to/file1.pdf``)
             :type attachment_file_paths: str, tuple, list, set, None
+            :param full_payload: Pre-constructed full JSON payload as a dictionary (*preferred*) or a JSON string with
+                                 the following syntax:
+
+                                    .. code-block:: json
+
+                                       {
+                                         "data": {
+                                           "type": "message",
+
+                                         }
+                                       }
+
+                                 .. note:: The ``type`` field shown above is essential for the payload to be valid.
+
+            :type full_payload: dict, str, None
             :param full_response: Defines if the full response should be returned instead of the outcome
                                   (``False`` by default)
 
@@ -2674,9 +2713,9 @@ class Khoros(object):
                                                   canonical_url, context_id, context_url, cover_image, images,
                                                   is_answer, is_draft, labels, product_category, products, read_only,
                                                   seo_title, seo_description, tags, ignore_non_string_tags, teaser,
-                                                  topic, videos, attachment_file_paths, full_response, return_id,
-                                                  return_url, return_api_url, return_http_code, return_status,
-                                                  return_error_messages, split_errors)
+                                                  topic, videos, attachment_file_paths, full_payload, full_response,
+                                                  return_id, return_url, return_api_url, return_http_code,
+                                                  return_status, return_error_messages, split_errors)
 
         def update(self, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
                    canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
@@ -2850,6 +2889,19 @@ class Khoros(object):
             return api.parse_v2_response(json_response, return_dict, status, response_msg, dev_msg, http_code=http_code,
                                          data_id=message_id, data_url=message_url, data_api_uri=message_api_uri,
                                          v2_base=v2_base)
+
+        @staticmethod
+        def validate_message_payload(payload):
+            """This function validates the payload for a message to ensure that it can be successfully utilized.
+
+            .. versionadded:: 4.3.0
+
+            :param payload: The message payload to be validated as a dictionary (*preferred*) or a JSON string.
+            :type payload: dict, str
+            :returns: The payload as a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.InvalidMessagePayloadError`
+            """
+            return objects_module.messages.validate_message_payload(payload)
 
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This function formats the ``<li-message>`` HTML tag for a content @mention.
@@ -3463,13 +3515,61 @@ class Khoros(object):
             return objects_module.roles.get_users_with_role(self.khoros_object, fields, role_id, role_name, scope,
                                                             node_id, limit_per_query, simple=simple)
 
+    class SAML(object):
+        """This class includes methods relating to SAML 2.0 authentication and user provisioning.
+
+        .. versionadded:: 4.3.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.SAML` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        @staticmethod
+        def import_assertion(file_path, base64_encode=True, url_encode=True):
+            """This function imports an XML SAML assertion as a string and optionally base64- and/or URL-encodes it.
+
+            .. versionadded:: 4.3.0
+
+            :param file_path: The file path to the XML file to import
+            :type file_path: str
+            :param base64_encode: Determines if the assertion should be base64-encoded (``True`` by default)
+            :type base64_encode: bool
+            :param url_encode: Determines if the assertion should be URL-encoded (``True`` by default)
+            :type url_encode: bool
+            :returns: The SAML assertion string
+            :raises: :py:exc:`FileNotFoundError`
+            """
+            return saml_module.import_assertion(file_path, base64_encode, url_encode)
+
+        def send_assertion(self, assertion=None, file_path=None, base64_encode=True, url_encode=True):
+            """This function sends a SAML assertion as a POST request in order to provision a new user.
+
+            .. versionadded:: 4.3.0
+
+            :param assertion: The SAML assertion in string format and optionally base64- and/or URL-encoded
+            :type assertion: str, None
+            :param file_path: The file path to the XML file to import that contains the SAML assertion
+            :type file_path: str, None
+            :param base64_encode: Determines if the assertion should be base64-encoded (``True`` by default)
+            :type base64_encode: bool
+            :param url_encode: Determines if the assertion should be URL-encoded (``True`` by default)
+            :type url_encode: bool
+            :returns: The API response from the POST request
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return saml_module.send_assertion(self.khoros_object, assertion, file_path, base64_encode, url_encode)
+
     class Settings(object):
         """This class includes methods relating to the retrieval and defining of various settings.
 
         .. versionadded:: 3.2.0
         """
         def __init__(self, khoros_object):
-            """This method initializes the :py:class:`khoros.core.Khoros.Studio` inner class object.
+            """This method initializes the :py:class:`khoros.core.Khoros.Settings` inner class object.
 
             :param khoros_object: The core :py:class:`khoros.Khoros` object
             :type khoros_object: class[khoros.Khoros]
@@ -3855,8 +3955,12 @@ class Khoros(object):
             """
             return objects_module.tags.structure_single_tag_payload(tag_text)
 
-        def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False):
+        def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False,
+                                       wrap_json=False):
             """This function structures tags to use within the payload for creating or updating a message.
+
+            .. versionchanged:: 4.3.0
+               Introduced the ``wrap_json`` parameter to wrap the tags in a dictionary within the ``items`` key.
 
             .. versionadded:: 4.1.0
 
@@ -3870,11 +3974,15 @@ class Khoros(object):
             :param ignore_non_strings: Determines if non-strings (excluding iterables) should be ignored rather than
                                        converted to strings (``False`` by default)
             :type ignore_non_strings: bool
+            :param wrap_json: Determines if the list of tags should be wrapped in the ``{"items": []}`` JSON structure
+                              -- In other words, a dictionary rather than a list (``False`` by default)
+            :type wrap_json: bool
             :returns: A list of properly formatted tags to act as the value for the ``tags`` field in the message payload
             """
             return objects_module.tags.structure_tags_for_message(*tags, khoros_object=self.khoros_object,
                                                                   msg_id=msg_id, overwrite=overwrite,
-                                                                  ignore_non_strings=ignore_non_strings)
+                                                                  ignore_non_strings=ignore_non_strings,
+                                                                  wrap_json=wrap_json)
 
     class User(object):
         """This class includes methods for interacting with users."""
@@ -4000,7 +4108,7 @@ class Khoros(object):
             :type allow_multiple: bool
             :param display_warnings: Determines if warning messages should be displayed (``True`` by default)
             :type display_warnings: bool
-            :returns: The User ID of the user as an integer or a list of User IDs if ``allow_multiple`` is ``True``
+            :returns: The username (i.e. login) of the user or a list of usernames if ``allow_multiple`` is ``True``
             """
             return objects_module.users.get_username(self.khoros_object, user_settings, user_id, email, first_name,
                                                      last_name, allow_multiple, display_warnings)

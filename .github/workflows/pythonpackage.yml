@@ -4,16 +4,31 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: ${{ matrix.python-version }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: ['ubuntu-20.04', 'macos-latest']
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        macos-target: ['10.10']
+        exclude:
+          -   os: 'ubuntu-20.04'
+              python-version: '3.10'
+        include:
+          - os: 'macos-11'
+            python-version: '3.10'
+            macos-target: '11.0'
+          - os: 'macos-11'
+            python-version: '3.9'
+            macos-target: '11.0'
+          - os: 'macos-11'
+            python-version: '3.8'
+            macos-target: '11.0'
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -54,10 +69,14 @@ jobs:
         codecov -t cf4db87f-2b53-498c-92a6-1eb55d00a8a7
 
     - name: Python security check using Bandit
+      if: ${{ (matrix.os != 'macos-latest') && (matrix.os != 'macos-11') }}
       uses: Joel-hanson/bandit-report-artifacts@V1
       with:
         ignore_failure: true
 
 
     - name: PyCharm Python Security Scanner
+      if: ${{ (matrix.os != 'macos-latest') && (matrix.os != 'macos-11') }}
       uses: tonybaloney/pycharm-security@1.14.0
+      with:
+        ignore_failure: true
