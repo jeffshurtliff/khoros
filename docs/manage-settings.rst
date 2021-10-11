@@ -16,8 +16,6 @@ node settings within your Khoros Communities environment.
 * `Defining node settings`_
 * `Working with JSON strings`_
 
-|
-
 *************
 Prerequisites
 *************
