@@ -15,6 +15,7 @@ Table of Contents
    messages
    boards
    group-hubs
+   manage-settings
    core-object-methods
    primary-modules
    supporting-modules

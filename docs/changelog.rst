@@ -52,6 +52,7 @@ Documentation
 * Added a ``TODO`` section in the docstring for the
   :py:func:`khoros.objects.messages.construct_payload` function to indicate the missing
   functionality that still remains to be added.
+* Added the new :doc:`manage-settings` page to the documentation.
 
 Changed
 =======
