@@ -8,8 +8,6 @@ using the :py:class:`khoros.core.Khoros.Settings` subclass, which leverages the
 This guide demonstrates various ways that you can retrieve, define and update the
 node settings within your Khoros Communities environment.
 
------
-
 |
 
 *************
