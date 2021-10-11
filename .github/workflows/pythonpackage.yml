@@ -67,8 +67,6 @@ jobs:
         pip install pytest-cov
         pytest --cov-report=xml --cov=khoros khoros/utils/tests/
         codecov -t cf4db87f-2b53-498c-92a6-1eb55d00a8a7
-      with:
-        ignore_failure: true
 
     - name: Python security check using Bandit
       if: ${{ (matrix.os != 'macos-latest') && (matrix.os != 'macos-11') }}
