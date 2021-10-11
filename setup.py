@@ -4,7 +4,7 @@
 :Synopsis:          This script is the primary configuration file for the khoros project
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Aug 2021
+:Modified Date:     10 Oct 2021
 """
 
 import setuptools
@@ -68,6 +68,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Communications",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Content Management System",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Message Boards",

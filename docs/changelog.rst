@@ -3,6 +3,22 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+***********
+v4.3.0post1
+***********
+**Release Date: 2021-10-10**
+
+Changed
+=======
+
+General
+-------
+* Added Python version 3.10 to ``setup.py``.
+
+|
+
+-----
+
 ******
 v4.3.0
 ******
