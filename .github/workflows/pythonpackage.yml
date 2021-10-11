@@ -4,16 +4,31 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: ${{ matrix.python-version }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10.0rc2']
+        os: ['ubuntu-20.04', 'macos-latest']
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        macos-target: ['10.10']
+        exclude:
+          -   os: 'ubuntu-20.04'
+              python: '3.10'
+        include:
+          - os: 'macos-11'
+            python: '3.10'
+            macos-target: '11.0'
+          - os: 'macos-11'
+            python: '3.9'
+            macos-target: '11.0'
+          - os: 'macos-11'
+            python: '3.8'
+            macos-target: '11.0'
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
