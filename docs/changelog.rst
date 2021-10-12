@@ -3,6 +3,36 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+*********
+v4.4.0rc1
+*********
+**Release Date: 2021-10-11**
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Introduced the ``proxy_user_object`` parameter to the :py:meth:`khoros.core.Khoros.Message.create`
+  method to allow messages to be created on behalf of other users.
+* Introduced the ``proxy_user_object`` parameter to the :py:meth:`khoros.core.Khoros.Message.update`
+  method to allow messages to be updated on behalf of other users.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Introduced the ``proxy_user_object`` parameter to the :py:func:`khoros.objects.messages.create`
+  function to allow messages to be created on behalf of other users.
+* Introduced the ``proxy_user_object`` parameter to the :py:func:`khoros.objects.messages.update`
+  function to allow messages to be updated on behalf of other users.
+
+|
+
+-----
+
 ************
 v4.3.0.post1
 ************

@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     02 Oct 2021
+:Modified Date:     11 Oct 2021
 """
 
 import sys
@@ -2598,8 +2598,11 @@ class Khoros(object):
                    seo_description=None, tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None,
                    attachment_file_paths=None, full_payload=None, full_response=None, return_id=None, return_url=None,
                    return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
-                   split_errors=False):
+                   split_errors=False, proxy_user_object=None):
             """This function creates a new message within a given node.
+
+            .. versionchanged:: 4.4.0
+               Introduced the ``proxy_user_object`` parameter to allow messages to be created on behalf of other users.
 
             .. versionchanged:: 4.3.0
                It is now possible to pass the pre-constructed full JSON payload into the function via the
@@ -2704,6 +2707,9 @@ class Khoros(object):
             :type return_error_messages: bool, None
             :param split_errors: Defines whether or not error messages should be merged when applicable
             :type split_errors: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to create
+                                      the message on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: Boolean value indicating a successful outcome (default) or the full API response
             :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
                      :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -2715,7 +2721,7 @@ class Khoros(object):
                                                   seo_title, seo_description, tags, ignore_non_string_tags, teaser,
                                                   topic, videos, attachment_file_paths, full_payload, full_response,
                                                   return_id, return_url, return_api_url, return_http_code,
-                                                  return_status, return_error_messages, split_errors)
+                                                  return_status, return_error_messages, split_errors, proxy_user_object)
 
         def update(self, msg_id=None, msg_url=None, subject=None, body=None, node=None, node_id=None, node_url=None,
                    canonical_url=None, context_id=None, context_url=None, cover_image=None, is_draft=None, labels=None,
@@ -2723,8 +2729,11 @@ class Khoros(object):
                    topic=None, status=None, seo_title=None, seo_description=None, tags=None, overwrite_tags=False,
                    ignore_non_string_tags=False, teaser=None, attachments_to_add=None, attachments_to_remove=None,
                    full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-                   return_status=None, return_error_messages=None, split_errors=False):
+                   return_status=None, return_error_messages=None, split_errors=False, proxy_user_object=None):
             """This function updates one or more elements of an existing message.
+
+            .. versionchanged:: 4.4.0
+               Introduced the ``proxy_user_object`` parameter to allow messages to be updated on behalf of other users.
 
             .. versionadded:: 2.8.0
 
@@ -2830,6 +2839,9 @@ class Khoros(object):
             :type return_error_messages: bool, None
             :param split_errors: Defines whether or not error messages should be merged when applicable
             :type split_errors: bool
+            :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to create
+                                      the message on behalf of a secondary user.
+            :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
             :returns: Boolean value indicating a successful outcome (default) or the full API response
             :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
                      :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
@@ -2842,7 +2854,7 @@ class Khoros(object):
                                                   overwrite_tags, ignore_non_string_tags, teaser, attachments_to_add,
                                                   attachments_to_remove, full_response, return_id, return_url,
                                                   return_api_url, return_http_code, return_status,
-                                                  return_error_messages, split_errors)
+                                                  return_error_messages, split_errors, proxy_user_object)
 
         @staticmethod
         def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,

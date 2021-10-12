@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2021
+:Modified Date:     11 Oct 2021
 """
 
 import json
@@ -42,8 +42,12 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
            labels=None, product_category=None, products=None, read_only=None, seo_title=None, seo_description=None,
            tags=None, ignore_non_string_tags=False, teaser=None, topic=None, videos=None, attachment_file_paths=None,
            full_payload=None, full_response=False, return_id=False, return_url=False, return_api_url=False,
-           return_http_code=False, return_status=None, return_error_messages=None, split_errors=False):
+           return_http_code=False, return_status=None, return_error_messages=None, split_errors=False,
+           proxy_user_object=None):
     """This function creates a new message within a given node.
+
+    .. versionchanged:: 4.4.0
+       Introduced the ``proxy_user_object`` parameter to allow messages to be created on behalf of other users.
 
     .. versionchanged:: 4.3.0
        It is now possible to pass the pre-constructed full JSON payload into the function via the ``full_payload``
@@ -146,6 +150,9 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     :type return_error_messages: bool, None
     :param split_errors: Defines whether or not error messages should be merged when applicable
     :type split_errors: bool
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to create the
+                              message on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: Boolean value indicating a successful outcome (default) or the full API response
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
@@ -162,7 +169,8 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     multipart = True if attachment_file_paths else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
-    response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
+    response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart,
+                                             proxy_user_object=proxy_user_object)
     return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
                                   return_status, return_error_messages, split_errors, khoros_object)
 
@@ -373,8 +381,11 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
            status=None, seo_title=None, seo_description=None, tags=None, overwrite_tags=False,
            ignore_non_string_tags=False, teaser=None, attachments_to_add=None, attachments_to_remove=None,
            full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
-           return_status=None, return_error_messages=None, split_errors=False):
+           return_status=None, return_error_messages=None, split_errors=False, proxy_user_object=None):
     """This function updates one or more elements of an existing message.
+
+    .. versionchanged:: 4.4.0
+       Introduced the ``proxy_user_object`` parameter to allow messages to be updated on behalf of other users.
 
     .. versionadded:: 2.8.0
 
@@ -477,6 +488,9 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
     :type return_error_messages: bool, None
     :param split_errors: Defines whether or not error messages should be merged when applicable
     :type split_errors: bool
+    :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to update the
+                              message on behalf of a secondary user.
+    :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
     :returns: Boolean value indicating a successful outcome (default) or the full API response
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`, :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`,
              :py:exc:`khoros.errors.exceptions.DataMismatchError`
@@ -493,7 +507,8 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
     multipart = True if attachments_to_add else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachments_to_add, 'update')
-    response = api.put_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart)
+    response = api.put_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart,
+                                            proxy_user_object=proxy_user_object)
     return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
                                   return_status, return_error_messages, split_errors, khoros_object)
 
