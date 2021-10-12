@@ -327,10 +327,14 @@ Issues can be reported within the [GitHub repository](https://github.com/jeffshu
 Upcoming improvements to the library can be found in the following locations: 
  - [2020 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/1)
  - [2021 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/2)
+ - [2022 Roadmap on GitHub](https://github.com/jeffshurtliff/khoros/projects/3)
 
 ## Additional Resources
 Additional resources for leveraging the Community APIs can be found in the official
 [Khoros Developer Documentation](https://developer.khoros.com/khoroscommunitydevdocs).
+
+## Donations
+If you would like to donate to this project then you can do so using [this PayPal link](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=XDZ8M6UV6EFK6&item_name=Khoros+Python+API&currency_code=USD).
 
 ## Disclaimer
 This package is considered unofficial and is in no way endorsed or supported by [Khoros, LLC](https://www.khoros.com).
