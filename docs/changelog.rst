@@ -3,6 +3,24 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+**********
+v4.5.0dev1
+**********
+**Release Date: TBD**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* TBD
+
+|
+
+-----
+
 ******
 v4.4.0
 ******
