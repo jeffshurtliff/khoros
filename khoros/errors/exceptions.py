@@ -535,7 +535,10 @@ class TooManyResultsError(KhorosError):
 
 
 class InvalidMetadataError(KhorosError):
-    """This exception is used when there is an issue involving message metadata."""
+    """This exception is used when there is an issue involving message metadata.
+
+    .. versionadded:: 4.5.0
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The message metadata is invalid."
