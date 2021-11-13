@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 Oct 2021
+:Modified Date:     13 Nov 2021
 """
 
 import sys
@@ -622,7 +622,7 @@ class Khoros(object):
             raise errors.exceptions.CurrentlyUnsupportedError(f"'{connection_type}' authentication type")
 
     def get_session_key(self, username=None, password=None):
-        """This function retrieves the session key for an authentication session.
+        """This method retrieves the session key for an authentication session.
 
         .. versionadded:: 3.5.0
 
@@ -863,7 +863,7 @@ class Khoros(object):
         return response
 
     def get_total_count(self, collection, where_filter="", verify_success=True):
-        """This function retrieves the total asset count from a given collection (e.g. ``categories``).
+        """This method retrieves the total asset count from a given collection (e.g. ``categories``).
 
         :param collection: The collection object to use in the FROM clause of the LiQL query (e.g. ``users``)
         :type collection: str
@@ -877,7 +877,7 @@ class Khoros(object):
         return liql.get_total_count(self, collection, where_filter, verify_success)
 
     def get_platform_version(self, full_release=False, simple=False, commit_id=False, timestamp=False):
-        """This function retrieves the Khoros Community platform version information for a given environment.
+        """This method retrieves the Khoros Community platform version information for a given environment.
 
         .. versionadded:: 3.4.0
 
@@ -901,7 +901,7 @@ class Khoros(object):
         return api.get_platform_version(base_url, full_release, simple, commit_id, timestamp, self)
 
     def perform_v1_search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False):
-        """This function performs a search for a particular field value using a Community API v1 call.
+        """This method performs a search for a particular field value using a Community API v1 call.
 
         .. versionchanged:: 3.3.2
            Added logging for the :py:exc:`DeprecationWarning`.
@@ -930,7 +930,7 @@ class Khoros(object):
     @staticmethod
     def parse_v2_response(json_response, return_dict=False, status=False, error_msg=False, http_code=False,
                           data_id=False, data_url=False, data_api_uri=False, v2_base=''):
-        """This function parses an API response for a Community API v2 operation and returns parsed data.
+        """This method parses an API response for a Community API v2 operation and returns parsed data.
 
         .. versionchanged:: 3.2.0
            The lower-level function call now utilizes keyword arguments to fix an argument mismatch issue.
@@ -975,7 +975,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def get(self, endpoint, query_params=None, return_json=True, proxy_user_object=None):
-            """This function makes a Community API v1 GET request.
+            """This method makes a Community API v1 GET request.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -1005,7 +1005,7 @@ class Khoros(object):
 
         def post(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False,
                  proxy_user_object=None):
-            """This function makes a Community API v1 POST request.
+            """This method makes a Community API v1 POST request.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -1050,7 +1050,7 @@ class Khoros(object):
 
         def put(self, endpoint, query_params=None, return_json=True, params_in_uri=False, json_payload=False,
                 proxy_user_object=None):
-            """This function makes a Community API v1 PUT request.
+            """This method makes a Community API v1 PUT request.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -1098,7 +1098,7 @@ class Khoros(object):
 
         def search(self, endpoint, filter_field, filter_value, return_json=False, fail_on_no_results=False,
                    proxy_user_object=None):
-            """This function performs a search for a particular field value using a Community API v1 call.
+            """This method performs a search for a particular field value using a Community API v1 call.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -1260,7 +1260,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def create(self, title=None, description=None, owner_id=None, hidden=False, default=False, full_response=False):
-            """This function creates a new image album for a user.
+            """This method creates a new image album for a user.
 
             .. versionadded:: 2.3.0
 
@@ -1287,7 +1287,7 @@ class Khoros(object):
 
         def get_albums_for_user(self, user_id=None, login=None, public=None, private=None, verify_success=False,
                                 allow_exceptions=True):
-            """This function returns data for the albums owned by a given user.
+            """This method returns data for the albums owned by a given user.
 
             .. versionadded:: 2.3.0
 
@@ -1331,7 +1331,7 @@ class Khoros(object):
 
         def archive(self, message_id=None, message_url=None, suggested_url=None, archive_entries=None,
                     aggregate_results=False, include_raw=False):
-            """This function archives one or more messages while providing an optional suggested URL as a placeholder.
+            """This method archives one or more messages while providing an optional suggested URL as a placeholder.
 
             .. versionadded:: 4.1.0
 
@@ -1369,7 +1369,7 @@ class Khoros(object):
 
         def unarchive(self, message_id=None, message_url=None, new_board_id=None, archive_entries=None,
                       aggregate_results=False, include_raw=False):
-            """This function unarchives one or more messages and moves them to a given board.
+            """This method unarchives one or more messages and moves them to a given board.
 
             .. versionadded:: 4.1.0
 
@@ -1406,7 +1406,7 @@ class Khoros(object):
 
         @staticmethod
         def aggregate_results(results, include_raw=False):
-            """This function aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.
+            """This method aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.
 
             .. versionadded:: 4.1.0
 
@@ -1443,7 +1443,7 @@ class Khoros(object):
                    posting_date_end=None, posting_date_start=None, voting_date_end=None, voting_date_start=None,
                    winner_announced_date=None, full_response=None, return_id=None, return_url=None, return_api_url=None,
                    return_http_code=None, return_status=None, return_error_messages=None, split_errors=False):
-            """This function creates a new board within a Khoros Community environment.
+            """This method creates a new board within a Khoros Community environment.
 
             .. versionchanged:: 2.5.2
                Changed the functionality around the ``return_error_messages`` argument and added the ``split_errors``
@@ -1555,7 +1555,7 @@ class Khoros(object):
                               blog_moderator_ids=None, blog_moderator_logins=None, one_entry_per_contest=None,
                               one_kudo_per_contest=None, posting_date_end=None, posting_date_start=None,
                               voting_date_end=None, voting_date_start=None, winner_announced_date=None):
-            """This function structures the payload to use in a Community API v2 request involving a board.
+            """This method structures the payload to use in a Community API v2 request involving a board.
 
             .. versionadded:: 2.6.0
 
@@ -1636,7 +1636,7 @@ class Khoros(object):
 
         @staticmethod
         def get_board_id(url):
-            """This function retrieves the Board ID for a given board when provided its URL.
+            """This method retrieves the Board ID for a given board when provided its URL.
 
             .. versionadded:: 2.6.0
 
@@ -1648,7 +1648,7 @@ class Khoros(object):
             return structures_module.boards.get_board_id(url)
 
         def board_exists(self, board_id=None, board_url=None):
-            """This function checks to see if a board (i.e. blog, contest, forum, idea exchange, Q&A or TKB) exists.
+            """This method checks to see if a board (i.e. blog, contest, forum, idea exchange, Q&A or TKB) exists.
 
             .. versionadded:: 2.7.0
 
@@ -1672,7 +1672,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def create(self, category_id, category_title, parent_id=None, return_json=True):
-            """This function creates a new category.
+            """This method creates a new category.
 
             .. versionadded:: 2.5.0
 
@@ -1694,7 +1694,7 @@ class Khoros(object):
 
         @staticmethod
         def get_category_id(url):
-            """This function retrieves the Category ID for a given category when provided its URL.
+            """This method retrieves the Category ID for a given category when provided its URL.
 
             :param url: The URL from which to parse out the Category ID
             :type url: str
@@ -1704,7 +1704,7 @@ class Khoros(object):
             return structures_module.categories.get_category_id(url)
 
         def get_total_count(self):
-            """This function returns the total number of categories within the Khoros Community environment.
+            """This method returns the total number of categories within the Khoros Community environment.
 
             .. versionadded:: 2.6.0
 
@@ -1714,7 +1714,7 @@ class Khoros(object):
             return structures_module.categories.get_total_count(self.khoros_object)
 
         def get_total_category_count(self):
-            """This function returns the total number of categories within the Khoros Community environment.
+            """This method returns the total number of categories within the Khoros Community environment.
 
             .. versionchanged:: 3.3.2
                Added logging for the :py:exc:`DeprecationWarning`.
@@ -1732,7 +1732,7 @@ class Khoros(object):
             return self.get_total_count()
 
         def category_exists(self, category_id=None, category_url=None):
-            """This function checks to see if a category exists.
+            """This method checks to see if a category exists.
 
             .. versionadded:: 2.7.0
 
@@ -1746,7 +1746,7 @@ class Khoros(object):
             return structures_module.categories.category_exists(self.khoros_object, category_id, category_url)
 
         def get_category_details(self, identifier, first_item=True):
-            """This function returns a dictionary of community configuration settings.
+            """This method returns a dictionary of community configuration settings.
 
             .. versionadded:: 2.1.0
 
@@ -1762,7 +1762,7 @@ class Khoros(object):
             return structures_module.categories.get_category_details(self.khoros_object, identifier, first_item)
 
         def get_category_field(self, field, identifier=None, category_details=None):
-            """This function returns a specific community field from the Khoros Community API.
+            """This method returns a specific community field from the Khoros Community API.
 
             .. versionadded:: 2.1.0
 
@@ -1781,7 +1781,7 @@ class Khoros(object):
                                                                    category_details)
 
         def get_url(self, category_id=None, category_details=None):
-            """This function retrieves the URL of a given category.
+            """This method retrieves the URL of a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1797,7 +1797,7 @@ class Khoros(object):
             return structures_module.categories.get_url(self.khoros_object, category_id, category_details)
 
         def get_title(self, identifier=None, full_title=True, short_title=False, category_details=None):
-            """This function retrieves the full and/or short title of the category.
+            """This method retrieves the full and/or short title of the category.
 
             .. versionadded:: 2.1.0
 
@@ -1819,7 +1819,7 @@ class Khoros(object):
                                                           category_details)
 
         def get_description(self, identifier=None, category_details=None):
-            """This function retrieves the description for a given category.
+            """This method retrieves the description for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1836,7 +1836,7 @@ class Khoros(object):
             return structures_module.categories.get_description(self.khoros_object, identifier, category_details)
 
         def get_parent_type(self, identifier=None, category_details=None):
-            """This function retrieves the parent type for a given category.
+            """This method retrieves the parent type for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1853,7 +1853,7 @@ class Khoros(object):
             return structures_module.categories.get_parent_type(self.khoros_object, identifier, category_details)
 
         def get_parent_id(self, identifier=None, category_details=None):
-            """This function retrieves the parent ID for a given category.
+            """This method retrieves the parent ID for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1870,7 +1870,7 @@ class Khoros(object):
             return structures_module.categories.get_parent_id(self.khoros_object, identifier, category_details)
 
         def get_parent_url(self, identifier=None, category_details=None):
-            """This function retrieves the parent URL for a given category.
+            """This method retrieves the parent URL for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1887,7 +1887,7 @@ class Khoros(object):
             return structures_module.categories.get_parent_url(self.khoros_object, identifier, category_details)
 
         def get_root_type(self, identifier=None, category_details=None):
-            """This function retrieves the root category type for a given category.
+            """This method retrieves the root category type for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1904,7 +1904,7 @@ class Khoros(object):
             return structures_module.categories.get_root_type(self.khoros_object, identifier, category_details)
 
         def get_root_id(self, identifier=None, category_details=None):
-            """This function retrieves the root category ID for a given category.
+            """This method retrieves the root category ID for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1921,7 +1921,7 @@ class Khoros(object):
             return structures_module.categories.get_root_id(self.khoros_object, identifier, category_details)
 
         def get_root_url(self, identifier=None, category_details=None):
-            """This function retrieves the root category URL for a given category.
+            """This method retrieves the root category URL for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1938,7 +1938,7 @@ class Khoros(object):
             return structures_module.categories.get_root_url(self.khoros_object, identifier, category_details)
 
         def get_language(self, identifier=None, category_details=None):
-            """This function retrieves the defined language for a given category.
+            """This method retrieves the defined language for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1955,7 +1955,7 @@ class Khoros(object):
             return structures_module.categories.get_language(self.khoros_object, identifier, category_details)
 
         def is_hidden(self, identifier=None, category_details=None):
-            """This function identifies whether or not a given category is hidden.
+            """This method identifies whether or not a given category is hidden.
 
             .. versionadded:: 2.1.0
 
@@ -1972,7 +1972,7 @@ class Khoros(object):
             return structures_module.categories.is_hidden(self.khoros_object, identifier, category_details)
 
         def get_views(self, identifier=None, category_details=None):
-            """This function retrieves the total view count for a given category.
+            """This method retrieves the total view count for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -1989,7 +1989,7 @@ class Khoros(object):
             return structures_module.categories.get_views(self.khoros_object, identifier, category_details)
 
         def friendly_date_enabled(self, identifier=None, category_details=None):
-            """This function identifies if friendly dates are enabled for a given category.
+            """This method identifies if friendly dates are enabled for a given category.
 
             .. versionadded:: 2.1.0
 
@@ -2006,7 +2006,7 @@ class Khoros(object):
             return structures_module.categories.friendly_date_enabled(self.khoros_object, identifier, category_details)
 
         def get_friendly_date_max_age(self, identifier=None, category_details=None):
-            """This function retrieves the maximum age where friendly dates should be used (if enabled) for a category.
+            """This method retrieves the maximum age where friendly dates should be used (if enabled) for a category.
 
             .. versionadded:: 2.1.0
 
@@ -2023,7 +2023,7 @@ class Khoros(object):
             return structures_module.categories.get_friendly_date_max_age(self, identifier, category_details)
 
         def get_active_skin(self, identifier=None, category_details=None):
-            """This function retrieves the skin being used with a given category.
+            """This method retrieves the skin being used with a given category.
 
             .. versionadded:: 2.1.0
 
@@ -2040,7 +2040,7 @@ class Khoros(object):
             return structures_module.categories.get_active_skin(self.khoros_object, identifier, category_details)
 
         def get_depth(self, identifier=None, category_details=None):
-            """This function retrieves the depth of a given category.
+            """This method retrieves the depth of a given category.
 
             .. versionadded:: 2.1.0
 
@@ -2057,7 +2057,7 @@ class Khoros(object):
             return structures_module.categories.get_depth(self.khoros_object, identifier, category_details)
 
         def get_position(self, identifier=None, category_details=None):
-            """This function retrieves the position of a given category.
+            """This method retrieves the position of a given category.
 
             .. versionadded:: 2.1.0
 
@@ -2074,7 +2074,7 @@ class Khoros(object):
             return structures_module.categories.get_position(self.khoros_object, identifier, category_details)
 
         def get_creation_date(self, identifier=None, category_details=None):
-            """This function retrieves the creation date of a given category.
+            """This method retrieves the creation date of a given category.
 
             .. versionadded:: 2.1.0
 
@@ -2104,7 +2104,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def get_community_details(self):
-            """This function returns a dictionary of community configuration settings.
+            """This method returns a dictionary of community configuration settings.
 
             .. versionadded:: 2.1.0
 
@@ -2114,7 +2114,7 @@ class Khoros(object):
             return structures_module.communities.get_community_details(self.khoros_object)
 
         def get_community_field(self, field, community_details=None):
-            """This function retrieves a particular field from the community collection in the API.
+            """This method retrieves a particular field from the community collection in the API.
 
             .. versionadded:: 2.1.0
 
@@ -2130,7 +2130,7 @@ class Khoros(object):
             return structures_module.communities.get_community_field(self.khoros_object, field, community_details)
 
         def get_tenant_id(self, community_details=None):
-            """This function retrieves the tenant ID of the environment.
+            """This method retrieves the tenant ID of the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2142,7 +2142,7 @@ class Khoros(object):
             return structures_module.communities.get_tenant_id(self.khoros_object, community_details)
 
         def get_title(self, full_title=True, short_title=False, community_details=None):
-            """This function retrieves the full and/or short title of the environment.
+            """This method retrieves the full and/or short title of the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2159,7 +2159,7 @@ class Khoros(object):
                                                            community_details)
 
         def get_description(self, community_details=None):
-            """This function retrieves the description of the environment.
+            """This method retrieves the description of the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2171,7 +2171,7 @@ class Khoros(object):
             return structures_module.communities.get_description(self.khoros_object, community_details)
 
         def get_primary_url(self, community_details=None):
-            """This function retrieves the primary URL of the environment.
+            """This method retrieves the primary URL of the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2183,7 +2183,7 @@ class Khoros(object):
             return structures_module.communities.get_primary_url(self.khoros_object, community_details)
 
         def get_max_attachments(self, community_details=None):
-            """This function retrieves the maximum number of attachments permitted per message within the environment.
+            """This method retrieves the maximum number of attachments permitted per message within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2195,7 +2195,7 @@ class Khoros(object):
             return structures_module.communities.get_max_attachments(self.khoros_object, community_details)
 
         def get_permitted_attachment_types(self, community_details=None):
-            """This function retrieves the attachment file types permitted within the environment.
+            """This method retrieves the attachment file types permitted within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2207,7 +2207,7 @@ class Khoros(object):
             return structures_module.communities.get_permitted_attachment_types(self.khoros_object, community_details)
 
         def email_confirmation_required_to_post(self, community_details=None):
-            """This function identifies if an email configuration is required before posting in the environment.
+            """This method identifies if an email configuration is required before posting in the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2220,7 +2220,7 @@ class Khoros(object):
                                                                                      community_details)
 
         def get_language(self, community_details=None):
-            """This function retrieves the language (e.g. ``en``) utilized in the environment.
+            """This method retrieves the language (e.g. ``en``) utilized in the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2232,7 +2232,7 @@ class Khoros(object):
             return structures_module.communities.get_language(self.khoros_object, community_details)
 
         def get_ooyala_player_branding_id(self, community_details=None):
-            """This function retrieves the branding ID for the Ooyala Player utilized within the environment.
+            """This method retrieves the branding ID for the Ooyala Player utilized within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2244,7 +2244,7 @@ class Khoros(object):
             return structures_module.communities.get_ooyala_player_branding_id(self.khoros_object, community_details)
 
         def get_date_pattern(self, community_details=None):
-            """This function retrieves the date pattern (e.g. ``yyyy-MM-dd``) utilized within the environment.
+            """This method retrieves the date pattern (e.g. ``yyyy-MM-dd``) utilized within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2256,7 +2256,7 @@ class Khoros(object):
             return structures_module.communities.get_date_pattern(self.khoros_object, community_details)
 
         def friendly_date_enabled(self, community_details=None):
-            """This function if the friendly date functionality is utilized within the environment.
+            """This method if the friendly date functionality is utilized within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2268,7 +2268,7 @@ class Khoros(object):
             return structures_module.communities.friendly_date_enabled(self.khoros_object, community_details)
 
         def get_friendly_date_max_age(self, community_details=None):
-            """This function identifies if the friendly date functionality is utilized within the environment.
+            """This method identifies if the friendly date functionality is utilized within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2280,7 +2280,7 @@ class Khoros(object):
             return structures_module.communities.get_friendly_date_max_age(self.khoros_object, community_details)
 
         def get_active_skin(self, community_details=None):
-            """This function retrieves the primary active skin that is utilized within the environment.
+            """This method retrieves the primary active skin that is utilized within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2292,7 +2292,7 @@ class Khoros(object):
             return structures_module.communities.get_active_skin(self.khoros_object, community_details)
 
         def get_sign_out_url(self, community_details=None):
-            """This function retrieves the Sign Out URL for the environment.
+            """This method retrieves the Sign Out URL for the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2304,7 +2304,7 @@ class Khoros(object):
             return structures_module.communities.get_sign_out_url(self.khoros_object, community_details)
 
         def get_creation_date(self, community_details=None):
-            """This function retrieves the timestamp for the initial creation of the environment.
+            """This method retrieves the timestamp for the initial creation of the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2317,7 +2317,7 @@ class Khoros(object):
             return structures_module.communities.get_creation_date(self.khoros_object, community_details)
 
         def top_level_categories_enabled(self, community_details=None):
-            """This function identifies if top level categories are enabled within the environment.
+            """This method identifies if top level categories are enabled within the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2329,7 +2329,7 @@ class Khoros(object):
             return structures_module.communities.top_level_categories_enabled(self.khoros_object, community_details)
 
         def show_community_node_in_breadcrumb(self, community_details=None):
-            """This function identifies if the community node should be shown in breadcrumbs.
+            """This method identifies if the community node should be shown in breadcrumbs.
 
             .. versionadded:: 2.1.0
 
@@ -2342,7 +2342,7 @@ class Khoros(object):
                                                                                    community_details)
 
         def show_breadcrumb_at_top_level(self, community_details=None):
-            """This function identifies if breadcrumbs should be shown at the top level of the environment.
+            """This method identifies if breadcrumbs should be shown at the top level of the environment.
 
             .. versionadded:: 2.1.0
 
@@ -2354,7 +2354,7 @@ class Khoros(object):
             return structures_module.communities.show_breadcrumb_at_top_level(self.khoros_object, community_details)
 
         def top_level_categories_on_community_page(self, community_details=None):
-            """This function identifies if top level categories are enabled on community pages.
+            """This method identifies if top level categories are enabled on community pages.
 
             .. versionadded:: 2.1.0
 
@@ -2382,7 +2382,7 @@ class Khoros(object):
                    parent_category_id=None, avatar_image_path=None, full_response=None, return_id=None, return_url=None,
                    return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
                    split_errors=False):
-            """This function creates a new group hub within a Khoros Community environment.
+            """This method creates a new group hub within a Khoros Community environment.
 
             .. versionadded:: 2.6.0
 
@@ -2464,7 +2464,7 @@ class Khoros(object):
                               closed_group=None, hidden_group=None, discussion_styles=None, enable_blog=None,
                               enable_contest=None, enable_forum=None, enable_idea=None, enable_qanda=None,
                               enable_tkb=None, all_styles_default=True, parent_category_id=None):
-            """This function structures the payload to use in a Group Hub API request.
+            """This method structures the payload to use in a Group Hub API request.
 
             .. versionadded:: 2.6.0
 
@@ -2512,14 +2512,14 @@ class Khoros(object):
                                                                  parent_category_id)
 
         def get_total_count(self):
-            """This function returns the total number of group hubs within the Khoros Community environment.
+            """This method returns the total number of group hubs within the Khoros Community environment.
 
             :returns: The total number of group hubs as an integer
             """
             return structures_module.grouphubs.get_total_count(self.khoros_object)
 
         def grouphub_exists(self, grouphub_id=None, grouphub_url=None):
-            """This function checks to see if a group hub exists.
+            """This method checks to see if a group hub exists.
 
             .. versionadded:: 2.7.0
 
@@ -2535,7 +2535,7 @@ class Khoros(object):
         def update_title(self, new_title, group_hub_id=None, group_hub_url=None, full_response=None, return_id=None,
                          return_url=None, return_api_url=None, return_http_code=None, return_status=None,
                          return_error_messages=None, split_errors=False):
-            """This function updates the title of an existing group hub.
+            """This method updates the title of an existing group hub.
 
             .. versionadded:: 2.6.0
 
@@ -2599,7 +2599,7 @@ class Khoros(object):
                    attachment_file_paths=None, full_payload=None, full_response=None, return_id=None, return_url=None,
                    return_api_url=None, return_http_code=None, return_status=None, return_error_messages=None,
                    split_errors=False, proxy_user_object=None):
-            """This function creates a new message within a given node.
+            """This method creates a new message within a given node.
 
             .. versionchanged:: 4.4.0
                Introduced the ``proxy_user_object`` parameter to allow messages to be created on behalf of other users.
@@ -2730,7 +2730,7 @@ class Khoros(object):
                    ignore_non_string_tags=False, teaser=None, attachments_to_add=None, attachments_to_remove=None,
                    full_response=None, return_id=None, return_url=None, return_api_url=None, return_http_code=None,
                    return_status=None, return_error_messages=None, split_errors=False, proxy_user_object=None):
-            """This function updates one or more elements of an existing message.
+            """This method updates one or more elements of an existing message.
 
             .. versionchanged:: 4.4.0
                Introduced the ``proxy_user_object`` parameter to allow messages to be updated on behalf of other users.
@@ -2859,7 +2859,7 @@ class Khoros(object):
         @staticmethod
         def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,
                               message_id=False, message_url=False, message_api_uri=False, v2_base=''):
-            """This function parses an API response for a message operation (e.g. creating a message) and returns data.
+            """This method parses an API response for a message operation (e.g. creating a message) and returns data.
 
             .. versionchanged:: 3.3.2
                Added logging for the :py:exc:`DeprecationWarning`.
@@ -2904,7 +2904,7 @@ class Khoros(object):
 
         @staticmethod
         def validate_message_payload(payload):
-            """This function validates the payload for a message to ensure that it can be successfully utilized.
+            """This method validates the payload for a message to ensure that it can be successfully utilized.
 
             .. versionadded:: 4.3.0
 
@@ -2915,8 +2915,24 @@ class Khoros(object):
             """
             return objects_module.messages.validate_message_payload(payload)
 
+        def get_metadata(self, msg_id, metadata_key):
+            """This method retrieves the value for a specific metadata key associated with a given message.
+
+            .. versionadded:: 4.5.0
+
+            :param msg_id: The ID of the message for which the metadata will be retrieved
+            :type msg_id: str, int
+            :param metadata_key: The metadata key for which the value will be retrieved
+            :type metadata_key: str
+            :returns: The metadata value
+            :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError',
+                     :py:exc:`khoros.errors.exceptions.InvalidMetadataError`,
+                     :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_metadata(self.khoros_object, msg_id, metadata_key)
+
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
-            """This function formats the ``<li-message>`` HTML tag for a content @mention.
+            """This method formats the ``<li-message>`` HTML tag for a content @mention.
 
             .. versionadded:: 2.4.0
 
@@ -2945,7 +2961,7 @@ class Khoros(object):
                                                                   title, url)
 
         def format_user_mention(self, user_info=None, user_id=None, login=None):
-            """This function formats the ``<li-user>`` HTML tag for a user @mention.
+            """This method formats the ``<li-user>`` HTML tag for a user @mention.
 
             .. versionadded:: 2.4.0
 
@@ -2977,7 +2993,7 @@ class Khoros(object):
 
         @staticmethod
         def get_node_id(url, node_type=None):
-            """This function retrieves the Node ID for a given node within a URL.
+            """This method retrieves the Node ID for a given node within a URL.
 
             :param url: The URL from which to parse out the Node ID
             :type url: str
@@ -2992,7 +3008,7 @@ class Khoros(object):
 
         @staticmethod
         def get_node_type_from_url(url):
-            """This function attempts to retrieve a node type by analyzing a supplied URL.
+            """This method attempts to retrieve a node type by analyzing a supplied URL.
 
             :param url: The URL from which to extract the node type
             :type url: str
@@ -3002,7 +3018,7 @@ class Khoros(object):
             return structures_module.nodes.get_node_type_from_url(url)
 
         def get_total_node_count(self):
-            """This function returns the total number of nodes within the Khoros Community environment.
+            """This method returns the total number of nodes within the Khoros Community environment.
 
             :returns: The total number of nodes as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
@@ -3010,7 +3026,7 @@ class Khoros(object):
             return structures_module.nodes.get_total_node_count(self.khoros_object)
 
         def node_exists(self, node_id=None, node_url=None):
-            """This function checks to see if a node exists.
+            """This method checks to see if a node exists.
 
             .. versionadded:: 2.7.0
 
@@ -3024,7 +3040,7 @@ class Khoros(object):
             return structures_module.nodes.node_exists(self.khoros_object, node_id, node_url)
 
         def get_node_details(self, identifier, first_item=True):
-            """This function returns a dictionary of node configuration settings.
+            """This method returns a dictionary of node configuration settings.
 
             .. versionadded:: 2.1.0
 
@@ -3040,7 +3056,7 @@ class Khoros(object):
             return structures_module.nodes.get_node_details(self.khoros_object, identifier, first_item)
 
         def get_node_field(self, field, identifier=None, node_details=None):
-            """This function returns a specific node field from the Khoros Community API.
+            """This method returns a specific node field from the Khoros Community API.
 
             .. versionadded:: 2.1.0
 
@@ -3059,7 +3075,7 @@ class Khoros(object):
             return structures_module.nodes.get_node_field(self.khoros_object, field, identifier, node_details)
 
         def get_url(self, node_id=None, node_details=None):
-            """This function returns the full URL of a given Node ID.
+            """This method returns the full URL of a given Node ID.
 
             .. versionadded:: 2.1.0
 
@@ -3075,7 +3091,7 @@ class Khoros(object):
             return structures_module.nodes.get_url(self.khoros_object, node_id, node_details)
 
         def get_type(self, identifier, node_details=None):
-            """This function returns the full URL of a given Node ID.
+            """This method returns the full URL of a given Node ID.
 
             .. versionadded:: 2.1.0
 
@@ -3092,7 +3108,7 @@ class Khoros(object):
             return structures_module.nodes.get_type(self.khoros_object, identifier, node_details)
 
         def get_discussion_style(self, identifier, node_details=None):
-            """This function returns the full URL of a given Node ID.
+            """This method returns the full URL of a given Node ID.
 
             .. versionadded:: 2.1.0
 
@@ -3109,7 +3125,7 @@ class Khoros(object):
             return structures_module.nodes.get_discussion_style(self.khoros_object, identifier, node_details)
 
         def get_title(self, identifier=None, full_title=True, short_title=False, node_details=None):
-            """This function retrieves the full and/or short title of the node.
+            """This method retrieves the full and/or short title of the node.
 
             .. versionadded:: 2.1.0
 
@@ -3131,7 +3147,7 @@ class Khoros(object):
                                                      short_title, node_details)
 
         def get_description(self, identifier, node_details=None):
-            """This function returns the description of a given node.
+            """This method returns the description of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3148,7 +3164,7 @@ class Khoros(object):
             return structures_module.nodes.get_description(self.khoros_object, identifier, node_details)
 
         def get_parent_type(self, identifier, node_details=None):
-            """This function returns the parent type of a given node.
+            """This method returns the parent type of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3165,7 +3181,7 @@ class Khoros(object):
             return structures_module.nodes.get_parent_type(self.khoros_object, identifier, node_details)
 
         def get_parent_id(self, identifier, node_details=None, include_prefix=False):
-            """This function returns the Parent ID of a given node.
+            """This method returns the Parent ID of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3184,7 +3200,7 @@ class Khoros(object):
             return structures_module.nodes.get_parent_id(self.khoros_object, identifier, node_details, include_prefix)
 
         def get_parent_url(self, identifier, node_details=None):
-            """This function returns the parent URL of a given node.
+            """This method returns the parent URL of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3201,7 +3217,7 @@ class Khoros(object):
             return structures_module.nodes.get_parent_url(self.khoros_object, identifier, node_details)
 
         def get_root_type(self, identifier, node_details=None):
-            """This function returns the root category type of a given node.
+            """This method returns the root category type of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3218,7 +3234,7 @@ class Khoros(object):
             return structures_module.nodes.get_root_type(self.khoros_object, identifier, node_details)
 
         def get_root_id(self, identifier, node_details=None, include_prefix=False):
-            """This function returns the Root Category ID of a given node.
+            """This method returns the Root Category ID of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3237,7 +3253,7 @@ class Khoros(object):
             return structures_module.nodes.get_root_id(self.khoros_object, identifier, node_details, include_prefix)
 
         def get_root_url(self, identifier, node_details=None):
-            """This function returns the root category URL of a given node.
+            """This method returns the root category URL of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3255,7 +3271,7 @@ class Khoros(object):
 
         def get_avatar_url(self, identifier, node_details=None, original=True, tiny=False, small=False,
                            medium=False, large=False):
-            """This function retrieves one or more avatar URLs for a given node.
+            """This method retrieves one or more avatar URLs for a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3283,7 +3299,7 @@ class Khoros(object):
                                                           original, tiny, small, medium, large)
 
         def get_creation_date(self, identifier, node_details=None, friendly=False):
-            """This function returns the creation date of a given node.
+            """This method returns the creation date of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3302,7 +3318,7 @@ class Khoros(object):
             return structures_module.nodes.get_creation_date(self.khoros_object, identifier, node_details, friendly)
 
         def get_depth(self, identifier, node_details=None):
-            """This function returns the depth of a given node.
+            """This method returns the depth of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3319,7 +3335,7 @@ class Khoros(object):
             return structures_module.nodes.get_depth(self.khoros_object, identifier, node_details)
 
         def get_position(self, identifier, node_details=None):
-            """This function returns the position of a given node.
+            """This method returns the position of a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3336,7 +3352,7 @@ class Khoros(object):
             return structures_module.nodes.get_position(self.khoros_object, identifier, node_details)
 
         def is_hidden(self, identifier, node_details=None):
-            """This function identifies whether or not a given node is hidden.
+            """This method identifies whether or not a given node is hidden.
 
             .. versionadded:: 2.1.0
 
@@ -3353,7 +3369,7 @@ class Khoros(object):
             return structures_module.nodes.is_hidden(self.khoros_object, identifier, node_details)
 
         def get_views(self, identifier, node_details=None):
-            """This function returns the views for a given node.
+            """This method returns the views for a given node.
 
             .. versionadded:: 2.1.0
 
@@ -3383,7 +3399,7 @@ class Khoros(object):
 
         @staticmethod
         def get_role_id(role_name, scope='community', node_id=None):
-            """This function constructs and returns the Role ID associated with a given role name and scope.
+            """This method constructs and returns the Role ID associated with a given role name and scope.
 
             .. versionadded:: 4.0.0
 
@@ -3401,7 +3417,7 @@ class Khoros(object):
 
         def assign_roles_to_user(self, user, lookup_type='id', roles_to_add=None, node=None, node_type='board',
                                  v1=False, return_json=True):
-            """This function assigns a user to one or more roles.
+            """This method assigns a user to one or more roles.
 
             .. versionadded:: 4.0.0
 
@@ -3436,7 +3452,7 @@ class Khoros(object):
 
         def get_total_role_count(self, return_dict=False, total=True, top_level=False, board=False,
                                  category=False, group_hub=False):
-            """This function retrieves the total role count for one or more role type(s).
+            """This method retrieves the total role count for one or more role type(s).
 
             .. versionadded:: 2.4.0
 
@@ -3461,7 +3477,7 @@ class Khoros(object):
                                                              category, group_hub)
 
         def get_roles_for_user(self, user_id, fields=None):
-            """This function returns all roles associated with a given User ID.
+            """This method returns all roles associated with a given User ID.
 
             .. versionchanged:: 4.1.0
                The docstring has been updated to reference the correct exception raised by this method.
@@ -3485,7 +3501,7 @@ class Khoros(object):
 
         def get_users_with_role(self, fields='login', role_id=None, role_name=None, scope=None, node_id=None,
                                 limit_per_query=1000, simple=False):
-            """This function retrieves a list of all users that have a specific role.
+            """This method retrieves a list of all users that have a specific role.
 
             .. versionadded:: 3.5.0
 
@@ -3542,7 +3558,7 @@ class Khoros(object):
 
         @staticmethod
         def import_assertion(file_path, base64_encode=True, url_encode=True):
-            """This function imports an XML SAML assertion as a string and optionally base64- and/or URL-encodes it.
+            """This method imports an XML SAML assertion as a string and optionally base64- and/or URL-encodes it.
 
             .. versionadded:: 4.3.0
 
@@ -3558,7 +3574,7 @@ class Khoros(object):
             return saml_module.import_assertion(file_path, base64_encode, url_encode)
 
         def send_assertion(self, assertion=None, file_path=None, base64_encode=True, url_encode=True):
-            """This function sends a SAML assertion as a POST request in order to provision a new user.
+            """This method sends a SAML assertion as a POST request in order to provision a new user.
 
             .. versionadded:: 4.3.0
 
@@ -3589,7 +3605,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def get_node_setting(self, setting_name, node_id, node_type='board', v1=None, convert_json=False):
-            """This function retrieves the value of a specific node setting.
+            """This method retrieves the value of a specific node setting.
 
             .. versionchanged:: 3.3.2
                The ``convert_json`` parameter has been introduced which optionally converts a JSON string
@@ -3618,7 +3634,7 @@ class Khoros(object):
                                                             convert_json)
 
         def define_node_setting(self, setting_name, setting_val, node_id, node_type='board', return_json=True):
-            """This function defines a particular setting value for a given node.
+            """This method defines a particular setting value for a given node.
 
             .. versionchanged:: 4.0.0
                The default value for the ``return_json`` parameter is now ``True``.
@@ -3666,7 +3682,7 @@ class Khoros(object):
 
         @staticmethod
         def sdk_installed():
-            """This function checks to see if the Lithium SDK is installed.
+            """This method checks to see if the Lithium SDK is installed.
 
             .. versionadded:: 2.5.1
 
@@ -3676,7 +3692,7 @@ class Khoros(object):
 
         @staticmethod
         def get_sdk_version():
-            """This function identifies the currently installed version of the Lithium SDK.
+            """This method identifies the currently installed version of the Lithium SDK.
 
             .. versionadded:: 2.5.1
 
@@ -3686,7 +3702,7 @@ class Khoros(object):
 
         @staticmethod
         def node_installed():
-            """This function checks whether or not Node.js is installed.
+            """This method checks whether or not Node.js is installed.
 
             .. versionadded:: 2.5.1
 
@@ -3696,7 +3712,7 @@ class Khoros(object):
 
         @staticmethod
         def get_node_version():
-            """This function identifies and returns the installed Node.js version.
+            """This method identifies and returns the installed Node.js version.
 
             .. versionadded:: 2.5.1
 
@@ -3706,7 +3722,7 @@ class Khoros(object):
 
         @staticmethod
         def npm_installed():
-            """This function checks whether or not npm is installed.
+            """This method checks whether or not npm is installed.
 
             .. versionadded:: 2.5.1
 
@@ -3716,7 +3732,7 @@ class Khoros(object):
 
         @staticmethod
         def get_npm_version():
-            """This function identifies and returns the installed npm version.
+            """This method identifies and returns the installed npm version.
 
             .. versionadded:: 2.5.1
 
@@ -3736,7 +3752,7 @@ class Khoros(object):
 
         def add_subscription(self, target_id, target_type='board', payload=None, included_boards=None,
                              excluded_boards=None, proxy_user_object=None):
-            """This function adds a subscription to a given target for the current user.
+            """This method adds a subscription to a given target for the current user.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -3768,7 +3784,7 @@ class Khoros(object):
                                                                  proxy_user_object=proxy_user_object)
 
         def get_subscription_uri(self):
-            """This function returns the subscriptions URI for the v2 API to perform API calls.
+            """This method returns the subscriptions URI for the v2 API to perform API calls.
 
             .. versionadded:: 3.5.0
 
@@ -3777,7 +3793,7 @@ class Khoros(object):
             return objects_module.subscriptions.get_subscription_uri(self.khoros_object)
 
         def subscribe_to_board(self, node_id, proxy_user_object=None):
-            """This function subscribes the current user to an individual message.
+            """This method subscribes the current user to an individual message.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -3798,7 +3814,7 @@ class Khoros(object):
             return objects_module.subscriptions.subscribe_to_board(self.khoros_object, node_id, proxy_user_object)
 
         def subscribe_to_category(self, node_id, included_boards=None, excluded_boards=None, proxy_user_object=None):
-            """This function subscribes the current user to a full or partial category.
+            """This method subscribes the current user to a full or partial category.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -3826,7 +3842,7 @@ class Khoros(object):
                                                                       excluded_boards, proxy_user_object)
 
         def subscribe_to_label(self, label, board_id, proxy_user_object=None):
-            """This function subscribes the current user to label found on a board.
+            """This method subscribes the current user to label found on a board.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -3850,7 +3866,7 @@ class Khoros(object):
                                                                    proxy_user_object)
 
         def subscribe_to_message(self, msg_id, proxy_user_object=None):
-            """This function subscribes the current user to an individual message.
+            """This method subscribes the current user to an individual message.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -3871,7 +3887,7 @@ class Khoros(object):
             return objects_module.subscriptions.subscribe_to_message(self.khoros_object, msg_id, proxy_user_object)
 
         def subscribe_to_product(self, product_id, proxy_user_object=None):
-            """This function subscribes the current user to a product.
+            """This method subscribes the current user to a product.
 
             .. versionchanged:: 4.0.0
                Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf
@@ -3907,7 +3923,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def get_tags_for_message(self, msg_id):
-            """This function retrieves the tags for a given message.
+            """This method retrieves the tags for a given message.
 
             .. versionadded:: 4.1.0
 
@@ -3918,7 +3934,7 @@ class Khoros(object):
             return objects_module.tags.get_tags_for_message(self.khoros_object, msg_id)
 
         def add_single_tag_to_message(self, tag, msg_id, allow_exceptions=False):
-            """This function adds a single tag to an existing message.
+            """This method adds a single tag to an existing message.
 
             .. versionadded:: 4.1.0
 
@@ -3934,7 +3950,7 @@ class Khoros(object):
             return objects_module.tags.add_single_tag_to_message(self.khoros_object, tag, msg_id, allow_exceptions)
 
         def add_tags_to_message(self, tags, msg_id, allow_exceptions=False):
-            """This function adds one or more tags to an existing message.
+            """This method adds one or more tags to an existing message.
 
             .. versionadded:: 4.1.0
 
@@ -3956,7 +3972,7 @@ class Khoros(object):
 
         @staticmethod
         def structure_single_tag_payload(tag_text):
-            """This function structures the payload for a single tag.
+            """This method structures the payload for a single tag.
 
             .. versionadded:: 4.1.0
 
@@ -3969,7 +3985,7 @@ class Khoros(object):
 
         def structure_tags_for_message(self, *tags, msg_id=None, overwrite=False, ignore_non_strings=False,
                                        wrap_json=False):
-            """This function structures tags to use within the payload for creating or updating a message.
+            """This method structures tags to use within the payload for creating or updating a message.
 
             .. versionchanged:: 4.3.0
                Introduced the ``wrap_json`` parameter to wrap the tags in a dictionary within the ``items`` key.
@@ -4007,7 +4023,7 @@ class Khoros(object):
             self.khoros_object = khoros_object
 
         def impersonate_user(self, user_login):
-            """This function instantiates and returns the :py:class`khoros.objects.users.ImpersonatedUser` object which
+            """This method instantiates and returns the :py:class`khoros.objects.users.ImpersonatedUser` object which
                can then be passed to other methods and functions to perform operations as a secondary user.
 
                .. note:: The authenticated user must have the **Administrator** role and/or have the
@@ -4023,7 +4039,7 @@ class Khoros(object):
 
         def create(self, user_settings=None, login=None, email=None, password=None, first_name=None, last_name=None,
                    biography=None, sso_id=None, web_page_url=None, cover_image=None, ignore_exceptions=False):
-            """This function creates a new user in the Khoros Community environment.
+            """This method creates a new user in the Khoros Community environment.
 
             .. versionchanged:: 4.0.0
                This function now returns the API response and the ``ignore_exceptions`` parameter has been introduced.
@@ -4062,7 +4078,7 @@ class Khoros(object):
                                                ignore_exceptions)
 
         def delete(self, user_id, return_json=False):
-            """This function deletes a user from the Khoros Community environment.
+            """This method deletes a user from the Khoros Community environment.
 
             :param user_id: The User ID of the user to be deleted
             :type user_id: str, int
@@ -4075,7 +4091,7 @@ class Khoros(object):
 
         def get_user_id(self, user_settings=None, login=None, email=None, first_name=None, last_name=None,
                         allow_multiple=False, display_warnings=True):
-            """This function looks up and retrieves the User ID for a user by leveraging supplied user information.
+            """This method looks up and retrieves the User ID for a user by leveraging supplied user information.
 
             .. note:: The priority of supplied fields are as follows: login, email, first and last name,
                       last name, first name
@@ -4101,7 +4117,7 @@ class Khoros(object):
 
         def get_username(self, user_settings=None, user_id=None, email=None, first_name=None, last_name=None,
                          allow_multiple=False, display_warnings=True):
-            """This function looks up and retrieves the username for a user by leveraging supplied user information.
+            """This method looks up and retrieves the username for a user by leveraging supplied user information.
 
             .. note:: The priority of supplied fields are as follows: User ID, email, first and last name, last name,
                       first name
@@ -4133,7 +4149,7 @@ class Khoros(object):
 
         def get_email(self, user_settings=None, user_id=None, login=None, first_name=None, last_name=None,
                       allow_multiple=False, display_warnings=True):
-            """This function retrieves the email address for a user by leveraging supplied user information.
+            """This method retrieves the email address for a user by leveraging supplied user information.
 
             .. note:: The priority of supplied fields are as follows: User ID, username, first and last name, last name,
                       first name
@@ -4158,7 +4174,7 @@ class Khoros(object):
                                                   last_name, allow_multiple, display_warnings)
 
         def get_ids_from_login_list(self, login_list, return_type='list'):
-            """This function identifies the User IDs associated with a list of user logins. (i.e. usernames)
+            """This method identifies the User IDs associated with a list of user logins. (i.e. usernames)
 
             :param login_list: List of user login (i.e. username) values in string format
             :type login_list: list, tuple
@@ -4170,7 +4186,7 @@ class Khoros(object):
             return objects_module.users.get_ids_from_login_list(self.khoros_object, login_list, return_type)
 
         def query_users_table_by_id(self, select_fields, user_id):
-            """This function queries the ``users`` table for one or more given SELECT fields for a specific User ID.
+            """This method queries the ``users`` table for one or more given SELECT fields for a specific User ID.
 
             :param select_fields: One or more SELECT field (e.g. ``login``, ``messages.count(*)``, etc.) to query
             :type select_fields: str, tuple, list, set
@@ -4182,7 +4198,7 @@ class Khoros(object):
             return objects_module.users.query_users_table_by_id(self.khoros_object, select_fields, user_id)
 
         def get_user_data(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function retrieves all user data for a given user.
+            """This method retrieves all user data for a given user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4198,7 +4214,7 @@ class Khoros(object):
             return objects_module.users.get_user_data(self.khoros_object, user_settings, user_id, login, email)
 
         def get_album_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the number of albums for a user.
+            """This method gets the number of albums for a user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4214,7 +4230,7 @@ class Khoros(object):
             return objects_module.users.get_album_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_followers_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of community members who have added the user as a friend in the community.
+            """This method gets the count of community members who have added the user as a friend in the community.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4230,7 +4246,7 @@ class Khoros(object):
             return objects_module.users.get_followers_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_following_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of community members the user has added as a friend in the community.
+            """This method gets the count of community members the user has added as a friend in the community.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4246,7 +4262,7 @@ class Khoros(object):
             return objects_module.users.get_following_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_images_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of images uploaded by the user.
+            """This method gets the count of images uploaded by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4262,7 +4278,7 @@ class Khoros(object):
             return objects_module.users.get_images_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_public_images_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of public images uploaded by the user.
+            """This method gets the count of public images uploaded by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4279,7 +4295,7 @@ class Khoros(object):
                                                                 login, email)
 
         def get_messages_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of messages (topics and replies) posted by the user.
+            """This method gets the count of messages (topics and replies) posted by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4295,7 +4311,7 @@ class Khoros(object):
             return objects_module.users.get_messages_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_roles_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of roles applied to the user.
+            """This method gets the count of roles applied to the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4311,7 +4327,7 @@ class Khoros(object):
             return objects_module.users.get_roles_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_solutions_authored_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of messages created by the user that are marked as accepted solutions.
+            """This method gets the count of messages created by the user that are marked as accepted solutions.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4328,7 +4344,7 @@ class Khoros(object):
                                                                      login, email)
 
         def get_topics_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of topic messages (excluding replies) posted by the user.
+            """This method gets the count of topic messages (excluding replies) posted by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4344,7 +4360,7 @@ class Khoros(object):
             return objects_module.users.get_topics_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_replies_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of replies posted by the user.
+            """This method gets the count of replies posted by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4360,7 +4376,7 @@ class Khoros(object):
             return objects_module.users.get_replies_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_videos_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of videos uploaded by the user.
+            """This method gets the count of videos uploaded by the user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4376,7 +4392,7 @@ class Khoros(object):
             return objects_module.users.get_videos_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_kudos_given_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of kudos a user has given.
+            """This method gets the count of kudos a user has given.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4392,7 +4408,7 @@ class Khoros(object):
             return objects_module.users.get_kudos_given_count(self.khoros_object, user_settings, user_id, login, email)
 
         def get_kudos_received_count(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function gets the count of kudos a user has received.
+            """This method gets the count of kudos a user has received.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4409,7 +4425,7 @@ class Khoros(object):
                                                                  login, email)
 
         def get_online_user_count(self):
-            """This function retrieves the number of users currently online.
+            """This method retrieves the number of users currently online.
 
             :returns: The user count for online users as an integer
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
@@ -4417,7 +4433,7 @@ class Khoros(object):
             return objects_module.users.get_online_user_count(self.khoros_object)
 
         def get_registration_data(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function retrieves the registration data for a given user.
+            """This method retrieves the registration data for a given user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4433,7 +4449,7 @@ class Khoros(object):
             return objects_module.users.get_registration_data(self.khoros_object, user_settings, user_id, login, email)
 
         def get_registration_timestamp(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function retrieves the timestamp for when a given user registered for an account.
+            """This method retrieves the timestamp for when a given user registered for an account.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4450,7 +4466,7 @@ class Khoros(object):
                                                                    login, email)
 
         def get_registration_status(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function retrieves the registration status for a given user.
+            """This method retrieves the registration status for a given user.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None
@@ -4467,7 +4483,7 @@ class Khoros(object):
                                                                 login, email)
 
         def get_last_visit_timestamp(self, user_settings=None, user_id=None, login=None, email=None):
-            """This function retrieves the timestamp for the last time the user logged into the community.
+            """This method retrieves the timestamp for the last time the user logged into the community.
 
             :param user_settings: A dictionary containing all relevant user settings supplied in the parent function
             :type user_settings: dict, None

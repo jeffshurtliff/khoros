@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 Oct 2021
+:Modified Date:     13 Nov 2021
 """
 
 import json
@@ -513,6 +513,37 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
                                   return_status, return_error_messages, split_errors, khoros_object)
 
 
+def get_metadata(khoros_object, msg_id, metadata_key):
+    """This function retrieves the value for a specific metadata key associated with a given message.
+
+    .. versionadded:: 4.5.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the message for which the metadata will be retrieved
+    :type msg_id: str, int
+    :param metadata_key: The metadata key for which the value will be retrieved
+    :type metadata_key: str
+    :returns: The metadata value
+    :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError',
+             :py:exc:`khoros.errors.exceptions.InvalidMetadataError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    if not msg_id or not metadata_key:
+        raise errors.exceptions.MissingRequiredDataError('A message ID and a metadata key are required')
+    uri = f'/messages/id/{msg_id}/metadata/key/{metadata_key}'
+    response = khoros_object.v1.get(uri)
+    if not response.get('response'):
+        raise errors.exceptions.GETRequestError('The GET request to retrieve the message metadata was not successful')
+    if response['response'].get('status') == 'error':
+        if response['response']['error'].get('message'):
+            raise errors.exceptions.InvalidMetadataError(response['response']['error'].get('message'))
+        else:
+            raise errors.exceptions.InvalidMetadataError()
+    metadata_value = response['response']['value'].get('$')
+    return metadata_value
+
+
 def _verify_message_id(_msg_id, _msg_url):
     """This function verifies that a message ID has been defined or can be using the message URL.
 
@@ -527,7 +558,7 @@ def _verify_message_id(_msg_id, _msg_url):
              :py:exc:`errors.exceptions.MessageTypeNotFoundError`
     """
     if not any((_msg_id, _msg_url)):
-        raise errors.exceptions.MissingRequiredDataError("A message ID or URL must be defined when updating messages")
+        raise errors.exceptions.MissingRequiredDataError('A message ID or URL must be defined when updating messages')
     elif not _msg_id:
         _msg_id = get_id_from_url(_msg_url)
     return _msg_id

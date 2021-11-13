@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2021
+:Modified Date:     13 Nov 2021
 """
 
 #################
@@ -532,6 +532,19 @@ class TooManyResultsError(KhorosError):
 #####################
 # Message Exceptions
 #####################
+
+
+class InvalidMetadataError(KhorosError):
+    """This exception is used when there is an issue involving message metadata."""
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The message metadata is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'metadata' in kwargs:
+            custom_msg = f"{default_msg.split('is')[0]}'{kwargs.get('metadata')}'{default_msg.split('is')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
 
 
 class MessageTypeNotFoundError(KhorosError):

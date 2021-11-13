@@ -15,7 +15,28 @@ Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
 
-* TBD
+* Added the :py:meth:`khoros.core.Khoros.Message.get_metadata` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.objects.messages.get_metadata` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.InvalidMetadataError` exception class.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Replaced the phrase *"This function"* with *"This method"* in all of the core method docstrings.
 
 |
 
