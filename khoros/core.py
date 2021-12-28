@@ -4499,6 +4499,22 @@ class Khoros(object):
             return objects_module.users.get_last_visit_timestamp(self.khoros_object, user_settings, user_id,
                                                                  login, email)
 
+        def update_sso_id(self, new_sso_id, user_id=None, user_login=None):
+            """This method updates the SSO ID for a user.
+
+            .. versionadded:: 4.5.0
+
+            :param new_sso_id: The new SSO ID for the user
+            :type new_sso_id: str
+            :param user_id: The numeric User ID that identifies the user
+            :type user_id: str, int, None
+            :param user_login: The username that identifies the user
+            :type user_login: str, None
+            :returns: The API response
+            :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+            """
+            return objects_module.users.update_sso_id(self.khoros_object, new_sso_id, user_id, user_login)
+
     def signout(self):
         """This method invalidates the active session key or SSO authentication session.
 

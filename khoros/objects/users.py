@@ -355,6 +355,32 @@ def structure_payload(user_settings=None, login=None, email=None, password=None,
     return payload
 
 
+def update_sso_id(khoros_object, new_sso_id, user_id=None, user_login=None):
+    """This function updates the SSO ID for a user.
+
+    .. versionadded:: 4.5.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param new_sso_id: The new SSO ID for the user
+    :type new_sso_id: str
+    :param user_id: The numeric User ID that identifies the user
+    :type user_id: str, int, None
+    :param user_login: The username that identifies the user
+    :type user_login: str, None
+    :returns: The API response
+    :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    if not user_id and not user_login:
+        raise errors.exceptions.MissingRequiredDataError('A user ID or login is required to update a user.')
+    payload = {'value': f'{new_sso_id}'}
+    if user_id:
+        endpoint = f'/users/id/{user_id}/sso_id/set'
+    else:
+        endpoint = f'/users/id/{user_login}/sso_id/set'
+    return api.make_v1_request(khoros_object, endpoint, payload, 'POST')
+
+
 def delete(khoros_object, user_id, return_json=False):
     """This function deletes a user from the Khoros Community environment.
 

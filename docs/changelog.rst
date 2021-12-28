@@ -16,12 +16,14 @@ Core Object
 Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.Message.get_metadata` method.
+* Added the :py:meth:`khoros.core.Khoros.Users.update_sso_id` method.
 
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.objects.messages.get_metadata` function.
+* Added the :py:func:`khoros.objects.users.update_sso_id` function.
 
 Supporting Modules
 ------------------
