@@ -237,10 +237,14 @@ class APIConnectionError(KhorosError):
 
 
 class APIRequestError(KhorosError):
-    """This exception is used for generic API request errors when there isn't a more specific exception."""
+    """This exception is used for generic API request errors when there isn't a more specific exception.
+
+    .. versionchanged:: 4.5.0
+       Fixed an issue with the default message.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
-        default_msg = "The DELETE request did not return a successful response."
+        default_msg = "The API request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)

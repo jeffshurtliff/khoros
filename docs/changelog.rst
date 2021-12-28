@@ -38,6 +38,15 @@ Changes to the :doc:`core-object-methods`.
 
 * Replaced the phrase *"This function"* with *"This method"* in all of the core method docstrings.
 
+Fixed
+=====
+
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed an issue with the default message in the :py:exc:`khoros.errors.exceptions.APIRequestError` exception class.
+
 |
 
 -----
