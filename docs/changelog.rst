@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-**********
-v4.5.0dev2
-**********
-**Release Date: TBD**
+********
+v4.5.0b1
+********
+**Release Date: 2022-01-10**
 
 Added
 =====
@@ -39,6 +39,20 @@ Core Object
 Changes to the :doc:`core-object-methods`.
 
 * Replaced the phrase *"This function"* with *"This method"* in all of the core method docstrings.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.objects.messages.create` function to explicitly define the ``Content-Type``
+  header is now as ``application/json`` when handling non-multipart requests.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Introduced the ability for a fully customized message to be displayed in the
+  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception class.
 
 Fixed
 =====

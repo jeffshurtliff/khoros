@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Nov 2021
+:Modified Date:     10 Jan 2022
 """
 
 #################
@@ -108,6 +108,9 @@ class SsoAuthenticationError(KhorosError):
 class CurrentlyUnsupportedError(KhorosError):
     """This exception is used when a feature or functionality being used is currently unsupported.
 
+    .. versionchanged:: 4.5.0
+       Introduced the ability for a fully customized message to be displayed.
+
     .. versionchanged:: 2.0.0
        The unsupported feature can be passed as a string argument to explicitly reference it in the exception.
     """
@@ -116,6 +119,8 @@ class CurrentlyUnsupportedError(KhorosError):
         default_msg = "This feature is currently unsupported at this time."
         if not (args or kwargs):
             args = (default_msg,)
+        elif 'message' in kwargs:
+            args =(kwargs['message'],)
         else:
             custom_msg = f"The '{args[0]}' {default_msg.split('This ')[1]}"
             args = (custom_msg,)
