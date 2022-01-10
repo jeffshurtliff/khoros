@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Nov 2021
+:Modified Date:     10 Jan 2022
 """
 
 import json
@@ -45,6 +45,9 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
            return_http_code=False, return_status=None, return_error_messages=None, split_errors=False,
            proxy_user_object=None):
     """This function creates a new message within a given node.
+
+    .. versionchanged:: 4.5.0
+       The Content-Type header is now explicitly defined as ``application/json`` when handling non-multipart requests.
 
     .. versionchanged:: 4.4.0
        Introduced the ``proxy_user_object`` parameter to allow messages to be created on behalf of other users.
@@ -169,8 +172,9 @@ def create(khoros_object, subject=None, body=None, node=None, node_id=None, node
     multipart = True if attachment_file_paths else False
     if multipart:
         payload = attachments.construct_multipart_payload(payload, attachment_file_paths)
+    content_type = 'application/json' if not multipart else None
     response = api.post_request_with_retries(api_url, payload, khoros_object=khoros_object, multipart=multipart,
-                                             proxy_user_object=proxy_user_object)
+                                             content_type=content_type, proxy_user_object=proxy_user_object)
     return api.deliver_v2_results(response, full_response, return_id, return_url, return_api_url, return_http_code,
                                   return_status, return_error_messages, split_errors, khoros_object)
 

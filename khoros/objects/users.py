@@ -6,7 +6,7 @@
 :Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Sep 2021
+:Modified Date:     10 Jan 2022
 """
 
 import warnings
@@ -353,6 +353,40 @@ def structure_payload(user_settings=None, login=None, email=None, password=None,
             payload[field_name] = field_value
     payload = {'data': payload}
     return payload
+
+
+def update_sso_id(khoros_object, new_sso_id, user_id=None, user_login=None):
+    """This function updates the SSO ID for a user.
+
+    .. versionadded:: 4.5.0
+
+    .. caution:: This functionality is currently unsupported directly via REST API. It is recommended that FreeMarker
+                 and a custom endpoint be leveraged instead. See `Khoros Atlas <https://bit.ly/33iGZmW>`_
+                 for more details.
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param new_sso_id: The new SSO ID for the user
+    :type new_sso_id: str
+    :param user_id: The numeric User ID that identifies the user
+    :type user_id: str, int, None
+    :param user_login: The username that identifies the user
+    :type user_login: str, None
+    :returns: The API response
+    :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
+    """
+    # TODO: Remove the raised exception below if/when the functionality becomes available directly via REST API
+    raise errors.exceptions.CurrentlyUnsupportedError(message='Updating the SSO ID via REST API is currently '
+                                                      'unsupported. It is recommended that FreeMarker and a custom '
+                                                      'endpoint be used instead. Refer: https://bit.ly/33iGZmW')
+    # if not user_id and not user_login:
+    #     raise errors.exceptions.MissingRequiredDataError('A user ID or login is required to update a user.')
+    # payload = {'value': f'{new_sso_id}'}
+    # if user_id:
+    #     endpoint = f'/users/id/{user_id}/sso_id/set'
+    # else:
+    #     endpoint = f'/users/id/{user_login}/sso_id/set'
+    # return api.make_v1_request(khoros_object, endpoint, payload, 'POST')
 
 
 def delete(khoros_object, user_id, return_json=False):

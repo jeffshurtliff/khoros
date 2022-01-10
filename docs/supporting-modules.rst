@@ -11,6 +11,7 @@ which are listed below.
         * `Translations Module (khoros.errors.translations)`_
 * `Tools & Utilities`_
     * `Core Utilities Module (khoros.utils.core_utils)`_
+    * `Logging Utilities Module (khoros.utils.log_utils)`_
     * `Environment Module (khoros.utils.environment)`_
     * `Helper Module (khoros.utils.helper)`_
     * `Version Module (khoros.utils.version)`_
@@ -96,6 +97,17 @@ This module includes various utilities to assist in converting dictionaries to J
 formatting timestamps, etc.
 
 .. automodule:: khoros.utils.core_utils
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Logging Utilities Module (khoros.utils.log_utils)
+=================================================
+This module includes various utilities to assist with logging.
+
+.. automodule:: khoros.utils.log_utils
    :members:
 
 :doc:`Return to Top <supporting-modules>`
@@ -235,7 +247,7 @@ This module tests importing each of the primary modules in the library.
 |
 
 Test LiQL Module (khoros.utils.tests.test_liql)
----------------------------------------------------------------------------
+-----------------------------------------------
 This module tests parsing and/or executing LiQL queries.
 
 .. automodule:: khoros.utils.tests.test_liql
