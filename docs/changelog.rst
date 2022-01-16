@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.5.0b1
+v4.5.0b2
 ********
-**Release Date: 2022-01-10**
+**Release Date: TBD**
 
 Added
 =====
@@ -223,26 +223,6 @@ Fixes in the :doc:`supporting modules <supporting-modules>`.
 
 * Fixed an issue in the :py:func:`khoros.utils.helper.get_helper_settings` function where the
   ``ssl_verify`` field was being overridden even if defined elsewhere.
-
-|
-
------
-
-******
-v4.2.1
-******
-**Release Date: 2021-09-24**
-
-Fixed
-=====
-
-Primary Modules
----------------
-Fixes to the :doc:`primary modules <primary-modules>`.
-
-* Updated the :py:func:`khoros.api.put_request_with_retries` function call within the
-  :py:func:`khoros.roles._assign_role_with_v2` function to explicitly define the content-type
-  as ``application/json`` in order to resolve `Issue #45 <https://github.com/jeffshurtliff/khoros/issues/45>`_.
 
 |
 
