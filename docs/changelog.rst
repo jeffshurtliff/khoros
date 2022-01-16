@@ -3,6 +3,70 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+********
+v4.5.0b2
+********
+**Release Date: TBD**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.Message.get_metadata` method.
+* Added the :py:meth:`khoros.core.Khoros.Users.update_sso_id` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.objects.messages.get_metadata` function.
+* Added the :py:func:`khoros.objects.users.update_sso_id` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.InvalidMetadataError` exception class.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Replaced the phrase *"This function"* with *"This method"* in all of the core method docstrings.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.objects.messages.create` function to explicitly define the ``Content-Type``
+  header is now as ``application/json`` when handling non-multipart requests.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Introduced the ability for a fully customized message to be displayed in the
+  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError` exception class.
+
+Fixed
+=====
+
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed an issue with the default message in the :py:exc:`khoros.errors.exceptions.APIRequestError` exception class.
+
+|
+
+-----
+
 ******
 v4.4.0
 ******

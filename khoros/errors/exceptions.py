@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2021
+:Modified Date:     10 Jan 2022
 """
 
 #################
@@ -108,6 +108,9 @@ class SsoAuthenticationError(KhorosError):
 class CurrentlyUnsupportedError(KhorosError):
     """This exception is used when a feature or functionality being used is currently unsupported.
 
+    .. versionchanged:: 4.5.0
+       Introduced the ability for a fully customized message to be displayed.
+
     .. versionchanged:: 2.0.0
        The unsupported feature can be passed as a string argument to explicitly reference it in the exception.
     """
@@ -116,6 +119,8 @@ class CurrentlyUnsupportedError(KhorosError):
         default_msg = "This feature is currently unsupported at this time."
         if not (args or kwargs):
             args = (default_msg,)
+        elif 'message' in kwargs:
+            args =(kwargs['message'],)
         else:
             custom_msg = f"The '{args[0]}' {default_msg.split('This ')[1]}"
             args = (custom_msg,)
@@ -237,10 +242,14 @@ class APIConnectionError(KhorosError):
 
 
 class APIRequestError(KhorosError):
-    """This exception is used for generic API request errors when there isn't a more specific exception."""
+    """This exception is used for generic API request errors when there isn't a more specific exception.
+
+    .. versionchanged:: 4.5.0
+       Fixed an issue with the default message.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
-        default_msg = "The DELETE request did not return a successful response."
+        default_msg = "The API request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
@@ -532,6 +541,22 @@ class TooManyResultsError(KhorosError):
 #####################
 # Message Exceptions
 #####################
+
+
+class InvalidMetadataError(KhorosError):
+    """This exception is used when there is an issue involving message metadata.
+
+    .. versionadded:: 4.5.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The message metadata is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'metadata' in kwargs:
+            custom_msg = f"{default_msg.split('is')[0]}'{kwargs.get('metadata')}'{default_msg.split('is')[1]}"
+            args = (custom_msg,)
+        super().__init__(*args)
 
 
 class MessageTypeNotFoundError(KhorosError):
