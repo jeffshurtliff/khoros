@@ -7,16 +7,13 @@ are currently being supported with security updates.
 
 | Version   | Supported          |
 | --------- | ------------------ |
-| \>= 3.0.x | :white_check_mark: |
-| 2.8.0     | :white_check_mark: |
-| 2.7.x     | :white_check_mark: |
-| 2.6.x     | :white_check_mark: |
-| 2.5.x     | :white_check_mark: |
-| 2.4.x     | :x:                |
-| 2.3.x     | :x:                |
-| 2.2.x     | :x:                |
-| 2.1.x     | :x:                |
-| 2.0.x     | :x:                |
+| \>= 4.4.x | :white_check_mark: |
+| 4.3.x     | :white_check_mark: |
+| 4.2.x     | :white_check_mark: |
+| 4.1.x     | :white_check_mark: |
+| 4.0.0     | :white_check_mark: |
+| 3.x.x     | :white_check_mark: |
+| 2.x.x     | :x:                |
 | < 2.0     | :x:                |
 
 ## Reporting a Vulnerability
