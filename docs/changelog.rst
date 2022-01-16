@@ -4,9 +4,9 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ********
-v4.5.0b1
+v4.5.0b2
 ********
-**Release Date: 2022-01-10**
+**Release Date: TBD**
 
 Added
 =====
