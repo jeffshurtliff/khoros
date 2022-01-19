@@ -1,4 +1,4 @@
-# Khoros Communities Python Library
+# Python SDK for Khoros Communities
 The **khoros** library acts as a Python software development kit (SDK) to administer and manage 
 [Khoros Communities](https://khoros.com/platform/communities) (formerly Lithium)  online community platforms.
 

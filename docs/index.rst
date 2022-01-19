@@ -1,8 +1,8 @@
-###############################
-Khoros Community Python Library
-###############################
+#################################
+Python SDK for Khoros Communities
+#################################
 Welcome to the official documentation for the
-`Khoros Community Python library <https://pypi.org/project/khoros>`_.
+`Python SDK for Khoros Communities <https://pypi.org/project/khoros>`_.
 
 *****************
 Table of Contents
