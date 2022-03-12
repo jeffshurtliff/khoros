@@ -11,6 +11,13 @@ v5.0.0dev1
 Added
 =====
 
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the new :py:mod:`khoros.bulk_data` module with the following functions:
+    * TBD
+
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.

@@ -8,6 +8,7 @@ which are listed below.
 * `Core Module (khoros.core)`_
 * `API Module (khoros.api)`_
 * `Auth Module (khoros.auth)`_
+* `Bulk Data Module (khoros.bulk_data)`_
 * `LiQL Module (khoros.liql)`_
 * `Objects Module (khoros.objects)`_
     * `Base Objects Module (khoros.objects.base)`_
@@ -66,6 +67,18 @@ Auth Module (khoros.auth)
 This module contains functions that facilitate authenticating to Khoros Community environments.
 
 .. automodule:: khoros.auth
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+***********************************
+Bulk Data Module (khoros.bulk_data)
+***********************************
+This module contains functions that relate to the Bulk Data API.
+
+.. automodule:: khoros.bulk_data
    :members:
 
 :doc:`Return to Top <primary-modules>`
