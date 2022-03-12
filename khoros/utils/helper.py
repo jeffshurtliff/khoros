@@ -6,7 +6,7 @@
 :Example:           ``helper_settings = helper.get_settings('/tmp/helper.yml', 'yaml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Feb 2021
+:Modified Date:     12 Mar 2022
 """
 
 import json
@@ -61,6 +61,9 @@ def _convert_yaml_to_bool(_yaml_bool_value):
 def _get_connection_info(_helper_cfg):
     """This function parses any connection information found in the helper file.
 
+    .. versionchanged:: 5.0.0
+       Added function call to parse the Bulk Data API connection information
+
     .. versionchanged:: 2.2.0
        Removed one of the preceding underscores in the function name
     """
@@ -77,6 +80,10 @@ def _get_connection_info(_helper_cfg):
     # Parse session authentication information if found
     if 'session_auth' in _helper_cfg['connection']:
         _connection_info['session_auth'] = _get_session_auth_info(_helper_cfg)
+
+    # Parse Bulk Data API information if found
+    if 'bulk_data' in _helper_cfg['connection']:
+        _connection_info['bulk_data'] = _get_bulk_data_info(_helper_cfg)
     return _connection_info
 
 
@@ -110,6 +117,24 @@ def _get_session_auth_info(_helper_cfg):
         else:
             _session_auth[_key] = None
     return _session_auth
+
+
+def _get_bulk_data_info(_helper_cfg):
+    """This function parses the Bulk Data API connection information if found in the helper file.
+
+    .. versionadded:: 5.0.0
+    """
+    _bulk_data = {}
+    _bulk_data_fields = ['community_id', 'client_id', 'token', 'europe']
+    if 'bulk_data' in _helper_cfg['connection']:
+        for _field in _bulk_data_fields:
+            if _field in _helper_cfg['connection']['bulk_data']:
+                _bulk_data[_field] = _helper_cfg['connection']['bulk_data'][_field]
+            elif _field == 'europe':
+                _bulk_data[_field] = False
+            else:
+                _bulk_data[_field] = None
+    return _bulk_data
 
 
 def _get_discussion_styles(_helper_cfg):

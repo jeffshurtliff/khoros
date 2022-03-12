@@ -11,9 +11,25 @@ v5.0.0dev1
 Added
 =====
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.helper._get_bulk_data_info` function.
+
 General
 -------
 * Added the ``bulk_data`` section to the ``examples/helper.yml`` file.
+
+Changed
+=======
+
+Supporting Modules
+---------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
+  Bulk Data API connection information when applicable.
 
 |
 
