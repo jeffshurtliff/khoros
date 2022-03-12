@@ -127,6 +127,7 @@ def _get_bulk_data_info(_helper_cfg):
     _bulk_data = {}
     _bulk_data_fields = ['community_id', 'client_id', 'token', 'europe']
     if 'bulk_data' in _helper_cfg['connection']:
+        # Populate the fields
         for _field in _bulk_data_fields:
             if _field in _helper_cfg['connection']['bulk_data']:
                 _bulk_data[_field] = _helper_cfg['connection']['bulk_data'][_field]
@@ -134,6 +135,14 @@ def _get_bulk_data_info(_helper_cfg):
                 _bulk_data[_field] = False
             else:
                 _bulk_data[_field] = None
+
+        # Define the base URL value
+        if 'europe' in _bulk_data and _bulk_data.get('europe') is True:
+            _bulk_data['base_url'] = f'https://eu.api.lithium.com/lsi-data/v2/data/export/community/'
+        else:
+            _bulk_data['base_url'] = f'https://api.lithium.com/lsi-data/v2/data/export/community/'
+        if _bulk_data.get('community_id'):
+            _bulk_data['base_url'] = f'{_bulk_data["base_url"]}{_bulk_data.get("community_id")}'
     return _bulk_data
 
 
