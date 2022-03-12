@@ -43,7 +43,7 @@ discussion_styles:
 
 # Define how logging should be leveraged
 logging:
-    format: %(asctime)s - %(levelname)s - %(name)s - %(message)s
+    format: '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
     console_output: yes
     console:
         log_level: warning
