@@ -16,13 +16,15 @@ Primary Modules
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the new :py:mod:`khoros.bulk_data` module with the following functions:
-    * TBD
+    * :py:func:`khoros.bulk_data.get_base_url`
 
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.utils.helper._get_bulk_data_info` function.
+* Added the :py:mod:`khoros.utils.tests.test_bulk_data` module with the following test functions:
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_base_url_without_helper`
 
 General
 -------
