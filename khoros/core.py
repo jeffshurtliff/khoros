@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Mar 2022
+:Modified Date:     14 Mar 2022
 """
 
 import sys
@@ -19,6 +19,7 @@ from . import saml as saml_module
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
+from . import bulk_data as bulk_data_module
 from .utils import environment, log_utils, version
 from .utils.helper import get_helper_settings
 
@@ -45,7 +46,7 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=None, bulk_data=None):
+                 ssl_verify=None, bulk_data_settings=None):
         """This method instantiates the core Khoros object.
 
         .. versionchanged:: 5.0.0
@@ -119,7 +120,7 @@ class Khoros(object):
 
         # Initialize other dictionaries that will be used by the class object
         self.auth = {}
-        self.bulk_data = {}
+        self.bulk_data_settings = {}
         self.core = {}
         self.construct = {}
         self._helper_settings = {}
@@ -140,7 +141,7 @@ class Khoros(object):
             'skip_env_variables': skip_env_variables,
             'empty': empty,
             'ssl_verify': ssl_verify,
-            'bulk_data': bulk_data,
+            'bulk_data': bulk_data_settings,
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val is not None and defined_settings.get(_arg_key) is None:
@@ -196,13 +197,13 @@ class Khoros(object):
             api.ssl_verify_disabled = True
 
         # Add the Bulk Data API settings if applicable
-        if bulk_data is not None and isinstance(bulk_data, dict):
-            self.bulk_data = bulk_data
+        if bulk_data_settings is not None and isinstance(bulk_data_settings, dict):
+            self.bulk_data_settings = bulk_data_settings
         elif 'connection' in self._helper_settings and 'bulk_data' in self._helper_settings['connection']:
-            self.bulk_data = self._helper_settings['connection']['bulk_data']
+            self.bulk_data_settings = self._helper_settings['connection']['bulk_data']
         for bulk_data_field in ['community_id', 'client_id', 'token', 'europe', 'base_url', 'export_type']:
-            if bulk_data_field not in self.bulk_data:
-                self.bulk_data[bulk_data_field] = None
+            if bulk_data_field not in self.bulk_data_settings:
+                self.bulk_data_settings[bulk_data_field] = None
 
         # Add the authentication status
         if 'active' not in self.auth:
@@ -285,6 +286,7 @@ class Khoros(object):
         self.albums = self._import_album_class()
         self.archives = self._import_archives_class()
         self.boards = self._import_board_class()
+        self.bulk_data = self._import_bulk_data_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
         self.grouphubs = self._import_grouphub_class()
@@ -521,6 +523,14 @@ class Khoros(object):
         .. versionadded:: 2.5.0
         """
         return Khoros.Board(self)
+
+    def _import_bulk_data_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.BulkData` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 5.0.0
+        """
+        return Khoros.BulkData(self)
 
     def _import_category_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Category` inner class to be utilized in the
@@ -1676,6 +1686,70 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return structures_module.boards.board_exists(self.khoros_object, board_id, board_url)
+
+    class BulkData(object):
+        """This class includes methods for interacting with the Bulk Data API.
+
+        .. versionadded:: 5.0.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Board` inner class object.
+
+            .. versionadded:: 5.0.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def query(self, community_id=None, client_id=None, token=None, from_date=None, to_date=None, fields=None,
+                  europe=None, export_type=None, full_response=False):
+            """This method performs a query against the Bulk Data API to retrieve CSV or JSON data.
+
+            .. versionadded:: 5.0.0
+
+            :param community_id: The Community ID to leverage in the URL
+            :type community_id: str, None
+            :param client_id: The Client ID used to authenticate to the Bulk Data API
+            :type client_id: str, None
+            :param token: The access token used to authenticate to the Bulk Data API
+            :type token: str, None
+            :param from_date: The **From** Date in ``YYYYmmDD`` or ``YYYYmmDDhhMM`` format.
+            :type from_date: str, None
+            :param to_date: The **To** Date in ``YYYYmmDD`` or ``YYYYmmDDhhMM`` format.
+            :type to_date: str, None
+            :param fields: Optional fields to include in the data export as a comma-separated string or iterable
+            :type fields: str, list, tuple, set, None
+            :param europe: Determines if the European URL should be utilized (``False`` by default)
+            :type europe: bool
+            :param export_type: Determines if the data should be returned in ``csv`` (default) or ``json`` format
+            :type export_type: str, None
+            :param full_response: Determines if the full :py:mod:`requests` object should be returned (``False`` by default)
+            :type full_response: bool
+            :returns: The CSV or JSON data for the Bulk Data API request (or the full :py:mod:`requests` object)
+            :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
+                     :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIRequestError`
+            """
+            return bulk_data_module.query(self.khoros_object, community_id=community_id, client_id=client_id,
+                                          token=token, from_date=from_date, to_date=to_date, fields=fields,
+                                          europe=europe, export_type=export_type, full_response=full_response)
+
+        def get_base_url(self, community_id=None, europe=False):
+            """This function constructs and/or retrieves the base URL for the Bulk Data API.
+
+            .. versionadded:: 5.0.0
+
+            .. note:: The URL from the helper settings will be leveraged when available unless the ``community_id`` is
+                      explicitly defined as a function parameter.
+
+            :param community_id: The Community ID to leverage in the URL
+            :type community_id: str, None
+            :param europe: Determines if the European URL should be utilized (``False`` by default)
+            :type europe: bool
+            :returns: The base URL for the Bulk Data API
+            """
+            return bulk_data_module.get_base_url(self.khoros_object, community_id=community_id, europe=europe)
 
     class Category(object):
         """This class includes methods for interacting with categories."""

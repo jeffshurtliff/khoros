@@ -36,9 +36,9 @@ def test_core_object_settings():
     .. versionadded:: 5.0.0
     """
     khoros_object = resources.initialize_khoros_object()
-    assert khoros_object.bulk_data
+    assert khoros_object.bulk_data_settings
     for field in ['community_id', 'client_id', 'token', 'europe', 'base_url', 'export_type']:
-        assert field in khoros_object.bulk_data
+        assert field in khoros_object.bulk_data_settings
 
 
 def test_export_type_header():

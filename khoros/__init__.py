@@ -6,14 +6,14 @@
 :Example:           ``khoros = Khoros(community_url='https://community.example.com', helper='path/to/helper_file.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     15 Sep 2021
+:Modified Date:     14 Mar 2022
 """
 
 from . import errors
 from .core import Khoros
 from .utils import version
 
-__all__ = ['core', 'Khoros', 'auth', 'liql', 'errors', 'saml']
+__all__ = ['core', 'Khoros', 'auth', 'liql', 'errors', 'saml', 'bulk_data']
 
 # Define the package version by pulling from the khoros.utils.version module
 __version__ = version.get_full_version()

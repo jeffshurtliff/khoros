@@ -43,11 +43,11 @@ def get_base_url(khoros_object=None, community_id=None, europe=False):
     # Retrieve the base URL from the helper settings when defined
     if not community_id and khoros_object:
         try:
-            base_url = khoros_object._helper_settings['connection']['bulk_data']['base_url']
+            base_url = khoros_object.bulk_data_settings['base_url']
         except (KeyError, AttributeError):
             # Attempt to define the community ID if found
             try:
-                community_id = khoros_object._helper_settings['connection']['bulk_data']['community_id']
+                community_id = khoros_object.bulk_data_settings['community_id']
             except (KeyError, AttributeError):
                 pass
 
@@ -92,22 +92,22 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
              :py:exc:`khoros.errors.exceptions.APIRequestError`
     """
     # Get the base URL
-    if khoros_object and khoros_object.bulk_data.get('base_url'):
-        base_url = khoros_object.bulk_data.get('base_url')
+    if khoros_object and khoros_object.bulk_data_settings.get('base_url'):
+        base_url = khoros_object.bulk_data_settings.get('base_url')
     else:
         base_url = get_base_url(khoros_object, community_id, europe)
 
     # Get the client ID
     if not client_id:
-        if khoros_object and khoros_object.bulk_data.get('client_id'):
-            client_id = khoros_object.bulk_data.get('client_id')
+        if khoros_object and khoros_object.bulk_data_settings.get('client_id'):
+            client_id = khoros_object.bulk_data_settings.get('client_id')
         else:
             raise errors.exceptions.MissingAuthDataError('A valid Client ID is required to utilize the Bulk Data API.')
 
     # Get the auth token
     if not token:
-        if khoros_object and khoros_object.bulk_data.get('token'):
-            token = khoros_object.bulk_data.get('token')
+        if khoros_object and khoros_object.bulk_data_settings.get('token'):
+            token = khoros_object.bulk_data_settings.get('token')
         else:
             raise errors.exceptions.MissingAuthDataError('A valid access token is required to utilize the '
                                                          'Bulk Data API.')
@@ -198,15 +198,15 @@ def _construct_headers(_khoros_object=None, _client_id=None, _export_type=None):
     """
     # Get the client ID
     if not _client_id:
-        if _khoros_object and _khoros_object.bulk_data.get('client_id'):
-            _client_id = _khoros_object.bulk_data.get('client_id')
+        if _khoros_object and _khoros_object.bulk_data_settings.get('client_id'):
+            _client_id = _khoros_object.bulk_data_settings.get('client_id')
         else:
             raise errors.exceptions.MissingAuthDataError('A valid Client ID is required to utilize the Bulk Data API.')
 
     # Get the Accept value depending on the export type
     if not _export_type:
-        if _khoros_object and _khoros_object.bulk_data.get('export_type'):
-            _export_type = _khoros_object.bulk_data.get('export_type')
+        if _khoros_object and _khoros_object.bulk_data_settings.get('export_type'):
+            _export_type = _khoros_object.bulk_data_settings.get('export_type')
         else:
             # Default to CSV export
             _export_type = 'csv'

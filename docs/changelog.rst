@@ -11,6 +11,15 @@ v5.0.0dev1
 Added
 =====
 
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added and configured the ``self.bulk_data_settings`` dictionary in the core object.
+* Added the :py:class:`khoros.core.Khoros.BulkData` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.BulkData.query`
+    * :py:meth:`khoros.core.Khoros.BulkData.get_base_url`
+
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
@@ -46,7 +55,7 @@ Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
 
-* Added function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
+* Added a function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
   Bulk Data API connection information when applicable.
 
 |
