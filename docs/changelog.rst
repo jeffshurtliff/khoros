@@ -17,6 +17,11 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the new :py:mod:`khoros.bulk_data` module with the following functions:
     * :py:func:`khoros.bulk_data.get_base_url`
+    * :py:func:`khoros.bulk_data.query`
+    * :py:func:`khoros.bulk_data._construct_headers`
+    * :py:func:`khoros.bulk_data._get_export_header`
+    * :py:func:`khoros.bulk_data._construct_parameters`
+    * :py:func:`khoros.bulk_data._validate_date_field`
 
 Supporting Modules
 ------------------
@@ -25,6 +30,10 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the :py:func:`khoros.utils.helper._get_bulk_data_info` function.
 * Added the :py:mod:`khoros.utils.tests.test_bulk_data` module with the following test functions:
     * :py:func:`khoros.utils.tests.test_bulk_data.test_base_url_without_helper`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_core_object_settings`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_export_type_header`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_header_construction`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_parameter_construction`
 
 General
 -------
@@ -34,7 +43,7 @@ Changed
 =======
 
 Supporting Modules
----------------
+------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Added function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the

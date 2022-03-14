@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Nov 2021
+:Modified Date:     13 Mar 2022
 """
 
 import sys
@@ -45,8 +45,11 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=None):
+                 ssl_verify=None, bulk_data=None):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 5.0.0
+           Added support for the Bulk Data API.
 
         .. versionchanged:: 4.3.0
            Fixed an issue where the ``ssl_verify`` parameter was being mostly disregarded.
@@ -102,6 +105,8 @@ class Khoros(object):
         :type empty: bool
         :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
         :type ssl_verify: bool, None
+        :param bulk_data: The values for utilizing the Bulk Data API
+        :type bulk_data: dict, None
         :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
                  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
                  :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
@@ -114,6 +119,7 @@ class Khoros(object):
 
         # Initialize other dictionaries that will be used by the class object
         self.auth = {}
+        self.bulk_data = {}
         self.core = {}
         self.construct = {}
         self._helper_settings = {}
@@ -134,6 +140,7 @@ class Khoros(object):
             'skip_env_variables': skip_env_variables,
             'empty': empty,
             'ssl_verify': ssl_verify,
+            'bulk_data': bulk_data,
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val is not None and defined_settings.get(_arg_key) is None:
@@ -187,6 +194,15 @@ class Khoros(object):
         # Update the global variable if SSL Verify is explicitly disabled
         if self.core_settings.get('ssl_verify') is False:
             api.ssl_verify_disabled = True
+
+        # Add the Bulk Data API settings if applicable
+        if bulk_data is not None and isinstance(bulk_data, dict):
+            self.bulk_data = bulk_data
+        elif 'connection' in self._helper_settings and 'bulk_data' in self._helper_settings['connection']:
+            self.bulk_data = self._helper_settings['connection']['bulk_data']
+        for bulk_data_field in ['community_id', 'client_id', 'token', 'europe', 'base_url', 'export_type']:
+            if bulk_data_field not in self.bulk_data:
+                self.bulk_data[bulk_data_field] = None
 
         # Add the authentication status
         if 'active' not in self.auth:

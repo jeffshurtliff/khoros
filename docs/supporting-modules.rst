@@ -19,6 +19,7 @@ which are listed below.
     * `Tests Module (khoros.utils.tests)`_
         * `Resources Modules (khoros.utils.tests.resources)`_
         * `Test Board Creation Module (khoros.utils.tests.test_board_creation)`_
+        * `Test Bulk Data Module (khoros.utils.tests.test_bulk_data)`_
         * `Test Core Utilities Module (khoros.utils.tests.test_core_utils)`_
         * `Test Group Hub Creation Module (khoros.utils.tests.test_grouphub_creation)`_
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
@@ -185,6 +186,17 @@ Test Board Creation Module (khoros.utils.tests.test_board_creation)
 This module is used by pytest to verify that that the board creation works properly.
 
 .. automodule:: khoros.utils.tests.test_board_creation
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Bulk Data Module (khoros.utils.tests.test_bulk_data)
+---------------------------------------------------------
+This module is used by pytest to verify that that the Bulk Data API module works properly.
+
+.. automodule:: khoros.utils.tests.test_bulk_data
    :members:
 
 :doc:`Return to Top <supporting-modules>`
