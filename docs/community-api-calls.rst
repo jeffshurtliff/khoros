@@ -3,7 +3,7 @@ Performing Community API Calls
 ##############################
 .. warning:: This page is still in progress and sections may be missing or unfinished.
 
-Using the Khoros Python API to perform Community API calls is easier than doing
+Using the Khoros Python SDK to perform Community API calls is easier than doing
 so manually with the `requests <https://2.python-requests.org/en/master/>`_ library
 for several reasons, including:
 
