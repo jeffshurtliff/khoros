@@ -165,6 +165,13 @@ This is an example of how the configuration file would be written:
            username: serviceaccount
            password: Ch@ng3ME!
 
+       # Bulk Data API connection information
+       bulk_data:
+           community_id: example.prod
+           client_id: ay0CXXXXXXXXXX/XXXX+XXXXXXXXXXXXX/XXXXX4KhQ=
+           token: 2f25XXXXXXXXXXXXXXXXXXXXXXXXXa10dec04068
+           europe: no
+
    # Define the preferred format for API responses
    prefer_json: yes
 
