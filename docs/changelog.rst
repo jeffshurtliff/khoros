@@ -19,6 +19,8 @@ Additions to the :doc:`core-object-methods`.
 * Added the :py:class:`khoros.core.Khoros.BulkData` inner class with the following methods:
     * :py:meth:`khoros.core.Khoros.BulkData.query`
     * :py:meth:`khoros.core.Khoros.BulkData.get_base_url`
+* Added the :py:meth:`khoros.core.Khoros.Message.get_context_id` method.
+* Added the :py:meth:`khoros.core.Khoros.Message.get_context_url` method.
 
 Primary Modules
 ---------------

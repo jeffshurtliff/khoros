@@ -3021,6 +3021,30 @@ class Khoros(object):
             """
             return objects_module.messages.get_metadata(self.khoros_object, msg_id, metadata_key)
 
+        def get_context_id(self, msg_id):
+            """This method retrieves the Context ID value for a given message ID.
+
+            .. versionadded:: 5.0.0
+
+            :param msg_id: The message ID to query
+            :type msg_id: str
+            :returns: The value of the Context ID metadata field
+            :raises: :py:exc:`khoros.errors.exceptions.get_context_id`
+            """
+            return objects_module.messages.get_context_id(self.khoros_object, msg_id)
+
+        def get_context_url(self, msg_id):
+            """This method retrieves the Context URL value for a given message ID.
+
+            .. versionadded:: 5.0.0
+
+            :param msg_id: The message ID to query
+            :type msg_id: str
+            :returns: The value of the Context URL metadata field
+            :raises: :py:exc:`khoros.errors.exceptions.get_context_id`
+            """
+            return objects_module.messages.get_context_url(self.khoros_object, msg_id)
+
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This method formats the ``<li-message>`` HTML tag for a content @mention.
 
