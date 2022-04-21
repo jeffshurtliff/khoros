@@ -965,3 +965,13 @@ def format_content_mention(khoros_object=None, content_info=None, content_id=Non
         url = f"{khoros_object.core['base_url']}{url}"
     mention_tag = f'<li-message title="{title}" uid="{content_id}" url="{url}"></li-message>'
     return mention_tag
+
+
+def get_context_id(khoros_object, msg_id):
+    try:
+        query = f"SELECT context_id FROM messages WHERE id = '{msg_id}'"
+        response = khoros_object.query(query, return_items=True)
+    except Exception as exc:
+        pass
+
+
