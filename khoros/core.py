@@ -3045,6 +3045,38 @@ class Khoros(object):
             """
             return objects_module.messages.get_context_url(self.khoros_object, msg_id)
 
+        def define_context_id(self, msg_id, context_id='', full_response=False):
+            """This method defines the context_id metadata value for a given message.
+
+             .. versionadded:: 5.0.0
+
+             :param msg_id: The message ID to query
+             :type msg_id: str
+             :param context_id: The value to be written to the context_id metadata field (Empty by default)
+             :type context_id: str
+             :param full_response: Determines if the full API response should be returned (``False`` by default)
+             :type full_response: bool
+             :returns: A Boolean value to indicate the success of the operation or alternatively the full API response
+             :raises: :py:exc:`khoros.errors.exceptions.APIRequestError`
+             """
+            return objects_module.messages.define_context_id(self.khoros_object, msg_id, context_id, full_response)
+
+        def define_context_url(self, msg_id, context_url='', full_response=False):
+            """This function defines the context_url metadata value for a given message.
+
+            .. versionadded:: 5.0.0
+
+            :param msg_id: The message ID to query
+            :type msg_id: str
+            :param context_url: The value to be written to the context_url metadata field (Empty by default)
+            :type context_url: str
+            :param full_response: Determines if the full API response should be returned (``False`` by default)
+            :type full_response: bool
+            :returns: A Boolean value to indicate the success of the operation or alternatively the full API response
+            :raises: :py:exc:`khoros.errors.exceptions.APIRequestError`
+            """
+            return objects_module.messages.define_context_url(self.khoros_object, msg_id, context_url, full_response)
+
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This method formats the ``<li-message>`` HTML tag for a content @mention.
 
