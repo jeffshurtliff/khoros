@@ -1035,7 +1035,7 @@ def define_context_id(khoros_object, msg_id, context_id='', full_response=False)
     """
     successful = False
     context_id = core_utils.url_encode(context_id)
-    path = f'/restapi/vc/messages/id/{msg_id}/metadata/key/message.context_id/set?value={context_id}'
+    path = f'/messages/id/{msg_id}/metadata/key/message.context_id/set?value={context_id}'
     try:
         response = api.make_v1_request(khoros_object, path, request_type='POST')
         if isinstance(response, dict) and 'response' in response and response['response'].get('status') == 'success':
@@ -1064,7 +1064,7 @@ def define_context_url(khoros_object, msg_id, context_url='', full_response=Fals
     """
     successful = False
     context_url = core_utils.url_encode(context_url)
-    path = f'/restapi/vc/messages/id/{msg_id}/metadata/key/message.context_url/set?value={context_url}'
+    path = f'/messages/id/{msg_id}/metadata/key/message.context_url/set?value={context_url}'
     try:
         response = api.make_v1_request(khoros_object, path, request_type='POST')
         if isinstance(response, dict) and 'response' in response and response['response'].get('status') == 'success':
