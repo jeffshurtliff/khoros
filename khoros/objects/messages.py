@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Jan 2022
+:Modified Date:     21 Apr 2022
 """
 
 import json
@@ -968,10 +968,25 @@ def format_content_mention(khoros_object=None, content_info=None, content_id=Non
 
 
 def get_context_id(khoros_object, msg_id):
+    """This function retrieves the Context ID value for a given message ID.
+
+    .. versionadded:: 5.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The message ID to query
+    :type msg_id: str
+    :returns: The value of the Context ID metadata field
+    :raises: :py:exc:`khoros.errors.exceptions.get_context_id`
+    """
     try:
         query = f"SELECT context_id FROM messages WHERE id = '{msg_id}'"
-        response = khoros_object.query(query, return_items=True)
+        response = khoros_object.query(query, return_items=True)[0]
+        if isinstance(response, dict) and 'context_id' in response:
+            context_id = response.get('context_id')
+        else:
+            context_id = ''
     except Exception as exc:
-        pass
-
-
+        raise errors.exceptions.InvalidMetadataError('Encountered the following exception while retrieving the '
+                                                     f'context_id value: {exc}')
+    return context_id
