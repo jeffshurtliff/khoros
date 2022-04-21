@@ -33,8 +33,11 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.bulk_data._get_export_header`
     * :py:func:`khoros.bulk_data._construct_parameters`
     * :py:func:`khoros.bulk_data._validate_date_field`
-* Added the :py:func:`khoros.objects.messages.get_context_id` function.
-* Added the :py:func:`khoros.objects.messages.get_context_url` function.
+* Added the following functions to the :py:mod:`khoros.objects.messages` module:
+    * Added the :py:func:`khoros.objects.messages.get_context_id` function.
+    * Added the :py:func:`khoros.objects.messages.get_context_url` function.
+    * Added the :py:func:`khoros.objects.messages.define_context_id` function.
+    * Added the :py:func:`khoros.objects.messages.define_context_url` function.
 
 Supporting Modules
 ------------------

@@ -17,7 +17,7 @@ from . import attachments, users
 from . import tags as tags_module
 from .. import api, liql, errors
 from ..structures import nodes
-from ..utils import log_utils
+from ..utils import log_utils, core_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
@@ -1015,3 +1015,61 @@ def get_context_url(khoros_object, msg_id):
         raise errors.exceptions.InvalidMetadataError('Encountered the following exception while retrieving the '
                                                      f'context_url value: {exc}')
     return context_url
+
+
+def define_context_id(khoros_object, msg_id, context_id='', full_response=False):
+    """This function defines the context_id metadata value for a given message.
+
+    .. versionadded:: 5.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The message ID to query
+    :type msg_id: str
+    :param context_id: The value to be written to the context_id metadata field (Empty by default)
+    :type context_id: str
+    :param full_response: Determines if the full API response should be returned (``False`` by default)
+    :type full_response: bool
+    :returns: A Boolean value to indicate the success of the operation or alternatively the full API response
+    :raises: :py:exc:`khoros.errors.exceptions.APIRequestError`
+    """
+    successful = False
+    context_id = core_utils.url_encode(context_id)
+    path = f'/restapi/vc/messages/id/{msg_id}/metadata/key/message.context_id/set?value={context_id}'
+    try:
+        response = api.make_v1_request(khoros_object, path, request_type='POST')
+        if isinstance(response, dict) and 'response' in response and response['response'].get('status') == 'success':
+            successful = True
+    except Exception as exc:
+        raise errors.exceptions.APIRequestError('Encountered the following exception while defining the context_id '
+                                                f'value: {exc}')
+    return response if full_response else successful
+
+
+def define_context_url(khoros_object, msg_id, context_url='', full_response=False):
+    """This function defines the context_url metadata value for a given message.
+
+    .. versionadded:: 5.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The message ID to query
+    :type msg_id: str
+    :param context_url: The value to be written to the context_url metadata field (Empty by default)
+    :type context_url: str
+    :param full_response: Determines if the full API response should be returned (``False`` by default)
+    :type full_response: bool
+    :returns: A Boolean value to indicate the success of the operation or alternatively the full API response
+    :raises: :py:exc:`khoros.errors.exceptions.APIRequestError`
+    """
+    successful = False
+    context_url = core_utils.url_encode(context_url)
+    path = f'/restapi/vc/messages/id/{msg_id}/metadata/key/message.context_url/set?value={context_url}'
+    try:
+        response = api.make_v1_request(khoros_object, path, request_type='POST')
+        if isinstance(response, dict) and 'response' in response and response['response'].get('status') == 'success':
+            successful = True
+    except Exception as exc:
+        raise errors.exceptions.APIRequestError('Encountered the following exception while defining the context_url '
+                                                f'value: {exc}')
+    return response if full_response else successful
