@@ -990,3 +990,28 @@ def get_context_id(khoros_object, msg_id):
         raise errors.exceptions.InvalidMetadataError('Encountered the following exception while retrieving the '
                                                      f'context_id value: {exc}')
     return context_id
+
+
+def get_context_url(khoros_object, msg_id):
+    """This function retrieves the Context URL value for a given message ID.
+
+    .. versionadded:: 5.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The message ID to query
+    :type msg_id: str
+    :returns: The value of the Context URL metadata field
+    :raises: :py:exc:`khoros.errors.exceptions.get_context_id`
+    """
+    try:
+        query = f"SELECT context_url FROM messages WHERE id = '{msg_id}'"
+        response = khoros_object.query(query, return_items=True)[0]
+        if isinstance(response, dict) and 'context_url' in response:
+            context_url = response.get('context_url')
+        else:
+            context_url = ''
+    except Exception as exc:
+        raise errors.exceptions.InvalidMetadataError('Encountered the following exception while retrieving the '
+                                                     f'context_url value: {exc}')
+    return context_url
