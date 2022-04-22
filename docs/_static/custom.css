@@ -64,3 +64,13 @@ a.reference.external > em {
     color: #842a8c;
     font-weight: 500;
 }
+
+/* Add separation between each Python function and method */
+dl.py.function,
+dl.py.method {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #c4c4c4;
+}
+
+
