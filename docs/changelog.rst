@@ -67,6 +67,7 @@ Changes to the :doc:`primary modules <primary-modules>`.
 
 * Improved the error handling in the :py:func:`khoros.auth.get_session_key` function.
 * Merged the two ``if`` statements in the :py:func:`khoros.auth.get_sso_key` function.
+* Merged the two ``if`` statements in the :py:func:`khoros.liql.perform_query` function.
 
 Supporting Modules
 ------------------
