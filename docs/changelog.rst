@@ -90,6 +90,17 @@ Fixes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.api._display_ssl_verify_warning`
     * :py:func:`khoros.api._report_failed_attempt`
 * Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.objects.tags` module:
+    * :py:func:`khoros.objects.tags.add_tags_to_message`
+    * :py:func:`khoros.objects.tags.add_single_tag_to_message`
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.structures.boards._warn_about_ignored_settings` function.
+
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
+* Removed redundant ``return`` statements from the following functions in the
   :py:mod:`khoros.utils.version` module:
     * :py:func:`khoros.utils.version.log_current_version`
     * :py:func:`khoros.utils.version.warn_when_not_latest`
@@ -98,10 +109,6 @@ Fixes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.utils.environment.update_env_variable_names`
     * :py:func:`khoros.utils.environment._update_env_list`
     * :py:func:`khoros.utils.environment._update_env_mapping`
-* Removed redundant ``return`` statements from the following functions in the
-  :py:mod:`khoros.objects.tags` module:
-    * :py:func:`khoros.objects.tags.add_tags_to_message`
-    * :py:func:`khoros.objects.tags.add_single_tag_to_message`
 * Removed redundant ``return`` statements from the following functions in the
   :py:mod:`khoros.errors.handlers` module:
     * :py:func:`khoros.errors.handlers.eprint`
