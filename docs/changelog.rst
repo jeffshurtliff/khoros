@@ -102,6 +102,13 @@ Fixes to the :doc:`primary modules <primary-modules>`.
   :py:mod:`khoros.objects.tags` module:
     * :py:func:`khoros.objects.tags.add_tags_to_message`
     * :py:func:`khoros.objects.tags.add_single_tag_to_message`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.errors.handlers` module:
+    * :py:func:`khoros.errors.handlers.eprint`
+    * :py:func:`khoros.errors.handlers.verify_v1_response`
+    * :py:func:`khoros.errors.handlers.verify_core_object_present`
+    * :py:func:`khoros.errors.handlers._import_exceptions_module`
+    * :py:func:`khoros.errors.handlers._import_exception_classes`
 * Removed the redundant ``return`` statement from the
   :py:func:`khoros.utils.core_utils.display_warning` function.
 
