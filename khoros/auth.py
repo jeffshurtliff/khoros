@@ -89,6 +89,9 @@ def get_session_key(khoros_object, username=None, password=None):
 def get_sso_key(khoros_object):
     """This function retrieves the session key for a LithiumSSO session.
 
+    .. versionchanged:: 5.0.0
+       The two ``if`` statements have been merged.
+
     .. versionadded:: 4.2.0
 
     :param khoros_object: The core Khoros object
@@ -105,9 +108,8 @@ def get_sso_key(khoros_object):
         data=khoros_object.core_settings.get('sso')
     )
     tree = ElementTree.fromstring(response.text)
-    if 'status' in tree.attrib:
-        if tree.attrib['status'] == 'success':
-            return tree.findtext('value')
+    if 'status' in tree.attrib and tree.attrib['status'] == 'success':
+        return tree.findtext('value')
     raise errors.exceptions.SsoAuthenticationError('Failed to retrieve a session key with the LithiumSSO token.')
 
 
