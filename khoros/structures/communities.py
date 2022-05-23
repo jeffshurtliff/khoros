@@ -6,7 +6,7 @@
 :Example:           ``details = get_community_details(khoros_object)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     23 May 2022
 """
 
 from . import base
@@ -36,6 +36,9 @@ def get_community_details(khoros_object):
 def _check_for_multiple_tenants(_community_details):
     """This function checks to see if more than one community instance (i.e. tenant) was found and displays a warning.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionadded:: 2.1.0
 
     :param _community_details: Dictionary containing community details from LiQL
@@ -45,7 +48,6 @@ def _check_for_multiple_tenants(_community_details):
     if _community_details['data']['size'] > 1:
         display_warning(f"{_community_details['data']['size']} community instances (i.e. tenants) were found but " +
                         "only details from the first tenant will be returned.")
-    return
 
 
 def get_community_field(khoros_object, field, community_details=None):

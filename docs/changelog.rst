@@ -95,6 +95,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.tags.add_single_tag_to_message`
 * Removed the redundant ``return`` statement from the
   :py:func:`khoros.structures.boards._warn_about_ignored_settings` function.
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.structures.communities._check_for_multiple_tenants` function.
 
 Supporting Modules
 ------------------
