@@ -66,8 +66,10 @@ Primary Modules
 Changes to the :doc:`primary modules <primary-modules>`.
 
 * Improved the error handling in the :py:func:`khoros.auth.get_session_key` function.
-* Merged the two ``if`` statements in the :py:func:`khoros.auth.get_sso_key` function.
-* Merged the two ``if`` statements in the :py:func:`khoros.liql.perform_query` function.
+* Merged the two ``if`` statements in the following functions:
+    * :py:func:`khoros.auth.get_sso_key`
+    * :py:func:`khoros.liql.perform_query`
+    * :py:func:`khoros.utils.version.warn_when_not_latest`
 
 Supporting Modules
 ------------------
@@ -87,6 +89,10 @@ Fixes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.api._confirm_field_supplied`
     * :py:func:`khoros.api._display_ssl_verify_warning`
     * :py:func:`khoros.api._report_failed_attempt`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.utils.version` module:
+    * :py:func:`khoros.utils.version.log_current_version`
+    * :py:func:`khoros.utils.version.warn_when_not_latest`
 
 |
 
