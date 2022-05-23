@@ -98,6 +98,10 @@ Fixes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.utils.environment.update_env_variable_names`
     * :py:func:`khoros.utils.environment._update_env_list`
     * :py:func:`khoros.utils.environment._update_env_mapping`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.objects.tags` module:
+    * :py:func:`khoros.objects.tags.add_tags_to_message`
+    * :py:func:`khoros.objects.tags.add_single_tag_to_message`
 * Removed the redundant ``return`` statement from the
   :py:func:`khoros.utils.core_utils.display_warning` function.
 

@@ -6,7 +6,7 @@
 :Example:           ``tags.add_single_tag_to_message('tutorial', 123)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 Jun 2021
+:Modified Date:     23 May 2022
 """
 
 from .. import api, liql, errors
@@ -42,6 +42,9 @@ def structure_single_tag_payload(tag_text):
 def add_single_tag_to_message(khoros_object, tag, msg_id, allow_exceptions=False):
     """This function adds a single tag to an existing message.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionadded:: 2.8.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -64,7 +67,6 @@ def add_single_tag_to_message(khoros_object, tag, msg_id, allow_exceptions=False
             raise errors.exceptions.POSTRequestError(api_error)
         else:
             errors.handlers.eprint(api_error)
-    return
 
 
 def get_tags_for_message(khoros_object, msg_id):
@@ -182,6 +184,9 @@ def _get_low_level_tags(_collection):
 def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
     """This function adds one or more tags to an existing message.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionadded:: 2.8.0
 
     ..caution:: This function is not the most effective way to add multiple tags to a message. It is recommended
@@ -202,4 +207,3 @@ def add_tags_to_message(khoros_object, tags, msg_id, allow_exceptions=False):
     tags = (tags, ) if isinstance(tags, str) else tags
     for tag in tags:
         add_single_tag_to_message(khoros_object, str(tag), msg_id, allow_exceptions)
-    return
