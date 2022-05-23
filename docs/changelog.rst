@@ -74,6 +74,18 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Added a function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
   Bulk Data API connection information when applicable.
 
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Removed redundant ``return`` statements from the following functions in the :py:mod:`khoros.api` module:
+    * :py:func:`khoros.api._confirm_field_supplied`
+    * :py:func:`khoros.api._display_ssl_verify_warning`
+    * :py:func:`khoros.api._report_failed_attempt`
+
 |
 
 -----
