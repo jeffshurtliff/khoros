@@ -61,15 +61,20 @@ General
 Changed
 =======
 
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Merged two ``if`` statements in the :py:meth:`khoros.core.Khoros._populate_auth_settings` method.
+
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
 * Improved the error handling in the :py:func:`khoros.auth.get_session_key` function.
-* Merged the two ``if`` statements in the following functions:
+* Merged two ``if`` statements in the following functions:
     * :py:func:`khoros.auth.get_sso_key`
     * :py:func:`khoros.liql.perform_query`
-    * :py:func:`khoros.utils.version.warn_when_not_latest`
 
 Supporting Modules
 ------------------
@@ -77,9 +82,17 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Added a function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
   Bulk Data API connection information when applicable.
+* Merged two ``if`` statements in the :py:func:`khoros.utils.version.warn_when_not_latest` function.
 
 Fixed
 =====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Removed the redundant ``return`` statement from the
+  :py:meth:`khoros.core.Khoros.Tag.add_tags_to_message` method.
 
 Primary Modules
 ---------------

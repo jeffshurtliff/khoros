@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Apr 2022
+:Modified Date:     23 May 2022
 """
 
 import sys
@@ -330,6 +330,9 @@ class Khoros(object):
     def _populate_auth_settings(self):
         """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks.
 
+        .. versionchanged:: 5.0.0
+           Merged two ``if`` statements.
+
         .. versionchanged:: 4.2.0
            General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
         """
@@ -339,11 +342,10 @@ class Khoros(object):
             'sso': ['sso_token']
         }
         for _setting in _auth_settings:
-            if _setting in self.core_settings:
-                if _setting in _setting_keys:
-                    for _setting_key in _setting_keys.get(_setting):
-                        if _setting_key in self.core_settings.get(_setting):
-                            self.auth[_setting_key] = self.core_settings.get(_setting).get(_setting_key)
+            if _setting in self.core_settings and _setting in _setting_keys:
+                for _setting_key in _setting_keys.get(_setting):
+                    if _setting_key in self.core_settings.get(_setting):
+                        self.auth[_setting_key] = self.core_settings.get(_setting).get(_setting_key)
 
     def _populate_construct_settings(self):
         """This method populates the khoros.construct dictionary to assist in constructing API queries and responses.
@@ -382,7 +384,7 @@ class Khoros(object):
         # Parse the helper settings and add them to the primary settings
         if 'connection' in self._helper_settings:
             _helper_keys = ['connection', 'construct', 'translate_errors']
-            _auth_keys = ['oauth2', 'session_auth', 'sso']
+            _auth_keys = ['oauth2', 'session_auth', 'sso']      # TODO: Determine if this variable is needed
             for _helper_key in _helper_keys:
                 if _helper_key == 'connection':
                     _connection_keys = ['community_url', 'tenant_id', 'default_auth_type', 'oauth2',
@@ -4098,6 +4100,9 @@ class Khoros(object):
         def add_tags_to_message(self, tags, msg_id, allow_exceptions=False):
             """This method adds one or more tags to an existing message.
 
+            .. versionchanged:: 5.0.0
+               Removed the redundant return statement.
+
             .. versionadded:: 4.1.0
 
             ..caution:: This function is not the most effective way to add multiple tags to a message. It is recommended
@@ -4114,7 +4119,6 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
             """
             objects_module.tags.add_tags_to_message(self.khoros_object, tags, msg_id, allow_exceptions)
-            return
 
         @staticmethod
         def structure_single_tag_payload(tag_text):
