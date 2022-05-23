@@ -84,6 +84,11 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   Bulk Data API connection information when applicable.
 * Merged two ``if`` statements in the :py:func:`khoros.utils.version.warn_when_not_latest` function.
 
+General
+-------
+* Updated the `Security Policy <https://github.com/jeffshurtliff/khoros/blob/master/SECURITY.md>`_ to
+  add support for version 5.0.x and to remove support for version 3.x.x.
+
 Fixed
 =====
 
