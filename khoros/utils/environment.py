@@ -3,7 +3,7 @@
 :Module:            khoros.objects.messages
 :Synopsis:          This module includes functions that identify environment variables for the khoros library
 :Usage:             ``from khoros.utils import environment``
-:Example:           TBD
+:Example:           ``environment.update_env_variable_names()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
 :Modified Date:     23 May 2022
