@@ -85,6 +85,8 @@ Primary Modules
 ---------------
 Fixes to the :doc:`primary modules <primary-modules>`.
 
+* Updated the :py:func:`khoros.structures.grouphubs._create_group_hub_with_avatar` to pass a defined
+  content-type value which was previously stored in an unused variable.
 * Removed redundant ``return`` statements from the following functions in the :py:mod:`khoros.api` module:
     * :py:func:`khoros.api._confirm_field_supplied`
     * :py:func:`khoros.api._display_ssl_verify_warning`
@@ -97,6 +99,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.structures.boards._warn_about_ignored_settings` function.
 * Removed the redundant ``return`` statement from the
   :py:func:`khoros.structures.communities._check_for_multiple_tenants` function.
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.structures.grouphubs.refresh_enabled_discussion_styles` function.
 
 Supporting Modules
 ------------------
