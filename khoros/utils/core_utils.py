@@ -6,7 +6,7 @@
 :Example:           ``encoded_string = core_utils.encode_url(decoded_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     14 Mar 2021
+:Modified Date:     23 May 2022
 """
 
 import os
@@ -303,6 +303,9 @@ def get_random_string(length=32, prefix_string=""):
 def display_warning(warn_msg):
     """This function displays a :py:exc:`UserWarning` message via the :py:mod:`warnings` module.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionadded:: 2.1.0
 
     :param warn_msg: The message to be displayed
@@ -310,7 +313,6 @@ def display_warning(warn_msg):
     :returns: None
     """
     warnings.warn(warn_msg, UserWarning)
-    return
 
 
 def get_file_type(file_path):

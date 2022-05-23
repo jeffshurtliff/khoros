@@ -98,7 +98,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.utils.environment.update_env_variable_names`
     * :py:func:`khoros.utils.environment._update_env_list`
     * :py:func:`khoros.utils.environment._update_env_mapping`
-
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.utils.core_utils.display_warning` function.
 
 |
 
