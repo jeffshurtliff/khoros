@@ -167,6 +167,9 @@ def _add_json_query_to_uri(_uri, _return_json=True):
 def _display_ssl_verify_warning():
     """This function displays a warning if SSL verification has been disabled.
 
+    .. versionchanged:: 5.0.0
+       The redundant ``return`` statement has been removed.
+
     .. versionadded:: 4.3.0
 
     :returns: None
@@ -426,6 +429,9 @@ def format_avatar_payload(avatar_image_path):
 
 def _report_failed_attempt(_exc_msg, _request_type, _retries):
     """This function reports a failed API call that will be retried.
+
+    .. versionchanged:: 5.0.0
+       The redundant ``return`` statement has been removed.
 
     :param _exc_msg: The exception that was raised can captured within a try/except clause
     :param _request_type: The type of API request (e.g. ``post``, ``put`` or ``get``)
@@ -1318,6 +1324,9 @@ def _get_v2_return_values(_return_booleans, _api_response, _split_errors, _khoro
 
 def _confirm_field_supplied(_fields_dict):
     """This function checks to ensure that at least one field has been enabled to retrieve.
+
+    .. versionchanged:: 5.0.0
+       The redundant ``return`` statement has been removed.
 
     .. versionchanged:: 2.5.0
        Moved from the :py:mod:`khoros.objects.messages` module to :py:mod:`khoros.api`.
