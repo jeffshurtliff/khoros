@@ -6,7 +6,7 @@
 :Example:           ``logger = log_utils.initialize_logging(__name__)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     08 Jan 2021
+:Modified Date:     23 May 2022
 """
 
 import os
@@ -34,7 +34,8 @@ def initialize_logging(logger_name=None, log_level=None, formatter=None, debug=N
                        file_log_level=None, log_file=None, overwrite_log_files=None, console_output=None,
                        console_log_level=None, syslog_output=None, syslog_log_level=None, syslog_address=None,
                        syslog_port=None):
-    # TODO: Add docstring
+    """This function initializes logging for the khoros library."""
+    # TODO: Complete the docstring above with parameters
     logger_name, log_levels, formatter = _apply_defaults(logger_name, formatter, debug, log_level, file_log_level,
                                                          console_log_level, syslog_log_level)
     log_level, file_log_level, console_log_level, syslog_log_level = _get_log_levels_from_dict(log_levels)
