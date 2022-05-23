@@ -93,6 +93,12 @@ Fixes to the :doc:`primary modules <primary-modules>`.
   :py:mod:`khoros.utils.version` module:
     * :py:func:`khoros.utils.version.log_current_version`
     * :py:func:`khoros.utils.version.warn_when_not_latest`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.utils.environment` module:
+    * :py:func:`khoros.utils.environment.update_env_variable_names`
+    * :py:func:`khoros.utils.environment._update_env_list`
+    * :py:func:`khoros.utils.environment._update_env_mapping`
+
 
 |
 
