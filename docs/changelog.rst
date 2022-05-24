@@ -24,6 +24,7 @@ Additions to the :doc:`core-object-methods`.
     * Added the :py:meth:`khoros.core.Khoros.Message.get_context_url` method.
     * Added the :py:meth:`khoros.core.Khoros.Message.define_context_id` method.
     * Added the :py:meth:`khoros.core.Khoros.Message.define_context_url` method.
+* Added the :py:meth:`khoros.core.Khoros.User.get_registered_users_count` method.
 
 Primary Modules
 ---------------
@@ -41,6 +42,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * Added the :py:func:`khoros.objects.messages.get_context_url` function.
     * Added the :py:func:`khoros.objects.messages.define_context_id` function.
     * Added the :py:func:`khoros.objects.messages.define_context_url` function.
+* Added the :py:func:`khoros.objects.users.get_registered_users_count` function.
 
 Supporting Modules
 ------------------

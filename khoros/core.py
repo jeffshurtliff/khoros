@@ -4665,6 +4665,15 @@ class Khoros(object):
             """
             return objects_module.users.update_sso_id(self.khoros_object, new_sso_id, user_id, user_login)
 
+        def get_registered_users_count(self):
+            """This function returns the total count of registered users on the community.
+
+            .. versionadded:: 5.0.0
+
+            :returns: An integer of the total registered users count
+            """
+            return objects_module.users.get_registered_users_count(self.khoros_object)
+
     def signout(self):
         """This method invalidates the active session key or SSO authentication session.
 
