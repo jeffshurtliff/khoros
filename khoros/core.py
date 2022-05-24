@@ -2458,6 +2458,17 @@ class Khoros(object):
             return structures_module.communities.top_level_categories_on_community_page(self.khoros_object,
                                                                                         community_details)
 
+        def sso_enabled(self, community_details=None):
+            """This function checks whether SSO is enabled for the community.
+
+            .. versionadded:: 5.0.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, None
+            :returns: A Boolean value indicating whether SSO is enabled
+            """
+            return structures_module.communities.sso_enabled(self.khoros_object, community_details)
+
     class GroupHub(object):
         """This class includes methods for interacting with group hubs."""
         def __init__(self, khoros_object):

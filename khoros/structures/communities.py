@@ -373,3 +373,18 @@ def top_level_categories_on_community_page(khoros_object, community_details=None
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     return get_community_field(khoros_object, 'tlc_set_on_community_page', community_details)
+
+
+def sso_enabled(khoros_object, community_details=None):
+    """This function checks whether SSO is enabled for the community.
+
+    .. versionadded:: 5.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param community_details: Dictionary containing community details (optional)
+    :type community_details: dict, None
+    :returns: A Boolean value indicating whether SSO is enabled
+    """
+    community_details = get_community_details(khoros_object) if not community_details else community_details
+    return community_details.get('enable_sso')
