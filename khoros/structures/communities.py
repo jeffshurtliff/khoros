@@ -6,7 +6,7 @@
 :Example:           ``details = get_community_details(khoros_object)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     24 May 2022
 """
 
 from . import base
