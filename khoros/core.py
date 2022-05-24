@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     24 May 2022
 """
 
 import sys
