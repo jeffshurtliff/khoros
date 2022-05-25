@@ -1191,3 +1191,16 @@ def get_registered_users_count(khoros_object):
     """
     response = api.make_v1_request(khoros_object, '/users/registered/count')
     return response['response']['value']['$']
+
+
+def get_online_users_count(khoros_object):
+    """This function returns the total count of users currently online.
+
+    .. versionadded:: 5.0.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: An integer of the total online users count
+    """
+    response = api.make_v1_request(khoros_object, '/users/online/count')
+    return response['response']['value']['$']

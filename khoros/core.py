@@ -4685,6 +4685,15 @@ class Khoros(object):
             """
             return objects_module.users.get_registered_users_count(self.khoros_object)
 
+        def get_online_users_count(self):
+            """This function returns the total count of users currently online.
+
+            .. versionadded:: 5.0.0
+
+            :returns: An integer of the total online users count
+            """
+            return objects_module.users.get_online_users_count(self.khoros_object)
+
     def signout(self):
         """This method invalidates the active session key or SSO authentication session.
 
