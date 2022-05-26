@@ -72,6 +72,8 @@ Core Object
 Changes to the :doc:`core-object-methods`.
 
 * Merged two ``if`` statements in the :py:meth:`khoros.core.Khoros._populate_auth_settings` method.
+* Added a reference to the `Khoros Developer Documentation <https://bit.ly/3LQLyW5>`_ in the
+  :py:meth:`khoros.core.Khoros.Role.get_users_with_role` method.
 
 Primary Modules
 ---------------
@@ -81,6 +83,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Merged two ``if`` statements in the following functions:
     * :py:func:`khoros.auth.get_sso_key`
     * :py:func:`khoros.liql.perform_query`
+* Added a reference to the `Khoros Developer Documentation <https://bit.ly/3LQLyW5>`_ in the
+  :py:func:`khoros.objects.roles.get_users_with_role` function.
 
 Supporting Modules
 ------------------
