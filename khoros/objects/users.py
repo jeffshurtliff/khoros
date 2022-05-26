@@ -1188,19 +1188,30 @@ def get_registered_users_count(khoros_object):
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :returns: An integer of the total registered users count
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     response = api.make_v1_request(khoros_object, '/users/registered/count')
     return response['response']['value']['$']
 
 
-def get_online_users_count(khoros_object):
+def get_online_users_count(khoros_object, anonymous=None, registered=None):
     """This function returns the total count of users currently online.
 
     .. versionadded:: 5.0.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
+    :param anonymous: Filters the results to only anonymous (non-registered) users
+    :type anonymous: bool, None
+    :param registered: Filters the results to only registered users
+    :type registered: bool, None
     :returns: An integer of the total online users count
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    response = api.make_v1_request(khoros_object, '/users/online/count')
+    if anonymous and not registered:
+        response = api.make_v1_request(khoros_object, '/users/online/anonymous/count')
+    elif registered and not anonymous:
+        response = api.make_v1_request(khoros_object, '/users/online/registered/count')
+    else:
+        response = api.make_v1_request(khoros_object, '/users/online/count')
     return response['response']['value']['$']

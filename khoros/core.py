@@ -4685,14 +4685,19 @@ class Khoros(object):
             """
             return objects_module.users.get_registered_users_count(self.khoros_object)
 
-        def get_online_users_count(self):
+        def get_online_users_count(self, anonymous=None, registered=None):
             """This function returns the total count of users currently online.
 
             .. versionadded:: 5.0.0
 
+            :param anonymous: Filters the results to only anonymous (non-registered) users
+            :type anonymous: bool, None
+            :param registered: Filters the results to only registered users
+            :type registered: bool, None
             :returns: An integer of the total online users count
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return objects_module.users.get_online_users_count(self.khoros_object)
+            return objects_module.users.get_online_users_count(self.khoros_object, anonymous, registered)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session.
