@@ -59,6 +59,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_bulk_data.test_export_type_header`
     * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_header_construction`
     * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_parameter_construction`
+* Added the :py:func:`khoros.utils.tests.test_settings.test_sso_status_retrieval` test function.
 
 General
 -------
