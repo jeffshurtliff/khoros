@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that messages function properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  26 Sep 2021
+:Modified Date:  09 Jun 2022
 """
 
 import pytest
@@ -42,75 +42,102 @@ def get_control_data(test_type):
 def test_construct_only_subject():
     """This function tests to ensure that a :py:exc:`khoros.errors.exceptions.MissingRequiredDataError` exception
     gets raised when only a subject is passed to the :py:func:`khoros.objects.messages.construct_payload` function.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     with pytest.raises(exceptions.MissingRequiredDataError):
         messages.construct_payload('This is the subject line')
-    return
 
 
 def test_construct_with_node():
-    """This function tests constructing payload using properly formatted node data."""
+    """This function tests constructing payload using properly formatted node data.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('node')
     payload = messages.construct_payload('This is the subject line', node={"id": "my-board"})
     assert payload == control_data      # nosec
-    return
 
 
 def test_construct_with_node_id():
-    """This function tests constructing payload using a Node ID."""
+    """This function tests constructing payload using a Node ID.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('node_id')
     payload = messages.construct_payload('This is the subject line', node_id='my-board')
     assert payload == control_data      # nosec
-    return
 
 
 def test_construct_with_node_url():
-    """This function tests constructing payload using a Node URL."""
+    """This function tests constructing payload using a Node URL.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     node_url = 'https://community.khoros.com/t5/Developer-Discussion/bd-p/studio'
     control_data = get_control_data('node_url')
     payload = messages.construct_payload('This is the subject line', node_url=node_url)
     assert payload == control_data      # nosec
-    return
 
 
 def test_construct_with_body():
-    """This function tests constructing payload using a message body."""
+    """This function tests constructing payload using a message body.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('body')
     payload = messages.construct_payload('Welcome', node_id='my-board', body='<h1>Hello!</h1>')
     assert payload == control_data      # nosec
-    return
 
 
 def test_construct_with_one_str_tag():
-    """This function tests constructing payload using a single tag in string format."""
+    """This function tests constructing payload using a single tag in string format.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('welcome_tag')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags='welcome')
     assert payload == control_data      # nosec
-    return
 
 
 def test_construct_with_one_int_tag():
-    """This function tests constructing payload using a single tag in integer format."""
+    """This function tests constructing payload using a single tag in integer format.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('12345_tag')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags=12345)
     assert payload == control_data      # nosec
-    return
 
 
 def test_construct_with_str_iter_int_tags():
-    """This function tests constructing payload providing tags in string, list and integer formats."""
+    """This function tests constructing payload providing tags in string, list and integer formats.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('str_iter_int_tags')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags=('hello', ['world'], 12345))
     try:
         assert payload == control_data      # nosec
     except AssertionError:
         assert_tags_present(payload, ['hello', 'world', '12345'])
-    return
 
 
 def test_construct_with_str_iter_int_tags_ignore():
     """This function tests constructing payload providing tags in string, list and integer formats, and with the
-    ``ignore_non_string_tags`` argument set to ``True`` as well."""
+    ``ignore_non_string_tags`` argument set to ``True`` as well.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('hello_world_tags')
     payload = messages.construct_payload('Welcome', node_id='my-board', tags=('hello', ['world'], 12345),
                                          ignore_non_string_tags=True)
@@ -118,11 +145,14 @@ def test_construct_with_str_iter_int_tags_ignore():
         assert payload == control_data      # nosec
     except AssertionError:
         assert_tags_present(payload, ['hello', 'world'])
-    return
 
 
 def test_construct_with_tag_iterables():
-    """This function tests constructing payload providing tags as a list containing two strings."""
+    """This function tests constructing payload providing tags as a list containing two strings.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = get_control_data('hello_world_tags')
     list_payload = messages.construct_payload('Welcome', node_id='my-board', tags=['hello', 'world'])
     tuple_payload = messages.construct_payload('Welcome', node_id='my-board', tags=('hello', 'world'))
@@ -132,13 +162,15 @@ def test_construct_with_tag_iterables():
             assert payload == control_data      # nosec
         except AssertionError:
             assert_tags_present(payload, ['hello', 'world'])
-    return
 
 
 def test_payload_validation():
     """This function tests the validation of the message payload to ensure invalid data raises an exception.
 
     .. versionadded:: 4.3.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     # Test null payload
     with pytest.raises(exceptions.InvalidMessagePayloadError):
@@ -173,11 +205,13 @@ def test_payload_validation():
     payload = {'data': {'type': 'message', 'subject': 'This is a message subject'}}
     payload = messages.validate_message_payload(payload)
     assert payload.get('data').get('type') == 'message'
-    return
 
 
 def assert_tags_present(payload, tags_to_find):
     """This function asserts that specific tags are found within API payload.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :param payload: The payload in which to search for tags
     :type payload: dict
@@ -191,7 +225,6 @@ def assert_tags_present(payload, tags_to_find):
         tags_found.append(tag_dict.get('text'))
     for tag in tags_to_find:
         assert tag in tags_found        # nosec
-    return
 
 
 # Import modules and initialize the core object

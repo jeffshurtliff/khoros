@@ -152,6 +152,24 @@ Fixes to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.errors.handlers._import_exception_classes`
 * Removed the redundant ``return`` statement from the
   :py:func:`khoros.utils.core_utils.display_warning` function.
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.utils.tests.resources.set_package_path` and
+  :py:func:`khoros.utils.tests.resources.parse_testing_config_file` functions.
+* Removed the redundant ``return`` statement from all or most functions in the
+  following modules:
+    * :py:func:`khoros.utils.tests.test_board_creation`
+    * :py:func:`khoros.utils.tests.test_core_utils`
+    * :py:func:`khoros.utils.tests.test_grouphub_creation`
+    * :py:func:`khoros.utils.tests.test_helper_file`
+    * :py:func:`khoros.utils.tests.test_http_headers`
+    * :py:func:`khoros.utils.tests.test_library_import`
+    * :py:func:`khoros.utils.tests.test_liql`
+    * :py:func:`khoros.utils.tests.test_mentions`
+    * :py:func:`khoros.utils.tests.test_messages`
+    * :py:func:`khoros.utils.tests.test_node_id_extract`
+    * :py:func:`khoros.utils.tests.test_settings`
+    * :py:func:`khoros.utils.tests.test_ssl_verify`
+    * :py:func:`khoros.utils.tests.test_tags`
 
 |
 

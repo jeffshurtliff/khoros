@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify the :py:mod:`khoros.objects.settings` functionality.
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  28 Jun 2021
+:Modified Date:  09 Jun 2022
 """
 
 import os
@@ -23,12 +23,14 @@ def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
 
     .. versionadded:: 4.1.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     global package_path_defined
     if not package_path_defined:
         sys.path.insert(0, os.path.abspath('../..'))
         package_path_defined = True
-    return
 
 
 def test_node_setting_retrieval():

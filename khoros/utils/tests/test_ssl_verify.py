@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_ssl_verify
-:Synopsis:       This module is used by pytest to test the ability to disable SSL verification on API requests
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  02 Oct 2021
+:Module:            khoros.utils.tests.test_ssl_verify
+:Synopsis:          This module is used by pytest to test the ability to disable SSL verification on API requests
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     09 Jun 2022
 """
 
 from . import resources
@@ -14,10 +14,12 @@ def test_default_core_object_setting():
     """This function tests to verify the ``ssl_verify`` setting is ``True`` by default.
 
     .. versionadded:: 4.3.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     khoros = resources.initialize_khoros_object()
     assert khoros.core_settings.get('ssl_verify') is True       # nosec
-    return
 
 
 def test_core_object_with_param_setting():

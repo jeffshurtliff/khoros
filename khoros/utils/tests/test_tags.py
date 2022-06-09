@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_tags
-:Synopsis:       This module is used by pytest to verify that tags function properly
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Module:            khoros.utils.tests.test_tags
+:Synopsis:          This module is used by pytest to verify that tags function properly
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     09 Jun 2022
 """
 
 from . import resources
 
 
 def test_single_tag_structure():
-    """This function tests the :py:func:`khoros.objects.tags.test_single_tag_structure` function."""
+    """This function tests the :py:func:`khoros.objects.tags.test_single_tag_structure` function.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     control_data = {'data': {'type': 'tag', 'text': 'my tag'}}
     payload = tags.structure_single_tag_payload('my tag')
     assert payload == control_data      # nosec
-    return
 
 
 def get_structure_control_data(test_type):
@@ -36,61 +39,73 @@ def get_structure_control_data(test_type):
 def test_message_structure_one_tag():
     """This function tests the :py:func:`khoros.objects.tags.structure_tags_for_message` function with
     a single tag in string format.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     control_data = get_structure_control_data('one_tag')
     data = tags.structure_tags_for_message('first tag')
     assert data == control_data     # nosec
-    return
 
 
 def test_message_structure_two_tags():
     """This function tests the :py:func:`khoros.objects.tags.structure_tags_for_message` function with
     two tags in string format.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     control_data = get_structure_control_data('two_tags')
     data = tags.structure_tags_for_message('first tag', 'second tag')
     assert data == control_data     # nosec
-    return
 
 
 def test_message_structure_one_string_tag_ignore():
     """This function tests the :py:func:`khoros.objects.tags.structure_tags_for_message` function with
     a single tag in string format and the ``ignore_non_strings`` keyword argument set to ``True``.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     control_data = get_structure_control_data('one_tag')
     data = tags.structure_tags_for_message('first tag', ignore_non_strings=True)
     assert data == control_data     # nosec
-    return
 
 
 def test_message_structure_two_string_tags_ignore():
     """This function tests the :py:func:`khoros.objects.tags.structure_tags_for_message` function with
     two tags in string format and the ``ignore_non_strings`` keyword argument set to ``True``.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     control_data = get_structure_control_data('two_tags')
     data = tags.structure_tags_for_message('first tag', 'second tag', ignore_non_strings=True)
     assert data == control_data     # nosec
-    return
 
 
 def test_message_structure_str_int():
     """This function tests the :py:func:`khoros.objects.tags.structure_tags_for_message` function with
     one tag in string format and another as an integer.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     control_data = get_structure_control_data('str_int')
     data = tags.structure_tags_for_message('first tag', 12345)
     assert data == control_data     # nosec
-    return
 
 
 def test_message_structure_str_int_ignore():
     """This function tests the :py:func:`khoros.objects.tags.structure_tags_for_message` function with
     one tag in string format and another as an integer and with ``ignore_non_strings`` set to ``True``.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     control_data = get_structure_control_data('one_tag')
     data = tags.structure_tags_for_message('first tag', 12345, ignore_non_strings=True)
     assert data == control_data     # nosec
-    return
 
 
 # Import modules

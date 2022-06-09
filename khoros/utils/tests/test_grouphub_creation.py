@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the group hub creation process works properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Modified Date:  09 Jun 2022
 """
 
 import pytest
@@ -34,18 +34,24 @@ def verify_data_fields(payload, data_fields):
 
 
 def test_no_arguments():
-    """This function tests to ensure that a TypeError is raised if no arguments are passed to the function."""
+    """This function tests to ensure that a TypeError is raised if no arguments are passed to the function.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     with pytest.raises(TypeError):
         grouphubs.structure_payload()
-    return
 
 
 def test_only_id():
-    """This function tests to ensure passing only the ID references the ``group_title`` argument in the exception."""
+    """This function tests to ensure passing only the ID references the ``group_title`` argument in the exception.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     with pytest.raises(TypeError) as exc:
         grouphubs.structure_payload()
         assert 'group_title' in str(exc.value)      # nosec
-    return
 
 
 # Import modules and initialize the core object

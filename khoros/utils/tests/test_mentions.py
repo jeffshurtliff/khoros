@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that user and content mentions work properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Modified Date:  09 Jun 2022
 """
 
 import os
@@ -27,9 +27,11 @@ def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     sys.path.insert(0, os.path.abspath('../..'))
-    return
 
 
 def expected_content_response(response):
@@ -102,12 +104,14 @@ def test_content_mention_with_all_arguments():
 
     .. versionadded:: 2.4.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     title, url, content_id = get_content_test_data()
     response = messages.format_content_mention(content_id=content_id, title=title, url=url)
     assert response == CORRECT_CONTENT_MENTION      # nosec
-    return
 
 
 def test_content_mention_with_full_dict():
@@ -115,6 +119,9 @@ def test_content_mention_with_full_dict():
        keys and values have been supplied.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     """
@@ -126,7 +133,6 @@ def test_content_mention_with_full_dict():
     }
     response = messages.format_content_mention(content_info=content_info)
     assert response == CORRECT_CONTENT_MENTION      # nosec
-    return
 
 
 @pytest.mark.filterwarnings("error")
@@ -135,12 +141,14 @@ def test_content_mention_with_no_id_arg():
 
     .. versionadded:: 2.4.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     title, url = get_content_test_data(include_id=False)
     response = messages.format_content_mention(title=title, url=url)
     assert response == CORRECT_CONTENT_MENTION      # nosec
-    return
 
 
 @pytest.mark.filterwarnings("error")
@@ -149,13 +157,15 @@ def test_content_mention_with_no_id_dict():
 
     .. versionadded:: 2.4.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     title, url = get_content_test_data(include_id=False)
     content_info = {'title': title, 'url': url}
     response = messages.format_content_mention(content_info=content_info)
     assert response == CORRECT_CONTENT_MENTION      # nosec
-    return
 
 
 def test_content_mention_with_false_id_arg():
@@ -163,19 +173,24 @@ def test_content_mention_with_false_id_arg():
 
     .. versionadded:: 2.4.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     title, url, content_id = get_content_test_data(false_id=True)
     with pytest.warns(UserWarning):
         response = messages.format_content_mention(content_id=content_id, title=title, url=url)
     assert response == CORRECT_CONTENT_MENTION      # nosec
-    return
 
 
 def test_content_mention_with_false_id_dict():
     """This function tests creating a content mention when an invalid Content ID is supplied in the dictionary.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     """
@@ -188,13 +203,15 @@ def test_content_mention_with_false_id_dict():
     with pytest.warns(UserWarning):
         response = messages.format_content_mention(content_info=content_info)
     assert response == CORRECT_CONTENT_MENTION      # nosec
-    return
 
 
 def test_bad_content_url():
     """This function tests creating a content mention when an invalid URL is supplied.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError`
@@ -210,13 +227,15 @@ def test_bad_content_url():
     content_info = {'title': title, 'url': url}
     with pytest.raises(exceptions.MessageTypeNotFoundError):
         messages.format_content_mention(content_info=content_info)
-    return
 
 
 def test_relative_content_url_without_object():
     """This function tests creating a content mention with a relative content URL and no Khoros object.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
@@ -234,7 +253,6 @@ def test_relative_content_url_without_object():
         messages.format_content_mention(content_info=content_info)
         content_info['id'] = content_id
         messages.format_content_mention(content_info=content_info)
-    return
 
 
 @pytest.mark.skip(reason="Session key doesn't work in GitHub Actions CI.")
@@ -242,6 +260,9 @@ def test_relative_content_url_with_object():
     """This function tests creating a content mention with a relative content URL but with a Khoros object.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     """
@@ -266,7 +287,6 @@ def test_relative_content_url_with_object():
     content_info['id'] = content_id
     response = messages.format_content_mention(khoros, content_info)
     assert expected_content_response(response)      # nosec
-    return
 
 
 def test_user_mention_with_arguments():
@@ -274,12 +294,14 @@ def test_user_mention_with_arguments():
 
     .. versionadded:: 2.4.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     user_id, login = get_user_test_data()
     response = messages.format_user_mention(user_id=user_id, login=login)
     assert expected_user_response(response)
-    return
 
 
 def test_user_mention_with_dictionary():
@@ -287,19 +309,24 @@ def test_user_mention_with_dictionary():
 
     .. versionadded:: 2.4.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     user_id, login = get_user_test_data()
     user_info = {'id': user_id, 'login': login}
     response = messages.format_user_mention(user_info=user_info)
     assert expected_user_response(response)
-    return
 
 
 def test_user_mention_with_args_no_object():
     """This function tests creating a user mention with a single argument and no Khoros object.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
@@ -313,13 +340,15 @@ def test_user_mention_with_args_no_object():
     # Test with no User ID
     with pytest.raises(exceptions.MissingAuthDataError):
         messages.format_user_mention(login=login)
-    return
 
 
 def test_user_mention_with_dictionary_no_object():
     """This function tests creating a user mention with a single key value pair and no Khoros object.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
@@ -335,7 +364,6 @@ def test_user_mention_with_dictionary_no_object():
     # Test with no User ID
     with pytest.raises(exceptions.MissingAuthDataError):
         messages.format_user_mention(user_info=user_info_login)
-    return
 
 
 @pytest.mark.skip(reason="Session key doesn't work in GitHub Actions CI.")
@@ -343,6 +371,9 @@ def test_user_mention_with_dict_and_object():
     """This function tests creating a user mention with one key value pair and with a Khoros object.
 
     .. versionadded:: 2.4.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     """
@@ -358,7 +389,6 @@ def test_user_mention_with_dict_and_object():
     # Test with no User ID
     response = messages.format_user_mention(khoros, user_info_login)
     assert expected_user_response(response)
-    return
 
 
-# TODO: Add test for not existent user
+# TODO: Add test for non-existent user

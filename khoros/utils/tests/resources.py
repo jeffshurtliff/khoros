@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 Jun 2021
+:Modified Date:     09 Jun 2022
 """
 
 import os
@@ -15,7 +15,7 @@ import importlib
 
 import yaml
 
-# Define global variable to store the YAML test ettings
+# Define global variable to store the YAML test settings
 test_config = {}
 
 
@@ -24,10 +24,12 @@ def set_package_path():
 
     .. versionadded:: 2.7.4
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     sys.path.insert(0, os.path.abspath('../..'))
-    return
 
 
 def import_modules(*modules):
@@ -145,13 +147,15 @@ def parse_testing_config_file():
 
     .. versionadded:: 4.1.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     global test_config
     if local_test_config_exists():
         with open('local/khorostest.yml', 'r') as file:
             test_config = yaml.safe_load(file)
-    return
 
 
 def get_testing_config():

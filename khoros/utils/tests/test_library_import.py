@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_library_import
-:Synopsis:       This module is used by pytest to verify that the primary package can be imported successfully
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Module:            khoros.utils.tests.test_library_import
+:Synopsis:          This module is used by pytest to verify that the primary package can be imported successfully
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     09 Jun 2022
 """
 
 import os
@@ -12,9 +12,12 @@ import sys
 
 
 def set_package_path():
-    """This function adds the high-level khoros directory to the sys.path list."""
+    """This function adds the high-level khoros directory to the sys.path list.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     sys.path.insert(0, os.path.abspath('../..'))
-    return
 
 
 # Test importing the primary khoros package

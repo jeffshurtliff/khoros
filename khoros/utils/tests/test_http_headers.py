@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that HTTP headers are formatted appropriately
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Modified Date:  09 Jun 2022
 """
 
 import pytest
@@ -30,6 +30,9 @@ def test_normalize_headers():
     """This function tests the :py:func:`khoros.api._normalize_headers` function to ensure it works properly.
 
     .. versionadded:: 2.7.4
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     headers = {
         'Content-Type': 'Application/JSON',
@@ -39,7 +42,6 @@ def test_normalize_headers():
     }
     headers = api._normalize_headers(headers)
     assert compare_headers(headers) is True     # nosec
-    return
 
 
 def test_normalize_empty_headers():
@@ -47,10 +49,12 @@ def test_normalize_empty_headers():
        returns the same empty dictionary.
 
     .. versionadded:: 2.7.4
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     headers = api._normalize_headers({})
     assert headers == {}        # nosec
-    return
 
 
 def test_normalize_type_error():
@@ -58,10 +62,12 @@ def test_normalize_type_error():
        a :py:exc:`TypeError` exception.
 
     .. versionadded:: 2.7.4
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     with pytest.raises(TypeError):
         api._normalize_headers()
-    return
 
 
 # Import modules and initialize the core object

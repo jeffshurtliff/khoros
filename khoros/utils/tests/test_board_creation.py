@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the board creation works properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Modified Date:  09 Jun 2022
 """
 
 import pytest
@@ -69,7 +69,11 @@ def verify_data_fields(payload, data_fields):
 
 
 def test_required_fields():
-    """This function tests that the payload is structured properly with only the required fields supplied."""
+    """This function tests that the payload is structured properly with only the required fields supplied.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     payload = boards.structure_payload(khoros, 'test-forum', 'Test Forum', 'forum')
     data_fields_to_check = {
         'conversation_style': 'forum',
@@ -77,11 +81,14 @@ def test_required_fields():
         'title': 'Test Forum'
     }
     assert verify_data_fields(payload, data_fields_to_check) is True    # nosec
-    return
 
 
 def test_valid_board_types():
-    """This function tests to ensure that the payload for all valid board types gets formatted appropriately."""
+    """This function tests to ensure that the payload for all valid board types gets formatted appropriately.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     board_types = ['blog', 'contest', 'forum', 'idea', 'qanda', 'tkb']
     board_id, board_title = 'test-board', 'Test Board'
     for board_type in board_types:
@@ -92,25 +99,34 @@ def test_valid_board_types():
             'title': board_title
         }
         assert verify_data_fields(payload, data_fields_to_check) is True    # nosec
-    return
 
 
 def test_no_arguments():
-    """This function tests to ensure that a TypeError is raised if no arguments are passed to the function."""
+    """This function tests to ensure that a TypeError is raised if no arguments are passed to the function.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     with pytest.raises(TypeError):
         boards.structure_payload()
-    return
 
 
 def test_invalid_board_type():
-    """This function tests to ensure an ``InvalidNodeTypeError`` exception is raised for an invalid board type."""
+    """This function tests to ensure an ``InvalidNodeTypeError`` exception is raised for an invalid board type.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     with pytest.raises(exceptions.InvalidNodeTypeError):
         boards.structure_payload(khoros, 'test-board', 'Test Board', 'group-hub')
-    return
 
 
 def test_description():
-    """This function tests the description argument to ensure it gets formatted properly for all board types."""
+    """This function tests the description argument to ensure it gets formatted properly for all board types.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     description = "This is a description of the new board."
     required_fields = get_required_fields(all_types=True)
     for fields in required_fields:
@@ -119,7 +135,6 @@ def test_description():
         expected_fields = get_dict_for_required_fields(fields)
         expected_fields['description'] = description
         assert verify_data_fields(payload, expected_fields) is True     # nosec
-    return
 
 
 # Import modules and initialize the core object
