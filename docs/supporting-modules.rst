@@ -29,6 +29,7 @@ which are listed below.
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
         * `Test Messages Module (khoros.utils.tests.test_messages)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
+        * `Test Roles Module (khoros.utils.tests.test_roles)`_
         * `Test Settings Module (khoros.utils.tests.test_settings)`_
         * `Test Tags Module (khoros.utils.tests.test_tags)`_
 
@@ -296,6 +297,17 @@ Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)
 This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
 
 .. automodule:: khoros.utils.tests.test_node_id_extract
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Roles Module (khoros.utils.tests.test_roles)
+-------------------------------------------------
+This module is used by pytest to verify that roles-related functions work properly.
+
+.. automodule:: khoros.utils.tests.test_roles
    :members:
 
 :doc:`Return to Top <supporting-modules>`
