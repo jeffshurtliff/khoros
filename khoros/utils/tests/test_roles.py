@@ -50,7 +50,7 @@ def test_get_role_id():
 
     # Test the method and function
     role_id = khoros_object.roles.get_role_id('Administrator')
-    assert role_id == 't:Administrator'
+    assert role_id == 't:Administrator'          # nosec
 
 
 def test_invalid_role_type():
@@ -77,23 +77,23 @@ def test_total_role_type_counts():
 
     # Ensure that the default result is an integer of the total count
     total_count = khoros_object.roles.get_total_role_count()
-    assert isinstance(total_count, int)
+    assert isinstance(total_count, int)          # nosec
 
     # Ensure that adding another metric returns a tuple by default
     total_and_top_count = khoros_object.roles.get_total_role_count(top_level=True)
-    assert isinstance(total_and_top_count, tuple)
+    assert isinstance(total_and_top_count, tuple)          # nosec
 
     # Ensure that disabling the total count and including another metric returns an integer
     only_top_count = khoros_object.roles.get_total_role_count(total=False, top_level=True)
-    assert isinstance(only_top_count, int)
+    assert isinstance(only_top_count, int)          # nosec
 
     # Ensure that attempting to retrieve no metrics does not result in an exception
     no_metrics = khoros_object.roles.get_total_role_count(total=False)
-    assert isinstance(no_metrics, tuple) and len(no_metrics) == 0
+    assert isinstance(no_metrics, tuple) and len(no_metrics) == 0          # nosec
 
     # Test the functionality to return a dictionary rather than a tuple
     counts_dict = khoros_object.roles.get_total_role_count(return_dict=True, top_level=True)
-    assert isinstance(counts_dict, dict) and 'total' in counts_dict and 'top_level' in counts_dict
+    assert isinstance(counts_dict, dict) and 'total' in counts_dict and 'top_level' in counts_dict          # nosec
 
 
 def test_get_roles_for_user():
@@ -111,9 +111,10 @@ def test_get_roles_for_user():
     # Test the method and function using an integer and a string as the User ID
     for user_id in [1, '1']:
         roles_for_user = khoros_object.roles.get_roles_for_user(user_id, 'id')
-        assert isinstance(roles_for_user, list)
+        assert isinstance(roles_for_user, list)          # nosec
         if len(roles_for_user) > 0:
-            assert isinstance(roles_for_user[0], dict) and 'id' in roles_for_user[0] and 'href' not in roles_for_user[0]
+            assert isinstance(roles_for_user[0], dict) and 'id' in roles_for_user[0]          # nosec
+            assert 'href' not in roles_for_user[0]          # nosec
 
 
 def test_get_users_with_role():
@@ -130,12 +131,12 @@ def test_get_users_with_role():
 
     # Test the standard return mode
     users_with_role = khoros_object.roles.get_users_with_role(role_name='Administrator')
-    assert isinstance(users_with_role, list)
+    assert isinstance(users_with_role, list)          # nosec
     if len(users_with_role) > 0:
-        assert isinstance(users_with_role[0], dict) and 'login' in users_with_role[0]
+        assert isinstance(users_with_role[0], dict) and 'login' in users_with_role[0]          # nosec
 
     # Test the simple return mode
     users_with_role = khoros_object.roles.get_users_with_role(role_name='Administrator', simple=True)
-    assert isinstance(users_with_role, list)
+    assert isinstance(users_with_role, list)          # nosec
     if len(users_with_role) > 0:
-        assert isinstance(users_with_role[0], str)
+        assert isinstance(users_with_role[0], str)          # nosec
