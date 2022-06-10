@@ -182,3 +182,15 @@ def instantiate_with_local_helper(production=False):
         set_package_path()
         core_module = importlib.import_module('khoros.core')
         return core_module.Khoros(helper=f"local/{file_name}")
+
+
+def instantiate_with_placeholder():
+    """This function instantiates a Khoros object with placeholder data.
+
+    .. versionadded:: 5.0.0
+
+    :returns: The instantiated :py:class:`khoros.core.Khoros` object
+    """
+    set_package_path()
+    core_module = importlib.import_module('khoros.core')
+    return core_module.Khoros(placeholder=True)
