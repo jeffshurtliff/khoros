@@ -53,6 +53,7 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khoros.utils.helper._get_bulk_data_info` function.
+* Added the :py:func:`khoros.utils.tests.resources.instantiate_with_placeholder` function.
 * Added the :py:mod:`khoros.utils.tests.test_bulk_data` module with the following test functions:
     * :py:func:`khoros.utils.tests.test_bulk_data.test_base_url_without_helper`
     * :py:func:`khoros.utils.tests.test_bulk_data.test_core_object_settings`
@@ -60,6 +61,13 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_header_construction`
     * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_parameter_construction`
 * Added the :py:func:`khoros.utils.tests.test_settings.test_sso_status_retrieval` test function.
+* Added the :py:func:`khoros.utils.tests.test_roles` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_roles.set_package_path`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_role_id`
+    * :py:func:`khoros.utils.tests.test_roles.test_invalid_role_type`
+    * :py:func:`khoros.utils.tests.test_roles.test_total_role_type_counts`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_roles_for_user`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_users_with_role`
 
 General
 -------
