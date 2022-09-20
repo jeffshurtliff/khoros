@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-*********
-v5.0.0rc1
-*********
-**Release Date: TBD**
+******
+v5.0.0
+******
+**Release Date: 2022-09-20**
 
 Added
 =====
