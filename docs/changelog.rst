@@ -139,6 +139,9 @@ Fixes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khoros.structures.communities._check_for_multiple_tenants` function.
 * Removed the redundant ``return`` statement from the
   :py:func:`khoros.structures.grouphubs.refresh_enabled_discussion_styles` function.
+* Removed the :py:exc:`DeprecationWarning` from the
+  :py:class:`khoros.structures.base.Mapping` class to address Issue
+  `#57 <https://github.com/jeffshurtliff/khoros/issues/57>`_.
 
 Supporting Modules
 ------------------

@@ -76,7 +76,5 @@ class Mapping:
     .. deprecated:: 2.1.0
        Use :py:class:`khoros.structures.nodes.Mapping` instead.
     """
-    warnings.warn("The 'khoros.objects.base.Mapping' class has been deprecated. Use " +
-                  "'khoros.structures.nodes.Mapping' instead.", DeprecationWarning)
     node_url_mapping = nodes.Mapping.node_url_mapping
     proper_name_mapping = nodes.Mapping.proper_name_mapping
