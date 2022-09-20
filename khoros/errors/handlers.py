@@ -6,7 +6,7 @@
 :Example:           ``error_msg = handlers.get_error_from_html(html_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     20 Sep 2022
 """
 
 import re
@@ -26,7 +26,7 @@ def eprint(*args, **kwargs):
 
 
 def _exceptions_module_imported():
-    """This function checks to see whether or not the ``exceptions`` global variable is defined."""
+    """This function checks to see whether the ``exceptions`` global variable is defined."""
     try:
         exceptions
         _module_found = True

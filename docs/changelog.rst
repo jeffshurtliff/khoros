@@ -3,9 +3,9 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-********
-v5.0.0b1
-********
+*********
+v5.0.0rc1
+*********
 **Release Date: TBD**
 
 Added
@@ -102,6 +102,7 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Added a function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
   Bulk Data API connection information when applicable.
 * Merged two ``if`` statements in the :py:func:`khoros.utils.version.warn_when_not_latest` function.
+* Made a minor change to the docstring for :py:func:`khoros.errors.handlers._exceptions_module_imported`.
 
 General
 -------
