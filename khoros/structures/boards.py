@@ -6,7 +6,7 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     23 May 2022
 """
 
 import warnings
@@ -464,6 +464,9 @@ def _warn_about_ignored_settings(_settings_type, _discussion_style):
     """This function displays a ``UserWarning`` that provided fields will be ignored if the discussion style does not
        match the style for which the field are specific.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionadded:: 2.5.0
 
     :param _settings_type: The discussion style relating to the supplied fields and values
@@ -476,7 +479,6 @@ def _warn_about_ignored_settings(_settings_type, _discussion_style):
     warn_msg = f"Because the discussion style is '{_discussion_style}' all {_settings_type}-specific fields " \
                "provided will be ignored."
     warnings.warn(warn_msg, UserWarning)
-    return
 
 
 def get_board_id(url):

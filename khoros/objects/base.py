@@ -3,10 +3,10 @@
 :Module:            khoros.objects.base
 :Synopsis:          This module handles general (i.e. object-agnostic) functions relating to API objects.
 :Usage:             ``from khoros.objects import base``
-:Example:           ``node_id = base.get_node_id('https://community.khoros.com/t5/Khoros-Blog/bg-p/relnote', 'blog')``
+:Example:           ``node_id = base.get_node_id(absolute_url, 'blog')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     17 Jul 2020
+:Modified Date:     22 Apr 2022
 """
 
 import warnings
@@ -76,7 +76,5 @@ class Mapping:
     .. deprecated:: 2.1.0
        Use :py:class:`khoros.structures.nodes.Mapping` instead.
     """
-    warnings.warn("The 'khoros.objects.base.Mapping' class has been deprecated. Use " +
-                  "'khoros.structures.nodes.Mapping' instead.", DeprecationWarning)
     node_url_mapping = nodes.Mapping.node_url_mapping
     proper_name_mapping = nodes.Mapping.proper_name_mapping

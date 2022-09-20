@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     02 Oct 2021
+:Modified Date:     23 May 2022
 """
 
 import json
@@ -167,6 +167,9 @@ def _add_json_query_to_uri(_uri, _return_json=True):
 def _display_ssl_verify_warning():
     """This function displays a warning if SSL verification has been disabled.
 
+    .. versionchanged:: 5.0.0
+       The redundant ``return`` statement has been removed.
+
     .. versionadded:: 4.3.0
 
     :returns: None
@@ -180,7 +183,6 @@ def _display_ssl_verify_warning():
 
         # Suppress warnings when performing API calls without verifying SSL certificates
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    return
 
 
 def should_verify_tls(khoros_object=None):
@@ -428,6 +430,9 @@ def format_avatar_payload(avatar_image_path):
 def _report_failed_attempt(_exc_msg, _request_type, _retries):
     """This function reports a failed API call that will be retried.
 
+    .. versionchanged:: 5.0.0
+       The redundant ``return`` statement has been removed.
+
     :param _exc_msg: The exception that was raised can captured within a try/except clause
     :param _request_type: The type of API request (e.g. ``post``, ``put`` or ``get``)
     :type _request_type: str
@@ -442,7 +447,6 @@ def _report_failed_attempt(_exc_msg, _request_type, _retries):
     _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
                  f"{_exc_name}: {_exc_msg} {_current_attempt}"
     errors.handlers.eprint(f"{_error_msg}\n{_exc_name}: {_exc_msg}\n")
-    return
 
 
 def _raise_exception_for_repeated_timeouts():
@@ -1321,6 +1325,9 @@ def _get_v2_return_values(_return_booleans, _api_response, _split_errors, _khoro
 def _confirm_field_supplied(_fields_dict):
     """This function checks to ensure that at least one field has been enabled to retrieve.
 
+    .. versionchanged:: 5.0.0
+       The redundant ``return`` statement has been removed.
+
     .. versionchanged:: 2.5.0
        Moved from the :py:mod:`khoros.objects.messages` module to :py:mod:`khoros.api`.
 
@@ -1338,7 +1345,6 @@ def _confirm_field_supplied(_fields_dict):
             break
     if not _field_supplied:
         raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
-    return
 
 
 def _normalize_base_url(_base_url):

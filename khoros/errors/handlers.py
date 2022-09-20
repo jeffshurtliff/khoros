@@ -6,7 +6,7 @@
 :Example:           ``error_msg = handlers.get_error_from_html(html_string)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Apr 2020
+:Modified Date:     20 Sep 2022
 """
 
 import re
@@ -17,13 +17,16 @@ from ..utils import core_utils
 
 
 def eprint(*args, **kwargs):
-    """This function behaves the same as the ``print()`` function but is leveraged to print errors to ``sys.stderr``."""
+    """This function behaves the same as the ``print()`` function but is leveraged to print errors to ``sys.stderr``.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     print(*args, file=sys.stderr, **kwargs)
-    return
 
 
 def _exceptions_module_imported():
-    """This function checks to see whether or not the ``exceptions`` global variable is defined."""
+    """This function checks to see whether the ``exceptions`` global variable is defined."""
     try:
         exceptions
         _module_found = True
@@ -33,17 +36,23 @@ def _exceptions_module_imported():
 
 
 def _import_exceptions_module():
-    """This function imports :py:func:`khoros.errors.exceptions` as a global variable using :py:mod:`importlib`."""
+    """This function imports :py:func:`khoros.errors.exceptions` as a global variable using :py:mod:`importlib`.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     global exceptions
     exceptions = importlib.import_module('khoros.errors.exceptions')
-    return
 
 
 def _import_exception_classes():
-    """This function imports the :py:func:`khoros.errors.exceptions` module if not already imported."""
+    """This function imports the :py:func:`khoros.errors.exceptions` module if not already imported.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     if not _exceptions_module_imported():
         _import_exceptions_module()
-    return
 
 
 def get_error_from_html(html_error, v1=False):
@@ -181,6 +190,9 @@ def get_error_from_json(json_error, v1=False, include_error_bool=True, fail_on_n
 def verify_core_object_present(khoros_object):
     """This function verifies whether or not the core object was supposed and raises an exception if not.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :returns: None
@@ -189,11 +201,13 @@ def verify_core_object_present(khoros_object):
     if not khoros_object:
         _import_exception_classes()
         raise exceptions.MissingRequiredDataError('The core object must be provided in order to perform the action')
-    return
 
 
 def verify_v1_response(api_response, query_type='get', endpoint='', fail_on_no_results=False):
     """This function evaluates a Community API v1 response to identify any failures.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :param api_response: The response from the API call
     :param query_type: The type of API call that was made, such as ``get`` (default), ``post``, ``put``, etc.
@@ -235,4 +249,3 @@ def verify_v1_response(api_response, query_type='get', endpoint='', fail_on_no_r
             raise exceptions.NotFoundResponseError(exc_msg)
         else:
             raise exception_classes.get(query_type)(exc_msg)
-    return

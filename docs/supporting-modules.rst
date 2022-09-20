@@ -19,6 +19,7 @@ which are listed below.
     * `Tests Module (khoros.utils.tests)`_
         * `Resources Modules (khoros.utils.tests.resources)`_
         * `Test Board Creation Module (khoros.utils.tests.test_board_creation)`_
+        * `Test Bulk Data Module (khoros.utils.tests.test_bulk_data)`_
         * `Test Core Utilities Module (khoros.utils.tests.test_core_utils)`_
         * `Test Group Hub Creation Module (khoros.utils.tests.test_grouphub_creation)`_
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
@@ -28,6 +29,7 @@ which are listed below.
         * `Test Mentions Module (khoros.utils.tests.test_mentions)`_
         * `Test Messages Module (khoros.utils.tests.test_messages)`_
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
+        * `Test Roles Module (khoros.utils.tests.test_roles)`_
         * `Test Settings Module (khoros.utils.tests.test_settings)`_
         * `Test Tags Module (khoros.utils.tests.test_tags)`_
 
@@ -191,6 +193,17 @@ This module is used by pytest to verify that that the board creation works prope
 
 |
 
+Test Bulk Data Module (khoros.utils.tests.test_bulk_data)
+---------------------------------------------------------
+This module is used by pytest to verify that that the Bulk Data API module works properly.
+
+.. automodule:: khoros.utils.tests.test_bulk_data
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Core Utilities Module (khoros.utils.tests.test_core_utils)
 ---------------------------------------------------------------
 This module is used by pytest to verify that the core package utilities work properly.
@@ -284,6 +297,17 @@ Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)
 This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
 
 .. automodule:: khoros.utils.tests.test_node_id_extract
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Roles Module (khoros.utils.tests.test_roles)
+-------------------------------------------------
+This module is used by pytest to verify that roles-related functions work properly.
+
+.. automodule:: khoros.utils.tests.test_roles
    :members:
 
 :doc:`Return to Top <supporting-modules>`

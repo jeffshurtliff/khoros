@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_liql
-:Synopsis:       This module is used by pytest to verify that LiQL queries can be performed and parsed successfully.
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  27 Jun 2021
+:Module:            khoros.utils.tests.test_liql
+:Synopsis:          This module is used by pytest to verify that LiQL queries can be performed and parsed successfully.
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     09 Jun 2022
 """
 
 import os
@@ -26,12 +26,14 @@ def set_package_path():
 
     .. versionchanged:: 4.1.0
        This function now leverages a global variable to ensure it only performs the operation once.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     global package_path_defined
     if not package_path_defined:
         sys.path.insert(0, os.path.abspath('../..'))
         package_path_defined = True
-    return
 
 
 def parse_where_clauses():
@@ -85,6 +87,9 @@ def parse_where_clauses():
 def perform_test_query(return_items=False):
     """This function performs a LiQL query and saves the response in a global variable.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :param return_items: Determines if the response should be scoped to only the returned items (``False`` by default)
     :type return_items: bool
     :returns: None
@@ -96,7 +101,6 @@ def perform_test_query(return_items=False):
         liql_items = khoros_object.query(query, return_items=return_items)
     else:
         liql_response = khoros_object.query(query, return_items=return_items)
-    return
 
 
 def test_where_clause_parsing():

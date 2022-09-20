@@ -3,10 +3,10 @@
 :Module:            khoros.objects.messages
 :Synopsis:          This module includes functions that identify environment variables for the khoros library
 :Usage:             ``from khoros.utils import environment``
-:Example:           TBD
+:Example:           ``environment.update_env_variable_names()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Apr 2021
+:Modified Date:     23 May 2022
 """
 
 import os
@@ -85,6 +85,9 @@ def get_env_variables():
 def _update_env_list(_orig_name, _custom_name):
     """This function replaces a value in the ``env_variable_names`` global variable with a custom value.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionadded:: 2.2.0
 
     :param _orig_name: The original value to replace
@@ -96,11 +99,13 @@ def _update_env_list(_orig_name, _custom_name):
     if _orig_name in env_variable_names:
         env_variable_names.remove(_orig_name)
         env_variable_names.append(_custom_name)
-    return
 
 
 def _update_env_mapping(_orig_name, _custom_name):
     """This function replaces a dictionary key in the ``env_variable_mapping`` global variable with a custom name.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     .. versionadded:: 2.2.0
 
@@ -112,11 +117,13 @@ def _update_env_mapping(_orig_name, _custom_name):
     """
     if _orig_name in env_settings_mapping:
         env_settings_mapping[_custom_name] = env_settings_mapping.pop(_orig_name)
-    return
 
 
 def update_env_variable_names(custom_names):
     """This function updates the original environment variable names with custom names when applicable.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     .. versionadded:: 2.2.0
 
@@ -131,7 +138,6 @@ def update_env_variable_names(custom_names):
             for orig_name, custom_name in custom_names.items():
                 _update_env_list(orig_name, custom_name)
                 _update_env_mapping(orig_name, custom_name)
-    return
 
 
 # Define function to import a YAML helper file

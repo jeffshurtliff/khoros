@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Nov 2021
+:Modified Date:     24 May 2022
 """
 
 import sys
@@ -19,6 +19,7 @@ from . import saml as saml_module
 from . import studio as studio_module
 from . import objects as objects_module
 from . import structures as structures_module
+from . import bulk_data as bulk_data_module
 from .utils import environment, log_utils, version
 from .utils.helper import get_helper_settings
 
@@ -45,8 +46,11 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=None):
+                 ssl_verify=None, bulk_data_settings=None):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 5.0.0
+           Added support for the Bulk Data API.
 
         .. versionchanged:: 4.3.0
            Fixed an issue where the ``ssl_verify`` parameter was being mostly disregarded.
@@ -102,6 +106,8 @@ class Khoros(object):
         :type empty: bool
         :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
         :type ssl_verify: bool, None
+        :param bulk_data: The values for utilizing the Bulk Data API
+        :type bulk_data: dict, None
         :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
                  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
                  :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
@@ -114,6 +120,7 @@ class Khoros(object):
 
         # Initialize other dictionaries that will be used by the class object
         self.auth = {}
+        self.bulk_data_settings = {}
         self.core = {}
         self.construct = {}
         self._helper_settings = {}
@@ -134,6 +141,7 @@ class Khoros(object):
             'skip_env_variables': skip_env_variables,
             'empty': empty,
             'ssl_verify': ssl_verify,
+            'bulk_data': bulk_data_settings,
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val is not None and defined_settings.get(_arg_key) is None:
@@ -187,6 +195,15 @@ class Khoros(object):
         # Update the global variable if SSL Verify is explicitly disabled
         if self.core_settings.get('ssl_verify') is False:
             api.ssl_verify_disabled = True
+
+        # Add the Bulk Data API settings if applicable
+        if bulk_data_settings is not None and isinstance(bulk_data_settings, dict):
+            self.bulk_data_settings = bulk_data_settings
+        elif 'connection' in self._helper_settings and 'bulk_data' in self._helper_settings['connection']:
+            self.bulk_data_settings = self._helper_settings['connection']['bulk_data']
+        for bulk_data_field in ['community_id', 'client_id', 'token', 'europe', 'base_url', 'export_type']:
+            if bulk_data_field not in self.bulk_data_settings:
+                self.bulk_data_settings[bulk_data_field] = None
 
         # Add the authentication status
         if 'active' not in self.auth:
@@ -269,6 +286,7 @@ class Khoros(object):
         self.albums = self._import_album_class()
         self.archives = self._import_archives_class()
         self.boards = self._import_board_class()
+        self.bulk_data = self._import_bulk_data_class()
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
         self.grouphubs = self._import_grouphub_class()
@@ -312,6 +330,9 @@ class Khoros(object):
     def _populate_auth_settings(self):
         """This method populates the khoros.auth dictionary to be leveraged in authentication/authorization tasks.
 
+        .. versionchanged:: 5.0.0
+           Merged two ``if`` statements.
+
         .. versionchanged:: 4.2.0
            General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
         """
@@ -321,11 +342,10 @@ class Khoros(object):
             'sso': ['sso_token']
         }
         for _setting in _auth_settings:
-            if _setting in self.core_settings:
-                if _setting in _setting_keys:
-                    for _setting_key in _setting_keys.get(_setting):
-                        if _setting_key in self.core_settings.get(_setting):
-                            self.auth[_setting_key] = self.core_settings.get(_setting).get(_setting_key)
+            if _setting in self.core_settings and _setting in _setting_keys:
+                for _setting_key in _setting_keys.get(_setting):
+                    if _setting_key in self.core_settings.get(_setting):
+                        self.auth[_setting_key] = self.core_settings.get(_setting).get(_setting_key)
 
     def _populate_construct_settings(self):
         """This method populates the khoros.construct dictionary to assist in constructing API queries and responses.
@@ -364,7 +384,7 @@ class Khoros(object):
         # Parse the helper settings and add them to the primary settings
         if 'connection' in self._helper_settings:
             _helper_keys = ['connection', 'construct', 'translate_errors']
-            _auth_keys = ['oauth2', 'session_auth', 'sso']
+            _auth_keys = ['oauth2', 'session_auth', 'sso']      # TODO: Determine if this variable is needed
             for _helper_key in _helper_keys:
                 if _helper_key == 'connection':
                     _connection_keys = ['community_url', 'tenant_id', 'default_auth_type', 'oauth2',
@@ -505,6 +525,14 @@ class Khoros(object):
         .. versionadded:: 2.5.0
         """
         return Khoros.Board(self)
+
+    def _import_bulk_data_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.BulkData` inner class to be utilized in the
+        core object.
+
+        .. versionadded:: 5.0.0
+        """
+        return Khoros.BulkData(self)
 
     def _import_category_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Category` inner class to be utilized in the
@@ -1661,6 +1689,70 @@ class Khoros(object):
             """
             return structures_module.boards.board_exists(self.khoros_object, board_id, board_url)
 
+    class BulkData(object):
+        """This class includes methods for interacting with the Bulk Data API.
+
+        .. versionadded:: 5.0.0
+        """
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Board` inner class object.
+
+            .. versionadded:: 5.0.0
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def query(self, community_id=None, client_id=None, token=None, from_date=None, to_date=None, fields=None,
+                  europe=None, export_type=None, full_response=False):
+            """This method performs a query against the Bulk Data API to retrieve CSV or JSON data.
+
+            .. versionadded:: 5.0.0
+
+            :param community_id: The Community ID to leverage in the URL
+            :type community_id: str, None
+            :param client_id: The Client ID used to authenticate to the Bulk Data API
+            :type client_id: str, None
+            :param token: The access token used to authenticate to the Bulk Data API
+            :type token: str, None
+            :param from_date: The **From** Date in ``YYYYmmDD`` or ``YYYYmmDDhhMM`` format.
+            :type from_date: str, None
+            :param to_date: The **To** Date in ``YYYYmmDD`` or ``YYYYmmDDhhMM`` format.
+            :type to_date: str, None
+            :param fields: Optional fields to include in the data export as a comma-separated string or iterable
+            :type fields: str, list, tuple, set, None
+            :param europe: Determines if the European URL should be utilized (``False`` by default)
+            :type europe: bool
+            :param export_type: Determines if the data should be returned in ``csv`` (default) or ``json`` format
+            :type export_type: str, None
+            :param full_response: Determines if the full :py:mod:`requests` object should be returned (``False`` by default)
+            :type full_response: bool
+            :returns: The CSV or JSON data for the Bulk Data API request (or the full :py:mod:`requests` object)
+            :raises: :py:exc:`TypeError`, :py:exc:`ValueError`,
+                     :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
+                     :py:exc:`khoros.errors.exceptions.APIRequestError`
+            """
+            return bulk_data_module.query(self.khoros_object, community_id=community_id, client_id=client_id,
+                                          token=token, from_date=from_date, to_date=to_date, fields=fields,
+                                          europe=europe, export_type=export_type, full_response=full_response)
+
+        def get_base_url(self, community_id=None, europe=False):
+            """This function constructs and/or retrieves the base URL for the Bulk Data API.
+
+            .. versionadded:: 5.0.0
+
+            .. note:: The URL from the helper settings will be leveraged when available unless the ``community_id`` is
+                      explicitly defined as a function parameter.
+
+            :param community_id: The Community ID to leverage in the URL
+            :type community_id: str, None
+            :param europe: Determines if the European URL should be utilized (``False`` by default)
+            :type europe: bool
+            :returns: The base URL for the Bulk Data API
+            """
+            return bulk_data_module.get_base_url(self.khoros_object, community_id=community_id, europe=europe)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):
@@ -2366,6 +2458,17 @@ class Khoros(object):
             return structures_module.communities.top_level_categories_on_community_page(self.khoros_object,
                                                                                         community_details)
 
+        def sso_enabled(self, community_details=None):
+            """This function checks whether SSO is enabled for the community.
+
+            .. versionadded:: 5.0.0
+
+            :param community_details: Dictionary containing community details (optional)
+            :type community_details: dict, None
+            :returns: A Boolean value indicating whether SSO is enabled
+            """
+            return structures_module.communities.sso_enabled(self.khoros_object, community_details)
+
     class GroupHub(object):
         """This class includes methods for interacting with group hubs."""
         def __init__(self, khoros_object):
@@ -2930,6 +3033,62 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return objects_module.messages.get_metadata(self.khoros_object, msg_id, metadata_key)
+
+        def get_context_id(self, msg_id):
+            """This method retrieves the Context ID value for a given message ID.
+
+            .. versionadded:: 5.0.0
+
+            :param msg_id: The message ID to query
+            :type msg_id: str
+            :returns: The value of the Context ID metadata field
+            :raises: :py:exc:`khoros.errors.exceptions.get_context_id`
+            """
+            return objects_module.messages.get_context_id(self.khoros_object, msg_id)
+
+        def get_context_url(self, msg_id):
+            """This method retrieves the Context URL value for a given message ID.
+
+            .. versionadded:: 5.0.0
+
+            :param msg_id: The message ID to query
+            :type msg_id: str
+            :returns: The value of the Context URL metadata field
+            :raises: :py:exc:`khoros.errors.exceptions.get_context_id`
+            """
+            return objects_module.messages.get_context_url(self.khoros_object, msg_id)
+
+        def define_context_id(self, msg_id, context_id='', full_response=False):
+            """This method defines the context_id metadata value for a given message.
+
+             .. versionadded:: 5.0.0
+
+             :param msg_id: The message ID to query
+             :type msg_id: str
+             :param context_id: The value to be written to the context_id metadata field (Empty by default)
+             :type context_id: str
+             :param full_response: Determines if the full API response should be returned (``False`` by default)
+             :type full_response: bool
+             :returns: A Boolean value to indicate the success of the operation or alternatively the full API response
+             :raises: :py:exc:`khoros.errors.exceptions.APIRequestError`
+             """
+            return objects_module.messages.define_context_id(self.khoros_object, msg_id, context_id, full_response)
+
+        def define_context_url(self, msg_id, context_url='', full_response=False):
+            """This function defines the context_url metadata value for a given message.
+
+            .. versionadded:: 5.0.0
+
+            :param msg_id: The message ID to query
+            :type msg_id: str
+            :param context_url: The value to be written to the context_url metadata field (Empty by default)
+            :type context_url: str
+            :param full_response: Determines if the full API response should be returned (``False`` by default)
+            :type full_response: bool
+            :returns: A Boolean value to indicate the success of the operation or alternatively the full API response
+            :raises: :py:exc:`khoros.errors.exceptions.APIRequestError`
+            """
+            return objects_module.messages.define_context_url(self.khoros_object, msg_id, context_url, full_response)
 
         def format_content_mention(self, content_info=None, content_id=None, title=None, url=None):
             """This method formats the ``<li-message>`` HTML tag for a content @mention.
@@ -3506,6 +3665,10 @@ class Khoros(object):
             .. versionadded:: 3.5.0
 
             :param fields: One or more fields from the ``Users`` object to return (``login`` field by default)
+
+                           .. seealso:: The fields that can be used are found in the
+                                        `Khoros developer documentation <https://bit.ly/3LQLyW5>`_.
+
             :type fields: str, tuple, list, set
             :param role_id: The identifier for the role in ``node_type:node_id:role_name`` format
             :type role_id: str, None
@@ -3952,6 +4115,9 @@ class Khoros(object):
         def add_tags_to_message(self, tags, msg_id, allow_exceptions=False):
             """This method adds one or more tags to an existing message.
 
+            .. versionchanged:: 5.0.0
+               Removed the redundant return statement.
+
             .. versionadded:: 4.1.0
 
             ..caution:: This function is not the most effective way to add multiple tags to a message. It is recommended
@@ -3968,7 +4134,6 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.POSTRequestError`
             """
             objects_module.tags.add_tags_to_message(self.khoros_object, tags, msg_id, allow_exceptions)
-            return
 
         @staticmethod
         def structure_single_tag_payload(tag_text):
@@ -4514,6 +4679,29 @@ class Khoros(object):
             :raises: py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return objects_module.users.update_sso_id(self.khoros_object, new_sso_id, user_id, user_login)
+
+        def get_registered_users_count(self):
+            """This function returns the total count of registered users on the community.
+
+            .. versionadded:: 5.0.0
+
+            :returns: An integer of the total registered users count
+            """
+            return objects_module.users.get_registered_users_count(self.khoros_object)
+
+        def get_online_users_count(self, anonymous=None, registered=None):
+            """This function returns the total count of users currently online.
+
+            .. versionadded:: 5.0.0
+
+            :param anonymous: Filters the results to only anonymous (non-registered) users
+            :type anonymous: bool, None
+            :param registered: Filters the results to only registered users
+            :type registered: bool, None
+            :returns: An integer of the total online users count
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.users.get_online_users_count(self.khoros_object, anonymous, registered)
 
     def signout(self):
         """This method invalidates the active session key or SSO authentication session.

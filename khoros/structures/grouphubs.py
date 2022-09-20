@@ -6,7 +6,7 @@
 :Example:           ``group_hub_url = grouphubs.create(khoros_object, gh_id, gh_title, disc_styles, return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Dec 2020
+:Modified Date:     23 May 2022
 """
 
 from .. import api, liql, errors
@@ -116,6 +116,9 @@ def create(khoros_object, group_id, group_title, description=None, membership_ty
 def _create_group_hub_with_avatar(_khoros_object, _api_url, _payload, _avatar_image_path):
     """This function creates a group hub with both a JSON payload and an image file to use as its avatar.
 
+    .. versionchanged:: 5.0.0
+       The function now passes a defined content-type value for the API header which was previously unused.
+
     :param _khoros_object: The core :py:class:`khoros.Khoros` object
     :type _khoros_object: class[khoros.Khoros]
     :param _api_url: The API URL to utilize in the API request
@@ -129,9 +132,10 @@ def _create_group_hub_with_avatar(_khoros_object, _api_url, _payload, _avatar_im
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
-    _headers = {'content-type': 'application/x-www-form-urlencoded'}
+    _content_type = 'application/x-www-form-urlencoded'
     _full_payload = api.combine_json_and_avatar_payload(_payload, _avatar_image_path)
-    response = api.post_request_with_retries(_api_url, _full_payload, khoros_object=_khoros_object, multipart=True)
+    response = api.post_request_with_retries(_api_url, _full_payload, khoros_object=_khoros_object, multipart=True,
+                                             content_type=_content_type)
     return response
 
 
@@ -422,6 +426,9 @@ def refresh_enabled_discussion_styles(khoros_object):
     """This function refreshes the ``all_discussion_styles`` global variable to match what is in the
        core object settings when applicable.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     .. versionchanged:: 3.3.0
        Updated ``khoros_object._settings`` to be ``khoros_object.core_settings``.
 
@@ -434,7 +441,6 @@ def refresh_enabled_discussion_styles(khoros_object):
     if 'discussion_styles' in khoros_object.core_settings:
         global all_discussion_styles
         all_discussion_styles = khoros_object.core_settings.get('discussion_styles')
-    return
 
 
 def _verify_group_hub_id(_group_hub_id, _group_hub_url):

@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 Jun 2021
+:Modified Date:     10 Jun 2022
 """
 
 import os
@@ -15,7 +15,7 @@ import importlib
 
 import yaml
 
-# Define global variable to store the YAML test ettings
+# Define global variable to store the YAML test settings
 test_config = {}
 
 
@@ -24,10 +24,12 @@ def set_package_path():
 
     .. versionadded:: 2.7.4
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     sys.path.insert(0, os.path.abspath('../..'))
-    return
 
 
 def import_modules(*modules):
@@ -106,7 +108,7 @@ def _get_local_helper_file_name(_production=False):
 
     .. versionadded:: 4.1.0
 
-    :param _production: Defines whether or not the helper file is associated with a Production environment
+    :param _production: Defines whether the helper file is associated with a Production environment
     :type _production: bool, None
     :returns: The file name for the local helper file
     """
@@ -122,9 +124,9 @@ def local_helper_exists(production=False):
 
     .. versionadded:: 4.1.0
 
-    :param production: Defines whether or not the helper file is associated with a Production environment
+    :param production: Defines whether the helper file is associated with a Production environment
     :type production: bool, None
-    :returns: Boolean value indicating whether or not the local helper file was found
+    :returns: Boolean value indicating whether the local helper file was found
     """
     file_name = _get_local_helper_file_name(production)
     return os.path.exists(f'local/{file_name}')
@@ -135,7 +137,7 @@ def local_test_config_exists():
 
     .. versionadded:: 4.1.0
 
-    :returns: Boolean value indicating whether or not the file was found
+    :returns: Boolean value indicating whether the file was found
     """
     return os.path.exists('local/khorostest.yml')
 
@@ -145,13 +147,15 @@ def parse_testing_config_file():
 
     .. versionadded:: 4.1.0
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     """
     global test_config
     if local_test_config_exists():
         with open('local/khorostest.yml', 'r') as file:
             test_config = yaml.safe_load(file)
-    return
 
 
 def get_testing_config():
@@ -169,7 +173,7 @@ def instantiate_with_local_helper(production=False):
 
     .. versionadded:: 4.1.0
 
-    :param production: Defines whether or not the helper file is associated with a Production environment
+    :param production: Defines whether the helper file is associated with a Production environment
     :type production: bool, None
     :returns: The instantiated :py:class:`khoros.core.Khoros` object
     """
@@ -178,3 +182,15 @@ def instantiate_with_local_helper(production=False):
         set_package_path()
         core_module = importlib.import_module('khoros.core')
         return core_module.Khoros(helper=f"local/{file_name}")
+
+
+def instantiate_with_placeholder():
+    """This function instantiates a Khoros object with placeholder data.
+
+    .. versionadded:: 5.0.0
+
+    :returns: The instantiated :py:class:`khoros.core.Khoros` object
+    """
+    set_package_path()
+    core_module = importlib.import_module('khoros.core')
+    return core_module.Khoros(placeholder=True)

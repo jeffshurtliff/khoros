@@ -178,6 +178,10 @@ def get_users_with_role(khoros_object, fields='login', role_id=None, role_name=N
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
     :param fields: One or more fields from the ``Users`` object to return (``login`` field by default)
+
+                   .. seealso:: The fields that can be used are found in the
+                                `Khoros developer documentation <https://bit.ly/3LQLyW5>`_.
+
     :type fields: str, tuple, list, set
     :param role_id: The identifier for the role in ``node_type:node_id:role_name`` format
     :type role_id: str, None

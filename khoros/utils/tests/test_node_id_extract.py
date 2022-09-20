@@ -4,8 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that Node IDs can be extracted successfully from URLs.
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     11 Mar 2021
-:Version:           1.0.2
+:Modified Date:     09 Jun 2022
 """
 
 import os
@@ -15,9 +14,12 @@ import pytest
 
 
 def set_package_path():
-    """This function adds the high-level khoros directory to the sys.path list."""
+    """This function adds the high-level khoros directory to the sys.path list.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     sys.path.insert(0, os.path.abspath('../..'))
-    return
 
 
 def get_test_data():
@@ -43,6 +45,9 @@ def get_test_data():
 def test_with_valid_node_types():
     """This function tests that Node IDs can be extracted from URLs when valid node types are given.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
     :returns: None
     :raises: :py:exc:`AssertionError`, :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`,
              :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError`,
@@ -59,11 +64,13 @@ def test_with_valid_node_types():
     for node_type, url in test_data.items():
         node_id = nodes.get_node_id(url, node_type)
         assert (node_id is not False) and (len(node_id) != 0)       # nosec
-    return
 
 
 def test_with_invalid_node_types():
     """This function tests to ensure that invalid node types will raise the appropriate exception.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`AssertionError`, :py:exc:`khoros.errors.exceptions.InvalidNodeTypeError`
@@ -84,12 +91,12 @@ def test_with_invalid_node_types():
     with pytest.raises(exceptions.InvalidNodeTypeError):
         nodes.get_node_id(test_data.get('group'), 'tkb')
 
-    # Return when finished
-    return
-
 
 def test_with_only_url():
     """This function tests the :py:func:`khoros.objects.base.get_node_id` function when only a URL is passed.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`AssertionError`
@@ -105,11 +112,13 @@ def test_with_only_url():
     for url in test_data:
         node_id = nodes.get_node_id(url)
         assert (node_id is not False) and (len(node_id) != 0)       # nosec
-    return
 
 
 def test_url_without_node():
     """This function tests to ensure that an appropriate exception is raised when a URL does not contain a valid node.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
 
     :returns: None
     :raises: :py:exc:`AssertionError`, :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError`
@@ -122,4 +131,3 @@ def test_url_without_node():
     # Test passing a URL that does not have a node within it
     with pytest.raises(exceptions.NodeTypeNotFoundError):
         nodes.get_node_id('https://community.khoros.com/this-is-a-test-url')
-    return

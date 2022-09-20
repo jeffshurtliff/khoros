@@ -12,6 +12,7 @@ Table of Contents
 
    introduction
    community-api-calls
+   bulk-data-api
    messages
    boards
    group-hubs

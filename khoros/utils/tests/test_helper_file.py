@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify that the helper configuration files work properly
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Mar 2021
+:Modified Date:  09 Jun 2022
 """
 
 import os
@@ -12,9 +12,12 @@ import sys
 
 
 def set_package_path():
-    """This function adds the high-level khoros directory to the sys.path list."""
+    """This function adds the high-level khoros directory to the sys.path list.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+    """
     sys.path.insert(0, os.path.abspath('../..'))
-    return
 
 
 def get_helper_path():

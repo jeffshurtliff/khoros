@@ -6,7 +6,7 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 Jan 2022
+:Modified Date:     20 Sep 2022
 """
 
 import json
@@ -15,7 +15,7 @@ import urllib.request
 from . import log_utils
 
 # Define special and global variables
-__version__ = "4.5.0"
+__version__ = "5.0.0"
 latest_version_reported = False
 logger = log_utils.initialize_logging(__name__)
 
@@ -28,6 +28,9 @@ def get_full_version():
 def log_current_version(debug=False):
     """This function reports the current running version of the library in a debug log entry.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant ``return`` statement.
+
     .. versionadded:: 3.0.0
 
     :param debug: Defines if the message should be logged with the ``DEBUG`` log level. (``False`` by default)
@@ -39,7 +42,6 @@ def log_current_version(debug=False):
         logger.debug(log_msg)
     else:
         logger.info(log_msg)
-    return
 
 
 def get_major_minor_version():
@@ -88,17 +90,18 @@ def latest_version():
 def warn_when_not_latest():
     """This function displays a :py:exc:`RuntimeWarning` if the running version doesn't match the latest stable version.
 
+    .. versionchanged:: 5.0.0
+       Removed the redundant ``return`` statement and merged two ``if`` statements.
+
     .. versionchanged:: 3.0.0
        The function was updated to use logging for the warning rather than the :py:mod:`warnings` module.
 
     :returns: None
     """
-    if not latest_version():
-        if get_latest_stable() != '0.0.0':
-            warn_msg = "The latest stable version of khoros is not running. " + \
-                       "Consider running 'pip install khoros --upgrade' when feasible."
-            logger.warning(warn_msg)
-    return
+    if not latest_version() and get_latest_stable() != '0.0.0':
+        warn_msg = "The latest stable version of khoros is not running. " + \
+                   "Consider running 'pip install khoros --upgrade' when feasible."
+        logger.warning(warn_msg)
 
 
 # Log the current version only when debug mode is enabled

@@ -4,6 +4,191 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.0.0
+******
+**Release Date: 2022-09-20**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added and configured the ``self.bulk_data_settings`` dictionary in the core object.
+* Added the :py:class:`khoros.core.Khoros.BulkData` inner class with the following methods:
+    * :py:meth:`khoros.core.Khoros.BulkData.query`
+    * :py:meth:`khoros.core.Khoros.BulkData.get_base_url`
+* Added the following methods to the :py:class:`khoros.core.Khoros.Message` inner class:
+    * Added the :py:meth:`khoros.core.Khoros.Message.get_context_id` method.
+    * Added the :py:meth:`khoros.core.Khoros.Message.get_context_url` method.
+    * Added the :py:meth:`khoros.core.Khoros.Message.define_context_id` method.
+    * Added the :py:meth:`khoros.core.Khoros.Message.define_context_url` method.
+* Added the :py:meth:`khoros.core.Khoros.User.get_registered_users_count` method.
+* Added the :py:meth:`khoros.core.Khoros.User.get_online_users_count` method.
+* Added the :py:meth:`khoros.core.Khoros.Community.sso_enabled` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the new :py:mod:`khoros.bulk_data` module with the following functions:
+    * :py:func:`khoros.bulk_data.get_base_url`
+    * :py:func:`khoros.bulk_data.query`
+    * :py:func:`khoros.bulk_data._construct_headers`
+    * :py:func:`khoros.bulk_data._get_export_header`
+    * :py:func:`khoros.bulk_data._construct_parameters`
+    * :py:func:`khoros.bulk_data._validate_date_field`
+* Added the following functions to the :py:mod:`khoros.objects.messages` module:
+    * Added the :py:func:`khoros.objects.messages.get_context_id` function.
+    * Added the :py:func:`khoros.objects.messages.get_context_url` function.
+    * Added the :py:func:`khoros.objects.messages.define_context_id` function.
+    * Added the :py:func:`khoros.objects.messages.define_context_url` function.
+* Added the :py:func:`khoros.objects.users.get_registered_users_count` function.
+* Added the :py:func:`khoros.objects.users.get_online_users_count` function.
+* Added the :py:func:`khoros.structures.communities.sso_enabled` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.helper._get_bulk_data_info` function.
+* Added the :py:func:`khoros.utils.tests.resources.instantiate_with_placeholder` function.
+* Added the :py:mod:`khoros.utils.tests.test_bulk_data` module with the following test functions:
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_base_url_without_helper`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_core_object_settings`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_export_type_header`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_header_construction`
+    * :py:func:`khoros.utils.tests.test_bulk_data.test_valid_parameter_construction`
+* Added the :py:func:`khoros.utils.tests.test_settings.test_sso_status_retrieval` test function.
+* Added the :py:func:`khoros.utils.tests.test_roles` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_roles.set_package_path`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_role_id`
+    * :py:func:`khoros.utils.tests.test_roles.test_invalid_role_type`
+    * :py:func:`khoros.utils.tests.test_roles.test_total_role_type_counts`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_roles_for_user`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_users_with_role`
+
+General
+-------
+* Added the ``bulk_data`` section to the ``examples/helper.yml`` file.
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Merged two ``if`` statements in the :py:meth:`khoros.core.Khoros._populate_auth_settings` method.
+* Added a reference to the `Khoros Developer Documentation <https://bit.ly/3LQLyW5>`_ in the
+  :py:meth:`khoros.core.Khoros.Role.get_users_with_role` method.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Improved the error handling in the :py:func:`khoros.auth.get_session_key` function.
+* Merged two ``if`` statements in the following functions:
+    * :py:func:`khoros.auth.get_sso_key`
+    * :py:func:`khoros.liql.perform_query`
+* Added a reference to the `Khoros Developer Documentation <https://bit.ly/3LQLyW5>`_ in the
+  :py:func:`khoros.objects.roles.get_users_with_role` function.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added a function call in :py:func:`khoros.utils.helper._get_connection_info` to parse the
+  Bulk Data API connection information when applicable.
+* Merged two ``if`` statements in the :py:func:`khoros.utils.version.warn_when_not_latest` function.
+* Made a minor change to the docstring for :py:func:`khoros.errors.handlers._exceptions_module_imported`.
+
+General
+-------
+* Updated the `Security Policy <https://github.com/jeffshurtliff/khoros/blob/master/SECURITY.md>`_ to
+  add support for version 5.0.x and to remove support for version 3.x.x.
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes to the :doc:`core-object-methods`.
+
+* Removed the redundant ``return`` statement from the
+  :py:meth:`khoros.core.Khoros.Tag.add_tags_to_message` method.
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.structures.grouphubs._create_group_hub_with_avatar` to pass a defined
+  content-type value which was previously stored in an unused variable.
+* Removed redundant ``return`` statements from the following functions in the :py:mod:`khoros.api` module:
+    * :py:func:`khoros.api._confirm_field_supplied`
+    * :py:func:`khoros.api._display_ssl_verify_warning`
+    * :py:func:`khoros.api._report_failed_attempt`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.objects.tags` module:
+    * :py:func:`khoros.objects.tags.add_tags_to_message`
+    * :py:func:`khoros.objects.tags.add_single_tag_to_message`
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.structures.boards._warn_about_ignored_settings` function.
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.structures.communities._check_for_multiple_tenants` function.
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.structures.grouphubs.refresh_enabled_discussion_styles` function.
+* Removed the :py:exc:`DeprecationWarning` from the
+  :py:class:`khoros.structures.base.Mapping` class to address Issue
+  `#57 <https://github.com/jeffshurtliff/khoros/issues/57>`_.
+
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.utils.version` module:
+    * :py:func:`khoros.utils.version.log_current_version`
+    * :py:func:`khoros.utils.version.warn_when_not_latest`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.utils.environment` module:
+    * :py:func:`khoros.utils.environment.update_env_variable_names`
+    * :py:func:`khoros.utils.environment._update_env_list`
+    * :py:func:`khoros.utils.environment._update_env_mapping`
+* Removed redundant ``return`` statements from the following functions in the
+  :py:mod:`khoros.errors.handlers` module:
+    * :py:func:`khoros.errors.handlers.eprint`
+    * :py:func:`khoros.errors.handlers.verify_v1_response`
+    * :py:func:`khoros.errors.handlers.verify_core_object_present`
+    * :py:func:`khoros.errors.handlers._import_exceptions_module`
+    * :py:func:`khoros.errors.handlers._import_exception_classes`
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.utils.core_utils.display_warning` function.
+* Removed the redundant ``return`` statement from the
+  :py:func:`khoros.utils.tests.resources.set_package_path` and
+  :py:func:`khoros.utils.tests.resources.parse_testing_config_file` functions.
+* Removed the redundant ``return`` statement from all or most functions in the
+  following modules:
+    * :py:func:`khoros.utils.tests.test_board_creation`
+    * :py:func:`khoros.utils.tests.test_core_utils`
+    * :py:func:`khoros.utils.tests.test_grouphub_creation`
+    * :py:func:`khoros.utils.tests.test_helper_file`
+    * :py:func:`khoros.utils.tests.test_http_headers`
+    * :py:func:`khoros.utils.tests.test_library_import`
+    * :py:func:`khoros.utils.tests.test_liql`
+    * :py:func:`khoros.utils.tests.test_mentions`
+    * :py:func:`khoros.utils.tests.test_messages`
+    * :py:func:`khoros.utils.tests.test_node_id_extract`
+    * :py:func:`khoros.utils.tests.test_settings`
+    * :py:func:`khoros.utils.tests.test_ssl_verify`
+    * :py:func:`khoros.utils.tests.test_tags`
+
+|
+
+-----
+
+******
 v4.5.0
 ******
 **Release Date: 2022-01-16**

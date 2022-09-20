@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 Aug 2021
+:Modified Date:     23 May 2022
 """
 
 import requests
@@ -21,6 +21,9 @@ logger = log_utils.initialize_logging(__name__)
 
 def get_session_key(khoros_object, username=None, password=None):
     """This function retrieves the session key for an authentication session.
+
+    .. versionchanged:: 5.0.0
+       The error handling has been improved to provide more useful information when applicable.
 
     .. versionchanged:: 4.2.0
        The URI is now generated utilizing the :py:func:`khoros.auth._get_khoros_login_url` function.
@@ -68,15 +71,26 @@ def get_session_key(khoros_object, username=None, password=None):
         raise errors.exceptions.SessionAuthenticationError()
     else:
         response = response.json()
-        try:
-            session_key = response['response']['value']['$']
-        except KeyError:
-            raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
+        if isinstance(response, dict) and 'response' in response and response['response'].get('status') == 'error':
+            try:
+                error_msg = response['response']['error']['message']
+                full_error_msg = f"Session key authentication failed for '{username}': {error_msg}"
+                raise errors.exceptions.SessionAuthenticationError(full_error_msg)
+            except KeyError:
+                raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
+        else:
+            try:
+                session_key = response['response']['value']['$']
+            except KeyError:
+                raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
     return session_key
 
 
 def get_sso_key(khoros_object):
     """This function retrieves the session key for a LithiumSSO session.
+
+    .. versionchanged:: 5.0.0
+       The two ``if`` statements have been merged.
 
     .. versionadded:: 4.2.0
 
@@ -94,9 +108,8 @@ def get_sso_key(khoros_object):
         data=khoros_object.core_settings.get('sso')
     )
     tree = ElementTree.fromstring(response.text)
-    if 'status' in tree.attrib:
-        if tree.attrib['status'] == 'success':
-            return tree.findtext('value')
+    if 'status' in tree.attrib and tree.attrib['status'] == 'success':
+        return tree.findtext('value')
     raise errors.exceptions.SsoAuthenticationError('Failed to retrieve a session key with the LithiumSSO token.')
 
 

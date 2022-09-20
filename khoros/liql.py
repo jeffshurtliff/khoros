@@ -6,7 +6,7 @@
 :Example:           ``query_url = liql.format_query("SELECT * FROM messages WHERE id = '2' LIMIT 1")``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     02 Oct 2021
+:Modified Date:     23 May 2022
 """
 
 from . import api, errors
@@ -121,6 +121,9 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
                   allow_exceptions=True, verify=None, return_items=False):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
 
+    .. versionchanged:: 5.0.0
+       Two ``if`` statements have been merged.
+
     .. versionchanged:: 4.1.0
        The JSON response can now be reduced to just the returned items by passing ``return_items=True``.
 
@@ -177,12 +180,11 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
 
     # Perform the API call and validate the data
     response = api.get_request_with_retries(query_url, return_json, auth_dict=khoros_object.auth, verify=verify)
-    if verify_success:
-        if not api.query_successful(response):
-            error_msg = errors.handlers.get_error_from_json(response, include_error_bool=False)[2]
-            if allow_exceptions:
-                raise errors.exceptions.GETRequestError(error_msg)
-            errors.handlers.eprint(error_msg)
+    if verify_success and not api.query_successful(response):
+        error_msg = errors.handlers.get_error_from_json(response, include_error_bool=False)[2]
+        if allow_exceptions:
+            raise errors.exceptions.GETRequestError(error_msg)
+        errors.handlers.eprint(error_msg)
     if return_json:
         # Convert the response to JSON as needed
         if not isinstance(response, dict):

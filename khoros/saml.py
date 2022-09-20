@@ -6,7 +6,7 @@
 :Example:           ``assertion = saml.import_assertion(file_path)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2021
+:Modified Date:     23 May 2022
 """
 
 from . import api, errors
@@ -80,7 +80,7 @@ def _is_decoded(_assertion):
 
     :param _assertion: The SAML assertion string to be examined
     :type _assertion: str
-    :returns: Boolean value indicating whether or not the SAML assertion string is encoded
+    :returns: Boolean value indicating whether the SAML assertion string is encoded
     :raises: :py:exc:`TypeError`
     """
     return True if '<saml' in _assertion else False

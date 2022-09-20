@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify the :py:mod:`khoros.objects.settings` functionality.
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  28 Jun 2021
+:Modified Date:  09 Jun 2022
 """
 
 import os
@@ -23,12 +23,14 @@ def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
 
     .. versionadded:: 4.1.0
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
     """
     global package_path_defined
     if not package_path_defined:
         sys.path.insert(0, os.path.abspath('../..'))
         package_path_defined = True
-    return
 
 
 def test_node_setting_retrieval():
@@ -78,3 +80,21 @@ def test_invalid_node_type_exception():
     node_type = resources.get_structure_collection('board')
     with pytest.raises(exceptions.InvalidNodeTypeError):
         khoros_object.settings.get_node_setting('custom.pretend_setting', 'fake-node', node_type)
+
+
+def test_sso_status_retrieval():
+    """This function tests to confirm that the :py:meth:`khoros.core.Khoros.Community.sso_enabled` method
+       is able to return a Boolean value.
+
+       .. versionadded:: 5.0.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper()
+
+    # Test the method
+    sso_enabled = khoros_object.communities.sso_enabled()
+    assert sso_enabled is not None
