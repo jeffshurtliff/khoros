@@ -4,7 +4,7 @@
 :Synopsis:          This script is the primary configuration file for the khoros project
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Oct 2021
+:Modified Date:     20 Sep 2022
 """
 
 import setuptools
@@ -45,7 +45,7 @@ setuptools.setup(
     version=version,
     author="Jeff Shurtliff",
     author_email="jeff.shurtliff@rsa.com",
-    description="Useful tools and utilities to assist in managing a Khoros Community (formerly Lithium) environment.",
+    description="Useful tools and utilities to assist in managing a Khoros Communities (formerly Lithium) environment.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/jeffshurtliff/khoros",
