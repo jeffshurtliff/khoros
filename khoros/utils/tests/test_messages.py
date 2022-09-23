@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_messages
-:Synopsis:       This module is used by pytest to verify that messages function properly
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  09 Jun 2022
+:Module:            khoros.utils.tests.test_messages
+:Synopsis:          This module is used by pytest to verify that messages function properly
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     23 Sep 2022
 """
 
 import pytest
@@ -37,6 +37,26 @@ def get_control_data(test_type):
 
     }
     return control_data.get(test_type)
+
+
+def assert_tags_present(payload, tags_to_find):
+    """This function asserts that specific tags are found within API payload.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
+    :param payload: The payload in which to search for tags
+    :type payload: dict
+    :param tags_to_find: A list or tuple of tags for which to search in the payload
+    :type tags_to_find: list, tuple, set
+    :returns: None
+    :raises: :py:exc:`AssertionError`
+    """
+    tags_found = []
+    for tag_dict in payload['data']['tags']:
+        tags_found.append(tag_dict.get('text'))
+    for tag in tags_to_find:
+        assert tag in tags_found        # nosec
 
 
 def test_construct_only_subject():
@@ -205,26 +225,6 @@ def test_payload_validation():
     payload = {'data': {'type': 'message', 'subject': 'This is a message subject'}}
     payload = messages.validate_message_payload(payload)
     assert payload.get('data').get('type') == 'message'
-
-
-def assert_tags_present(payload, tags_to_find):
-    """This function asserts that specific tags are found within API payload.
-
-    .. versionchanged:: 5.0.0
-       Removed the redundant return statement.
-
-    :param payload: The payload in which to search for tags
-    :type payload: dict
-    :param tags_to_find: A list or tuple of tags for which to search in the payload
-    :type tags_to_find: list, tuple, set
-    :returns: None
-    :raises: :py:exc:`AssertionError`
-    """
-    tags_found = []
-    for tag_dict in payload['data']['tags']:
-        tags_found.append(tag_dict.get('text'))
-    for tag in tags_to_find:
-        assert tag in tags_found        # nosec
 
 
 # Import modules and initialize the core object
