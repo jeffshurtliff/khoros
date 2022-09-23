@@ -4,6 +4,30 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.1.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.Message.kudo` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.objects.messages.kudo` function.
+
+|
+
+-----
+
+******
 v5.0.0
 ******
 **Release Date: 2022-09-20**

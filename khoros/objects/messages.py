@@ -517,6 +517,33 @@ def update(khoros_object, msg_id=None, msg_url=None, subject=None, body=None, no
                                   return_status, return_error_messages, split_errors, khoros_object)
 
 
+def kudo(khoros_object, msg_id):
+    """This function kudos (i.e. "likes") a message.
+
+    .. versionadded:: 5.1.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the message to be kudoed
+    :type msg_id: str, int
+    :returns: The API response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    # Define the payload
+    payload = {
+        "data": {
+            "type": "kudo"
+        }
+    }
+
+    # Define the API endpoint URI
+    uri = f'{khoros_object.core["v2_base"]}/messages/{msg_id}/kudos'
+
+    # Perform the API call
+    return api.post_request_with_retries(uri, payload, khoros_object=khoros_object)
+
+
 def get_metadata(khoros_object, msg_id, metadata_key):
     """This function retrieves the value for a specific metadata key associated with a given message.
 
