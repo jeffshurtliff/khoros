@@ -23,6 +23,14 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.objects.messages.kudo` function.
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_messages` module:
+    * :py:func:`khoros.utils.tests.test_messages.set_package_path`
+    * :py:func:`khoros.utils.tests.test_messages.test_kudo_message`
+
 |
 
 -----

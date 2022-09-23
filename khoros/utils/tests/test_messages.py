@@ -7,9 +7,26 @@
 :Modified Date:     23 Sep 2022
 """
 
+import os
+import sys
+
 import pytest
 
 from . import resources
+
+# Define a global variable to define when the package path has been set
+package_path_defined = False
+
+
+def set_package_path():
+    """This function adds the high-level khoros directory to the sys.path list.
+
+    .. versionadded:: 5.1.0
+    """
+    global package_path_defined
+    if not package_path_defined:
+        sys.path.insert(0, os.path.abspath('../..'))
+        package_path_defined = True
 
 
 def get_control_data(test_type):
@@ -225,6 +242,24 @@ def test_payload_validation():
     payload = {'data': {'type': 'message', 'subject': 'This is a message subject'}}
     payload = messages.validate_message_payload(payload)
     assert payload.get('data').get('type') == 'message'
+
+
+def test_kudo_message():
+    """This function tests the ability to kudo a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API call and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    response = khoros_object.messages.kudo(msg_id)
+    assert response.get('status') == 'success'
 
 
 # Import modules and initialize the core object
