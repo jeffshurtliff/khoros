@@ -3018,6 +3018,19 @@ class Khoros(object):
             """
             return objects_module.messages.validate_message_payload(payload)
 
+        def kudo(self, msg_id):
+            """This function kudos (i.e. "likes") a message.
+
+            .. versionadded:: 5.1.0
+
+            :param msg_id: The ID of the message to be kudoed
+            :type msg_id: str, int
+            :returns: The API response in JSON format
+            :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.messages.kudo(self.khoros_object, msg_id)
+
         def get_metadata(self, msg_id, metadata_key):
             """This method retrieves the value for a specific metadata key associated with a given message.
 
