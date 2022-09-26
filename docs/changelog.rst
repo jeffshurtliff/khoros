@@ -44,6 +44,11 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_messages.test_flagging_message`
     * :py:func:`khoros.utils.tests.test_messages.test_label_message`
     * :py:func:`khoros.utils.tests.test_messages.test_tag_message`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_version` module:
+    * :py:func:`khoros.utils.tests.test_version.test_full_version`
+    * :py:func:`khoros.utils.tests.test_version.test_major_minor_version`
+    * :py:func:`khoros.utils.tests.test_version.test_latest_stable`
+    * :py:func:`khoros.utils.tests.test_version.test_latest_version`
 
 |
 
