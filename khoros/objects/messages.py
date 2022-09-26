@@ -544,6 +544,68 @@ def kudo(khoros_object, msg_id):
     return api.post_request_with_retries(uri, payload, khoros_object=khoros_object)
 
 
+def _set_spam(_khoros_object, _msg_id, _action='spam'):
+    """This function flags a message as ``spam`` or ``not_spam`` as a moderation action.
+
+    .. versionadded:: 5.1.0
+
+    :param _khoros_object: The core :py:class:`khoros.Khoros` object
+    :type _khoros_object: class[khoros.Khoros]
+    :param _msg_id: The ID of the message to be moderated
+    :type _msg_id: str, int
+    :param _action: Defines the message as ``spam`` (default) or ``not_spam``
+    :type _action: str
+    :returns: The API response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    # Define the payload
+    payload = {
+        "data": {
+            "type": "moderation_data",
+            "action": f"{_action}"
+        }
+    }
+
+    # Define the API endpoint URI
+    uri = f'{_khoros_object.core["v2_base"]}/messages/{_msg_id}/moderation_data'
+
+    # Perform the API call
+    return api.post_request_with_retries(uri, payload, khoros_object=_khoros_object)
+
+
+def flag(khoros_object, msg_id):
+    """This function flags a message as spam.
+
+    .. versionadded:: 5.1.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the message to be flagged
+    :type msg_id: str, int
+    :returns: The API response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    return _set_spam(khoros_object, msg_id, 'spam')
+
+
+def unflag(khoros_object, msg_id):
+    """This function flags a message as not being spam.
+
+    .. versionadded:: 5.1.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the message to be flagged
+    :type msg_id: str, int
+    :returns: The API response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    return _set_spam(khoros_object, msg_id, 'not_spam')
+
+
 def get_metadata(khoros_object, msg_id, metadata_key):
     """This function retrieves the value for a specific metadata key associated with a given message.
 

@@ -3,9 +3,9 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-******
-v5.1.0
-******
+**********
+v5.1.0dev1
+**********
 **Release Date: TBD**
 
 Added
@@ -15,13 +15,20 @@ Core Object
 -----------
 Additions to the :doc:`core-object-methods`.
 
-* Added the :py:meth:`khoros.core.Khoros.Message.kudo` method.
+* Added the following methods:
+    * :py:meth:`khoros.core.Khoros.Message.kudo`
+    * :py:meth:`khoros.core.Khoros.Message.flag`
+    * :py:meth:`khoros.core.Khoros.Message.unflag`
 
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the :py:func:`khoros.objects.messages.kudo` function.
+* Added the following functions to the :py:mod:`khoros.objects.messages` module:
+    * :py:func:`khoros.objects.messages.kudo`
+    * :py:func:`khoros.objects.messages.flag`
+    * :py:func:`khoros.objects.messages.unflag`
+    * :py:func:`khoros.objects.messages._set_spam`
 
 Supporting Modules
 ------------------
