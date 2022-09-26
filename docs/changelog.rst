@@ -38,6 +38,10 @@ Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
+* Added the following functions to the :py:mod:`khoros.utils.tests.resources` module:
+    * :py:func:`khoros.utils.tests.resources.import_control_data`
+    * :py:func:`khoros.utils.tests.resources.control_data_exists`
+    * :py:func:`khoros.utils.tests.resources._get_control_dataset_file`
 * Added the following functions to the :py:mod:`khoros.utils.tests.test_messages` module:
     * :py:func:`khoros.utils.tests.test_messages.set_package_path`
     * :py:func:`khoros.utils.tests.test_messages.test_kudo_message`

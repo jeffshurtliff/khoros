@@ -6,11 +6,12 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Jun 2022
+:Modified Date:     26 Sep 2022
 """
 
 import os
 import sys
+import json
 import importlib
 
 import yaml
@@ -45,6 +46,57 @@ def import_modules(*modules):
         imported_modules.append(importlib.import_module(module))
     tuple(imported_modules)
     return imported_modules if len(imported_modules) > 1 else imported_modules[0]
+
+
+def _get_control_dataset_file(_dataset_name):
+    """This function returns the file name associated with a particular dataset.
+
+    .. versionadded:: 5.1.0
+
+    :param _dataset_name: The name of the dataset
+    :type _dataset_name: str
+    :returns: The file name if found or a blank string
+    """
+    # Define the dataset file mapping
+    _datasets = {
+        'communities': 'communities_control_data.json',
+    }
+    try:
+        _dataset_file = _datasets[_dataset_name]
+    except KeyError:
+        _dataset_file = ''
+    return _dataset_file
+
+
+def import_control_data(dataset_name):
+    """This function imports a local control data file as a dictionary.
+
+    .. versionadded:: 5.1.0
+
+    :param dataset_name: The name of the dataset
+    :type dataset_name: str
+    :returns: The JSON data as a dictionary
+    """
+    dataset_file = _get_control_dataset_file(dataset_name)
+    with open(f'local/tests/{dataset_file}', 'r') as file:
+        data = json.load(file)
+    return data
+
+
+def control_data_exists(dataset_name):
+    """This function checks to see if a local control data file exists.
+
+    .. versionadded:: 5.1.0
+
+    :param dataset_name: The name of the dataset
+    :type dataset_name: str
+    :returns: Boolean value indicating whether the file was found
+    """
+    data_exists = False
+    dataset_file = _get_control_dataset_file(dataset_name)
+    if dataset_file and os.path.isfile(f'local/tests/{dataset_file}'):
+        data_exists = True
+    return data_exists
 
 
 def initialize_khoros_object(use_defined_settings=False, defined_settings=None, append_to_default=False):
