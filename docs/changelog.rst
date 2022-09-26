@@ -19,6 +19,8 @@ Additions to the :doc:`core-object-methods`.
     * :py:meth:`khoros.core.Khoros.Message.kudo`
     * :py:meth:`khoros.core.Khoros.Message.flag`
     * :py:meth:`khoros.core.Khoros.Message.unflag`
+    * :py:meth:`khoros.core.Khoros.Message.label`
+    * :py:meth:`khoros.core.Khoros.Message.tag`
 
 Primary Modules
 ---------------
@@ -29,6 +31,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.messages.flag`
     * :py:func:`khoros.objects.messages.unflag`
     * :py:func:`khoros.objects.messages._set_spam`
+    * :py:func:`khoros.objects.messages.label`
+    * :py:func:`khoros.objects.messages.tag`
 
 Supporting Modules
 ------------------
@@ -37,6 +41,9 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the following functions to the :py:mod:`khoros.utils.tests.test_messages` module:
     * :py:func:`khoros.utils.tests.test_messages.set_package_path`
     * :py:func:`khoros.utils.tests.test_messages.test_kudo_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_flagging_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_label_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_tag_message`
 
 |
 

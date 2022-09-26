@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Sep 2022
+:Modified Date:     26 Sep 2022
 """
 
 import json
@@ -571,7 +571,7 @@ def _set_spam(_khoros_object, _msg_id, _action='spam'):
     uri = f'{_khoros_object.core["v2_base"]}/messages/{_msg_id}/moderation_data'
 
     # Perform the API call
-    return api.post_request_with_retries(uri, payload, khoros_object=_khoros_object)
+    return api.put_request_with_retries(uri, payload, khoros_object=_khoros_object)
 
 
 def flag(khoros_object, msg_id):
@@ -604,6 +604,66 @@ def unflag(khoros_object, msg_id):
              :py:exc:`khoros.errors.exceptions.POSTRequestError`
     """
     return _set_spam(khoros_object, msg_id, 'not_spam')
+
+
+def label(khoros_object, msg_id, label_text):
+    """This function adds a single label to a given message.
+
+    .. versionadded:: 5.1.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the message to be flagged
+    :type msg_id: str, int
+    :param label_text: The label to be added
+    :type label_text: str
+    :returns: The API response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    # Define the payload
+    payload = {
+        "data": {
+            "type": "label",
+            "text": f"{label_text}"
+        }
+    }
+
+    # Define the API endpoint URI
+    uri = f'{khoros_object.core["v2_base"]}/messages/{msg_id}/labels'
+
+    # Perform the API call
+    return api.post_request_with_retries(uri, payload, khoros_object=khoros_object)
+
+
+def tag(khoros_object, msg_id, tag_text):
+    """This function adds a single tag to a given message.
+
+    .. versionadded:: 5.1.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param msg_id: The ID of the message to be flagged
+    :type msg_id: str, int
+    :param tag_text: The tag to be added
+    :type tag_text: str
+    :returns: The API response in JSON format
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.POSTRequestError`
+    """
+    # Define the payload
+    payload = {
+        "data": {
+            "type": "tag",
+            "text": f"{tag_text}"
+        }
+    }
+
+    # Define the API endpoint URI
+    uri = f'{khoros_object.core["v2_base"]}/messages/{msg_id}/tags'
+
+    # Perform the API call
+    return api.post_request_with_retries(uri, payload, khoros_object=khoros_object)
 
 
 def get_metadata(khoros_object, msg_id, metadata_key):

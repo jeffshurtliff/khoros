@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that messages function properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Sep 2022
+:Modified Date:     26 Sep 2022
 """
 
 import os
@@ -262,6 +262,65 @@ def test_kudo_message():
     assert response.get('status') == 'success'
 
 
+def test_flagging_message():
+    """This function tests the ability to kudo a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API calls and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    response = khoros_object.messages.flag(msg_id)
+    assert response.get('status') == 'success'
+    response = khoros_object.messages.unflag(msg_id)
+    assert response.get('status') == 'success'
+
+
+def test_label_message():
+    """This function tests the ability to add a label to a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API call and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    label_text = core_utils.get_random_string(8)
+    response = khoros_object.messages.label(msg_id, label_text)
+    assert response.get('status') == 'success'
+
+
+def test_tag_message():
+    """This function tests the ability to add a tag to a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API call and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    tag_text = core_utils.get_random_string(8)
+    response = khoros_object.messages.tag(msg_id, tag_text)
+    assert response.get('status') == 'success'
+
+
 # Import modules and initialize the core object
 messages, exceptions = resources.import_modules('khoros.objects.messages', 'khoros.errors.exceptions')
+core_utils = resources.import_modules('khoros.utils.core_utils')
 khoros = resources.initialize_khoros_object()

@@ -3057,6 +3057,36 @@ class Khoros(object):
             """
             return objects_module.messages.unflag(self.khoros_object, msg_id)
 
+        def label(self, msg_id, label_text):
+            """This function adds a single label to a given message.
+
+            .. versionadded:: 5.1.0
+
+            :param msg_id: The ID of the message to be flagged
+            :type msg_id: str, int
+            :param label_text: The label to be added
+            :type label_text: str
+            :returns: The API response in JSON format
+            :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.messages.label(self.khoros_object, msg_id, label_text)
+
+        def tag(self, msg_id, tag_text):
+            """This function adds a single tag to a given message.
+
+            .. versionadded:: 5.1.0
+
+            :param msg_id: The ID of the message to be flagged
+            :type msg_id: str, int
+            :param tag_text: The tag to be added
+            :type tag_text: str
+            :returns: The API response in JSON format
+            :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.POSTRequestError`
+            """
+            return objects_module.messages.tag(self.khoros_object, msg_id, tag_text)
+
         def get_metadata(self, msg_id, metadata_key):
             """This method retrieves the value for a specific metadata key associated with a given message.
 
