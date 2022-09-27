@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 :Module:            khoros.utils.tests.test_communities
-:Synopsis:          This module is used by pytest to verify that the communities module functions properly
+:Synopsis:          This module is used by pytest to verify that the ``communities`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
 :Modified Date:     27 Sep 2022

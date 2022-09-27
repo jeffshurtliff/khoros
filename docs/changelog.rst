@@ -56,6 +56,14 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the following functions to the :py:mod:`khoros.utils.tests.test_communities` module:
     * :py:func:`khoros.utils.tests.test_communities.set_package_path`
     * :py:func:`khoros.utils.tests.test_communities.test_community_details`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_categories` module:
+    * :py:func:`khoros.utils.tests.test_communities.set_package_path`
+    * :py:func:`khoros.utils.tests.test_communities.get_core_object`
+    * :py:func:`khoros.utils.tests.test_communities.get_control_data`
+    * :py:func:`khoros.utils.tests.test_communities.test_get_category_id`
+    * :py:func:`khoros.utils.tests.test_communities.test_total_count`
+    * :py:func:`khoros.utils.tests.test_communities.test_if_category_exists`
+    * :py:func:`khoros.utils.tests.test_communities.test_category_details`
 
 |
 
