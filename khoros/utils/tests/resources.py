@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2022
+:Modified Date:     27 Sep 2022
 """
 
 import os
@@ -59,6 +59,7 @@ def _get_control_dataset_file(_dataset_name):
     """
     # Define the dataset file mapping
     _datasets = {
+        'categories': 'categories_control_data.json',
         'communities': 'communities_control_data.json',
     }
     try:
