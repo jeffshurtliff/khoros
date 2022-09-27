@@ -525,5 +525,5 @@ def get_creation_date(khoros_object, identifier=None, category_details=None):
              :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     # TODO: Allow a format to be specified and the ability to parse as a datetime object if needed
-    return get_category_field(khoros_object, 'get_creation_date', identifier, category_details)
+    return get_category_field(khoros_object, 'creation_date', identifier, category_details)
 

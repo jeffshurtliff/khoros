@@ -65,6 +65,17 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_communities.test_if_category_exists`
     * :py:func:`khoros.utils.tests.test_communities.test_category_details`
 
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed the issue reported in Issue `#58 <https://github.com/jeffshurtliff/khoros/issues/58>`_
+  where the :py:func:`khoros.objects.categories.get_creation_date` function was failing with
+  an exception.
+
 |
 
 -----
