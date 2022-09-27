@@ -53,6 +53,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_version.test_major_minor_version`
     * :py:func:`khoros.utils.tests.test_version.test_latest_stable`
     * :py:func:`khoros.utils.tests.test_version.test_latest_version`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_communities` module:
+    * :py:func:`khoros.utils.tests.test_communities.set_package_path`
 
 |
 
