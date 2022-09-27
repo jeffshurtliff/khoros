@@ -104,7 +104,7 @@ class Khoros(object):
         :type skip_env_variables: bool
         :param empty: Instantiates an empty object to act as a placeholder with default values (``False`` by default)
         :type empty: bool
-        :param ssl_verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+        :param ssl_verify: Determines whether to verify the server's TLS certificate (``True`` by default)
         :type ssl_verify: bool, None
         :param bulk_data: The values for utilizing the Bulk Data API
         :type bulk_data: dict, None
@@ -738,7 +738,7 @@ class Khoros(object):
         :type content_type: str, None
         :param headers: Allows the API call headers to be manually defined rather than using only the core object
         :type headers: dict, None
-        :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+        :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
         :type multipart: bool
         :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                                   API request on behalf of a secondary user.
@@ -794,7 +794,7 @@ class Khoros(object):
         :type content_type: str, None
         :param headers: Allows the API call headers to be manually defined rather than using only the core object
         :type headers: dict, None
-        :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+        :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
         :type multipart: bool
         :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                                   API request on behalf of a secondary user.
@@ -1212,7 +1212,7 @@ class Khoros(object):
             :type content_type: str, None
             :param headers: Allows the API call headers to be manually defined rather than using only the core object
             :type headers: dict, None
-            :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+            :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
             :type multipart: bool
             :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                                       API request on behalf of a secondary user.
@@ -1256,7 +1256,7 @@ class Khoros(object):
             :type content_type: str, None
             :param headers: Allows the API call headers to be manually defined rather than using only the core object
             :type headers: dict, None
-            :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+            :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
             :type multipart: bool
             :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                                       API request on behalf of a secondary user.
@@ -1329,7 +1329,7 @@ class Khoros(object):
             :type private: bool
             :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
             :type verify_success: bool
-            :param allow_exceptions: Defines whether or not exceptions can be raised for responses returning errors
+            :param allow_exceptions: Defines whether exceptions can be raised for responses returning errors
 
                                      .. caution:: This does not apply to exceptions for missing required data.
 
@@ -1490,7 +1490,7 @@ class Khoros(object):
             :type description: str, None
             :param parent_category_id: The ID of the parent category (if applicable)
             :type parent_category_id: str, None
-            :param hidden: Defines whether or not the new board should be hidden from lists and menus
+            :param hidden: Defines whether the new board should be hidden from lists and menus
                            (disabled by default)
             :type hidden: bool, None
             :param allowed_labels: The type of labels allowed on the board (``freeform-only``, ``predefined-only`` or
@@ -1556,7 +1556,7 @@ class Khoros(object):
             :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with
                    the API response should be returned by the function
             :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :param split_errors: Defines whether error messages should be merged when applicable
             :type split_errors: bool
             :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
                       specific fields defined by function arguments
@@ -1598,7 +1598,7 @@ class Khoros(object):
             :type description: str, None
             :param parent_category_id: The ID of the parent category (if applicable)
             :type parent_category_id: str, None
-            :param hidden: Defines whether or not the new board should be hidden from lists and menus
+            :param hidden: Defines whether the new board should be hidden from lists and menus
                            (disabled by default)
             :type hidden: bool, None
             :param allowed_labels: The type of labels allowed on the board (``freeform-only``, ``predefined-only`` or
@@ -1684,7 +1684,7 @@ class Khoros(object):
             :type board_id: str, None
             :param board_url: The URL of the board to check
             :type board_url: str, None
-            :returns: Boolean value indicating whether or not the board already exists
+            :returns: Boolean value indicating whether the board already exists
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return structures_module.boards.board_exists(self.khoros_object, board_id, board_url)
@@ -1774,7 +1774,7 @@ class Khoros(object):
             :type category_title: str
             :param parent_id: The Category ID of the parent category (optional)
             :type parent_id: str, None
-            :param return_json: Determines whether or not the response should be returned in JSON format
+            :param return_json: Determines whether the response should be returned in JSON format
                                 (``True`` by default)
             :type return_json: bool
             :returns: The response from the API call
@@ -1832,7 +1832,7 @@ class Khoros(object):
             :type category_id: str, None
             :param category_url: The URL of the category to check
             :type category_url: str, None
-            :returns: Boolean value indicating whether or not the category already exists
+            :returns: Boolean value indicating whether the category already exists
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return structures_module.categories.category_exists(self.khoros_object, category_id, category_url)
@@ -2047,7 +2047,7 @@ class Khoros(object):
             return structures_module.categories.get_language(self.khoros_object, identifier, category_details)
 
         def is_hidden(self, identifier=None, category_details=None):
-            """This method identifies whether or not a given category is hidden.
+            """This method identifies whether a given category is hidden.
 
             .. versionadded:: 2.1.0
 
@@ -2546,7 +2546,7 @@ class Khoros(object):
             :param return_error_messages: Determines if any error messages associated with the API response should
                                           be returned by the function
             :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :param split_errors: Defines whether error messages should be merged when applicable
             :type split_errors: bool
             :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
                       specific fields defined by function arguments
@@ -2630,7 +2630,7 @@ class Khoros(object):
             :type grouphub_id: str, None
             :param grouphub_url: The URL of the group hub to check
             :type grouphub_url: str, None
-            :returns: Boolean value indicating whether or not the group hub already exists
+            :returns: Boolean value indicating whether the group hub already exists
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return structures_module.grouphubs.grouphub_exists(self.khoros_object, grouphub_id, grouphub_url)
@@ -2672,7 +2672,7 @@ class Khoros(object):
             :param return_error_messages: Determines if any error messages associated with the API response should be
                                           returned by the function
             :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :param split_errors: Defines whether error messages should be merged when applicable
             :type split_errors: bool
             :returns: Boolean value indicating a successful outcome (default), the full API response or one or more
                       specific fields defined by function arguments
@@ -2744,7 +2744,7 @@ class Khoros(object):
             :type images: dict, None
             :param is_answer: Designates the message as an answer on a Q&A board
             :type is_answer: bool, None
-            :param is_draft: Indicates whether or not the message is still a draft (i.e. unpublished)
+            :param is_draft: Indicates whether the message is still a draft (i.e. unpublished)
             :type is_draft: bool, None
             :param labels: The query to retrieve labels applied to the message
             :type labels: dict, None
@@ -2752,7 +2752,7 @@ class Khoros(object):
             :type product_category: dict, None
             :param products: The product in a product catalog associated with the message
             :type products: dict, None
-            :param read_only: Indicates whether or not the message should be read-only or have replies/comments blocked
+            :param read_only: Indicates whether the message should be read-only or have replies/comments blocked
             :type read_only: bool, None
             :param seo_title: The title of the message used for SEO purposes
             :type seo_title: str, None
@@ -2808,7 +2808,7 @@ class Khoros(object):
             :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with the
                                           API response should be returned by the function
             :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :param split_errors: Defines whether error messages should be merged when applicable
             :type split_errors: bool
             :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to create
                                       the message on behalf of a secondary user.
@@ -2868,7 +2868,7 @@ class Khoros(object):
             :type context_url: str, None
             :param cover_image: The cover image set for the message
             :type cover_image: dict, None
-            :param is_draft: Indicates whether or not the message is still a draft (i.e. unpublished)
+            :param is_draft: Indicates whether the message is still a draft (i.e. unpublished)
             :type is_draft: bool, None
             :param labels: The query to retrieve labels applied to the message
             :type labels: dict, None
@@ -2884,7 +2884,7 @@ class Khoros(object):
             :type product_category: dict, None
             :param products: The product in a product catalog associated with the message
             :type products: dict, None
-            :param read_only: Indicates whether or not the message should be read-only or have replies/comments blocked
+            :param read_only: Indicates whether the message should be read-only or have replies/comments blocked
             :type read_only: bool, None
             :param topic: The root message of the conversation in which the message appears
             :type topic: dict, None
@@ -2940,7 +2940,7 @@ class Khoros(object):
             :param return_error_messages: Determines if the **Developer Response Message** (if any) associated with the
                    API response should be returned by the function
             :type return_error_messages: bool, None
-            :param split_errors: Defines whether or not error messages should be merged when applicable
+            :param split_errors: Defines whether error messages should be merged when applicable
             :type split_errors: bool
             :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to create
                                       the message on behalf of a secondary user.
@@ -3262,7 +3262,7 @@ class Khoros(object):
             :type node_id: str, None
             :param node_url: The URL of the node to check
             :type node_url: str, None
-            :returns: Boolean value indicating whether or not the node already exists
+            :returns: Boolean value indicating whether the node already exists
             :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return structures_module.nodes.node_exists(self.khoros_object, node_id, node_url)
@@ -3580,7 +3580,7 @@ class Khoros(object):
             return structures_module.nodes.get_position(self.khoros_object, identifier, node_details)
 
         def is_hidden(self, identifier, node_details=None):
-            """This method identifies whether or not a given node is hidden.
+            """This method identifies whether a given node is hidden.
 
             .. versionadded:: 2.1.0
 
@@ -3588,7 +3588,7 @@ class Khoros(object):
             :type identifier: str, None
             :param node_details: The data captured from the :py:func:`khoros.structures.base.get_details` function
             :type node_details: dict, None
-            :returns: Boolean indicating whether or not the node is hidden
+            :returns: Boolean indicating whether the node is hidden
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidFieldError`,
                      :py:exc:`khoros.errors.exceptions.InvalidStructureTypeError`,
@@ -3873,7 +3873,7 @@ class Khoros(object):
 
             .. versionchanged:: 3.3.2
                The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)
-               indicating whether or not the operation was successful. (Currently ``False`` by default)
+               indicating whether the operation was successful. (Currently ``False`` by default)
 
             .. versionadded:: 3.2.0
 
@@ -3918,7 +3918,7 @@ class Khoros(object):
 
             .. versionadded:: 2.5.1
 
-            :returns: Boolean value indicating whether or not the Lithium SDK is installed
+            :returns: Boolean value indicating whether the Lithium SDK is installed
             """
             return studio_module.base.sdk_installed()
 
@@ -3934,11 +3934,11 @@ class Khoros(object):
 
         @staticmethod
         def node_installed():
-            """This method checks whether or not Node.js is installed.
+            """This method checks whether Node.js is installed.
 
             .. versionadded:: 2.5.1
 
-            :returns: Boolean value indicating whether or not Node.js is installed
+            :returns: Boolean value indicating whether Node.js is installed
             """
             return studio_module.base.node_installed()
 
@@ -3954,11 +3954,11 @@ class Khoros(object):
 
         @staticmethod
         def npm_installed():
-            """This method checks whether or not npm is installed.
+            """This method checks whether npm is installed.
 
             .. versionadded:: 2.5.1
 
-            :returns: Boolean value indicating whether or not npm is installed
+            :returns: Boolean value indicating whether npm is installed
             """
             return studio_module.base.npm_installed()
 
