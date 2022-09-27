@@ -160,4 +160,6 @@ def test_category_details():
     position = khoros_object.categories.get_position(control_data.get('id'))
     assert isinstance(position, int)
 
-    # TODO: Test retrieval of get_creation_date()
+    # Test retrieval of get_creation_date()
+    creation_date = khoros_object.categories.get_creation_date(control_data.get('id'))
+    assert creation_date == control_data.get('creation_date')
