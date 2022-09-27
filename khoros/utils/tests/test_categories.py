@@ -143,7 +143,7 @@ def test_category_details():
     assert isinstance(views, int) and views > 0
 
     # Test retrieval of friendly date enabled setting
-    friendly_date = khoros_object.categories.get_views(control_data.get('id'))
+    friendly_date = khoros_object.categories.friendly_date_enabled(control_data.get('id'))
     assert friendly_date == control_data.get('friendly_date')
 
     # TODO: Test retrieval of friendly date max age
