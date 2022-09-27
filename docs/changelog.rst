@@ -3,9 +3,9 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-**********
-v5.1.0dev1
-**********
+*********
+v5.1.0rc1
+*********
 **Release Date: TBD**
 
 Added
