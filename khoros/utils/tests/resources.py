@@ -264,7 +264,7 @@ def instantiate_with_secrets_helper():
     file_name = f'{os.environ.get("HOME")}/secrets/khoros_helper.yml'
     set_package_path()
     core_module = importlib.import_module('khoros.core')
-    return core_module.Khoros(helper=f"local/{file_name}")
+    return core_module.Khoros(helper=file_name)
 
 
 def instantiate_with_placeholder():
