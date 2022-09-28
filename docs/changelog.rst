@@ -4,6 +4,83 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.1.0
+******
+**Release Date: 2022-09-28**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the following methods:
+    * :py:meth:`khoros.core.Khoros.Message.kudo`
+    * :py:meth:`khoros.core.Khoros.Message.flag`
+    * :py:meth:`khoros.core.Khoros.Message.unflag`
+    * :py:meth:`khoros.core.Khoros.Message.label`
+    * :py:meth:`khoros.core.Khoros.Message.tag`
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.objects.messages` module:
+    * :py:func:`khoros.objects.messages.kudo`
+    * :py:func:`khoros.objects.messages.flag`
+    * :py:func:`khoros.objects.messages.unflag`
+    * :py:func:`khoros.objects.messages._set_spam`
+    * :py:func:`khoros.objects.messages.label`
+    * :py:func:`khoros.objects.messages.tag`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.utils.tests.resources` module:
+    * :py:func:`khoros.utils.tests.resources.import_control_data`
+    * :py:func:`khoros.utils.tests.resources.control_data_exists`
+    * :py:func:`khoros.utils.tests.resources._get_control_dataset_file`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_messages` module:
+    * :py:func:`khoros.utils.tests.test_messages.set_package_path`
+    * :py:func:`khoros.utils.tests.test_messages.test_kudo_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_flagging_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_label_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_tag_message`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_version` module:
+    * :py:func:`khoros.utils.tests.test_version.test_full_version`
+    * :py:func:`khoros.utils.tests.test_version.test_major_minor_version`
+    * :py:func:`khoros.utils.tests.test_version.test_latest_stable`
+    * :py:func:`khoros.utils.tests.test_version.test_latest_version`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_communities` module:
+    * :py:func:`khoros.utils.tests.test_communities.set_package_path`
+    * :py:func:`khoros.utils.tests.test_communities.test_community_details`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_categories` module:
+    * :py:func:`khoros.utils.tests.test_communities.set_package_path`
+    * :py:func:`khoros.utils.tests.test_communities.get_core_object`
+    * :py:func:`khoros.utils.tests.test_communities.get_control_data`
+    * :py:func:`khoros.utils.tests.test_communities.test_get_category_id`
+    * :py:func:`khoros.utils.tests.test_communities.test_total_count`
+    * :py:func:`khoros.utils.tests.test_communities.test_if_category_exists`
+    * :py:func:`khoros.utils.tests.test_communities.test_category_details`
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed the issue reported in Issue `#58 <https://github.com/jeffshurtliff/khoros/issues/58>`_
+  where the :py:func:`khoros.objects.categories.get_creation_date` function was failing with
+  an exception.
+
+|
+
+-----
+
+******
 v5.0.0
 ******
 **Release Date: 2022-09-20**

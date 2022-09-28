@@ -1,15 +1,32 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khoros.utils.tests.test_messages
-:Synopsis:       This module is used by pytest to verify that messages function properly
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  09 Jun 2022
+:Module:            khoros.utils.tests.test_messages
+:Synopsis:          This module is used by pytest to verify that messages function properly
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     26 Sep 2022
 """
+
+import os
+import sys
 
 import pytest
 
 from . import resources
+
+# Define a global variable to define when the package path has been set
+package_path_defined = False
+
+
+def set_package_path():
+    """This function adds the high-level khoros directory to the sys.path list.
+
+    .. versionadded:: 5.1.0
+    """
+    global package_path_defined
+    if not package_path_defined:
+        sys.path.insert(0, os.path.abspath('../..'))
+        package_path_defined = True
 
 
 def get_control_data(test_type):
@@ -37,6 +54,26 @@ def get_control_data(test_type):
 
     }
     return control_data.get(test_type)
+
+
+def assert_tags_present(payload, tags_to_find):
+    """This function asserts that specific tags are found within API payload.
+
+    .. versionchanged:: 5.0.0
+       Removed the redundant return statement.
+
+    :param payload: The payload in which to search for tags
+    :type payload: dict
+    :param tags_to_find: A list or tuple of tags for which to search in the payload
+    :type tags_to_find: list, tuple, set
+    :returns: None
+    :raises: :py:exc:`AssertionError`
+    """
+    tags_found = []
+    for tag_dict in payload['data']['tags']:
+        tags_found.append(tag_dict.get('text'))
+    for tag in tags_to_find:
+        assert tag in tags_found        # nosec
 
 
 def test_construct_only_subject():
@@ -207,26 +244,83 @@ def test_payload_validation():
     assert payload.get('data').get('type') == 'message'
 
 
-def assert_tags_present(payload, tags_to_find):
-    """This function asserts that specific tags are found within API payload.
+def test_kudo_message():
+    """This function tests the ability to kudo a message.
 
-    .. versionchanged:: 5.0.0
-       Removed the redundant return statement.
-
-    :param payload: The payload in which to search for tags
-    :type payload: dict
-    :param tags_to_find: A list or tuple of tags for which to search in the payload
-    :type tags_to_find: list, tuple, set
-    :returns: None
-    :raises: :py:exc:`AssertionError`
+    .. versionadded:: 5.1.0
     """
-    tags_found = []
-    for tag_dict in payload['data']['tags']:
-        tags_found.append(tag_dict.get('text'))
-    for tag in tags_to_find:
-        assert tag in tags_found        # nosec
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API call and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    response = khoros_object.messages.kudo(msg_id)
+    assert response.get('status') == 'success'
+
+
+def test_flagging_message():
+    """This function tests the ability to kudo a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API calls and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    response = khoros_object.messages.flag(msg_id)
+    assert response.get('status') == 'success'
+    response = khoros_object.messages.unflag(msg_id)
+    assert response.get('status') == 'success'
+
+
+def test_label_message():
+    """This function tests the ability to add a label to a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API call and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    label_text = core_utils.get_random_string(8)
+    response = khoros_object.messages.label(msg_id, label_text)
+    assert response.get('status') == 'success'
+
+
+def test_tag_message():
+    """This function tests the ability to add a tag to a message.
+
+    .. versionadded:: 5.1.0
+    """
+    if not resources.local_test_config_exists() or not resources.local_helper_exists():
+        pytest.skip("skipping local-only tests")
+
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.instantiate_with_local_helper(production=False)
+
+    # Perform the API call and assert that it was successful
+    msg_id = '62458'    # This is a message in the Stage environment used for testing
+    tag_text = core_utils.get_random_string(8)
+    response = khoros_object.messages.tag(msg_id, tag_text)
+    assert response.get('status') == 'success'
 
 
 # Import modules and initialize the core object
 messages, exceptions = resources.import_modules('khoros.objects.messages', 'khoros.errors.exceptions')
+core_utils = resources.import_modules('khoros.utils.core_utils')
 khoros = resources.initialize_khoros_object()
