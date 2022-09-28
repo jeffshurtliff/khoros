@@ -16,6 +16,7 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the following functions to the :py:mod:`khoros.utils.tests.resources` module:
+    * :py:func:`khoros.utils.tests.resources.get_core_object`
     * :py:func:`khoros.utils.tests.resources.secrets_helper_exists`
     * :py:func:`khoros.utils.tests.resources.instantiate_with_secrets_helper`
 

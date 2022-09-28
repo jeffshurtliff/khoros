@@ -15,6 +15,7 @@ import json
 import importlib
 
 import yaml
+import pytest
 
 # Define global variable to store the YAML test settings
 test_config = {}
@@ -98,6 +99,21 @@ def control_data_exists(dataset_name):
     if dataset_file and os.path.isfile(f'local/tests/{dataset_file}'):
         data_exists = True
     return data_exists
+
+
+def get_core_object():
+    """This function instantiates and returns the core object using a local helper file.
+
+    .. versionadded:: 5.1.1
+    """
+    set_package_path()
+    if secrets_helper_exists():
+        khoros_object = instantiate_with_secrets_helper()
+    else:
+        if not local_test_config_exists() or not local_helper_exists():
+            pytest.skip('skipping tests where a valid helper file is needed')
+        khoros_object = instantiate_with_local_helper(production=False)
+    return khoros_object
 
 
 def initialize_khoros_object(use_defined_settings=False, defined_settings=None, append_to_default=False):
