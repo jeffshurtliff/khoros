@@ -4,6 +4,38 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.1.1
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the following functions to the :py:mod:`khoros.utils.tests.resources` module:
+    * :py:func:`khoros.utils.tests.resources.secrets_helper_exists`
+    * :py:func:`khoros.utils.tests.resources.instantiate_with_secrets_helper`
+
+Changed
+=======
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.utils.tests.resources.instantiate_with_local_helper` function
+  to raise a :py:exc:`FileNotFoundError` exception if the helper file cannot be found.
+* Updated the :py:func:`khoros.utils.tests.test_categories` function to support the GitHub
+  Workflows helper file instantiation.
+
+|
+
+-----
+
+******
 v5.1.0
 ******
 **Release Date: 2022-09-28**

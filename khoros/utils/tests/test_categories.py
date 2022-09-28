@@ -32,14 +32,18 @@ def set_package_path():
 def get_core_object():
     """This function instantiates and returns the core object using a local helper file.
 
+    .. versionchanged:: 5.1.1
+       The function has been updated to support the GitHub Workflows helper file.
+
     .. versionadded:: 5.1.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip('skipping local-only tests')
-
-    # Instantiate the Khoros object
     set_package_path()
-    khoros_object = resources.instantiate_with_local_helper(production=False)
+    if resources.secrets_helper_exists():
+        khoros_object = resources.instantiate_with_secrets_helper()
+    else:
+        if not resources.local_test_config_exists() or not resources.local_helper_exists():
+            pytest.skip('skipping tests where a valid helper file is needed')
+        khoros_object = resources.instantiate_with_local_helper(production=False)
     return khoros_object
 
 

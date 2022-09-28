@@ -221,20 +221,50 @@ def get_testing_config():
     return test_config
 
 
+def secrets_helper_exists():
+    """This function checks to see if the unencrypted helper file exists for GitHub Workflows.
+
+    .. versionadded:: 5.1.1
+    """
+    helper_path = f'{os.environ.get("HOME")}/secrets/khoros_helper.yml'
+    return os.path.isfile(helper_path)
+
+
 def instantiate_with_local_helper(production=False):
     """This function instantiates a Khoros object using a local helper file for unit testing.
+
+    .. versionchanged:: 5.1.0
+       The function has been updated to raise the :py:exc:`FileNotFoundError` exception if the file is not found.
 
     .. versionadded:: 4.1.0
 
     :param production: Defines whether the helper file is associated with a Production environment
     :type production: bool, None
     :returns: The instantiated :py:class:`khoros.core.Khoros` object
+    :raises: :py:exc:`FileNotFoundError`
     """
     file_name = _get_local_helper_file_name(production)
-    if local_helper_exists():
-        set_package_path()
-        core_module = importlib.import_module('khoros.core')
-        return core_module.Khoros(helper=f"local/{file_name}")
+    if not local_helper_exists():
+        raise FileNotFoundError('The local helper file cannot be found.')
+    set_package_path()
+    core_module = importlib.import_module('khoros.core')
+    return core_module.Khoros(helper=f"local/{file_name}")
+
+
+def instantiate_with_secrets_helper():
+    """This function instantiates a Khoros object using the unencrypted helper file intended for GitHub Workflows.
+
+    .. versionadded:: 5.1.1
+
+    :returns: The instantiated :py:class:`khoros.core.Khoros` object
+    :raises: :py:exc:`FileNotFoundError`
+    """
+    if not secrets_helper_exists():
+        raise FileNotFoundError('The unencrypted GitHub Workflows helper file cannot be found.')
+    file_name = f'{os.environ.get("HOME")}/secrets/khoros_helper.yml'
+    set_package_path()
+    core_module = importlib.import_module('khoros.core')
+    return core_module.Khoros(helper=f"local/{file_name}")
 
 
 def instantiate_with_placeholder():
