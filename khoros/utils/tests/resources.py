@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     27 Sep 2022
+:Modified Date:     29 Sep 2022
 """
 
 import os
@@ -24,12 +24,10 @@ test_config = {}
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
 
-    .. versionadded:: 2.7.4
-
     .. versionchanged:: 5.0.0
        Removed the redundant return statement.
 
-    :returns: None
+    .. versionadded:: 2.7.4
     """
     sys.path.insert(0, os.path.abspath('../..'))
 
@@ -190,7 +188,7 @@ def get_structure_collection(structure_type):
     .. versionadded:: 4.1.0
 
     :param structure_type: The structure type for which to return the corresponding collection.
-    :return:
+    :returns: The appropriate collection
     """
     structure_map = {
         'board': 'boards',
@@ -246,13 +244,11 @@ def local_test_config_exists():
 
 def parse_testing_config_file():
     """This function parses the ``local/khorostest.yml`` file when present.
-
-    .. versionadded:: 4.1.0
-
+    
     .. versionchanged:: 5.0.0
        Removed the redundant return statement.
 
-    :returns: None
+    .. versionadded:: 4.1.0
     """
     global test_config
     if local_test_config_exists():
