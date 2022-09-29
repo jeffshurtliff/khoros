@@ -73,20 +73,37 @@ def _get_control_dataset_file(_dataset_name):
 def import_control_data(dataset_name):
     """This function imports a local control data file as a dictionary.
 
+    .. versionchanged:: 5.1.1
+       The function has been updated to support GitHub Workflows control data.
+
     .. versionadded:: 5.1.0
 
     :param dataset_name: The name of the dataset
     :type dataset_name: str
     :returns: The JSON data as a dictionary
+    :raises: :py:exc:`FileNotFoundError`
     """
+    data = None
     dataset_file = _get_control_dataset_file(dataset_name)
-    with open(f'local/tests/{dataset_file}', 'r') as file:
-        data = json.load(file)
+    file_paths = [
+        f'{os.environ.get("HOME")}/secrets/{dataset_file}',
+        f'local/tests/{dataset_file}',
+    ]
+    for path in file_paths:
+        if os.path.isfile(path):
+            with open(path, 'r') as file:
+                data = json.load(file)
+                break
+    if data is None:
+        raise FileNotFoundError(f'The {dataset_name} control data cannot be found.')
     return data
 
 
 def control_data_exists(dataset_name):
     """This function checks to see if a local control data file exists.
+
+    .. versionchanged:: 5.1.1
+       The function has been updated to support GitHub Workflow control data.
 
     .. versionadded:: 5.1.0
 
@@ -96,9 +113,25 @@ def control_data_exists(dataset_name):
     """
     data_exists = False
     dataset_file = _get_control_dataset_file(dataset_name)
-    if dataset_file and os.path.isfile(f'local/tests/{dataset_file}'):
+    if dataset_file and (os.path.isfile(f'{os.environ.get("HOME")}/secrets/{dataset_file}') or
+                         os.path.isfile(f'local/tests/{dataset_file}')):
         data_exists = True
     return data_exists
+
+
+def get_control_data(dataset_name):
+    """This function retrieves the control data used in various tests.
+
+    .. versionadded:: 5.1.1
+    """
+    if not control_data_exists(dataset_name):
+        pytest.skip('skipping tests where control data is unavailable')
+
+    # Import the control data
+    control_data = import_control_data(dataset_name)
+
+    # Return the control data and the core object
+    return control_data
 
 
 def get_core_object():

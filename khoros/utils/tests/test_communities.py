@@ -4,13 +4,11 @@
 :Synopsis:          This module is used by pytest to verify that the ``communities`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     27 Sep 2022
+:Modified Date:     29 Sep 2022
 """
 
 import os
 import sys
-
-import pytest
 
 from . import resources
 
@@ -32,20 +30,17 @@ def set_package_path():
 def test_community_details():
     """This function tests the ability to retrieve community details.
 
+    .. versionchanged:: 5.1.1
+       The function has been updated to support GitHub Workflows control data.
+
     .. versionadded:: 5.1.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip('skipping local-only tests')
-
-    if not resources.control_data_exists('communities'):
-        pytest.skip('skipping tests where control data is unavailable')
-
-    # Import the control data
-    control_data = resources.import_control_data('communities')
+    # Retrieve the control data
+    control_data = resources.get_control_data('communities')
 
     # Instantiate the Khoros object
     set_package_path()
-    khoros_object = resources.instantiate_with_local_helper(production=False)
+    khoros_object = resources.get_core_object()
 
     # Test retrieving the community title
     title = khoros_object.communities.get_title()

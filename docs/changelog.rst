@@ -17,6 +17,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the following functions to the :py:mod:`khoros.utils.tests.resources` module:
     * :py:func:`khoros.utils.tests.resources.get_core_object`
+    * :py:func:`khoros.utils.tests.resources.get_control_data`
     * :py:func:`khoros.utils.tests.resources.secrets_helper_exists`
     * :py:func:`khoros.utils.tests.resources.instantiate_with_secrets_helper`
 
@@ -29,6 +30,9 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Updated the :py:func:`khoros.utils.tests.resources.instantiate_with_local_helper` function
   to raise a :py:exc:`FileNotFoundError` exception if the helper file cannot be found.
+* Updated the :py:func:`khoros.utils.tests.resources.control_data_exists` and
+  :py:func:`khoros.utils.tests.resources.import_control_data` functions to support the
+  GitHub Workflows control data.
 * Updated the :py:func:`khoros.utils.tests.test_categories` function to support the GitHub
   Workflows helper file instantiation.
 
