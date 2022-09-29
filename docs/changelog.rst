@@ -35,6 +35,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   GitHub Workflows control data.
 * Updated the :py:func:`khoros.utils.tests.test_categories` functions to support the GitHub
   Workflows helper file instantiation.
+* Updated the :py:func:`khoros.utils.tests.test_messages` functions to support the GitHub
+  Workflows helper file instantiation.
 
 Fixed
 =====

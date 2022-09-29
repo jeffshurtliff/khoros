@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that messages function properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2022
+:Modified Date:     29 Sep 2022
 """
 
 import os
@@ -247,14 +247,14 @@ def test_payload_validation():
 def test_kudo_message():
     """This function tests the ability to kudo a message.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionadded:: 5.1.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip("skipping local-only tests")
-
     # Instantiate the Khoros object
     set_package_path()
-    khoros_object = resources.instantiate_with_local_helper(production=False)
+    khoros_object = resources.get_core_object()
 
     # Perform the API call and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
@@ -265,14 +265,14 @@ def test_kudo_message():
 def test_flagging_message():
     """This function tests the ability to kudo a message.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionadded:: 5.1.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip("skipping local-only tests")
-
     # Instantiate the Khoros object
     set_package_path()
-    khoros_object = resources.instantiate_with_local_helper(production=False)
+    khoros_object = resources.get_core_object()
 
     # Perform the API calls and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
@@ -285,14 +285,14 @@ def test_flagging_message():
 def test_label_message():
     """This function tests the ability to add a label to a message.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionadded:: 5.1.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip("skipping local-only tests")
-
     # Instantiate the Khoros object
     set_package_path()
-    khoros_object = resources.instantiate_with_local_helper(production=False)
+    khoros_object = resources.get_core_object()
 
     # Perform the API call and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
@@ -304,14 +304,14 @@ def test_label_message():
 def test_tag_message():
     """This function tests the ability to add a tag to a message.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionadded:: 5.1.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip("skipping local-only tests")
-
     # Instantiate the Khoros object
     set_package_path()
-    khoros_object = resources.instantiate_with_local_helper(production=False)
+    khoros_object = resources.get_core_object()
 
     # Perform the API call and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
