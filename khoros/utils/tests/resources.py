@@ -244,7 +244,7 @@ def local_test_config_exists():
 
 def parse_testing_config_file():
     """This function parses the ``local/khorostest.yml`` file when present.
-    
+
     .. versionchanged:: 5.0.0
        Removed the redundant return statement.
 
