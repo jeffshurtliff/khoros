@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:Module:            khoros.structures.communities
+:Module:            khoros.structures.base
 :Synopsis:          This module contains functions relating to structures (i.e. categories, nodes and tenants)
 :Usage:             ``from khoros.structures import base``
 :Example:           ``details = base.get_details(khoros_object, 'category', 'category-id')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Mar 2021
+:Modified Date:     29 Sep 2022
 """
 
 from .. import liql, errors
@@ -91,7 +91,7 @@ def structure_exists(khoros_object, structure_type, structure_id=None, structure
     :type structure_id: str, None
     :param structure_url: The URL of the structure to check
     :type structure_url: str, None
-    :returns: Boolean value indicating whether or not the structure already exists
+    :returns: Boolean value indicating whether the structure already exists
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     if not any((structure_id, structure_url)):
@@ -174,6 +174,9 @@ def get_structure_field(khoros_object, field, identifier='', details=None,
                         structure_type=None, first_item=True, community=False):
     """This function returns a specific API field value for a community, category or node collection.
 
+    .. versionchanged:: 5.1.1
+       Error handling was introduced to account for root-level categories.
+
     .. versionadded:: 2.1.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -213,7 +216,21 @@ def get_structure_field(khoros_object, field, identifier='', details=None,
     if len(api_field) == 1:
         return_field = details[api_field[0]]
     elif len(api_field) == 2:
-        return_field = details[api_field[0]][api_field[1]]
+        if api_field[0] == 'parent_category' or api_field[0] == 'root_category':
+            try:
+                return_field = details[api_field[0]][api_field[1]]
+            except KeyError:
+                return_field = ''
+                if api_field[1] == 'id':
+                    tenant_id = khoros_object.communities.get_tenant_id()
+                    return_field = tenant_id
+                elif api_field[1] == 'type':
+                    return_field = 'root'
+                elif api_field[1] == 'view_href':
+                    url = khoros_object.communities.get_primary_url()
+                    return_field = url
+        else:
+            return_field = details[api_field[0]][api_field[1]]
     else:
         return_field = details[api_field[0]][api_field[1]][api_field[2]]
     return return_field

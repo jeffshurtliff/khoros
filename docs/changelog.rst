@@ -36,6 +36,17 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Updated the :py:func:`khoros.utils.tests.test_categories` function to support the GitHub
   Workflows helper file instantiation.
 
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed the issue reported in Issue `#59 <https://github.com/jeffshurtliff/khoros/issues/59>`_
+  where the :py:func:`khoros.structures.base.get_structure_field` function was failing with
+  a :py:exc:`KeyError` exception.
+
 |
 
 -----
@@ -110,7 +121,7 @@ Primary Modules
 Fixes to the :doc:`primary modules <primary-modules>`.
 
 * Fixed the issue reported in Issue `#58 <https://github.com/jeffshurtliff/khoros/issues/58>`_
-  where the :py:func:`khoros.objects.categories.get_creation_date` function was failing with
+  where the :py:func:`khoros.structures.categories.get_creation_date` function was failing with
   an exception.
 
 |
