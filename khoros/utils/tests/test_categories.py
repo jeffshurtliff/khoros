@@ -122,17 +122,29 @@ def test_category_details():
     desc = khoros_object.categories.get_description(control_data.get('id'))
     assert desc == control_data.get('description')
 
-    # TODO: Test retrieval of get_parent_type()
+    # Test retrieval of get_parent_type()
+    parent_type = khoros_object.categories.get_parent_type(control_data.get('id'))
+    assert parent_type == control_data.get('parent_type')
 
-    # TODO: Test retrieval of get_parent_id()
+    # Test retrieval of get_parent_id()
+    parent_id = khoros_object.categories.get_parent_id(control_data.get('id'))
+    assert parent_id == control_data.get('parent_id')
 
-    # TODO: Test retrieval of get_parent_url()
+    # Test retrieval of get_parent_url()
+    parent_url = khoros_object.categories.get_parent_url(control_data.get('id'))
+    assert parent_url == control_data.get('parent_url')
 
-    # TODO: Test retrieval of get_root_type()
+    # Test retrieval of get_root_type()
+    root_type = khoros_object.categories.get_root_type(control_data.get('id'))
+    assert root_type == control_data.get('root_type')
 
-    # TODO: Test retrieval of get_root_id()
+    # Test retrieval of get_root_id()
+    root_id = khoros_object.categories.get_root_id(control_data.get('id'))
+    assert root_id == control_data.get('root_id')
 
-    # TODO: Test retrieval of get_root_url()
+    # Test retrieval of get_root_url()
+    root_url = khoros_object.categories.get_root_url(control_data.get('id'))
+    assert root_url == control_data.get('root_url')
 
     # Test retrieval of language
     language = khoros_object.categories.get_language(control_data.get('id'))
