@@ -33,7 +33,7 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Updated the :py:func:`khoros.utils.tests.resources.control_data_exists` and
   :py:func:`khoros.utils.tests.resources.import_control_data` functions to support the
   GitHub Workflows control data.
-* Updated the :py:func:`khoros.utils.tests.test_categories` function to support the GitHub
+* Updated the :py:func:`khoros.utils.tests.test_categories` functions to support the GitHub
   Workflows helper file instantiation.
 
 Fixed
@@ -46,6 +46,16 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 * Fixed the issue reported in Issue `#59 <https://github.com/jeffshurtliff/khoros/issues/59>`_
   where the :py:func:`khoros.structures.base.get_structure_field` function was failing with
   a :py:exc:`KeyError` exception.
+
+Removed
+=======
+
+Supporting Modules
+------------------
+Removals in the :doc:`supporting modules <supporting-modules>`.
+
+* Removed the :py:func:`khoros.utils.tests.test_categores.get_control_data` and
+  :py:func:`khoros.utils.tests.test_categories.get_core_object` functions that became obsolete.
 
 |
 

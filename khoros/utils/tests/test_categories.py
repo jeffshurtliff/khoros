@@ -4,13 +4,11 @@
 :Synopsis:          This module is used by pytest to verify that the ``categories`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     27 Sep 2022
+:Modified Date:     29 Sep 2022
 """
 
 import os
 import sys
-
-import pytest
 
 from . import resources
 
@@ -29,46 +27,16 @@ def set_package_path():
         package_path_defined = True
 
 
-def get_core_object():
-    """This function instantiates and returns the core object using a local helper file.
-
-    .. versionchanged:: 5.1.1
-       The function has been updated to support the GitHub Workflows helper file.
-
-    .. versionadded:: 5.1.0
-    """
-    set_package_path()
-    if resources.secrets_helper_exists():
-        khoros_object = resources.instantiate_with_secrets_helper()
-    else:
-        if not resources.local_test_config_exists() or not resources.local_helper_exists():
-            pytest.skip('skipping tests where a valid helper file is needed')
-        khoros_object = resources.instantiate_with_local_helper(production=False)
-    return khoros_object
-
-
-def get_control_data():
-    """This function retrieves the control data used in various tests.
-
-    .. versionadded:: 5.1.0
-    """
-    if not resources.control_data_exists('categories'):
-        pytest.skip('skipping tests where control data is unavailable')
-
-    # Import the control data
-    control_data = resources.import_control_data('categories')
-
-    # Return the control data and the core object
-    return control_data
-
-
 def test_get_category_id():
     """This function tests the ability to get a category ID from a URL.
+
+    .. versionchanged:: 5.1.1
+       This function has been updated to leverage the functions in the ``resources`` module.
 
     .. versionadded:: 5.1.0
     """
     # Get the control data and core object
-    control_data, khoros_object = get_control_data(), get_core_object()
+    control_data, khoros_object = resources.get_control_data('categories'), resources.get_core_object()
 
     # Test retrieving the category ID from an example URL
     category_id = khoros_object.categories.get_category_id(control_data.get('url'))
@@ -78,10 +46,13 @@ def test_get_category_id():
 def test_total_count():
     """This function tests the ability to retrieve the total category count.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to leverage the functions in the ``resources`` module.
+
     .. versionadded:: 5.1.0
     """
     # Instantiate the core object
-    khoros_object = get_core_object()
+    khoros_object = resources.get_core_object()
 
     # Test retrieving the total category count
     total_count = khoros_object.categories.get_total_count()
@@ -91,10 +62,13 @@ def test_total_count():
 def test_if_category_exists():
     """This function tests if the existence of categories can be successfully determined.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to leverage the functions in the ``resources`` module.
+
     .. versionadded:: 5.1.0
     """
     # Get the control data and core object
-    control_data, khoros_object = get_control_data(), get_core_object()
+    control_data, khoros_object = resources.get_control_data('categories'), resources.get_core_object()
 
     # Test both methods
     exists_by_id = khoros_object.categories.category_exists(category_id=control_data.get('id'))
@@ -105,10 +79,13 @@ def test_if_category_exists():
 def test_category_details():
     """This function tests the retrieval of various category details.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to leverage the functions in the ``resources`` module.
+
     .. versionadded:: 5.1.0
     """
     # Get the control data and core object
-    control_data, khoros_object = get_control_data(), get_core_object()
+    control_data, khoros_object = resources.get_control_data('categories'), resources.get_core_object()
 
     # Test retrieval of URL
     url = khoros_object.categories.get_url(control_data.get('id'))
