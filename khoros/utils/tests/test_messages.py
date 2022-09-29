@@ -244,6 +244,7 @@ def test_payload_validation():
     assert payload.get('data').get('type') == 'message'
 
 
+@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
 def test_kudo_message():
     """This function tests the ability to kudo a message.
 
@@ -262,8 +263,9 @@ def test_kudo_message():
     assert response.get('status') == 'success'
 
 
+@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
 def test_flagging_message():
-    """This function tests the ability to kudo a message.
+    """This function tests the ability to flag and unflag a message as spam.
 
     .. versionchanged:: 5.1.1
        This function has been updated to support GitHub Workflows unit testing.
@@ -282,6 +284,7 @@ def test_flagging_message():
     assert response.get('status') == 'success'
 
 
+@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
 def test_label_message():
     """This function tests the ability to add a label to a message.
 
@@ -301,6 +304,7 @@ def test_label_message():
     assert response.get('status') == 'success'
 
 
+@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
 def test_tag_message():
     """This function tests the ability to add a tag to a message.
 
