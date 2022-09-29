@@ -4,13 +4,11 @@
 :Synopsis:          This module is used by pytest to verify that LiQL queries can be performed and parsed successfully.
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Jun 2022
+:Modified Date:     29 Sep 2022
 """
 
 import os
 import sys
-
-import pytest
 
 from . import resources
 
@@ -87,6 +85,9 @@ def parse_where_clauses():
 def perform_test_query(return_items=False):
     """This function performs a LiQL query and saves the response in a global variable.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionchanged:: 5.0.0
        Removed the redundant return statement.
 
@@ -95,7 +96,7 @@ def perform_test_query(return_items=False):
     :returns: None
     """
     global liql_response, liql_items
-    khoros_object = resources.instantiate_with_local_helper()
+    khoros_object = resources.get_core_object()
     query = "SELECT login FROM users WHERE id = '3'"
     if return_items:
         liql_items = khoros_object.query(query, return_items=return_items)
@@ -112,10 +113,11 @@ def test_where_clause_parsing():
 def test_liql_query():
     """This function tests to confirm that a standard LiQL query can be performed successfully.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionadded:: 4.1.0
     """
-    if not resources.local_helper_exists():
-        pytest.skip("skipping local-only tests")
     set_package_path()
     if not liql_response:
         perform_test_query(return_items=False)
@@ -125,10 +127,11 @@ def test_liql_query():
 def test_return_items_option():
     """This function tests the ``return_items`` argument in the :py:meth:`khoros.core.Khoros.query` method.
 
+    .. versionchanged:: 5.1.1
+       This function has been updated to support GitHub Workflows unit testing.
+
     .. versionadded:: 4.1.0
     """
-    if not resources.local_helper_exists():
-        pytest.skip("skipping local-only tests")
     set_package_path()
     if not liql_items:
         perform_test_query(return_items=True)

@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v5.1.1
 ******
-**Release Date: TBD**
+**Release Date: 2022-09-29**
 
 Added
 =====
@@ -36,6 +36,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Updated the :py:func:`khoros.utils.tests.test_categories` functions to support the GitHub
   Workflows helper file instantiation.
 * Updated the :py:func:`khoros.utils.tests.test_messages` functions to support the GitHub
+  Workflows helper file instantiation.
+* Updated the :py:func:`khoros.utils.tests.test_liql` functions to support the GitHub
   Workflows helper file instantiation.
 
 Fixed
