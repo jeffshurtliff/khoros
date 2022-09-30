@@ -4,13 +4,14 @@
 :Synopsis:          This module is used by pytest to verify that messages function properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Sep 2022
+:Modified Date:     30 Sep 2022
 """
 
 import os
 import sys
 
 import pytest
+import requests
 
 from . import resources
 
@@ -244,9 +245,11 @@ def test_payload_validation():
     assert payload.get('data').get('type') == 'message'
 
 
-@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
-def test_kudo_message():
+def test_kudo_message(monkeypatch):
     """This function tests the ability to kudo a message.
+
+    .. versionchanged:: 5.1.2
+       The function has been updated to use monkeypatching.
 
     .. versionchanged:: 5.1.1
        This function has been updated to support GitHub Workflows unit testing.
@@ -256,6 +259,9 @@ def test_kudo_message():
     # Instantiate the Khoros object
     set_package_path()
     khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
 
     # Perform the API call and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
@@ -263,9 +269,11 @@ def test_kudo_message():
     assert response.get('status') == 'success'
 
 
-@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
-def test_flagging_message():
+def test_flagging_message(monkeypatch):
     """This function tests the ability to flag and unflag a message as spam.
+
+    .. versionchanged:: 5.1.2
+       The function has been updated to use monkeypatching.
 
     .. versionchanged:: 5.1.1
        This function has been updated to support GitHub Workflows unit testing.
@@ -275,6 +283,9 @@ def test_flagging_message():
     # Instantiate the Khoros object
     set_package_path()
     khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
 
     # Perform the API calls and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
@@ -284,9 +295,11 @@ def test_flagging_message():
     assert response.get('status') == 'success'
 
 
-@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
-def test_label_message():
+def test_label_message(monkeypatch):
     """This function tests the ability to add a label to a message.
+
+    .. versionchanged:: 5.1.2
+       The function has been updated to use monkeypatching.
 
     .. versionchanged:: 5.1.1
        This function has been updated to support GitHub Workflows unit testing.
@@ -296,6 +309,9 @@ def test_label_message():
     # Instantiate the Khoros object
     set_package_path()
     khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
 
     # Perform the API call and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
@@ -304,9 +320,11 @@ def test_label_message():
     assert response.get('status') == 'success'
 
 
-@pytest.mark.skip(reason="Causes too many competing API calls in GitHub Actions CI.")
-def test_tag_message():
+def test_tag_message(monkeypatch):
     """This function tests the ability to add a tag to a message.
+
+    .. versionchanged:: 5.1.2
+       The function has been updated to use monkeypatching.
 
     .. versionchanged:: 5.1.1
        This function has been updated to support GitHub Workflows unit testing.
@@ -316,6 +334,9 @@ def test_tag_message():
     # Instantiate the Khoros object
     set_package_path()
     khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
 
     # Perform the API call and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing

@@ -15,10 +15,23 @@ Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
-* Added the :py:class:`khoros.utils.tests.test_categories.MockedResponse` class.
-* Added the following functions to the :py:mod:`khoros.utils.tests.test_categories` module:
-    * :py:func:`khoros.utils.tests.test_categories.mock_post`
-    * :py:func:`khoros.utils.tests.test_categories.test_create_category`
+* Added the :py:class:`khoros.utils.tests.resources.MockResponse` class.
+* Added the :py:func:`khoros.utils.tests.resources.mock_success_post` and
+  :py:func:`khoros.utils.tests.resources.mock_error_post` functions.
+* Added the :py:func:`khoros.utils.tests.test_categories.test_create_category` function.
+
+Changed
+=======
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the following functions to leverage monkeypatching:
+    * :py:func:`khoros.utils.tests.test_messages.test_kudo_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_flagging_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_label_message`
+    * :py:func:`khoros.utils.tests.test_messages.test_tag_message`
 
 |
 

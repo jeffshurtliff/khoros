@@ -18,28 +18,6 @@ from . import resources
 package_path_defined = False
 
 
-class MockedResponse:
-    """This class simulates an API response for testing purposes.
-
-    .. versionadded:: 5.1.2
-    """
-    def __init__(self, json_body):
-        self.json_body = json_body
-
-    def json(self):
-        return self.json_body
-
-
-def mock_post(*args, **kwargs):
-    """This function works with the `MockedResponse` class to simulate an API response.
-
-    .. versionadded:: 5.1.2
-    """
-    return MockedResponse({
-        "status": "success"
-    })
-
-
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
 
@@ -191,7 +169,7 @@ def test_create_category(monkeypatch):
     khoros_object = resources.get_core_object()
 
     # Overwrite the requests.get functionality with the mock_post() function
-    monkeypatch.setattr(requests, 'post', mock_post)
+    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
 
     # Make the mock API call
     response = khoros_object.categories.create('test-category', 'Test Category')

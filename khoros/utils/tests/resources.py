@@ -21,6 +21,38 @@ import pytest
 test_config = {}
 
 
+class MockResponse:
+    """This class simulates an API response for testing purposes.
+
+    .. versionadded:: 5.1.2
+    """
+    def __init__(self, json_body):
+        self.json_body = json_body
+
+    def json(self):
+        return self.json_body
+
+
+def mock_success_post(*args, **kwargs):
+    """This function works with the `MockedResponse` class to simulate a successful API response.
+
+    .. versionadded:: 5.1.2
+    """
+    return MockResponse({
+        "status": "success"
+    })
+
+
+def mock_error_post(*args, **kwargs):
+    """This function works with the `MockedResponse` class to simulate a failed API response.
+
+    .. versionadded:: 5.1.2
+    """
+    return MockResponse({
+        "status": "error"
+    })
+
+
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
 
