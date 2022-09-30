@@ -285,7 +285,7 @@ def test_flagging_message(monkeypatch):
     khoros_object = resources.get_core_object()
 
     # Overwrite the requests.get functionality with the mock_post() function
-    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
+    monkeypatch.setattr(requests, 'put', resources.mock_success_post)
 
     # Perform the API calls and assert that it was successful
     msg_id = '62458'    # This is a message in the Stage environment used for testing
