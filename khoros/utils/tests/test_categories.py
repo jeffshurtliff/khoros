@@ -4,16 +4,40 @@
 :Synopsis:          This module is used by pytest to verify that the ``categories`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Sep 2022
+:Modified Date:     30 Sep 2022
 """
 
 import os
 import sys
 
+import requests
+
 from . import resources
 
 # Define a global variable to define when the package path has been set
 package_path_defined = False
+
+
+class MockedResponse:
+    """This class simulates an API response for testing purposes.
+
+    .. versionadded:: 5.1.2
+    """
+    def __init__(self, json_body):
+        self.json_body = json_body
+
+    def json(self):
+        return self.json_body
+
+
+def mock_post(*args, **kwargs):
+    """This function works with the `MockedResponse` class to simulate an API response.
+
+    .. versionadded:: 5.1.2
+    """
+    return MockedResponse({
+        "status": "success"
+    })
 
 
 def set_package_path():
@@ -156,3 +180,21 @@ def test_category_details():
     # Test retrieval of get_creation_date()
     creation_date = khoros_object.categories.get_creation_date(control_data.get('id'))
     assert creation_date == control_data.get('creation_date')
+
+
+def test_create_category(monkeypatch):
+    """This function tests the ability to create a category.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', mock_post)
+
+    # Make the mock API call
+    response = khoros_object.categories.create('test-category', 'Test Category')
+
+    # Verify that the API call was a success
+    assert response['status'] == 'success'

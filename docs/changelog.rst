@@ -4,6 +4,27 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.1.2
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:class:`khoros.utils.tests.test_categories.MockedResponse` class.
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_categories` module:
+    * :py:func:`khoros.utils.tests.test_categories.mock_post`
+    * :py:func:`khoros.utils.tests.test_categories.test_create_category`
+
+|
+
+-----
+
+******
 v5.1.1
 ******
 **Release Date: 2022-09-29**
