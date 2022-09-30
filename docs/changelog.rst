@@ -19,6 +19,10 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the :py:func:`khoros.utils.tests.resources.mock_success_post` and
   :py:func:`khoros.utils.tests.resources.mock_error_post` functions.
 * Added the :py:func:`khoros.utils.tests.test_categories.test_create_category` function.
+* Added the :py:mod:`khoros.utils.tests.test_albums` module with the following functions:
+    * :py:func:`khoros.utils.tests.test_albums.set_package_path`
+    * :py:func:`khoros.utils.tests.test_albums.test_create_album`
+    * :py:func:`khoros.utils.tests.test_albums.test_failed_create_album`
 
 Changed
 =======
