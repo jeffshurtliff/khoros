@@ -4,8 +4,11 @@
 :Synopsis:          This module is used by pytest to verify that tags function properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     09 Jun 2022
+:Modified Date:     01 Oct 2022
 """
+
+import pytest
+import requests
 
 from . import resources
 
@@ -46,6 +49,15 @@ def test_message_structure_one_tag():
     control_data = get_structure_control_data('one_tag')
     data = tags.structure_tags_for_message('first tag')
     assert data == control_data     # nosec
+
+
+def test_invalid_payload_for_single_tag():
+    """This function tests the raising of the `InvalidPayloadValueError` exception for a wrong tag text type.
+
+    .. versionadded:: 5.1.2
+    """
+    with pytest.raises(exceptions.InvalidPayloadValueError):
+        tags.structure_single_tag_payload(['some_random_tag'])
 
 
 def test_message_structure_two_tags():
@@ -106,6 +118,37 @@ def test_message_structure_str_int_ignore():
     control_data = get_structure_control_data('one_tag')
     data = tags.structure_tags_for_message('first tag', 12345, ignore_non_strings=True)
     assert data == control_data     # nosec
+
+
+def test_add_single_tag_to_message(monkeypatch):
+    """This function tests the ability to add a single tag to a message.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the Khoros object
+    khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_success_post)
+
+    # Perform the API call
+    tags.add_single_tag_to_message(khoros_object, 'testing', '12345')
+
+
+def test_failed_add_single_tag_to_message(monkeypatch):
+    """This function tests to ensure that an exception is raised properly for failed tag additions.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the Khoros object
+    khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_error_post)
+
+    # Perform the API call
+    with pytest.raises(exceptions.POSTRequestError):
+        tags.add_single_tag_to_message(khoros_object, 'testing', '12345', allow_exceptions=True)
 
 
 # Import modules

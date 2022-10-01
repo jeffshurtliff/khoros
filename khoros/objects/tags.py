@@ -6,7 +6,7 @@
 :Example:           ``tags.add_single_tag_to_message('tutorial', 123)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     01 Oct 2022
 """
 
 from .. import api, liql, errors
@@ -67,6 +67,7 @@ def add_single_tag_to_message(khoros_object, tag, msg_id, allow_exceptions=False
             raise errors.exceptions.POSTRequestError(api_error)
         else:
             errors.handlers.eprint(api_error)
+            # TODO: Add logging
 
 
 def get_tags_for_message(khoros_object, msg_id):

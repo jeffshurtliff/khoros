@@ -27,6 +27,10 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_albums.set_package_path`
     * :py:func:`khoros.utils.tests.test_albums.test_archive_content`
     * :py:func:`khoros.utils.tests.test_albums.test_unarchive_content`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_tags` module:
+    * :py:func:`khoros.utils.tests.test_tags.test_invalid_payload_for_single_tag`
+    * :py:func:`khoros.utils.tests.test_tags.test_add_single_tag_to_message`
+    * :py:func:`khoros.utils.tests.test_tags.test_failed_add_single_tag_to_message`
 
 Changed
 =======

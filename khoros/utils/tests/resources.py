@@ -49,7 +49,12 @@ def mock_error_post(*args, **kwargs):
     .. versionadded:: 5.1.2
     """
     return MockResponse({
-        "status": "error"
+        "status": "error",
+        "message": "There was an error",
+        "data": {
+            "code": "500",
+            "type": "error"
+        }
     })
 
 
