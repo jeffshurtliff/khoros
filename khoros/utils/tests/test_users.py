@@ -10,6 +10,7 @@
 import os
 import sys
 
+import pytest
 import requests
 
 from . import resources
@@ -60,3 +61,26 @@ def test_create_user(monkeypatch):
         last_name='User')
     assert response.get('status') == 'success'
 
+
+def test_failed_create_user(monkeypatch):
+    """This function verifies that the appropriate exception is raised if the user creation process fails.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'post', resources.mock_error_post)
+
+    # Perform the API call and assert that it was successful
+    with pytest.raises(exceptions.UserCreationError):
+        khoros_object.users.create(
+            login='testUser',
+            email='test@test.com',
+            first_name='Test',
+            last_name='User')
+
+
+# Import the exceptions modules
+exceptions = resources.import_modules('khoros.errors.exceptions')
