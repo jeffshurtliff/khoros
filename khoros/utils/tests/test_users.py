@@ -18,6 +18,10 @@ from . import resources
 # Define a global variable to define when the package path has been set
 package_path_defined = False
 
+# Define constants
+USER_ID = 216
+USERNAME = 'joeCustomer'
+
 
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
@@ -93,7 +97,7 @@ def test_unsupported_update_sso_id():
 
     # Perform the API call and assert that the exception is raised
     with pytest.raises(exceptions.CurrentlyUnsupportedError):
-        khoros_object.users.update_sso_id('abcdEFGH', user_login='joeCustomer')
+        khoros_object.users.update_sso_id('abcdEFGH', user_login=USERNAME)
 
 
 def test_get_user_identifiers():
@@ -105,7 +109,7 @@ def test_get_user_identifiers():
     khoros_object = resources.get_core_object()
 
     # Retrieve the User ID and assert the response was expected
-    user_id = khoros_object.users.get_user_id(login='joeCustomer')
+    user_id = khoros_object.users.get_user_id(login=USERNAME)
     assert isinstance(user_id, int) and user_id > 0
     # TODO: Troubleshoot why the test below fails with a LiQL invalid query syntax error
     # user_id = khoros_object.users.get_user_id(first_name='Joe', last_name='Customer')
@@ -114,8 +118,12 @@ def test_get_user_identifiers():
     # Retrieve the email address through various methods and assert the response was expected
     email = khoros_object.users.get_email(user_id=user_id)
     assert isinstance(email, str) and '@' in email
-    email = khoros_object.users.get_email(login='joeCustomer')
+    email = khoros_object.users.get_email(login=USERNAME)
     assert isinstance(email, str) and '@' in email
+
+    # Retrieve the User ID using email and assert the response was expected
+    user_id = khoros_object.users.get_user_id(email=email)
+    assert isinstance(user_id, int) and user_id > 0
 
     # Retrieve the username through various methods and assert the responses
     username = khoros_object.users.get_username(user_id=user_id)
@@ -139,6 +147,47 @@ def test_users_table_query(monkeypatch):
 
     response = khoros_object.users.query_users_table_by_id('login', 216)
     assert response.get('status') == 'success'
+
+
+def test_get_counts():
+    """This function tests the various functions that involve retrieving user-related counts.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Test retrieving the album count and verifying the response
+    album_count = khoros_object.users.get_album_count(user_id=USER_ID)
+    assert isinstance(album_count, int) and album_count >= 0
+
+    # Test retrieving the follower count and verifying the response
+    followers_count = khoros_object.users.get_followers_count(user_id=USER_ID)
+    assert isinstance(followers_count, int) and followers_count >= 0
+
+    # Test retrieving the following count and verifying the response
+    following_count = khoros_object.users.get_following_count(user_id=USER_ID)
+    assert isinstance(following_count, int) and following_count >= 0
+
+    # Test retrieving the images count and verifying the response
+    image_count = khoros_object.users.get_images_count(user_id=USER_ID)
+    assert isinstance(image_count, int) and image_count >= 0
+    image_count = khoros_object.users.get_public_images_count(user_id=USER_ID)
+    assert isinstance(image_count, int) and image_count >= 0
+
+    # Test retrieving the messages count and verifying the response
+    msg_count = khoros_object.users.get_messages_count(user_id=USER_ID)
+    assert isinstance(msg_count, int) and msg_count >= 0
+
+    # Test retrieving the roles count and verifying the response
+    roles_count = khoros_object.users.get_roles_count(user_id=USER_ID)
+    assert isinstance(roles_count, int) and roles_count >= 0
+
+    # Test retrieving the roles count and verifying the response
+    solutions_count = khoros_object.users.get_solutions_authored_count(user_id=USER_ID)
+    assert isinstance(solutions_count, int) and solutions_count >= 0
+
+    # TODO: Finish adding the remaining counts-related methods
 
 
 # Import the exceptions modules
