@@ -82,5 +82,64 @@ def test_failed_create_user(monkeypatch):
             last_name='User')
 
 
+def test_unsupported_update_sso_id():
+    """This function tests to ensure the ``CurrentlyUnsupportedError`` exception is raised when trying to update the
+    SSO ID of a user.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Perform the API call and assert that the exception is raised
+    with pytest.raises(exceptions.CurrentlyUnsupportedError):
+        khoros_object.users.update_sso_id('abcdEFGH', user_login='joeCustomer')
+
+
+def test_get_user_identifiers():
+    """This function tests the ability to retrieve the identifiers for a user.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Retrieve the User ID and assert the response was expected
+    user_id = khoros_object.users.get_user_id(login='joeCustomer')
+    assert isinstance(user_id, int) and user_id > 0
+    # TODO: Troubleshoot why the test below fails with a LiQL invalid query syntax error
+    # user_id = khoros_object.users.get_user_id(first_name='Joe', last_name='Customer')
+    # assert isinstance(user_id, int) and user_id > 0
+
+    # Retrieve the email address through various methods and assert the response was expected
+    email = khoros_object.users.get_email(user_id=user_id)
+    assert isinstance(email, str) and '@' in email
+    email = khoros_object.users.get_email(login='joeCustomer')
+    assert isinstance(email, str) and '@' in email
+
+    # Retrieve the username through various methods and assert the responses
+    username = khoros_object.users.get_username(user_id=user_id)
+    assert username == 'joeCustomer'
+    username = khoros_object.users.get_login(user_id=user_id)
+    assert username == 'joeCustomer'
+    username = khoros_object.users.get_username(email=email)
+    assert username == 'joeCustomer'
+
+
+def test_users_table_query(monkeypatch):
+    """This function tests the ability to query the users table.
+
+    .. versionadded:: 5.1.2
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'get', resources.mock_success_post)
+
+    response = khoros_object.users.query_users_table_by_id('login', 216)
+    assert response.get('status') == 'success'
+
+
 # Import the exceptions modules
 exceptions = resources.import_modules('khoros.errors.exceptions')

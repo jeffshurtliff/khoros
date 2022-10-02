@@ -32,6 +32,9 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_users.test_impersonate_user`
     * :py:func:`khoros.utils.tests.test_users.test_create_user`
     * :py:func:`khoros.utils.tests.test_users.test_failed_create_user`
+    * :py:func:`khoros.utils.tests.test_users.test_unsupported_update_sso_id`
+    * :py:func:`khoros.utils.tests.test_users.test_get_user_identifiers`
+    * :py:func:`khoros.utils.tests.test_users.test_users_table_query`
 * Added the following functions to the :py:mod:`khoros.utils.tests.test_tags` module:
     * :py:func:`khoros.utils.tests.test_tags.test_invalid_payload_for_single_tag`
     * :py:func:`khoros.utils.tests.test_tags.test_add_single_tag_to_message`
