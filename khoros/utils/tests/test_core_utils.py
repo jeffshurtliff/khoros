@@ -62,6 +62,45 @@ def test_query_string_encoding():
     assert core_utils.encode_query_string(query_dict, no_encode='user.password') == encoded_string_raw_pw   # nosec
 
 
+def test_html_entity_convert():
+    """This function tests the :py:func:`khoros.utils.core_utils.decode_html_entitles` function.
+
+    .. versionadded:: 5.1.2
+    """
+    html_string = 'This &amp; That'
+    converted_string = core_utils.decode_html_entities(html_string)
+    assert converted_string == 'This & That'
+
+
+def test_decode_binary():
+    """This function tests the ability to decode binary into a string.
+
+    .. versionadded:: 5.1.2
+    """
+    binary_text = b'This is binary text'
+    decoded_text = core_utils.decode_binary(binary_text)
+    assert isinstance(decoded_text, str) and decoded_text == 'This is binary text'
+
+
+def test_base64_conversions():
+    """This function tests various types of base64 string conversions.
+
+    .. versionadded:: 5.1.2
+    """
+    # Test basic plain text to base64 conversion
+    plain_text = 'This is my example text'
+    base64_text = 'VGhpcyBpcyBteSBleGFtcGxlIHRleHQ='
+    assert core_utils.encode_base64(plain_text) == base64_text
+
+    # Test URL-encoded conversion
+    url_encoded_base64_text = 'VGhpcyBpcyBteSBleGFtcGxlIHRleHQ%3D'
+    assert core_utils.encode_base64(plain_text, url_encode_object=True) == url_encoded_base64_text
+
+    # Test binary return value
+    bytes_base64_text = b'VGhpcyBpcyBteSBleGFtcGxlIHRleHQ='
+    assert core_utils.encode_base64(plain_text, return_bytes=True) == bytes_base64_text
+
+
 def test_numeric_eval():
     """This function tests the :py:func:`khoros.utils.core_utils.is_numeric` function.
 

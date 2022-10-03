@@ -40,6 +40,10 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_tags.test_invalid_payload_for_single_tag`
     * :py:func:`khoros.utils.tests.test_tags.test_add_single_tag_to_message`
     * :py:func:`khoros.utils.tests.test_tags.test_failed_add_single_tag_to_message`
+* Added the following functions to the :py:mod:`khoros.utils.tests.test_core_utils` module:
+    * :py:func:`khoros.utils.tests.test_core_utils.test_html_entity_convert`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_decode_binary`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_base64_conversions`
 
 Changed
 =======
