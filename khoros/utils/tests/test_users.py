@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that the ``users`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Oct 2022
+:Modified Date:     03 Oct 2022
 """
 
 import os
@@ -145,7 +145,9 @@ def test_users_table_query(monkeypatch):
     # Overwrite the requests.get functionality with the mock_post() function
     monkeypatch.setattr(requests, 'get', resources.mock_success_post)
 
-    response = khoros_object.users.query_users_table_by_id('login', 216)
+    response = khoros_object.users.query_users_table_by_id('login', USER_ID)
+    assert response.get('status') == 'success'
+    response = khoros_object.users.query_users_table_by_id(['login', 'email'], USER_ID)
     assert response.get('status') == 'success'
 
 
@@ -183,11 +185,34 @@ def test_get_counts():
     roles_count = khoros_object.users.get_roles_count(user_id=USER_ID)
     assert isinstance(roles_count, int) and roles_count >= 0
 
-    # Test retrieving the roles count and verifying the response
+    # Test retrieving the authored solutions count and verifying the response
     solutions_count = khoros_object.users.get_solutions_authored_count(user_id=USER_ID)
     assert isinstance(solutions_count, int) and solutions_count >= 0
 
-    # TODO: Finish adding the remaining counts-related methods
+    # Test retrieving the posted topics count and verifying the response
+    topics_count = khoros_object.users.get_topics_count(user_id=USER_ID)
+    assert isinstance(topics_count, int) and topics_count >= 0
+
+    # Test retrieving the posted replies count and verifying the response
+    # TODO: Troubleshoot why the response below returns TypeError: list indices must be integers or slices, not str
+    # replies_count = khoros_object.users.get_replies_count(user_id=USER_ID)
+    # assert isinstance(replies_count, int) and replies_count >= 0
+
+    # Test retrieving the posted videos count and verifying the response
+    videos_count = khoros_object.users.get_videos_count(user_id=USER_ID)
+    assert isinstance(videos_count, int) and videos_count >= 0
+
+    # Test retrieving the kudos given count and verifying the response
+    kudos_given_count = khoros_object.users.get_kudos_given_count(user_id=USER_ID)
+    assert isinstance(kudos_given_count, int) and kudos_given_count >= 0
+
+    # Test retrieving the kudos given count and verifying the response
+    kudos_received_count = khoros_object.users.get_kudos_received_count(user_id=USER_ID)
+    assert isinstance(kudos_received_count, int) and kudos_received_count >= 0
+
+    # Test retrieving the online users count
+    online_users_count = khoros_object.users.get_online_user_count()
+    assert isinstance(online_users_count, int)
 
 
 # Import the exceptions modules
