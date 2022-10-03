@@ -4,7 +4,7 @@
 :Synopsis:       This module is used by pytest to verify the :py:mod:`khoros.objects.roles` functionality.
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  10 Jun 2022
+:Modified Date:  03 Oct 2022
 """
 
 import os
@@ -41,12 +41,8 @@ def test_get_role_id():
 
     .. versionadded:: 5.0.0
     """
-    if not resources.local_test_config_exists() or not resources.local_helper_exists():
-        pytest.skip(SKIP_LOCAL_TEST_MSG)
-
-    # Instantiate the Khoros object
-    set_package_path()
-    khoros_object = resources.instantiate_with_local_helper()
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
 
     # Test the method and function
     role_id = khoros_object.roles.get_role_id('Administrator')

@@ -53,6 +53,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_messages.test_flagging_message`
     * :py:func:`khoros.utils.tests.test_messages.test_label_message`
     * :py:func:`khoros.utils.tests.test_messages.test_tag_message`
+* Updated the :py:func:`khoros.utils.tests.test_roles.test_get_role_id` function
+  to support GitHub Workflows.
 
 |
 
