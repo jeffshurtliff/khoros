@@ -130,6 +130,9 @@ class CurrentlyUnsupportedError(KhorosError):
 class DataMismatchError(KhorosError):
     """This exception is used when there is a mismatch between two data sources.
 
+    .. versionchanged:: 5.1.2
+       Fixed an issue where the message would not display properly.
+
     .. versionadded:: 2.3.0
     """
     def __init__(self, *args, **kwargs):
@@ -140,7 +143,7 @@ class DataMismatchError(KhorosError):
         elif 'data' in kwargs:
             multi_types = [list, tuple, set]
             if type(kwargs['data']) == str:
-                custom_msg = f"{default_msg.split('data')[0]}'{kwargs['val']}'{default_msg.split('with the')[1]}"
+                custom_msg = f"{default_msg.split('the data')[0]}the '{kwargs['data']}'{default_msg.split('with the')[1]}"
                 custom_msg = custom_msg.replace('sources', 'source')
                 args = (custom_msg,)
             elif type(kwargs['data']) in multi_types and len(kwargs['data']) == 2:
@@ -309,11 +312,14 @@ class GETRequestError(KhorosError):
 
 
 class InvalidEndpointError(KhorosError):
-    """This exception is used when an invalid API endpoint / service is provided."""
+    """This exception is used when an invalid API endpoint / service is provided.
+
+    .. versionchanged:: 5.1.2
+       Removed part of the default message that was specifically for Khoros JX, which is obsolete.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
-        default_msg = "The supplied endpoint for the API is not recognized. (Examples of valid " + \
-                      "lookup types include 'people' and 'contents')"
+        default_msg = "The supplied endpoint for the API is not recognized."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)
@@ -560,14 +566,18 @@ class InvalidMetadataError(KhorosError):
 
 
 class MessageTypeNotFoundError(KhorosError):
-    """This exception is used when a message type cannot be identified from a given URL."""
+    """This exception is used when a message type cannot be identified from a given URL.
+
+    .. versionchanged:: 5.1.2
+       Fixed an issue with the message displaying properly when a message type is explicitly defined.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The message type could not be identified in the provided URL."
         if not (args or kwargs):
             args = (default_msg,)
         elif 'msg_type' in kwargs:
-            custom_msg = f"{default_msg.split('message type ')[0]}'{kwargs['msg_type']}'{default_msg.split('type')[1]}"
+            custom_msg = f"{default_msg.split('message type ')[0]}message type '{kwargs['msg_type']}'{default_msg.split('type')[1]}"
             args = (custom_msg,)
         elif 'url' in kwargs:
             custom_msg = f"{default_msg.split('provided')[0]}following URL: {kwargs['url']}"
@@ -604,27 +614,35 @@ class InvalidNodeTypeError(KhorosError):
 
 
 class NodeIDNotFoundError(KhorosError):
-    """This exception is used when a valid Node ID could not be found in a provided URL."""
+    """This exception is used when a valid Node ID could not be found in a provided URL.
+
+    .. versionchanged:: 5.1.2
+       Fixed an issue with how the message is displayed when a value is passed as an argument.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "A valid Node ID could not be identified in the given URL."
         if not (args or kwargs):
             args = (default_msg,)
         elif 'val' in kwargs:
-            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            custom_msg = f"{default_msg.split('.')[0]}: {kwargs['val']}"
             args = (custom_msg,)
         super().__init__(*args)
 
 
 class NodeTypeNotFoundError(KhorosError):
-    """This exception is used when a valid node type could not be found in a provided URL."""
+    """This exception is used when a valid node type could not be found in a provided URL.
+
+    .. versionchanged:: 5.1.2
+       Fixed an issue with how the message is displayed when a value is passed as an argument.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "A valid node type could not be identified in the given URL."
         if not (args or kwargs):
             args = (default_msg,)
         elif 'val' in kwargs:
-            custom_msg = f"{default_msg.split('URL')[0]}: {kwargs['val']}"
+            custom_msg = f"{default_msg.split('.')[0]}: {kwargs['val']}"
             args = (custom_msg,)
         super().__init__(*args)
 
@@ -653,27 +671,35 @@ class UnsupportedNodeTypeError(KhorosError):
 
 
 class InvalidRoleError(KhorosError):
-    """This exception is used when an invalid role is provided."""
+    """This exception is used when an invalid role is provided.
+
+    .. versionchanged:: 5.1.2
+       Fixed an issue with how the message is displayed when a value is passed as an argument.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The role is invalid"
         if not (args or kwargs):
             args = (default_msg,)
         elif 'role' in kwargs:
-            custom_msg = f"{default_msg.split('role ')[0]}'{kwargs['role']}'{default_msg.split('role')[1]}"
+            custom_msg = f"{default_msg.split('role ')[0]}'{kwargs['role']}' role{default_msg.split('role')[1]}"
             args = (custom_msg,)
         super().__init__(*args)
 
 
 class InvalidRoleTypeError(KhorosError):
-    """This exception is used when an invalid role type is provided."""
+    """This exception is used when an invalid role type is provided.
+
+    .. versionchanged:: 5.1.2
+       Fixed an issue with how the message is displayed when a value is passed as an argument.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The role type is invalid"
         if not (args or kwargs):
             args = (default_msg,)
         elif 'role_type' in kwargs:
-            custom_msg = f"{default_msg.split('type ')[0]}'{kwargs['role_type']}'{default_msg.split('type ')[1]}"
+            custom_msg = f"{default_msg.split('type')[0]}type '{kwargs['role_type']}'{default_msg.split('type')[1]}"
             args = (custom_msg,)
         super().__init__(*args)
 
@@ -684,16 +710,20 @@ class InvalidRoleTypeError(KhorosError):
 
 
 class UserCreationError(KhorosError):
-    """This exception is used when an attempt to create a user fails."""
+    """This exception is used when an attempt to create a user fails.
+
+    .. versionchanged:: 5.1.2
+       Fixed an issue with how the message is displayed when a value is passed as an argument.
+    """
     def __init__(self, *args, **kwargs):
         """This method defines the default or custom message for the exception."""
         default_msg = "The user failed to be created."
         if not (args or kwargs):
             args = (default_msg,)
         elif 'user' in kwargs:
-            custom_msg = f"{default_msg.split('user ')[0]}'{kwargs['user']}'{default_msg.split('user')[1]}"
+            custom_msg = f"{default_msg.split('user')[0]}user '{kwargs['user']}'{default_msg.split('user')[1]}"
             args = (custom_msg,)
         if 'exc_msg' in kwargs:
-            full_msg = f"{args[0].split('.')[0]} due to the following exception: {kwargs['exc_msg']}"
+            full_msg = f"{default_msg.split('.')[0]} due to the following exception: {kwargs['exc_msg']}"
             args = (full_msg,)
         super().__init__(*args)

@@ -65,6 +65,32 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_roles.test_total_role_type_counts`
     * :py:func:`khoros.utils.tests.test_roles.test_get_roles_for_user`
     * :py:func:`khoros.utils.tests.test_roles.test_get_users_with_role`
+* Updated the :py:exc:`khoros.errors.exceptions.InvalidEndpointError` exception to
+  remove part of the default message that was specifically for Khoros JX.
+
+Fixed
+=====
+
+Supporting Modules
+------------------
+Fixes in the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed the :py:exc:`khoros.errors.exceptions.DataMismatchError` exception so that it will
+  display an appropriate error message when a keyword argument is passed.
+* Fixed an issue with the message not displaying properly in the
+  :py:exc:`khoros.errors.exceptions.MessageTypeNotFoundError` exception when a message type
+  is explicitly defined.
+* Fixed an issue with how the message is displayed in the
+  :py:exc:`khoros.errors.exceptions.NodeIDNotFoundError` and
+  :py:exc:`khoros.errors.exceptions.NodeTypeNotFoundError` exceptions when a value is passed
+  as an argument.
+* Fixed an issue with the message not displaying properly in the
+  :py:exc:`khoros.errors.exceptions.InvalidRoleError` and
+  :py:exc:`khoros.errors.exceptions.InvalidRoleTypeError` exceptions when a role or role type
+  is explicitly defined.
+* Fixed an issue with the message not displaying properly in the
+  :py:exc:`khoros.errors.exceptions.UserCreationError` exception when a user or exception
+  message is explicitly defined.
 
 |
 
@@ -112,7 +138,7 @@ Fixed
 
 Primary Modules
 ---------------
-Fixes to the :doc:`primary modules <primary-modules>`.
+Fixes in the :doc:`primary modules <primary-modules>`.
 
 * Fixed the issue reported in Issue `#59 <https://github.com/jeffshurtliff/khoros/issues/59>`_
   where the :py:func:`khoros.structures.base.get_structure_field` function was failing with
