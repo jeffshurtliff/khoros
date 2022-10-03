@@ -43,7 +43,7 @@ def test_raising_exceptions():
     with pytest.raises(exceptions.SsoAuthenticationError):
         raise exceptions.SsoAuthenticationError()
     with pytest.raises(exceptions.SsoAuthenticationError):
-        raise exceptions.SsoAuthenticationError(messsage='testing')
+        raise exceptions.SsoAuthenticationError(message='testing')
 
     # Test raising the CurrentlyUnsupportedError exception
     with pytest.raises(exceptions.CurrentlyUnsupportedError):
