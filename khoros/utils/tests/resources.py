@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Sep 2022
+:Modified Date:     03 Oct 2022
 """
 
 import os
@@ -19,6 +19,9 @@ import pytest
 
 # Define global variable to store the YAML test settings
 test_config = {}
+
+# Define constants
+SKIP_LOCAL_TEST_MSG = 'skipping local-only tests'
 
 
 class MockResponse:

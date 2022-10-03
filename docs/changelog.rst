@@ -54,7 +54,11 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_messages.test_label_message`
     * :py:func:`khoros.utils.tests.test_messages.test_tag_message`
 * Updated the :py:func:`khoros.utils.tests.test_roles.test_get_role_id` function
-  to support GitHub Workflows.
+  to support GitHub Workflows and to test the raising of exceptions for invalid data.
+* Updated the following functions to support GitHub Workflows:
+    * :py:func:`khoros.utils.tests.test_roles.test_total_role_type_counts`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_roles_for_user`
+    * :py:func:`khoros.utils.tests.test_roles.test_get_users_with_role`
 
 |
 
