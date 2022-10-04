@@ -44,6 +44,7 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_core_utils.test_html_entity_convert`
     * :py:func:`khoros.utils.tests.test_core_utils.test_decode_binary`
     * :py:func:`khoros.utils.tests.test_core_utils.test_base64_conversions`
+    * :py:func:`khoros.utils.tests.test_core_utils.test_display_warning`
 * Added the :py:mod:`khoros.utils.tests.test_exceptions` module with the
   :py:func:`khoros.utils.tests.test_exceptions.test_raising_exceptions` function.
 * Added the :py:mod:`khoros.utils.tests.test_error_handling` module with the following functions:

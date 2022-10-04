@@ -11,6 +11,8 @@ import os
 import sys
 import importlib
 
+import pytest
+
 
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
@@ -166,6 +168,15 @@ def test_convert_set():
     assert _check_type_and_items(core_utils.convert_set(some_list), some_list, list)                # nosec
     assert _check_type_and_items(core_utils.convert_set(some_tuple), some_tuple, tuple)             # nosec
     assert _check_type_and_items(core_utils.convert_set('some string'), 'some string', str)         # nosec
+
+
+def test_display_warning():
+    """This function tests the ability to display a warning message.
+
+    .. versionadded:: 5.1.2
+    """
+    with pytest.warns(UserWarning):
+        core_utils.display_warning('This is a warning message')
 
 
 # Import the khoros.utils.core_utils module
