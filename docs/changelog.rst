@@ -24,9 +24,9 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_albums.test_create_album`
     * :py:func:`khoros.utils.tests.test_albums.test_failed_create_album`
 * Added the :py:mod:`khoros.utils.tests.test_archives` module with the following functions:
-    * :py:func:`khoros.utils.tests.test_albums.set_package_path`
-    * :py:func:`khoros.utils.tests.test_albums.test_archive_content`
-    * :py:func:`khoros.utils.tests.test_albums.test_unarchive_content`
+    * :py:func:`khoros.utils.tests.test_archives.set_package_path`
+    * :py:func:`khoros.utils.tests.test_archives.test_archive_content`
+    * :py:func:`khoros.utils.tests.test_archives.test_unarchive_content`
 * Added the :py:mod:`khoros.utils.tests.test_users` module with the following functions:
     * :py:func:`khoros.utils.tests.test_users.set_package_path`
     * :py:func:`khoros.utils.tests.test_users.test_impersonate_user`
