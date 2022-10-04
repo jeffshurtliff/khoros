@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that tags function properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Oct 2022
+:Modified Date:     03 Oct 2022
 """
 
 import pytest
@@ -149,6 +149,7 @@ def test_failed_add_single_tag_to_message(monkeypatch):
     # Perform the API call
     with pytest.raises(exceptions.POSTRequestError):
         tags.add_single_tag_to_message(khoros_object, 'testing', '12345', allow_exceptions=True)
+    tags.add_single_tag_to_message(khoros_object, 'testing', '12345', allow_exceptions=False)
 
 
 # Import modules
