@@ -53,6 +53,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khoros.utils.tests.test_error_handling.test_translate_error`
     * :py:func:`khoros.utils.tests.test_error_handling.test_translation_check`
     * :py:func:`khoros.utils.tests.test_error_handling.test_parse_translation_error`
+* Added the :py:mod:`khoros.utils.tests.test_studio` module with the
+  :py:func:`khoros.utils.tests.test_studio.test_studio_functions` function.
 
 Changed
 =======
