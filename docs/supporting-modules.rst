@@ -17,10 +17,16 @@ which are listed below.
     * `Version Module (khoros.utils.version)`_
 * `Unit Testing`_
     * `Tests Module (khoros.utils.tests)`_
-        * `Resources Modules (khoros.utils.tests.resources)`_
+        * `Resources Module (khoros.utils.tests.resources)`_
+        * `Test Albums Module (khoros.utils.tests.test_albums)`_
+        * `Test Archives Module (khoros.utils.tests.test_archives)`_
         * `Test Board Creation Module (khoros.utils.tests.test_board_creation)`_
         * `Test Bulk Data Module (khoros.utils.tests.test_bulk_data)`_
+        * `Test Categories Module (khoros.utils.tests.test_categories)`_
+        * `Test Communities Module (khoros.utils.tests.test_communities)`_
         * `Test Core Utilities Module (khoros.utils.tests.test_core_utils)`_
+        * `Test Error Handling Module (khoros.utils.tests.test_error_handling)`_
+        * `Test Exceptions Module (khoros.utils.tests.test_exceptions)`_
         * `Test Group Hub Creation Module (khoros.utils.tests.test_grouphub_creation)`_
         * `Test Helper File Module (khoros.utils.tests.test_helper_file)`_
         * `Test HTTP Headers Module (khoros.utils.tests.test_http_headers)`_
@@ -31,7 +37,11 @@ which are listed below.
         * `Test Node ID Extract Module (khoros.utils.tests.test_node_id_extract)`_
         * `Test Roles Module (khoros.utils.tests.test_roles)`_
         * `Test Settings Module (khoros.utils.tests.test_settings)`_
+        * `Test SSL Verification Module (khoros.utils.tests.test_ssl_verify)`_
+        * `Test Studio Module (khoros.utils.tests.test_studio)`_
         * `Test Tags Module (khoros.utils.tests.test_tags)`_
+        * `Test Users Module (khoros.utils.tests.test_users)`_
+        * `Test Version Module (khoros.utils.tests.test_version)`_
 
 |
 
@@ -171,8 +181,8 @@ This module includes unit tests for the package that are performed using pytest.
 
 |
 
-Resources Modules (khoros.utils.tests.resources)
-------------------------------------------------
+Resources Module (khoros.utils.tests.resources)
+-----------------------------------------------
 This module includes frequently used resources for performing unit testing.
 
 .. automodule:: khoros.utils.tests.resources
@@ -182,9 +192,31 @@ This module includes frequently used resources for performing unit testing.
 
 |
 
+Test Albums Module (khoros.utils.tests.test_albums)
+---------------------------------------------------
+This module is used by pytest to verify that the ``albums`` module works properly.
+
+.. automodule:: khoros.utils.tests.test_albums
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Archives Module (khoros.utils.tests.test_archives)
+-------------------------------------------------------
+This module is used by pytest to verify that the ``archives`` module works properly.
+
+.. automodule:: khoros.utils.tests.test_archives
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Board Creation Module (khoros.utils.tests.test_board_creation)
 -------------------------------------------------------------------
-This module is used by pytest to verify that that the board creation works properly.
+This module is used by pytest to verify that the board creation works properly.
 
 .. automodule:: khoros.utils.tests.test_board_creation
    :members:
@@ -195,9 +227,31 @@ This module is used by pytest to verify that that the board creation works prope
 
 Test Bulk Data Module (khoros.utils.tests.test_bulk_data)
 ---------------------------------------------------------
-This module is used by pytest to verify that that the Bulk Data API module works properly.
+This module is used by pytest to verify that the Bulk Data API module works properly.
 
 .. automodule:: khoros.utils.tests.test_bulk_data
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Categories Module (khoros.utils.tests.test_categories)
+-----------------------------------------------------------
+This module is used by pytest to verify that the ``categories`` module works properly.
+
+.. automodule:: khoros.utils.tests.test_categories
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Communities Module (khoros.utils.tests.test_communities)
+-------------------------------------------------------------
+This module is used by pytest to verify that the ``communities`` module works properly.
+
+.. automodule:: khoros.utils.tests.test_communities
    :members:
 
 :doc:`Return to Top <supporting-modules>`
@@ -215,9 +269,31 @@ This module is used by pytest to verify that the core package utilities work pro
 
 |
 
+Test Error Handling Module (khoros.utils.tests.test_error_handling)
+-------------------------------------------------------------------
+This module is used by pytest to verify that error handling works properly.
+
+.. automodule:: khoros.utils.tests.test_error_handling
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Exceptions Module (khoros.utils.tests.test_exceptions)
+-----------------------------------------------------------
+This module is used by pytest to verify that exceptions are raised properly.
+
+.. automodule:: khoros.utils.tests.test_exceptions
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Group Hub Creation Module (khoros.utils.tests.test_grouphub_creation)
 --------------------------------------------------------------------------
-This module is used by pytest to verify that that the group hub creation works properly.
+This module is used by pytest to verify that the group hub creation works properly.
 
 .. automodule:: khoros.utils.tests.test_grouphub_creation
    :members:
@@ -325,11 +401,55 @@ This module is used by pytest to verify that settings can be retrieved and updat
 
 |
 
+Test SSL Verification Module (khoros.utils.tests.test_ssl_verify)
+-----------------------------------------------------------------
+This module is used by pytest to verify the SSL verification functionality.
+
+.. automodule:: khoros.utils.tests.test_ssl_verify
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Studio Module (khoros.utils.tests.test_studio)
+---------------------------------------------------
+This module is used by pytest to verify that the ``studio`` module functions properly.
+
+.. automodule:: khoros.utils.tests.test_studio
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
 Test Tags Module (khoros.utils.tests.test_tags)
 -----------------------------------------------
 This module is used by pytest to verify that tags function properly.
 
 .. automodule:: khoros.utils.tests.test_tags
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Users Module (khoros.utils.tests.test_users)
+-------------------------------------------------
+This module is used by pytest to verify that the ``users`` module functions properly.
+
+.. automodule:: khoros.utils.tests.test_users
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Test Version Module (khoros.utils.tests.test_version)
+-----------------------------------------------------
+This module is used by pytest to verify that the ``version`` module functions properly.
+
+.. automodule:: khoros.utils.tests.test_version
    :members:
 
 :doc:`Return to Top <supporting-modules>`
