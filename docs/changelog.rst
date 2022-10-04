@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v5.1.2
 ******
-**Release Date: TBD**
+**Release Date: 2022-10-04**
 
 Added
 =====
