@@ -6,7 +6,7 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 Sep 2022
+:Modified Date:     27 Oct 2022
 """
 
 import json
@@ -15,7 +15,7 @@ import urllib.request
 from . import log_utils
 
 # Define special and global variables
-__version__ = "5.1.2"
+__version__ = "5.1.3"
 latest_version_reported = False
 logger = log_utils.initialize_logging(__name__)
 
