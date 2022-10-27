@@ -15,7 +15,7 @@ Core Object
 -----------
 Fixes in the :doc:`core-object-methods`.
 
-* Fixed the docstring for the :py:meth:`khoros.core.Khoros.Setting.define_node_setting` method
+* Fixed the docstring for the :py:meth:`khoros.core.Khoros.Settings.define_node_setting` method
   to reflect the proper default value of the ``return_json`` parameter and to define the correct
   return value.
 
