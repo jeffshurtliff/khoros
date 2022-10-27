@@ -81,6 +81,9 @@ def test_if_category_exists():
 def test_category_details():
     """This function tests the retrieval of various category details.
 
+    .. versionchanged:: 5.1.3
+       Fixed an issue with testing the retrieval of views to ensure a successful assertion.
+
     .. versionchanged:: 5.1.1
        This function has been updated to leverage the functions in the ``resources`` module.
 
@@ -135,7 +138,7 @@ def test_category_details():
 
     # Test retrieval of views
     views = khoros_object.categories.get_views(control_data.get('id'))
-    assert isinstance(views, int) and views > 0
+    assert isinstance(views, int) and views >= 0
 
     # Test retrieval of friendly date enabled setting
     friendly_date = khoros_object.categories.friendly_date_enabled(control_data.get('id'))

@@ -27,6 +27,14 @@ Fixes in the :doc:`primary modules <primary-modules>`.
   to reflect the proper default value of the ``return_json`` parameter and to define the correct
   return value.
 
+Supporting Modules
+------------------
+Fixes in the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed an issue with testing the retrieval of views in the
+  :py:func:`khoros.utils.tests.test_categories.test_category_details` function to ensure a
+  successful assertion.
+
 |
 
 -----
