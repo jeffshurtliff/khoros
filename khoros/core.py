@@ -3885,14 +3885,14 @@ class Khoros(object):
             :type node_id: str
             :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
             :type node_type: str
-            :param return_json: Returns a simple JSON dictionary indicating the operation result (``False`` by default)
+            :param return_json: Returns a simple JSON dictionary indicating the operation result (``True`` by default)
 
                                 .. caution:: An unsuccessful REST call will result in the raising of the
                                              :py:exc:`khoros.errors.exceptions.PostRequestError` exception if the
                                              ``return_json`` parameter is set to ``False``.
 
             :type return_json: bool
-            :returns: None
+            :returns: The API response as a dictionary
             :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
                      :py:exc:`khoros.errors.exceptions.APIConnectionError`,
                      :py:exc:`khoros.errors.exceptions.POSTRequestError`,

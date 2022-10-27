@@ -174,7 +174,7 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
 
     .. versionchanged:: 3.3.2
        The ``return_json`` parameter has been introduced which returns a simple JSON object (as a ``dict``)
-       indicating whether or not the operation was successful. (Currently ``False`` by default)
+       indicating whether the operation was successful. (Currently ``False`` by default)
 
     .. versionchanged:: 3.3.1
        A minor fix was made to the docstring to correct a Sphinx parsing issue. The function itself was not changed.
@@ -191,14 +191,14 @@ def define_node_setting(khoros_object, setting_name, setting_val, node_id, node_
     :type node_id: str
     :param node_type: Defines the node as a ``board`` (default), ``category`` or ``grouphub``
     :type node_type: str
-    :param return_json: Returns a simple JSON dictionary indicating the operation result (``False`` by default)
+    :param return_json: Returns a simple JSON dictionary indicating the operation result (``True`` by default)
 
                         .. caution:: An unsuccessful REST call will result in the raising of the
                                      :py:exc:`khoros.errors.exceptions.PostRequestError` exception if the
                                      ``return_json`` parameter is set to ``False``.
 
     :type return_json: bool
-    :returns: None (or a dictionary if function call includes the ``return_json=True`` kwarg)
+    :returns: The API response as a dictionary
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
              :py:exc:`khoros.errors.exceptions.APIConnectionError`,
              :py:exc:`khoros.errors.exceptions.POSTRequestError`,

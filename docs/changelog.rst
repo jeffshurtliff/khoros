@@ -4,6 +4,34 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.1.3
+******
+**Release Date: 2022-10-27**
+
+Fixed
+=====
+
+Core Object
+-----------
+Fixes in the :doc:`core-object-methods`.
+
+* Fixed the docstring for the :py:meth:`khoros.core.Khoros.Setting.define_node_setting` method
+  to reflect the proper default value of the ``return_json`` parameter and to define the correct
+  return value.
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed the docstring for the :py:meth:`khoros.objects.settings.define_node_setting` function
+  to reflect the proper default value of the ``return_json`` parameter and to define the correct
+  return value.
+
+|
+
+-----
+
+******
 v5.1.2
 ******
 **Release Date: 2022-10-04**
