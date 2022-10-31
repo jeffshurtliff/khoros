@@ -64,6 +64,9 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
           europe=None, export_type=None, full_response=False):
     """This function performs a query against the Bulk Data API to retrieve CSV or JSON data.
 
+    .. versionchanged:: 5.2.0
+       Improved the error handling to display the response text in the raised exception when available.
+
     .. versionadded:: 5.0.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
@@ -125,8 +128,10 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
     response = requests.get(base_url, params=params, auth=auth, headers=headers)
     if not full_response:
         if response.status_code != 200:
-            raise errors.exceptions.APIRequestError(f'Bulk Data API request failed with a {response.status_code} '
-                                                    f'response.')
+            exc_msg = f'Bulk Data API request failed with a {response.status_code} response.'
+            if response.text:
+                exc_msg = exc_msg.replace('.', f': {response.text}')
+            raise errors.exceptions.APIRequestError(exc_msg)
         if export_type.lower() == 'json':
             response = response.json()
         else:

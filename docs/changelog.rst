@@ -23,6 +23,16 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.objects.users.get_all_users_count` function.
 
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Improved the error handling in the :py:func:`khoros.bulk_data.query` function to display
+  the response text in the raised exception when available.
+
 |
 
 -----
