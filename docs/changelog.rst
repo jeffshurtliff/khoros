@@ -8,6 +8,21 @@ v5.2.0
 ******
 **Release Date: TBD**
 
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.User.get_all_users_count` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.objects.users.get_all_users_count` function.
+
 |
 
 -----

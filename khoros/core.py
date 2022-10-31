@@ -4666,6 +4666,16 @@ class Khoros(object):
             """
             return objects_module.users.get_online_user_count(self.khoros_object)
 
+        def get_all_users_count(self):
+            """This method retrieves the total number of users on the community.
+
+            .. versionadded:: 5.2.0
+
+            :returns: The user count for total users as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.users.get_all_users_count(self.khoros_object)
+
         def get_registration_data(self, user_settings=None, user_id=None, login=None, email=None):
             """This method retrieves the registration data for a given user.
 

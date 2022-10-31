@@ -1028,6 +1028,21 @@ def get_online_user_count(khoros_object):
     return int(api_response['data']['count'])
 
 
+def get_all_users_count(khoros_object):
+    """This function retrieves the total number of users on the community.
+
+    .. versionadded:: 5.2.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The user count for total users as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    liql_query = "select count(*) from users"
+    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
+    return int(api_response['data']['count'])
+
+
 def get_registration_data(khoros_object, user_settings=None, user_id=None, login=None, email=None):
     """This function retrieves the registration data for a given user.
 
