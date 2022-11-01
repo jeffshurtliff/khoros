@@ -1768,6 +1768,25 @@ class Khoros(object):
             """
             return bulk_data_module.filter_by_action(action_key=action_key, bulk_data=bulk_data)
 
+        @staticmethod
+        def filter_anonymous(bulk_data, remove_anonymous=None, remove_registered=None):
+            """This function filters bulk data entries to keep only registered (default) or anonymous user activities.
+
+            .. versionadded:: 5.2.0
+
+            :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+            :type bulk_data: dict
+            :param remove_anonymous: Determines if all anonymous user activities should be removed (Default)
+            :type remove_anonymous: bool, None
+            :param remove_registered: Determines if all registered user activities should be removed
+            :type remove_registered: bool, None
+            :returns: The filtered JSON data as a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidParameterError`
+            """
+            return bulk_data_module.filter_anonymous(bulk_data=bulk_data, remove_anonymous=remove_anonymous,
+                                                     remove_registered=remove_registered)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):

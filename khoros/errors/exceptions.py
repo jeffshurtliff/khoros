@@ -6,7 +6,7 @@
 :Example:           ``raise khoros.errors.exceptions.BadCredentialsError()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Jan 2022
+:Modified Date:     01 Nov 2022
 """
 
 #################
@@ -150,6 +150,22 @@ class DataMismatchError(KhorosError):
                 custom_section = f"'{kwargs['data'][0]}' and '{kwargs['data'][1]}'"
                 custom_msg = f"{default_msg.split('data sources')[0]}{custom_section}{default_msg.split('with the')[1]}"
                 args = (custom_msg,)
+        super().__init__(*args)
+
+
+class InvalidParameterError(KhorosError):
+    """This exception is used when an invalid parameter is provided.
+
+    .. versionadded:: 5.2.0
+    """
+    def __init__(self, *args, **kwargs):
+        """This method defines the default or custom message for the exception."""
+        default_msg = "The parameter that was provided is invalid."
+        if not (args or kwargs):
+            args = (default_msg,)
+        elif 'val' in kwargs:
+            custom_msg = f"{default_msg.split('parameter ')[0]}'{kwargs['val']}'{default_msg.split('The')[1]}"
+            args = (custom_msg,)
         super().__init__(*args)
 
 

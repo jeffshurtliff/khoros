@@ -152,15 +152,59 @@ def filter_by_action(action_key, bulk_data):
     :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
     """
     filtered_data = []
-    if not isinstance(bulk_data, dict):
-        raise errors.exceptions.DataMismatchError('The Bulk Data must be provided as a dictionary to be filtered.')
-    if 'records' not in bulk_data:
-        raise errors.exceptions.DataMismatchError('The Bulk Data is not in a recognized format.')
+    _validate_bulk_data_export(bulk_data)
     for entry in bulk_data['records']:
         if entry.get('action.key') == action_key:
             filtered_data.append(entry)
     filtered_data = {'records': filtered_data}
     return filtered_data
+
+
+def filter_anonymous(bulk_data, remove_anonymous=None, remove_registered=None):
+    """This function filters bulk data entries to keep only registered (default) or anonymous user activities.
+
+    .. versionadded:: 5.2.0
+
+    :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+    :type bulk_data: dict
+    :param remove_anonymous: Determines if all anonymous user activities should be removed (Default)
+    :type remove_anonymous: bool, None
+    :param remove_registered: Determines if all registered user activities should be removed
+    :type remove_registered: bool, None
+    :returns: The filtered JSON data as a dictionary
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`,
+             :py:exc:`khoros.errors.exceptions.InvalidParameterError`
+    """
+    filtered_data = []
+    _validate_bulk_data_export(bulk_data)
+    if remove_anonymous is None and remove_registered is None:
+        remove_anonymous = True
+    if remove_anonymous and remove_registered:
+        raise errors.exceptions.InvalidParameterError('You cannot remove both anonymous and registered users.')
+    if not remove_anonymous and not remove_registered:
+        raise errors.exceptions.InvalidParameterError('You must remove either anonymous or registered users.')
+    for entry in bulk_data['records']:
+        if (remove_anonymous and entry.get('user.registration_status') != 'ANONYMOUS') or \
+                (remove_registered and entry.get('user.registration_status') == 'ANONYMOUS'):
+            filtered_data.append(entry)
+    filtered_data = {'records': filtered_data}
+    return filtered_data
+
+
+def _validate_bulk_data_export(_bulk_data):
+    """This function validates exported bulk data to ensure it is a dictionary and in a recognizable format.
+
+    .. versionadded:: 5.2.0
+
+    :param _bulk_data: The exported Bulk Data API content
+    :type _bulk_data: dict
+    :returns: None
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+    """
+    if not isinstance(_bulk_data, dict):
+        raise errors.exceptions.DataMismatchError('The Bulk Data must be provided as a dictionary to be filtered.')
+    if 'records' not in _bulk_data:
+        raise errors.exceptions.DataMismatchError('The Bulk Data is not in a recognized format.')
 
 
 def _construct_parameters(_from_date=None, _to_date=None, _fields=None):

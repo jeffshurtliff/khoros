@@ -61,6 +61,12 @@ def test_raising_exceptions():
     with pytest.raises(exceptions.DataMismatchError):
         raise exceptions.DataMismatchError(data=['testing1', 'testing2'])
 
+    # Test raising the InvalidParameterError exception
+    with pytest.raises(exceptions.InvalidParameterError):
+        raise exceptions.InvalidParameterError()
+    with pytest.raises(exceptions.InvalidParameterError):
+        raise exceptions.InvalidParameterError(val='testing')
+
     # Test raising the InvalidFieldError exception
     with pytest.raises(exceptions.InvalidFieldError):
         raise exceptions.InvalidFieldError()

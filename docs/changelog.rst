@@ -3,9 +3,9 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-******
-v5.2.0
-******
+**********
+v5.2.0dev1
+**********
 **Release Date: TBD**
 
 Added
@@ -23,7 +23,16 @@ Primary Modules
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.objects.users.get_all_users_count` function.
-* Added the :py:func:`khoros.bulk_data.filter_by_action` function.
+* Added the following functions in the :py:mod:`khoros.bulk_data` module:
+    * :py:func:`khoros.bulk_data.filter_by_action`
+    * :py:func:`khoros.bulk_data.filter_anonymous`
+    * :py:func:`khoros.bulk_data._validate_bulk_data_export`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khoros.errors.exceptions.InvalidParameterError` exception class.
 
 Changed
 =======
@@ -34,6 +43,13 @@ Changes to the :doc:`primary modules <primary-modules>`.
 
 * Improved the error handling in the :py:func:`khoros.bulk_data.query` function to display
   the response text in the raised exception when available.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.utils.tests.test_exceptions.test_raising_exceptions` function
+  to test raising the :py:exc:`khoros.errors.exceptions.InvalidParameterError` exception class.
 
 |
 
