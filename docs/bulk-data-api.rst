@@ -83,5 +83,30 @@ format then it will appear similar to the example below.
 Querying the Bulk Data API
 **************************
 
-.. todo:: This section will be written soon
+When performing queries against the Bulk Data API, you must provide a "From Date" and a
+"To Date" and can query up to 7 days worth of data at one time. You also have the ability to
+export the data in JSON or CSV format.
+
+As such, assuming you are using a helper file to authenticate (as explained in the previous
+section), you will be leveraging the ``from_date``, ``to_date``, and ``export_type`` parameters
+with the :py:meth:`khoros.core.Khoros.Bulk_Data.query` method.
+
+For example, if you wished to capture data between October 22, 2022, and November 1, 2022, and
+wished to export the data in JSON format, then you would use syntax similar to what is shown
+below. The example below also demonstrates how you would export the results to a JSON file.
+
+.. code-block:: python
+
+   import json
+   from khoros import Khoros
+
+   # Instantiate the khoros object
+   khoros = Khoros(helper='helper.yml')
+
+   # Perform the Bulk Data API query
+   results = khoros.bulk_data.query(from_date='20221025', to_date='20221101', export_type='json')
+
+   # Export to a JSON file
+   with open('path/to/bulk_data_export.json', 'w') as file:
+       json.dump(results, file, indent=2)
 
