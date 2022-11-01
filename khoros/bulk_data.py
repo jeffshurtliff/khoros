@@ -139,6 +139,30 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
     return response
 
 
+def filter_by_action(action_key, bulk_data):
+    """This function filters a Bulk Data API export for only entries with a specific ``action.key`` value.
+
+    .. versionadded:: 5.2.0
+
+    :param action_key: The ``action.key`` value
+    :type action_key: str
+    :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+    :type bulk_data: dict
+    :returns: The filtered JSON data as a dictionary
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+    """
+    filtered_data = []
+    if not isinstance(bulk_data, dict):
+        raise errors.exceptions.DataMismatchError('The Bulk Data must be provided as a dictionary to be filtered.')
+    if 'records' not in bulk_data:
+        raise errors.exceptions.DataMismatchError('The Bulk Data is not in a recognized format.')
+    for entry in bulk_data['records']:
+        if entry.get('action.key') == action_key:
+            filtered_data.append(entry)
+    filtered_data = {'records': filtered_data}
+    return filtered_data
+
+
 def _construct_parameters(_from_date=None, _to_date=None, _fields=None):
     """This function constructs the parameters to utilize in the API call.
 

@@ -1753,6 +1753,21 @@ class Khoros(object):
             """
             return bulk_data_module.get_base_url(self.khoros_object, community_id=community_id, europe=europe)
 
+        @staticmethod
+        def filter_by_action(action_key, bulk_data):
+            """This function filters a Bulk Data API export for only entries with a specific ``action.key`` value.
+
+            .. versionadded:: 5.2.0
+
+            :param action_key: The ``action.key`` value
+            :type action_key: str
+            :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+            :type bulk_data: dict
+            :returns: The filtered JSON data as a dictionary
+            :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+            """
+            return bulk_data_module.filter_by_action(action_key=action_key, bulk_data=bulk_data)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):
