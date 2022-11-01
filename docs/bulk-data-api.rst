@@ -89,7 +89,7 @@ export the data in JSON or CSV format.
 
 As such, assuming you are using a helper file to authenticate (as explained in the previous
 section), you will be leveraging the ``from_date``, ``to_date``, and ``export_type`` parameters
-with the :py:meth:`khoros.core.Khoros.Bulk_Data.query` method.
+with the :py:meth:`khoros.core.Khoros.BulkData.query` method.
 
 For example, if you wished to capture data between October 22, 2022, and November 1, 2022, and
 wished to export the data in JSON format, then you would use syntax similar to what is shown
