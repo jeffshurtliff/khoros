@@ -6,12 +6,12 @@
 :Example:           ``archives.archive(khoros_obj, '123', suggested_url, return_status=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     05 Aug 2021
+:Modified Date:     02 Nov 2021
 """
 
 import warnings
 
-from .. import api, errors
+from .. import api, liql, errors
 from . import messages
 from ..utils import log_utils
 
@@ -126,6 +126,29 @@ def unarchive(khoros_object, message_id=None, message_url=None, new_board_id=Non
                                              content_type='application/json')
     results = api.deliver_v2_results(response, full_response=True)
     return aggregate_results_data(results, include_raw) if aggregate_results else results
+
+
+def is_archived(khoros_object, message_id):
+    """This function checks to see whether a message is currently archived.
+
+    .. versionadded:: 5.2.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param message_id: The message ID for the content to be archived
+    :type message_id: str, int
+    :returns: Boolean value indicating whether the message is archived
+    :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+             :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    archived = False
+    query = f"SELECT id FROM messages WHERE id = '{message_id}' AND visibility_scope = 'archived'"
+    response = liql.perform_query(khoros_object, liql_query=query)
+    if response.get('status') == 'error':
+        raise errors.exceptions.GETRequestError('The LiQL query to check archive status failed.')
+    if response['data']['size'] > 0:
+        archived = True
+    return archived
 
 
 def structure_archive_payload(message_id, suggested_url=None, new_board_id=None, archive_entries=None,

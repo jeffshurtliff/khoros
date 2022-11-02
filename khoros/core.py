@@ -1432,6 +1432,19 @@ class Khoros(object):
             return objects_module.archives.unarchive(self.khoros_object, message_id, message_url, new_board_id,
                                                      archive_entries, aggregate_results, include_raw)
 
+        def is_archived(self, message_id):
+            """This method checks to see whether a message is currently archived.
+
+            .. versionadded:: 5.2.0
+
+            :param message_id: The message ID for the content to be archived
+            :type message_id: str, int
+            :returns: Boolean value indicating whether the message is archived
+            :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`,
+                     :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.archives.is_archived(self.khoros_object, message_id=message_id)
+
         @staticmethod
         def aggregate_results(results, include_raw=False):
             """This method aggregates the results of an archive/unarchive operation into an easy-to-parse dictionary.

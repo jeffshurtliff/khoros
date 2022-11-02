@@ -16,13 +16,16 @@ Core Object
 Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.User.get_all_users_count` method.
+* Added the :py:meth:`khoros.core.Khoros.Archives.is_archived` method.
 * Added the :py:meth:`khoros.core.Khoros.BulkData.filter_by_action` static method.
+* Added the :py:meth:`khoros.core.Khoros.BulkData.filter_anonymous` static method.
 
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.objects.users.get_all_users_count` function.
+* Added the :py:func:`khoros.objects.archives.is_archived` function.
 * Added the following functions in the :py:mod:`khoros.bulk_data` module:
     * :py:func:`khoros.bulk_data.filter_by_action`
     * :py:func:`khoros.bulk_data.filter_anonymous`
