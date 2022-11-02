@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2022
+:Modified Date:     02 Nov 2022
 """
 
 import sys
@@ -1738,7 +1738,7 @@ class Khoros(object):
                                           europe=europe, export_type=export_type, full_response=full_response)
 
         def get_base_url(self, community_id=None, europe=False):
-            """This function constructs and/or retrieves the base URL for the Bulk Data API.
+            """This method constructs and/or retrieves the base URL for the Bulk Data API.
 
             .. versionadded:: 5.0.0
 
@@ -1755,7 +1755,7 @@ class Khoros(object):
 
         @staticmethod
         def filter_by_action(action_key, bulk_data):
-            """This function filters a Bulk Data API export for only entries with a specific ``action.key`` value.
+            """This method filters a Bulk Data API export for only entries with a specific ``action.key`` value.
 
             .. versionadded:: 5.2.0
 
@@ -1770,7 +1770,7 @@ class Khoros(object):
 
         @staticmethod
         def filter_anonymous(bulk_data, remove_anonymous=None, remove_registered=None):
-            """This function filters bulk data entries to keep only registered (default) or anonymous user activities.
+            """This method filters bulk data entries to keep only registered (default) or anonymous user activities.
 
             .. versionadded:: 5.2.0
 

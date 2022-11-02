@@ -6,7 +6,7 @@
 :Example:           ``base_url = bulk_data.get_base_url(community_id='example.prod')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     14 Mar 2022
+:Modified Date:     01 Nov 2022
 """
 
 import requests
