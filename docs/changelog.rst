@@ -36,6 +36,7 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:exc:`khoros.errors.exceptions.InvalidParameterError` exception class.
+* Added the :py:func:`khoros.utils.tests.test_archives.test_archive_check` test function.
 
 Changed
 =======

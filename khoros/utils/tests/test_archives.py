@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that the ``archives`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 Sep 2022
+:Modified Date:     02 Nov 2022
 """
 
 import os
@@ -67,4 +67,22 @@ def test_unarchive_content(monkeypatch):
     # Perform and assess the mock API call using a message URL
     response = khoros_object.archives.unarchive(message_url='https://community.example.com/t5/-/-/ta-p/12345')
     assert response.get('status') == 'success'
+
+
+def test_archive_check():
+    """This function tests the ability to check whether a message is archived.
+
+    .. versionadded:: 5.2.0
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Define message IDs to test
+    archived_content = '30127'
+    online_content = '58909'
+
+    # Perform and assess the methods
+    assert khoros_object.archives.is_archived(archived_content) is True
+    assert khoros_object.archives.is_archived(online_content) is False
+
 
