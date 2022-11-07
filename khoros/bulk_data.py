@@ -191,6 +191,48 @@ def filter_anonymous(bulk_data, remove_anonymous=None, remove_registered=None):
     return filtered_data
 
 
+def count_actions(bulk_data, action_key):
+    """This function counts the number of events for a specific action key in a collection of bulk data.
+
+    .. versionadded:: 5.2.0
+
+    :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+    :type bulk_data: dict
+    :param action_key: The ``action.key`` value
+    :type action_key: str
+    :returns: The number of events as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+    """
+    bulk_data = filter_by_action(action_key, bulk_data)
+    return len(bulk_data['records'])
+
+
+def count_logins(bulk_data):
+    """This function counts the number of login events in a collection of bulk data.
+
+    .. versionadded:: 5.2.0
+
+    :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+    :type bulk_data: dict
+    :returns: The number of login events as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+    """
+    return count_actions(bulk_data, 'visits.member-entrance')
+
+
+def count_views(bulk_data):
+    """This function counts the number of view events in a collection of bulk data.
+
+    .. versionadded:: 5.2.0
+
+    :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+    :type bulk_data: dict
+    :returns: The number of view events as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+    """
+    return count_actions(bulk_data, 'view')
+
+
 def _validate_bulk_data_export(_bulk_data):
     """This function validates exported bulk data to ensure it is a dictionary and in a recognizable format.
 

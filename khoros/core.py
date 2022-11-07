@@ -1800,6 +1800,47 @@ class Khoros(object):
             return bulk_data_module.filter_anonymous(bulk_data=bulk_data, remove_anonymous=remove_anonymous,
                                                      remove_registered=remove_registered)
 
+        @staticmethod
+        def count_actions(bulk_data, action_key):
+            """This function counts the number of events for a specific action key in a collection of bulk data.
+
+            .. versionadded:: 5.2.0
+
+            :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+            :type bulk_data: dict
+            :param action_key: The ``action.key`` value
+            :type action_key: str
+            :returns: The number of events as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+            """
+            return bulk_data_module.count_actions(bulk_data=bulk_data, action_key=action_key)
+
+        @staticmethod
+        def count_logins(bulk_data):
+            """This function counts the number of login events in a collection of bulk data.
+
+            .. versionadded:: 5.2.0
+
+            :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+            :type bulk_data: dict
+            :returns: The number of login events as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+            """
+            return bulk_data_module.count_logins(bulk_data=bulk_data)
+
+        @staticmethod
+        def count_views(bulk_data):
+            """This function counts the number of view events in a collection of bulk data.
+
+            .. versionadded:: 5.2.0
+
+            :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
+            :type bulk_data: dict
+            :returns: The number of view events as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.DataMismatchError`
+            """
+            return bulk_data_module.count_views(bulk_data=bulk_data)
+
     class Category(object):
         """This class includes methods for interacting with categories."""
         def __init__(self, khoros_object):

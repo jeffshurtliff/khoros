@@ -17,8 +17,12 @@ Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.User.get_all_users_count` method.
 * Added the :py:meth:`khoros.core.Khoros.Archives.is_archived` method.
-* Added the :py:meth:`khoros.core.Khoros.BulkData.filter_by_action` static method.
-* Added the :py:meth:`khoros.core.Khoros.BulkData.filter_anonymous` static method.
+* Added the following methods to the :py:class:`khoros.core.Khoros.BulkData` inner class:
+    * :py:meth:`khoros.core.Khoros.BulkData.filter_by_action`
+    * :py:meth:`khoros.core.Khoros.BulkData.filter_anonymous`
+    * :py:meth:`khoros.core.Khoros.BulkData.count_actions`
+    * :py:meth:`khoros.core.Khoros.BulkData.count_logins`
+    * :py:meth:`khoros.core.Khoros.BulkData.count_views`
 
 Primary Modules
 ---------------
@@ -29,6 +33,9 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the following functions in the :py:mod:`khoros.bulk_data` module:
     * :py:func:`khoros.bulk_data.filter_by_action`
     * :py:func:`khoros.bulk_data.filter_anonymous`
+    * :py:func:`khoros.bulk_data.count_actions`
+    * :py:func:`khoros.bulk_data.count_logins`
+    * :py:func:`khoros.bulk_data.count_views`
     * :py:func:`khoros.bulk_data._validate_bulk_data_export`
 
 Supporting Modules
