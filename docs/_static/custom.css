@@ -18,6 +18,13 @@ div.sphinxsidebarwrapper p.logo {
     border-bottom: 1px solid #ddd;
 }
 
+/* Add spacing and a horizontal rule between inner classes */
+.py.class ~ .py.class {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
 /* Style the Version Added and Version Changed docstrings */
 .versionadded,
 .versionchanged {
