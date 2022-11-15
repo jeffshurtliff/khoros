@@ -5,10 +5,10 @@ urllib3~=1.26.2
 requests>=2.23.0
 setuptools~=59.6.0; python_version == '3.6'
 setuptools~=65.5.1; python_version > '3.6'
-Sphinx>=3.4.0
+Sphinx>=5.3.0
 sphinxcontrib-applehelp>=1.0.2
 sphinxcontrib-devhelp>=1.0.2
-sphinxcontrib-htmlhelp>=1.0.3
+sphinxcontrib-htmlhelp>=2.0.0
 sphinxcontrib-jsmath>=1.0.1
 sphinxcontrib-qthelp>=1.0.3
-sphinxcontrib-serializinghtml>=1.1.4
+sphinxcontrib-serializinghtml>=1.1.5

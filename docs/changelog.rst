@@ -67,6 +67,7 @@ General
 * Changed the ``setuptools`` version in ``requirements.txt`` to be 65.5.1 in order to mitigate
   the `Regular Expression Denial of Service <https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3113904>`_
   vulnerability identified by *Snyk* in `Pull Request #62 <https://github.com/jeffshurtliff/khoros/pull/62>`_.
+* Changed the versions for the Sphinx-related packages in ``requirements.txt`` to be more current.
 
 |
 
