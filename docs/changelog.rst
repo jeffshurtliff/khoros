@@ -62,6 +62,12 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Updated the :py:func:`khoros.utils.tests.test_exceptions.test_raising_exceptions` function
   to test raising the :py:exc:`khoros.errors.exceptions.InvalidParameterError` exception class.
 
+General
+-------
+* Changed the ``setuptools`` version in ``requirements.txt`` to be 65.5.1 in order to mitigate
+  the `Regular Expression Denial of Service <https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3113904>`_
+  vulnerability identified by *Snyk* in `Pull Request #62 <https://github.com/jeffshurtliff/khoros/pull/62>`_.
+
 |
 
 -----
