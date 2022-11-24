@@ -1,8 +1,6 @@
 ##############################
 Performing Bulk Data API Calls
 ##############################
-.. warning:: This page is still in progress and sections may be missing or unfinished.
-
 The Khoros Communities
 `Bulk Data API <https://community.khoros.com/t5/Community-Analytics/Using-the-Khoros-Bulk-Data-API/ta-p/178715>`_
 is a very useful tool for retrieving analytical data for your community, and this SDK can
@@ -19,6 +17,12 @@ This guide covers the following topics:
     * `During Instantiation`_
     * `Using a Helper File`_
 * `Querying the Bulk Data API`_
+* `Manipulating Retrieved Data`_
+    * `Filtering by User Type`_
+    * `Filtering by Action`_
+    * `Counting Actions`_
+    * `Counting Logins and Views`_
+
 
 |
 
@@ -110,3 +114,87 @@ below. The example below also demonstrates how you would export the results to a
    with open('path/to/bulk_data_export.json', 'w') as file:
        json.dump(results, file, indent=2)
 
+|
+
+***************************
+Manipulating Retrieved Data
+***************************
+After querying the Bulk Data API, there are several ways you can easily manipulate the data
+you retrieved if you exported the results in JSON format. These options are explained below.
+
+* `Filtering by User Type`_
+* `Filtering by Action`_
+* `Counting Actions`_
+* `Counting Logins and Views`_
+
+|
+
+Filtering by User Type
+======================
+When viewing your data, you may wish to pare the data down to only logged-in users, or perhaps
+only anonymous users. This can be done using the
+:py:meth:`khoros.core.Khoros.BulkData.filter_anonymous` method.
+
+By default, the method will remove all anonymous users and retain only data for logged-in users.
+However, you can leverage the ``remove_registered`` Boolean parameter filter out logged-in users
+instead and keep only the anonymous user data.
+
+.. code-block:: python
+
+   # The default parameters will remove anonymous user data
+   filtered_data = khoros.bulk_data.filter_anonymous(bulk_data)
+
+   # This will also remove anonymous user data
+   filtered_data = khoros.bulk_data.filter_anonymous(bulk_data, remove_anonymous=True)
+
+   # This will remove all logged-in user data
+   filtered_data = khoros.bulk_data.filter_anonymous(bulk_data, remove_registered=True)
+
+|
+
+Filtering by Action
+===================
+If you are familiar with the `action.key events <https://developer.khoros.com/khoroscommunitydevdocs/reference/bulk-data-api#section-action-key-events>`_
+then you can filter the data for only entries with that specific action using the
+:py:meth:`khoros.core.Khoros.BulkData.filter_by_action` method, as demonstrated below.
+
+.. code-block:: python
+
+   # This will filter for only events relating to creating posts
+   filtered_data = khoros.bulk_data.filter_by_action('messages.publish', bulk_data)
+
+   # This will filter for only events relating to messages marked as an accepted solution
+   filtered_data = khoros.bulk_data.filter_by_action('solutions.accept', bulk_data)
+
+|
+
+Counting Actions
+================
+If you just wish to count the number of times a specific event is found within your data
+and do not need the raw data, then you can use the
+:py:meth:`khoros.core.Khoros.BulkData.count_actions` method and supply the ``action.key``
+value that you wish to count.
+
+.. code-block:: python
+
+   accepted_solution_count = khoros.bulk_data.count_actions(bulk_data, 'solutions.accept')
+
+|
+
+Counting Logins and Views
+=========================
+Two of the more common events (logins and views) have their own methods, which means you
+won't need to remember their ``action.key`` values. These methods are
+:py:meth:`khoros.core.Khoros.BulkData.count_logins` and
+:py:meth:`khoros.core.Khoros.BulkData.count_views`, respectively, and they are demonstrated
+below.
+
+.. code-block:: python
+
+   # This returns the number of logins as an integer
+   num_logins = khoros.bulk_data.count_logins(bulk_data)
+
+   # This returns the number of views as an integer
+   num_views = khoros.bulk_data.count_views(bulk_data)
+
+|
