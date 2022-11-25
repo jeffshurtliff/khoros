@@ -6,7 +6,7 @@
 :Example:           ``exceptions = resources.import_exceptions_module()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 Oct 2022
+:Modified Date:     25 Nov 2022
 """
 
 import os
@@ -27,10 +27,14 @@ SKIP_LOCAL_TEST_MSG = 'skipping local-only tests'
 class MockResponse:
     """This class simulates an API response for testing purposes.
 
+    .. versionchanged:: 5.2.0
+       The ``status_code`` attribute has been added to the object.
+
     .. versionadded:: 5.1.2
     """
-    def __init__(self, json_body):
+    def __init__(self, json_body, status_code=200):
         self.json_body = json_body
+        self.status_code = status_code
 
     def json(self):
         return self.json_body
@@ -58,6 +62,16 @@ def mock_error_post(*args, **kwargs):
             "code": "500",
             "type": "error"
         }
+    })
+
+
+def mock_bulk_data_json(*args, **kwargs):
+    """This function works with the `MockedResponse` class to simulate a Bulk Data API JSON response.
+
+    .. versionadded:: 5.2.0
+    """
+    return MockResponse({
+        "records": []
     })
 
 

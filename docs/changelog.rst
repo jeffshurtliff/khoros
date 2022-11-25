@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v5.2.0
 ******
-**Release Date: 2022-11-24**
+**Release Date: 2022-11-25**
 
 Added
 =====
@@ -43,7 +43,9 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:exc:`khoros.errors.exceptions.InvalidParameterError` exception class.
+* Added the :py:func:`khoros.utils.tests.resources.mock_bulk_data_json` function.
 * Added the :py:func:`khoros.utils.tests.test_archives.test_archive_check` test function.
+* Added the :py:func:`khoros.utils.tests.test_bulk_data.test_bulk_data_query` test function.
 
 Changed
 =======
@@ -61,6 +63,8 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Updated the :py:func:`khoros.utils.tests.test_exceptions.test_raising_exceptions` function
   to test raising the :py:exc:`khoros.errors.exceptions.InvalidParameterError` exception class.
+* Updated the :py:class:`khoros.utils.tests.resources.MockResponse` class to introduce the
+  ``status_code`` attribute to the object.
 
 General
 -------

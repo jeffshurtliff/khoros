@@ -4,8 +4,10 @@
 :Synopsis:       This module is used by pytest to test the Bulk Data API module
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  14 Mar 2022
+:Modified Date:  25 Nov 2022
 """
+
+import requests
 
 from . import resources
 
@@ -85,6 +87,31 @@ def test_valid_parameter_construction():
     # Test to confirm that the function works properly
     assert bulk_data._construct_parameters(from_date, to_date, fields_string) == expected_params
     assert bulk_data._construct_parameters(from_date, to_date, fields_list) == expected_params
+
+
+def test_bulk_data_query(monkeypatch):
+    """This function tests the ability to query the Bulk Data API and retrieve a JSON response.
+
+    .. versionadded:: 5.2.0
+    """
+    # Instantiate the core object
+    khoros_object = resources.get_core_object()
+
+    # Overwrite the requests.get functionality with the mock_post() function
+    monkeypatch.setattr(requests, 'get', resources.mock_bulk_data_json)
+
+    # Make the mock API call
+    response = khoros_object.bulk_data.query(
+        community_id='example.prod',
+        client_id='ay0CXXXXXXXXXX/XXXX+XXXXXXXXXXXXX/XXXXX4KhQ=',
+        token='2f25XXXXXXXXXXXXXXXXXXXXXXXXXa10dec04068',
+        from_date='20221031',
+        to_date='20221101',
+        export_type='json'
+    )
+
+    # Verify that the API call was a success
+    assert 'records' in response and isinstance(response['records'], list)
 
 
 # Import modules and initialize the core object
