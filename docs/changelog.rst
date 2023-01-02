@@ -4,6 +4,23 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.2.1
+******
+**Release Date: 2023-01-02**
+
+Added
+=====
+
+General
+-------
+* Added `poetry <https://python-poetry.org/>`_ support by adding the ``pyproject.toml``
+  and ``poetry.lock`` files.
+
+|
+
+-----
+
+******
 v5.2.0
 ******
 **Release Date: 2022-12-05**
