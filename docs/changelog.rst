@@ -17,6 +17,7 @@ General
   and ``poetry.lock`` files.
 * Updated ``pytest`` to v7.2.0 to address the security vulnerability CVE-2022-42969.
 * Addressed the security vulnerability CVE-2022-40897.
+* Disabled the ``bandit.yml`` workflow as it is experiencing unknown runtime errors.
 
 |
 
