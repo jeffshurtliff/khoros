@@ -24,7 +24,7 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         <td>
             <a href="https://github.com/jeffshurtliff/khoros/blob/master/.github/workflows/pythonpackage.yml">
                 <img alt="GitHub Workflow Status" 
-                src="https://img.shields.io/github/workflow/status/jeffshurtliff/khoros/Python package">
+                src="https://img.shields.io/github/actions/workflow/status/jeffshurtliff/khoros/pythonpackage.yml?branch=master">
             </a>
         </td>
     </tr>
@@ -41,14 +41,6 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
         <td>
             <a href="https://codecov.io/gh/jeffshurtliff/khoros">
                 <img src="https://codecov.io/gh/jeffshurtliff/khoros/branch/master/graph/badge.svg" />
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td>Code Quality (LGTM)</td>
-        <td>
-            <a href="https://lgtm.com/projects/g/jeffshurtliff/khoros">
-            <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/jeffshurtliff/khoros">
             </a>
         </td>
     </tr>
