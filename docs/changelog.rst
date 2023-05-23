@@ -4,6 +4,23 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.2.2
+******
+**Release Date: 2023-05-23**
+
+Added
+=====
+
+General
+-------
+* Updated ``requests`` to v2.31.0 to address the security vulnerability CVE-2023-32681.
+* Updated the ``pyproject.toml`` and ``poetry.lock`` files accordingly.
+
+|
+
+-----
+
+******
 v5.2.1
 ******
 **Release Date: 2023-01-02**
