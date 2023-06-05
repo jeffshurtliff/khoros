@@ -505,7 +505,7 @@ def board_exists(khoros_object, board_id=None, board_url=None):
     :type board_id: str, None
     :param board_url: The URL of the board to check
     :type board_url: str, None
-    :returns: Boolean value indicating whether or not the board already exists
+    :returns: Boolean value indicating whether the board already exists
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     return base.structure_exists(khoros_object, 'board', board_id, board_url)
