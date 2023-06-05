@@ -1702,6 +1702,17 @@ class Khoros(object):
             """
             return structures_module.boards.board_exists(self.khoros_object, board_id, board_url)
 
+        def get_message_count(self, board_id):
+            """This method retrieves the total number of messages within a given board.
+
+            .. versionadded:: 5.3.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :returns: The number of messages within the node
+            """
+            return structures_module.boards.get_message_count(self.khoros_object, board_id)
+
     class BulkData(object):
         """This class includes methods for interacting with the Bulk Data API.
 
