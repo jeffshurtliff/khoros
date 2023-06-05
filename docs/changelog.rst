@@ -3,6 +3,30 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+*********
+v5.30dev1
+*********
+**Release Date: TBD**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.Board.get_message_count` method.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.structures.boards.get_message_count` function.
+
+|
+
+-----
+
 ******
 v5.2.2
 ******
