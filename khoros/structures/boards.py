@@ -557,7 +557,7 @@ def get_all_messages(khoros_object, board_id, fields=None):
 
     # Continue looping as long as a cursor is present
     while cursor:
-        response, cursor = _perform_single_query(query, cursor)
+        response, cursor = _perform_single_query(khoros_object, query, fields, cursor)
         messages.extend(response)
 
     # Return the collected messages
@@ -595,7 +595,10 @@ def _perform_single_query(khoros_object, query, fields=None, cursor=None):
 
     # Add missing columns to message data as needed
     data = _add_missing_cols(data, fields)
-    data = sorted(data, key=itemgetter(*tuple(data[0].keys())))
+    try:
+        data = sorted(data, key=itemgetter(*tuple(data[0].keys())))
+    except KeyError as missing_key:
+        logger.error(f'Could not sort the message data because the \'{missing_key}\' key was missing.')
 
     # Return the user data and cursor
     return data, cursor
