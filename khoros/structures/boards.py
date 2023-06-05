@@ -560,6 +560,9 @@ def get_all_messages(khoros_object, board_id, fields=None):
         response, cursor = _perform_single_query(query, cursor)
         messages.extend(response)
 
+    # Return the collected messages
+    return messages
+
 
 def _perform_single_query(khoros_object, query, fields=None, cursor=None):
     """This function performs a single LiQL query with or without a cursor.
