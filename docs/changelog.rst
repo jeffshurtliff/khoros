@@ -22,6 +22,9 @@ Primary Modules
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.structures.boards.get_message_count` function.
+* Added the :py:func:`khoros.structures.boards.get_all_messages` function.
+* Added the :py:func:`khoros.structures.boards._perform_single_query` function.
+* Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
 
 |
 
