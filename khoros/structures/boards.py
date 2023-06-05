@@ -509,3 +509,19 @@ def board_exists(khoros_object, board_id=None, board_url=None):
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     return base.structure_exists(khoros_object, 'board', board_id, board_url)
+
+
+def get_message_count(khoros_object, board_id):
+    """This function retrieves the total number of messages within a given board.
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :returns: The number of messages within the node
+    """
+    query = f"SELECT count(*) FROM messages WHERE board.id = '{board_id}'"
+    message_count = khoros_object.query(query).get('data').get('count')
+    return message_count
