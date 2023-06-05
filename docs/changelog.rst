@@ -16,6 +16,7 @@ Core Object
 Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.Board.get_message_count` method.
+* Added the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method.
 
 Primary Modules
 ---------------
