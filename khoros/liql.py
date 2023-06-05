@@ -148,12 +148,12 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     :type return_json: bool
     :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
     :type verify_success: bool
-    :param allow_exceptions: Defines whether or not exceptions can be raised for responses returning errors
+    :param allow_exceptions: Defines whether exceptions can be raised for responses returning errors
 
                              .. caution:: This does not apply to exceptions for missing required data.
 
     :type allow_exceptions: bool
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :param return_items: Reduces the JSON response to be only the list of items returned from the LiQL response
                          (``False`` by default)
