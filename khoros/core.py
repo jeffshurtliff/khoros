@@ -46,7 +46,7 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=None, bulk_data_settings=None):
+                 ssl_verify=None, bulk_data_settings=None, logging_level=None):
         """This method instantiates the core Khoros object.
 
         .. versionchanged:: 5.0.0
@@ -114,6 +114,20 @@ class Khoros(object):
         """
         # Define the current version
         self.version = version.get_full_version()
+
+        # Establish logging
+        self.logging = logging
+        if logging_level:
+            logging_levels = {
+                'DEBUG': logging.DEBUG,
+                'INFO': logging.INFO,
+                'WARNING': logging.WARNING,
+                'ERROR': logging.ERROR,
+                'CRITICAL': logging.CRITICAL,
+            }
+            if logging_level.upper() in logging_levels:
+                self.logging.basicConfig(level=logging_levels.get(logging_level))
+                logger.info(f'The {logging_level.upper()} logging level has been enabled.')
 
         # Initialize the predefined settings dictionary if not passed to the class
         defined_settings = {} if not defined_settings else defined_settings
@@ -252,9 +266,6 @@ class Khoros(object):
 
         # Capture the version information
         self.sys_version_info = tuple([i for i in sys.version_info])
-
-        # Establish logging
-        self.logging = logging
 
         # Validate the settings
         self._validate_base_url()
