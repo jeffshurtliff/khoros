@@ -18,6 +18,7 @@ Additions to the :doc:`core-object-methods`.
 * Added the :py:meth:`khoros.core.Khoros.Board.get_message_count` method.
 * Added the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method.
 * Added the ability to define the logging level when instantiating the core object.
+* Added additional log messages to the core object.
 
 Primary Modules
 ---------------
@@ -27,6 +28,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.boards.get_all_messages` function.
 * Added the :py:func:`khoros.structures.boards._perform_single_query` function.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
+* Added error logging to the :py:func:`khoros.liql.perform_query` function.
 
 |
 

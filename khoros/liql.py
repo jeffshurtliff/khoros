@@ -121,6 +121,9 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
                   allow_exceptions=True, verify=None, return_items=False):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
 
+    .. versionchanged:: 5.3.0
+       Added error logging to correspond with the raised exceptions.
+
     .. versionchanged:: 5.0.0
        Two ``if`` statements have been merged.
 
@@ -171,11 +174,14 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
 
     # Validate the LiQL query
     if not query_url and not liql_query:
-        raise errors.exceptions.MissingRequiredDataError("An API query URL or a raw LiQL query must be provided.")
+        error_msg = "An API query URL or a raw LiQL query must be provided."
+        logger.error(error_msg)
+        raise errors.exceptions.MissingRequiredDataError(error_msg)
     if liql_query:
         query_url = get_query_url(khoros_object.core, liql_query)
     if 'header' not in khoros_object.auth:
         error_msg = "Cannot perform the query as an authorization header is not configured."
+        logger.error(error_msg)
         raise errors.exceptions.MissingAuthDataError(error_msg)
 
     # Perform the API call and validate the data

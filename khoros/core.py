@@ -209,6 +209,7 @@ class Khoros(object):
         # Update the global variable if SSL Verify is explicitly disabled
         if self.core_settings.get('ssl_verify') is False:
             api.ssl_verify_disabled = True
+            logger.warn('SSL verification has been disabled for the core Khoros object.')
 
         # Add the Bulk Data API settings if applicable
         if bulk_data_settings is not None and isinstance(bulk_data_settings, dict):
@@ -460,6 +461,9 @@ class Khoros(object):
     def _connect_with_session_key(self):
         """This method establishes a connection to the Khoros environment using basic / session key authentication.
 
+        .. versionchanged:: 5.3.0
+           Added a logging message when the connection has been established.
+
         .. versionchanged:: 4.2.0
            General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
 
@@ -480,9 +484,13 @@ class Khoros(object):
         self.auth['session_key'] = self.core_settings.get('session_auth').get('session_key')
         self.auth['header'] = self.core_settings.get('auth_header')
         self.auth['active'] = True
+        logger.info('The connection to the Khoros environment has been established successfully.')
 
     def _connect_with_lithium_token(self):
         """This method establishes a connection to the Khoros environment using SSO authentication.
+
+        .. versionchanged:: 5.3.0
+           Added a logging message when the connection has been established.
 
         .. versionadded:: 4.2.0
 
@@ -496,6 +504,7 @@ class Khoros(object):
         self.auth['session_key'] = session_key
         self.auth['header'] = session_key
         self.auth['active'] = True
+        logger.info('The connection to the Khoros environment has been established successfully.')
 
     def _import_v1_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.V1` inner class to be utilized in the
