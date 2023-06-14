@@ -28,6 +28,14 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.boards.get_all_messages` function.
 * Added the :py:func:`khoros.structures.boards._perform_single_query` function.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
 * Changed the generic exception in :py:func:`khoros.api._report_failed_attempt`
   to a :py:exc:`RuntimeError` exception.
 * Added error logging to the following functions:
