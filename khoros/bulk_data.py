@@ -333,9 +333,9 @@ def _construct_headers(_khoros_object=None, _client_id=None, _export_type=None):
         if _khoros_object and _khoros_object.bulk_data_settings.get('client_id'):
             _client_id = _khoros_object.bulk_data_settings.get('client_id')
         else:
-            error_msg = 'A valid Client ID is required to utilize the Bulk Data API.'
-            logger.error(error_msg)
-            raise errors.exceptions.MissingAuthDataError(error_msg)
+            _error_msg = 'A valid Client ID is required to utilize the Bulk Data API.'
+            logger.error(_error_msg)
+            raise errors.exceptions.MissingAuthDataError(_error_msg)
 
     # Get the Accept value depending on the export type
     if not _export_type:
