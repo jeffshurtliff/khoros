@@ -29,6 +29,9 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.boards._perform_single_query` function.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
 * Added error logging to the following functions:
+    * :py:func:`khoros.auth.get_session_key`
+    * :py:func:`khoros.auth.get_sso_key`
+    * :py:func:`khoros.auth._get_session_key_header`
     * :py:func:`khoros.liql.perform_query`
     * :py:func:`khoros.bulk_data.query`
     * :py:func:`khoros.bulk_data.filter_anonymous`

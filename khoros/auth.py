@@ -6,7 +6,7 @@
 :Example:           ``session_key = khoros.auth(KhorosObject)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     14 Jun 2023
 """
 
 import requests
@@ -21,6 +21,9 @@ logger = log_utils.initialize_logging(__name__)
 
 def get_session_key(khoros_object, username=None, password=None):
     """This function retrieves the session key for an authentication session.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionchanged:: 5.0.0
        The error handling has been improved to provide more useful information when applicable.
@@ -67,6 +70,7 @@ def get_session_key(khoros_object, username=None, password=None):
         if type(response.text) == str and response.text.startswith('<html>'):
             api_error = errors.handlers.get_error_from_html(response.text)
             error_msg = f"The authentication attempt failed with the following error:\n\t{api_error}"
+            logger.error(error_msg)
             raise errors.exceptions.SessionAuthenticationError(error_msg)
         raise errors.exceptions.SessionAuthenticationError()
     else:
@@ -75,14 +79,19 @@ def get_session_key(khoros_object, username=None, password=None):
             try:
                 error_msg = response['response']['error']['message']
                 full_error_msg = f"Session key authentication failed for '{username}': {error_msg}"
+                logger.error(full_error_msg)
                 raise errors.exceptions.SessionAuthenticationError(full_error_msg)
             except KeyError:
-                raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
+                error_msg = f"Failed to retrieve a session key for '{username}'"
+                logger.error(error_msg)
+                raise errors.exceptions.SessionAuthenticationError(error_msg)
         else:
             try:
                 session_key = response['response']['value']['$']
             except KeyError:
-                raise errors.exceptions.SessionAuthenticationError(f"Failed to retrieve a session key for '{username}'")
+                error_msg = f"Failed to retrieve a session key for '{username}'"
+                logger.error(error_msg)
+                raise errors.exceptions.SessionAuthenticationError(error_msg)
     return session_key
 
 
@@ -110,7 +119,9 @@ def get_sso_key(khoros_object):
     tree = ElementTree.fromstring(response.text)
     if 'status' in tree.attrib and tree.attrib['status'] == 'success':
         return tree.findtext('value')
-    raise errors.exceptions.SsoAuthenticationError('Failed to retrieve a session key with the LithiumSSO token.')
+    error_msg = 'Failed to retrieve a session key with the LithiumSSO token.'
+    logger.error(error_msg)
+    raise errors.exceptions.SsoAuthenticationError(error_msg)
 
 
 def _get_khoros_login_url(khoros_object):
@@ -168,6 +179,7 @@ def _get_session_key_header(_khoros_object, _secondary=False):
             _header.update(_khoros_object.auth.get('header'))
         else:
             _error_msg = "Unable to retrieve a session key for secondary users without an existing session key"
+            logger.error(_error_msg)
             raise errors.exceptions.SessionAuthenticationError(_error_msg)
     return _header
 
