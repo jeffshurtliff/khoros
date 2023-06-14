@@ -28,7 +28,11 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.boards.get_all_messages` function.
 * Added the :py:func:`khoros.structures.boards._perform_single_query` function.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
-* Added error logging to the :py:func:`khoros.liql.perform_query` function.
+* Added error logging to the following functions:
+    * :py:func:`khoros.liql.perform_query`
+    * :py:func:`khoros.bulk_data.query`
+    * :py:func:`khoros.bulk_data.filter_anonymous`
+    * :py:func:`khoros.bulk_data._construct_headers`
 
 |
 
