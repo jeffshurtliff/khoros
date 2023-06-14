@@ -28,7 +28,20 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.boards.get_all_messages` function.
 * Added the :py:func:`khoros.structures.boards._perform_single_query` function.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
+* Changed the generic exception in :py:func:`khoros.api._report_failed_attempt`
+  to a :py:exc:`RuntimeError` exception.
 * Added error logging to the following functions:
+    * :py:func:`khoros.api.define_headers`
+    * :py:func:`khoros.api.payload_request_with_retries`
+    * :py:func:`khoros.api.get_v1_node_collection`
+    * :py:func:`khoros.api.get_v1_user_path`
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.api._api_request_with_payload`
+    * :py:func:`khoros.api._api_request_without_payload`
+    * :py:func:`khoros.api._report_failed_attempt`
+    * :py:func:`khoros.api._raise_exception_for_repeated_timeouts`
+    * :py:func:`khoros.api._attempt_json_conversion`
+    * :py:func:`khoros.api._confirm_field_supplied`
     * :py:func:`khoros.auth.get_session_key`
     * :py:func:`khoros.auth.get_sso_key`
     * :py:func:`khoros.auth._get_session_key_header`
@@ -36,6 +49,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.bulk_data.query`
     * :py:func:`khoros.bulk_data.filter_anonymous`
     * :py:func:`khoros.bulk_data._construct_headers`
+* Added warning logging to the following functions:
+    * :py:func:`khoros.api._display_ssl_verify_warning`
 
 |
 
