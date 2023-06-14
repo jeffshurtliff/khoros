@@ -98,6 +98,9 @@ def get_session_key(khoros_object, username=None, password=None):
 def get_sso_key(khoros_object):
     """This function retrieves the session key for a LithiumSSO session.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionchanged:: 5.0.0
        The two ``if`` statements have been merged.
 
@@ -164,6 +167,9 @@ def _get_session_key_payload(_username, _password=None, _return_json=True):
 
 def _get_session_key_header(_khoros_object, _secondary=False):
     """This function retrieves the header for an API call to retrieve a session key.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionadded:: 3.5.0
 
