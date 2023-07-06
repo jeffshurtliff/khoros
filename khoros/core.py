@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Jun 2023
+:Modified Date:     06 Jul 2023
 """
 
 import sys
@@ -302,6 +302,7 @@ class Khoros(object):
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
         self.grouphubs = self._import_grouphub_class()
+        self.labels = self._import_label_class()
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
@@ -577,6 +578,13 @@ class Khoros(object):
         .. versionadded:: 2.6.0
         """
         return Khoros.GroupHub(self)
+
+    def _import_label_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Label` inner class to be utilized in the core object.
+
+        .. versionadded:: 5.3.0
+        """
+        return Khoros.Label(self)
 
     def _import_message_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Message` inner class to be utilized in the core object.
@@ -2817,6 +2825,28 @@ class Khoros(object):
                                                             group_hub_url, full_response, return_id, return_url,
                                                             return_api_url, return_http_code, return_status,
                                                             return_error_messages, split_errors)
+
+    class Label(object):
+        """This class includes methods for interacting with labels."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Label` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get_labels_for_message(self, message_id):
+            """This method retrieves the labels associated with a specific message.
+
+            .. versionadded:: 5.3.0
+
+            :param message_id: The ID associated with the message to query
+            :type message_id: str, int
+            :returns: A list of strings for the labels
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.labels.get_labels_for_message(self.khoros_object, message_id)
 
     class Message(object):
         """This class includes methods for interacting with messages."""
