@@ -4854,6 +4854,22 @@ class Khoros(object):
             """
             return objects_module.users.get_all_users_count(self.khoros_object)
 
+        def get_all_users(self, fields=None, order_by='last_visit_time', order_by_desc=True):
+            """This function retrieves data for all users.
+
+            .. versionadded:: 5.3.0
+
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :param order_by: The order by which to sort the data (``last_visit_time`` by default)
+            :type order_by: str
+            :param order_by_desc: Indicates if the data should be sorted in descending (default) or ascending order
+            :type order_by_desc: bool
+            :returns: A list containing a dictionary of data for each user
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.users.get_all_users(self.khoros_object, fields, order_by, order_by_desc)
+
         def get_registered_users_count(self):
             """This method returns the total count of registered users on the community.
 
