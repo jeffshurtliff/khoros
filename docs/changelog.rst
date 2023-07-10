@@ -31,14 +31,18 @@ Primary Modules
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.structures.boards.get_message_count` function.
-* Added the :py:func:`khoros.structures.boards.get_all_messages` function.
-  (Feature `#63 <https://github.com/jeffshurtliff/khoros/issues/63>`_)
-* Added the :py:func:`khoros.structures.boards._perform_single_query` function.
-* Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
+* Added the functions below to the :py:mod:`khoros.structures.boards` module:
+    * :py:func:`khoros.structures.boards.get_all_messages`
+      (Feature `#63 <https://github.com/jeffshurtliff/khoros/issues/63>`_)
+    * :py:func:`khoros.structures.boards._perform_single_query`
+    * :py:func:`khoros.structures.boards._add_missing_cols`
 * Added the :py:func:`khoros.objects.labels.get_labels_for_message` function.
-* Added the :py:func:`khoros.objects.users.get_users_count` function.
-* Added the :py:func:`khoros.objects.users.get_all_users` function.
-  (Feature `#64 <https://github.com/jeffshurtliff/khoros/issues/64>`_)
+* Added the functions below to the :py:mod:`khoros.objects.users` module:
+    * :py:func:`khoros.objects.users.get_users_count`
+    * :py:func:`khoros.objects.users.get_all_users`
+      (Feature `#64 <https://github.com/jeffshurtliff/khoros/issues/64>`_)
+    * :py:func:`khoros.objects.users._perform_single_query`
+    * :py:func:`khoros.objects.users._add_missing_cols`
 
 Changed
 =======
