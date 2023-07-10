@@ -1180,26 +1180,26 @@ def get_ids_from_login_list(khoros_object, login_list, return_type='list'):
     return id_list if return_type == 'list' else id_dict
 
 
-def get_users_count(khoros_object, only_registered=False, only_online=False):
+def get_users_count(khoros_object, registered=False, online=False):
     """This function returns the total number of users in an environment. (Filtering possible for registered and online)
 
     .. versionadded:: 5.3.0
 
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros]
-    :param only_registered: Return a count of only registered users (``False`` by default)
-    :type only_registered: bool
-    :param only_online: Return a count of only online users (``False`` by default)
-    :type only_online: bool
+    :param registered: Return a count of registered users (``False`` by default)
+    :type registered: bool
+    :param online: Return a count of online users (``False`` by default)
+    :type online: bool
     :returns: An integer defining the total user count for the environment
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
              :py:exc:`khoros.errors.exceptions.InvalidParameterError`
     """
-    if all((only_registered, only_online)):
+    if all((registered, online)):
         raise errors.exceptions.InvalidParameterError('You can only select registered or online users but not both.')
-    if only_registered:
+    if registered:
         user_count = get_registered_users_count(khoros_object)
-    elif only_online:
+    elif online:
         user_count = get_online_user_count(khoros_object)
     else:
         user_count = get_all_users_count(khoros_object)

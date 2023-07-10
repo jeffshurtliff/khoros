@@ -4821,20 +4821,20 @@ class Khoros(object):
             return objects_module.users.get_kudos_received_count(self.khoros_object, user_settings, user_id,
                                                                  login, email)
 
-        def get_users_count(self, only_registered=False, only_online=False):
+        def get_users_count(self, registered=False, online=False):
             """This method returns the total number of users in an environment. (Filtering possible for registered and online)
 
             .. versionadded:: 5.3.0
 
-            :param only_registered: Return a count of only registered users (``False`` by default)
-            :type only_registered: bool
-            :param only_online: Return a count of only online users (``False`` by default)
-            :type only_online: bool
+            :param registered: Return a count of registered users (``False`` by default)
+            :type registered: bool
+            :param online: Return a count of online users (``False`` by default)
+            :type online: bool
             :returns: An integer defining the total user count for the environment
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
                      :py:exc:`khoros.errors.exceptions.InvalidParameterError`
             """
-            return objects_module.users.get_users_count(self.khoros_object, only_registered, only_online)
+            return objects_module.users.get_users_count(self.khoros_object, registered=registered, online=online)
 
         def get_online_user_count(self):
             """This method retrieves the number of users currently online.
