@@ -224,6 +224,8 @@ def test_get_counts():
     assert isinstance(users_count, int)
     assert isinstance(registered_users_count, int)
     assert isinstance(online_users_count, int)
+    with pytest.raises(exceptions.InvalidParameterError):
+        khoros_object.users.get_users_count(registered=True, online=True)
 
 
 # Import the exceptions modules
