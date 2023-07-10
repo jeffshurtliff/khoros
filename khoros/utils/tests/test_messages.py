@@ -87,7 +87,7 @@ def test_count_messages():
     khoros_object = resources.get_core_object()
 
     # Test retrieving the message count for a given board
-    messages_count = khoros_object.messages.get_message_count('support-information')
+    messages_count = khoros_object.boards.get_message_count('support-information')
     assert isinstance(messages_count, int)
 
 
