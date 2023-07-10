@@ -4,7 +4,7 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 **********
-v5.3.0dev2
+v5.3.0dev3
 **********
 **Release Date: TBD**
 
@@ -17,6 +17,7 @@ Additions to the :doc:`core-object-methods`.
 
 * Added the :py:meth:`khoros.core.Khoros.Board.get_message_count` method.
 * Added the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method.
+  (Feature `#63 <https://github.com/jeffshurtliff/khoros/issues/63>`_)
 * Added the :py:class:`khoros.core.Khoros.Label` class with the following methods:
     * :py:meth:`khoros.core.Khoros.Label.get_labels_for_message`
 * Added the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
@@ -29,6 +30,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khoros.structures.boards.get_message_count` function.
 * Added the :py:func:`khoros.structures.boards.get_all_messages` function.
+  (Feature `#63 <https://github.com/jeffshurtliff/khoros/issues/63>`_)
 * Added the :py:func:`khoros.structures.boards._perform_single_query` function.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
 * Added the :py:func:`khoros.objects.labels.get_labels_for_message` function.
