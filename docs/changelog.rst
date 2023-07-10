@@ -44,6 +44,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.objects.users._perform_single_query`
     * :py:func:`khoros.objects.users._add_missing_cols`
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.tests.test_messages.test_count_messages` test function.
+
 Changed
 =======
 
@@ -74,6 +80,13 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.bulk_data._construct_headers`
 * Added warning logging to the following functions:
     * :py:func:`khoros.api._display_ssl_verify_warning`
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.utils.tests.test_users.test_get_counts` function
+  to test the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
 
 |
 
