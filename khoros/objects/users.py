@@ -6,7 +6,7 @@
 :Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 May 2022
+:Modified Date:     10 Jul 2023
 """
 
 import warnings
@@ -1028,21 +1028,6 @@ def get_online_user_count(khoros_object):
     return int(api_response['data']['count'])
 
 
-def get_all_users_count(khoros_object):
-    """This function retrieves the total number of users on the community.
-
-    .. versionadded:: 5.2.0
-
-    :param khoros_object: The core :py:class:`khoros.Khoros` object
-    :type khoros_object: class[khoros.Khoros]
-    :returns: The user count for total users as an integer
-    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
-    """
-    liql_query = "select count(*) from users"
-    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
-    return int(api_response['data']['count'])
-
-
 def get_registration_data(khoros_object, user_settings=None, user_id=None, login=None, email=None):
     """This function retrieves the registration data for a given user.
 
@@ -1193,6 +1178,47 @@ def get_ids_from_login_list(khoros_object, login_list, return_type='list'):
         id_list.append(user_id)
         id_dict[login] = user_id
     return id_list if return_type == 'list' else id_dict
+
+
+def get_users_count(khoros_object, only_registered=False, only_online=False):
+    """This function returns the total number of users in an environment. (Filtering possible for registered and online)
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param only_registered: Return a count of only registered users (``False`` by default)
+    :type only_registered: bool
+    :param only_online: Return a count of only online users (``False`` by default)
+    :type only_online: bool
+    :returns: An integer defining the total user count for the environment
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.InvalidParameterError`
+    """
+    if all((only_registered, only_online)):
+        raise errors.exceptions.InvalidParameterError('You can only select registered or online users but not both.')
+    if only_registered:
+        user_count = get_registered_users_count(khoros_object)
+    elif only_online:
+        user_count = get_online_user_count(khoros_object)
+    else:
+        user_count = get_all_users_count(khoros_object)
+    return user_count
+
+
+def get_all_users_count(khoros_object):
+    """This function retrieves the total number of users on the community.
+
+    .. versionadded:: 5.2.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The user count for total users as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    liql_query = 'SELECT count(*) FROM users'
+    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
+    return int(api_response['data']['count'])
 
 
 def get_registered_users_count(khoros_object):

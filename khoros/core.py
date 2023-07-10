@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     06 Jul 2023
+:Modified Date:     10 Jul 2023
 """
 
 import sys
@@ -4821,6 +4821,21 @@ class Khoros(object):
             return objects_module.users.get_kudos_received_count(self.khoros_object, user_settings, user_id,
                                                                  login, email)
 
+        def get_users_count(self, only_registered=False, only_online=False):
+            """This method returns the total number of users in an environment. (Filtering possible for registered and online)
+
+            .. versionadded:: 5.3.0
+
+            :param only_registered: Return a count of only registered users (``False`` by default)
+            :type only_registered: bool
+            :param only_online: Return a count of only online users (``False`` by default)
+            :type only_online: bool
+            :returns: An integer defining the total user count for the environment
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidParameterError`
+            """
+            return objects_module.users.get_users_count(self.khoros_object, only_registered, only_online)
+
         def get_online_user_count(self):
             """This method retrieves the number of users currently online.
 
@@ -4838,6 +4853,15 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return objects_module.users.get_all_users_count(self.khoros_object)
+
+        def get_registered_users_count(self):
+            """This method returns the total count of registered users on the community.
+
+            .. versionadded:: 5.0.0
+
+            :returns: An integer of the total registered users count
+            """
+            return objects_module.users.get_registered_users_count(self.khoros_object)
 
         def get_registration_data(self, user_settings=None, user_id=None, login=None, email=None):
             """This method retrieves the registration data for a given user.
@@ -4922,17 +4946,8 @@ class Khoros(object):
             """
             return objects_module.users.update_sso_id(self.khoros_object, new_sso_id, user_id, user_login)
 
-        def get_registered_users_count(self):
-            """This function returns the total count of registered users on the community.
-
-            .. versionadded:: 5.0.0
-
-            :returns: An integer of the total registered users count
-            """
-            return objects_module.users.get_registered_users_count(self.khoros_object)
-
         def get_online_users_count(self, anonymous=None, registered=None):
-            """This function returns the total count of users currently online.
+            """This method returns the total count of users currently online.
 
             .. versionadded:: 5.0.0
 
