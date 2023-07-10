@@ -21,6 +21,8 @@ Additions to the :doc:`core-object-methods`.
 * Added the :py:class:`khoros.core.Khoros.Label` class with the following methods:
     * :py:meth:`khoros.core.Khoros.Label.get_labels_for_message`
 * Added the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
+* Added the :py:meth:`khoros.core.Khoros.User.get_all_users` method.
+  (Feature `#64 <https://github.com/jeffshurtliff/khoros/issues/64>`_)
 * Added the ability to define the logging level when instantiating the core object.
 * Added additional log messages to the core object.
 
@@ -35,6 +37,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khoros.structures.boards._add_missing_cols` function.
 * Added the :py:func:`khoros.objects.labels.get_labels_for_message` function.
 * Added the :py:func:`khoros.objects.users.get_users_count` function.
+* Added the :py:func:`khoros.objects.users.get_all_users` function.
+  (Feature `#64 <https://github.com/jeffshurtliff/khoros/issues/64>`_)
 
 Changed
 =======
