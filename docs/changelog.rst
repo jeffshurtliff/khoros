@@ -88,6 +88,11 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
 * Updated the :py:func:`khoros.utils.tests.test_users.test_get_counts` function
   to test the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
 
+General
+-------
+* Bumped Certifi from 2022.12.7 to 2023.7.22 to address the security
+  vulnerability CVE-2023-37920.
+
 |
 
 -----
