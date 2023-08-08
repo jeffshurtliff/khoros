@@ -6,10 +6,11 @@
 :Example:           ``khoros.users.create(username='john_doe', email='john.doe@example.com')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 May 2022
+:Modified Date:     10 Jul 2023
 """
 
 import warnings
+from operator import itemgetter
 
 from .. import api, auth, liql, errors
 from ..utils import core_utils, log_utils
@@ -1028,21 +1029,6 @@ def get_online_user_count(khoros_object):
     return int(api_response['data']['count'])
 
 
-def get_all_users_count(khoros_object):
-    """This function retrieves the total number of users on the community.
-
-    .. versionadded:: 5.2.0
-
-    :param khoros_object: The core :py:class:`khoros.Khoros` object
-    :type khoros_object: class[khoros.Khoros]
-    :returns: The user count for total users as an integer
-    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
-    """
-    liql_query = "select count(*) from users"
-    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
-    return int(api_response['data']['count'])
-
-
 def get_registration_data(khoros_object, user_settings=None, user_id=None, login=None, email=None):
     """This function retrieves the registration data for a given user.
 
@@ -1195,6 +1181,47 @@ def get_ids_from_login_list(khoros_object, login_list, return_type='list'):
     return id_list if return_type == 'list' else id_dict
 
 
+def get_users_count(khoros_object, registered=False, online=False):
+    """This function returns the total number of users in an environment. (Filtering possible for registered and online)
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param registered: Return a count of registered users (``False`` by default)
+    :type registered: bool
+    :param online: Return a count of online users (``False`` by default)
+    :type online: bool
+    :returns: An integer defining the total user count for the environment
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+             :py:exc:`khoros.errors.exceptions.InvalidParameterError`
+    """
+    if all((registered, online)):
+        raise errors.exceptions.InvalidParameterError('You can only select registered or online users but not both.')
+    if registered:
+        user_count = get_registered_users_count(khoros_object)
+    elif online:
+        user_count = get_online_user_count(khoros_object)
+    else:
+        user_count = get_all_users_count(khoros_object)
+    return user_count
+
+
+def get_all_users_count(khoros_object):
+    """This function retrieves the total number of users on the community.
+
+    .. versionadded:: 5.2.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :returns: The user count for total users as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    liql_query = 'SELECT count(*) FROM users'
+    api_response = liql.perform_query(khoros_object, liql_query=liql_query, verify_success=True)
+    return int(api_response['data']['count'])
+
+
 def get_registered_users_count(khoros_object):
     """This function returns the total count of registered users on the community.
 
@@ -1230,3 +1257,113 @@ def get_online_users_count(khoros_object, anonymous=None, registered=None):
     else:
         response = api.make_v1_request(khoros_object, '/users/online/count')
     return response['response']['value']['$']
+
+
+def get_all_users(khoros_object, fields=None, order_by='last_visit_time', order_by_desc=True):
+    """This function retrieves data for all users.
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :param order_by: The order by which to sort the data (``last_visit_time`` by default)
+    :type order_by: str
+    :param order_by_desc: Indicates if the data should be sorted in descending (default) or ascending order
+    :type order_by_desc: bool
+    :returns: A list containing a dictionary of data for each user
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    # Define the variable where the users will be stored
+    users = []
+
+    # Define the LiQL query to be performed
+    fields = '*' if not fields else fields
+    if not isinstance(fields, str):
+        fields = liql.parse_select_fields(fields)
+    order_direction = 'DESC' if order_by_desc else 'ASC'
+    order = f'ORDER BY {order_by} {order_direction}' if order_by else ''
+    query = f"SELECT {fields} FROM users {order} LIMIT 1000"
+
+    # Perform the first LiQL query and add to the master list
+    response, cursor = _perform_single_query(khoros_object, query, fields)
+    users.extend(response)
+
+    # Continue looping as long as a cursor is present
+    while cursor:
+        response, cursor = _perform_single_query(khoros_object, query, fields, cursor)
+        users.extend(response)
+
+    # Return the collected messages
+    return users
+
+
+def _perform_single_query(khoros_object, query, fields=None, cursor=None):
+    """This function performs a single LiQL query with or without a cursor.
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param query: The LiQL query to be performed
+    :type query: str
+    :param fields: Specific fields used in the LiQL SELECT statement
+    :type fields: str, tuple, list, set, None
+    :param cursor: The cursor from the LiQL response (when present)
+    :type cursor: str, None
+    :returns: The response to the LiQL query and the cursor when applicable
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    # Construct the entire LiQL query
+    cursor = '' if not cursor else liql.structure_cursor_clause(cursor)
+    query = f"{query} {cursor}" if cursor else query
+
+    # Perform the API call and retrieve the data
+    response = liql.perform_query(khoros_object, liql_query=query)
+    data = liql.get_returned_items(response)
+
+    # Get the cursor when present
+    cursor = None
+    if response.get('data').get('next_cursor'):
+        cursor = response['data'].get('next_cursor')
+
+    # Add missing columns to message data as needed
+    data = _add_missing_cols(data, fields)
+    try:
+        data = sorted(data, key=itemgetter(*tuple(data[0].keys())))
+    except KeyError as missing_key:
+        logger.error(f'Could not sort the user data because the \'{missing_key}\' key was missing.')
+
+    # Return the user data and cursor
+    return data, cursor
+
+
+def _add_missing_cols(user_list, fields=None):
+    """This function adds columns (fields) that might be missing from a LiQL response containing users.
+
+    .. versionadded:: 5.3.0
+
+    :param user_list: The list of dictionaries containing user data
+    :type user_list: list
+    :param fields: Specific fields used in the LiQL SELECT statement
+    :type fields: str, tuple, list, set, None
+    :returns: The same Liql response data with the required columns included
+    """
+    new_list = []
+    required_cols = ['type', 'id', 'view_href', 'login']
+
+    # Add any defined fields to the list of required columns
+    if fields and fields != '*':
+        parsed_fields = fields.split(',')
+        for field in parsed_fields:
+            if field not in required_cols:
+                required_cols.append(field)
+
+    # Loop through the messages and add any missing columns
+    for user in user_list:
+        for col in required_cols:
+            if col not in user:
+                user[col] = ''
+        new_list.append(user)
+    return new_list

@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that messages function properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     30 Sep 2022
+:Modified Date:     10 Jul 2023
 """
 
 import os
@@ -75,6 +75,20 @@ def assert_tags_present(payload, tags_to_find):
         tags_found.append(tag_dict.get('text'))
     for tag in tags_to_find:
         assert tag in tags_found        # nosec
+
+
+def test_count_messages():
+    """This function tests the ability to retrieve a messages count for a specific board.
+
+    .. versionadded:: 5.3.0
+    """
+    # Instantiate the Khoros object
+    set_package_path()
+    khoros_object = resources.get_core_object()
+
+    # Test retrieving the message count for a given board
+    messages_count = khoros_object.boards.get_message_count('support-information')
+    assert isinstance(messages_count, int)
 
 
 def test_construct_only_subject():

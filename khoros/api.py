@@ -6,7 +6,7 @@
 :Example:           ``json_response = khoros.api.get_request_with_retries(url, auth_dict=khoros.auth)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     14 Jun 2023
 """
 
 import json
@@ -33,6 +33,9 @@ ssl_warning_shown = False
 def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None, content_type=None, multipart=False,
                    default_content_type=False, proxy_user_object=None):
     """This function defines the headers to use in an API call.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionchanged:: 4.0.0
        Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
@@ -61,7 +64,7 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :type accept: str, None
     :param content_type: The ``content-type`` header value (e.g. ``application/json``)
     :type content_type: str, None
-    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
     :param default_content_type: Determines if ``application/json`` should be used as the default ``content-type``
                                  value if the key does not exist (``False`` by default)
@@ -73,6 +76,8 @@ def define_headers(khoros_object=None, auth_dict=None, params=None, accept=None,
     :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`
     """
     if not khoros_object and not auth_dict and not proxy_user_object:
+        error_msg = "The authentication data was not provided and a connection cannot be established."
+        logger.error(error_msg)
         raise errors.exceptions.MissingAuthDataError()
     if proxy_user_object:
         headers = proxy_user_object.session_header
@@ -129,7 +134,7 @@ def _normalize_headers(_headers):
 def _get_json_query_string(_return_json, _include_ampersand_prefix=True):
     """This function constructs a query string for a Community API v1 query that should return JSON responses.
 
-    :param _return_json: Indicates whether or not API responses should be in JSON format
+    :param _return_json: Indicates whether API responses should be in JSON format
     :type _return_json: bool
     :param _include_ampersand_prefix: Determines if an ampersand (``&``) prefix should be included in the string
     :type _include_ampersand_prefix: bool
@@ -152,7 +157,7 @@ def _add_json_query_to_uri(_uri, _return_json=True):
 
     :param _uri: The current URI against which the REST API call will be made
     :type _uri: str
-    :param _return_json: Indicates whether or not the response should be in JSON format (``True`` by default)
+    :param _return_json: Indicates whether the response should be in JSON format (``True`` by default)
     :type _return_json: bool
     :returns: The URI either untouched or with the added query parameter string where appropriate
     :raises: :py:exc:`TypeError`
@@ -167,6 +172,9 @@ def _add_json_query_to_uri(_uri, _return_json=True):
 def _display_ssl_verify_warning():
     """This function displays a warning if SSL verification has been disabled.
 
+    .. versionchanged:: 5.3.0
+       Added a warning log entry along with the warning message.
+
     .. versionchanged:: 5.0.0
        The redundant ``return`` statement has been removed.
 
@@ -177,8 +185,9 @@ def _display_ssl_verify_warning():
     global ssl_warning_shown
     if ssl_warning_shown is False:
         # Warn that SSL warnings are being suppressed
-        warnings.warn('SSL certificate verification has been explicitly disabled and warnings '
-                      'will be suppressed')
+        _warn_msg = 'SSL certificate verification has been explicitly disabled and warnings will be suppressed'
+        logger.warn(_warn_msg)
+        warnings.warn(_warn_msg)
         ssl_warning_shown = True
 
         # Suppress warnings when performing API calls without verifying SSL certificates
@@ -186,7 +195,7 @@ def _display_ssl_verify_warning():
 
 
 def should_verify_tls(khoros_object=None):
-    """This function determines whether or not to verify the server's TLS certificate. (``True`` by default)
+    """This function determines whether to verify the server's TLS certificate. (``True`` by default)
 
     .. versionchanged:: 4.3.0
        Introduced the ``ssl_verify_disabled`` global variable to allow this check to be performed even when the
@@ -229,7 +238,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
 
     :param query_url: The URI to be queried
     :type query_url: str
-    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :param return_json: Determines whether the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -237,7 +246,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
@@ -265,7 +274,7 @@ def get_request_with_retries(query_url, return_json=True, khoros_object=None, au
 
 
 def _is_plaintext_payload(_headers, _payload=None):
-    """This function checks to determine whether or not the payload for an API is in JSON or plaintext format.
+    """This function checks to determine whether the payload for an API is in JSON or plaintext format.
 
     .. versionadded:: 3.1.0
 
@@ -273,7 +282,7 @@ def _is_plaintext_payload(_headers, _payload=None):
     :type _headers: dict
     :param _payload: The payload to be delivered in the API call
     :type _payload: dict, str
-    :returns: Boolean value indicating whether or not the payload is plaintext
+    :returns: Boolean value indicating whether the payload is plaintext
     :raises: :py:exc:`ValueError`
     """
     _is_plaintext = False
@@ -285,6 +294,9 @@ def _is_plaintext_payload(_headers, _payload=None):
 def _api_request_with_payload(_url, _payload=None, _request_type='post', _headers=None, _multipart=False, _verify=None,
                               _khoros_object=None):
     """This function performs an API request while supplying a JSON payload.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionchanged:: 4.3.0
        An issue has been fixed that prevented SSL verification from being disabled by the helper file setting.
@@ -312,9 +324,9 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
     :type _request_type: str
     :param _headers: Any predefined headers to be passed with the API call (optional)
     :type _headers: dict
-    :param _multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :param _multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
     :type _multipart: bool
-    :param _verify: Determines whether or not to verify the server's TLS certificate (``None`` by default)
+    :param _verify: Determines whether to verify the server's TLS certificate (``None`` by default)
     :type _verify: bool
     :param _khoros_object: The core Khoros object
     :type _khoros_object: class[khoros.Khoros], None
@@ -344,6 +356,8 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
                         _payload = json.dumps(_payload, default=str) if not _is_plaintext else _payload
                         _response = requests.post(_url, data=_payload, headers=_headers, verify=_verify)
                 else:
+                    _error_msg = 'The supplied request type for the API is not recognized.'
+                    logger.error(_error_msg)
                     raise errors.exceptions.InvalidRequestTypeError()
                 break
             except Exception as _exc_msg:
@@ -357,6 +371,9 @@ def _api_request_with_payload(_url, _payload=None, _request_type='post', _header
 def _api_request_without_payload(_url, _request_type, _headers, _verify=None, _khoros_object=None):
     """This function performs a ``POST`` or ``PUT`` request without an accompanying JSON payload.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionchanged:: 4.3.0
        An issue has been fixed that prevented SSL verification from being disabled by the helper file setting.
 
@@ -369,7 +386,7 @@ def _api_request_without_payload(_url, _request_type, _headers, _verify=None, _k
     :type _request_type: str
     :param _headers: The headers associated with the API request
     :type _headers: dict
-    :param _verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param _verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type _verify: bool
     :param _khoros_object: The core Khoros object
     :type _khoros_object: class[khoros.Khoros], None
@@ -386,6 +403,8 @@ def _api_request_without_payload(_url, _request_type, _headers, _verify=None, _k
             elif _request_type.lower() == "put":
                 _response = requests.put(_url, headers=_headers, verify=_verify)
             else:
+                _error_msg = 'The supplied request type for the API is not recognized.'
+                logger.error(_error_msg)
                 raise errors.exceptions.InvalidRequestTypeError()
             break
         except Exception as _exc_msg:
@@ -430,10 +449,13 @@ def format_avatar_payload(avatar_image_path):
 def _report_failed_attempt(_exc_msg, _request_type, _retries):
     """This function reports a failed API call that will be retried.
 
+    .. versionchanged:: 5.3.0
+       Added error logging and changed the generic exception to a :py:exc:`RuntimeError` exception.
+
     .. versionchanged:: 5.0.0
        The redundant ``return`` statement has been removed.
 
-    :param _exc_msg: The exception that was raised can captured within a try/except clause
+    :param _exc_msg: The exception that was raised and captured within a try/except clause
     :param _request_type: The type of API request (e.g. ``post``, ``put`` or ``get``)
     :type _request_type: str
     :param _retries: The attempt number for the API request
@@ -442,21 +464,28 @@ def _report_failed_attempt(_exc_msg, _request_type, _retries):
     """
     _exc_name = type(_exc_msg).__name__
     if 'connect' not in _exc_name.lower():
-        raise Exception(f"{_exc_name}: {_exc_msg}")
+        _error_msg = f"{_exc_name}: {_exc_msg}"
+        logger.error(_error_msg)
+        raise RuntimeError(_error_msg)
     _current_attempt = f"(Attempt {_retries} of 5)"
     _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
                  f"{_exc_name}: {_exc_msg} {_current_attempt}"
+    logger.error(_error_msg)
     errors.handlers.eprint(f"{_error_msg}\n{_exc_name}: {_exc_msg}\n")
 
 
 def _raise_exception_for_repeated_timeouts():
     """This function raises an exception when all API attempts (including) retries resulted in a timeout.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     :returns: None
     :raises: :py:exc:`khoros.errors.exceptions.APIConnectionError`
     """
     _failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
                    "Please run the script again or contact Khoros Support for further assistance."
+    logger.error(_failure_msg)
     raise errors.exceptions.APIConnectionError(_failure_msg)
 
 
@@ -464,6 +493,9 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
                                  return_json=True, khoros_object=None, auth_dict=None, headers=None, multipart=False,
                                  content_type=None, verify=None, proxy_user_object=None):
     """This function performs an API request that includes a payload with up to three reties as necessary.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionchanged:: 4.0.0
        Introduced the ``proxy_user_object`` parameter to allow API requests to be performed on behalf of other users.
@@ -484,7 +516,7 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
     :type plaintext_payload: str, None
     :param url_encoded_payload: The payload for the POST or PUT request as a URL-encoded string
     :type url_encoded_payload: str, None
-    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :param return_json: Determines whether the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -492,7 +524,7 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
-    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
     :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
 
@@ -500,7 +532,7 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
                                    on the payload format and/or type of request.
 
     :type content_type: str, None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
@@ -516,6 +548,8 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
     valid_request_types = ['post', 'put']
     request_type = request_type.lower()
     if request_type not in valid_request_types:
+        error_msg = 'The supplied request type for the API is not recognized.'
+        logger.error(error_msg)
         raise errors.exceptions.InvalidRequestTypeError()
 
     # Determine if TLS certificates should be verified during API calls
@@ -541,10 +575,14 @@ def payload_request_with_retries(url, request_type, json_payload=None, plaintext
             elif url_encoded_payload and not plaintext_payload:
                 payload = url_encoded_payload
             else:
+                error_msg = 'More than one payload was provided for the API call when only one is permitted.'
+                logger.error(error_msg)
                 raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
         elif json_payload and not any((plaintext_payload, url_encoded_payload)):
             payload = json_payload
         else:
+            error_msg = 'More than one payload was provided for the API call when only one is permitted.'
+            logger.error(error_msg)
             raise errors.exceptions.PayloadMismatchError(request_type=request_type.upper())
     else:
         payload = None
@@ -589,7 +627,7 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
     :type plaintext_payload: str, None
     :param url_encoded_payload: The payload for the POST request as a URL-encoded string
     :type url_encoded_payload: str, None
-    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :param return_json: Determines whether the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -597,7 +635,7 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
-    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
     :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
 
@@ -605,7 +643,7 @@ def post_request_with_retries(url, json_payload=None, plaintext_payload=None, ur
                                    on the payload format and/or type of request.
 
     :type content_type: str, None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
@@ -667,7 +705,7 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :type plaintext_payload: str, None
     :param url_encoded_payload: The payload for the POST request as a URL-encoded string
     :type url_encoded_payload: str, None
-    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``True``)
+    :param return_json: Determines whether the response should be returned in JSON format (Default: ``True``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -675,7 +713,7 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
     :type auth_dict: dict, None
     :param headers: Any header values (in dictionary format) to pass in the API call (optional)
     :type headers: dict, None
-    :param multipart: Defines whether or not the query is a ``multipart/form-data`` query (``False`` by default)
+    :param multipart: Defines whether the query is a ``multipart/form-data`` query (``False`` by default)
     :type multipart: bool
     :param content_type: Allows the ``content-type`` value to be explicitly defined if necessary
 
@@ -683,7 +721,7 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
                                    on the payload format and/or type of request.
 
     :type content_type: str, None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
@@ -705,10 +743,13 @@ def put_request_with_retries(url, json_payload=None, plaintext_payload=None, ret
 def _attempt_json_conversion(_response, _return_json):
     """This function attempts to convert an API response to JSON if requested.
 
+    .. versionchanged:: 5.3.0
+       Added an error log entry for the error before it is printed onscreen.
+
     .. versionadded:: 2.5.0
 
     :param _response: The API response to be converted
-    :param _return_json: Indicates whether or not the API response should be converted
+    :param _return_json: Indicates whether the API response should be converted
     :type _return_json: bool
     :returns: The API response that has been converted to JSON or in its original format if unable to convert
     """
@@ -717,16 +758,18 @@ def _attempt_json_conversion(_response, _return_json):
             _response = _response.json()
         except Exception as _exc_msg:
             _exc_name = type(_exc_msg).__name__
-            errors.handlers.eprint(f"Failed to convert to JSON due to the following exception: {_exc_name}: {_exc_msg}")
+            _error_msg = f"Failed to convert to JSON due to the following exception: {_exc_name}: {_exc_msg}"
+            logger.error(_error_msg)
+            errors.handlers.eprint(_error_msg)
     return _response
 
 
 def query_successful(api_response):
-    """This function reviews the API response from the Community API to verify whether or not the call was successful.
+    """This function reviews the API response from the Community API to verify whether the call was successful.
 
     :param api_response: The response from the API in JSON format
     :type api_response: dict
-    :returns: Boolean indicating whether or not the API call was successful
+    :returns: Boolean indicating whether the API call was successful
     """
     try:
         success_values = ['successful', 'success']
@@ -771,7 +814,7 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
 
     :param url: The URI against which the DELETE request will be issued
     :type url: str
-    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
+    :param return_json: Determines whether the response should be returned in JSON format (Default: ``False``)
     :type return_json: bool
     :param khoros_object: The core Khoros object (Required if the ``auth_dict`` parameter is not supplied)
     :type khoros_object: class[khoros.Khoros], None
@@ -782,7 +825,7 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
     :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :returns: The API response from the DELETE request (optionally in JSON format)
     """
@@ -800,6 +843,9 @@ def delete(url, return_json=False, khoros_object=None, auth_dict=None, headers=N
 
 def get_v1_node_collection(node_type):
     """This function retrieves the appropriate API v1 collection name for a given node type.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionchanged:: 4.0.0
        Group Hubs are now supported by the function by passing the ``grouphub`` or ``group hub`` string.
@@ -819,6 +865,8 @@ def get_v1_node_collection(node_type):
     }
     node_collection = node_type if node_type in node_collections.values() else ''
     if node_type not in node_collections:
+        error_msg = 'The node type that was provided is invalid.'
+        logger.error(error_msg)
         raise errors.exceptions.InvalidNodeTypeError(val=node_type)
     return node_collections.get(node_type) if not node_collection else node_collection
 
@@ -826,6 +874,9 @@ def get_v1_node_collection(node_type):
 def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id=None, user_and_type=None,
                      trailing_slash=False):
     """This function returns the segment of an API v1 endpoint that is the path to define a user.
+
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
 
     .. versionadded:: 4.0.0
        Introduced the ``user_and_type`` parameter that can be passed instead of a parameter for a specific type.
@@ -856,7 +907,9 @@ def get_v1_user_path(user_id=None, user_email=None, user_login=None, user_sso_id
 
     # Validate the data and return the path
     if not any((user_id, user_email, user_login, user_sso_id)):
-        raise errors.exceptions.MissingRequiredDataError("A user identifier must be provided")
+        error_msg = "A user identifier must be provided"
+        logger.error(error_msg)
+        raise errors.exceptions.MissingRequiredDataError(error_msg)
     slash = '/' if trailing_slash else ''
     if user_email:
         user_path = f"/users/email/{user_email}{slash}"
@@ -900,7 +953,7 @@ def perform_v1_search(khoros_object, endpoint, filter_field, filter_value, retur
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
     :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :returns: The API response (optionally in JSON format)
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
@@ -994,6 +1047,9 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
                     params_in_uri=False, json_payload=False, proxy_user_object=None, verify=None):
     """This function makes a Community API v1 request.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionchanged:: 4.3.0
        An issue has been fixed that prevented SSL verification from being disabled by the helper file setting.
 
@@ -1041,7 +1097,7 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
     :param proxy_user_object: Instantiated :py:class:`khoros.objects.users.ImpersonatedUser` object to perform the
                               API request on behalf of a secondary user.
     :type proxy_user_object: class[khoros.objects.users.ImpersonatedUser], None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :returns: The API response
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`,
@@ -1107,9 +1163,13 @@ def make_v1_request(khoros_object, endpoint, query_params=None, request_type='GE
                                                 proxy_user_object=proxy_user_object, verify=verify)
     elif request_type.upper() in currently_unsupported_types:
         # TODO: Pass the request type into the exception to provide a more specific error
+        error_msg = 'This feature is currently unsupported at this time.'
+        logger.error(error_msg)
         raise errors.exceptions.CurrentlyUnsupportedError()
     else:
         # TODO: Pass the request type into the exception to provide a more specific error
+        error_msg = 'This feature is currently unsupported at this time.'
+        logger.error(error_msg)
         raise errors.exceptions.InvalidRequestTypeError()
     return response
 
@@ -1149,7 +1209,7 @@ def deliver_v2_results(response, full_response=None, return_id=None, return_url=
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros], None
 
-                         .. note:: The core object is only leveraged to check whether or not the ``translate_errors``
+                         .. note:: The core object is only leveraged to check whether the ``translate_errors``
                                    setting is configured and to retrieve its value where possible.
 
     :returns: Boolean value indicating a successful outcome (default), the full API response or one or more specific
@@ -1220,7 +1280,7 @@ def parse_v2_response(json_response, return_dict=False, status=False, error_msg=
     :param khoros_object: The core :py:class:`khoros.Khoros` object
     :type khoros_object: class[khoros.Khoros], None
 
-                         .. note:: The core object is only leveraged to check whether or not the ``translate_errors``
+                         .. note:: The core object is only leveraged to check whether the ``translate_errors``
                                    setting is configured and to retrieve its value where possible.
 
     :returns: A string, tuple or dictionary with the parsed data
@@ -1284,12 +1344,12 @@ def _get_v2_return_values(_return_booleans, _api_response, _split_errors, _khoro
     :type _return_booleans: dict
     :param _api_response: The Khoros Community API v2 response
     :type _api_response: dict
-    :param _split_errors: Defines whether or not error messages should be merged when applicable
+    :param _split_errors: Defines whether error messages should be merged when applicable
     :type _split_errors: bool
     :param _khoros_object: The core :py:class:`khoros.Khoros` object
     :type _khoros_object: class[khoros.Khoros], None
 
-                          .. note:: The core object is only leveraged to check whether or not the ``translate_errors``
+                          .. note:: The core object is only leveraged to check whether the ``translate_errors``
                                     setting is configured and to retrieve its value where possible.
 
     :returns: A dictionary of the parsed return values for return types whose Boolean values are ``True``
@@ -1325,6 +1385,9 @@ def _get_v2_return_values(_return_booleans, _api_response, _split_errors, _khoro
 def _confirm_field_supplied(_fields_dict):
     """This function checks to ensure that at least one field has been enabled to retrieve.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionchanged:: 5.0.0
        The redundant ``return`` statement has been removed.
 
@@ -1344,7 +1407,9 @@ def _confirm_field_supplied(_fields_dict):
             _field_supplied = True
             break
     if not _field_supplied:
-        raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
+        _error_msg = "At least one field must be enabled to retrieve a response."
+        logger.error(_error_msg)
+        raise errors.exceptions.MissingRequiredDataError(_error_msg)
 
 
 def _normalize_base_url(_base_url):
@@ -1389,7 +1454,7 @@ def get_platform_version(base_url, full_release=False, simple=False, commit_id=F
     :type timestamp: bool
     :param khoros_object: The core Khoros object (Optional unless needing to determine SSL certificate verification)
     :type khoros_object: class[khoros.Khoros], None
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :returns: One or more string with version information
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`

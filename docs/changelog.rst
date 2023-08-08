@@ -4,6 +4,100 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.3.0
+******
+**Release Date: 2023-08-08**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the :py:meth:`khoros.core.Khoros.Board.get_message_count` method.
+* Added the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method.
+  (Feature `#63 <https://github.com/jeffshurtliff/khoros/issues/63>`_)
+* Added the :py:class:`khoros.core.Khoros.Label` class with the following methods:
+    * :py:meth:`khoros.core.Khoros.Label.get_labels_for_message`
+* Added the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
+* Added the :py:meth:`khoros.core.Khoros.User.get_all_users` method.
+  (Feature `#64 <https://github.com/jeffshurtliff/khoros/issues/64>`_)
+* Added the ability to define the logging level when instantiating the core object.
+* Added additional log messages to the core object.
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.structures.boards.get_message_count` function.
+* Added the functions below to the :py:mod:`khoros.structures.boards` module:
+    * :py:func:`khoros.structures.boards.get_all_messages`
+      (Feature `#63 <https://github.com/jeffshurtliff/khoros/issues/63>`_)
+    * :py:func:`khoros.structures.boards._perform_single_query`
+    * :py:func:`khoros.structures.boards._add_missing_cols`
+* Added the :py:func:`khoros.objects.labels.get_labels_for_message` function.
+* Added the functions below to the :py:mod:`khoros.objects.users` module:
+    * :py:func:`khoros.objects.users.get_users_count`
+    * :py:func:`khoros.objects.users.get_all_users`
+      (Feature `#64 <https://github.com/jeffshurtliff/khoros/issues/64>`_)
+    * :py:func:`khoros.objects.users._perform_single_query`
+    * :py:func:`khoros.objects.users._add_missing_cols`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khoros.utils.tests.test_messages.test_count_messages` test function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Changed the generic exception in :py:func:`khoros.api._report_failed_attempt`
+  to a :py:exc:`RuntimeError` exception.
+* Added error logging to the following functions:
+    * :py:func:`khoros.api.define_headers`
+    * :py:func:`khoros.api.payload_request_with_retries`
+    * :py:func:`khoros.api.get_v1_node_collection`
+    * :py:func:`khoros.api.get_v1_user_path`
+    * :py:func:`khoros.api.make_v1_request`
+    * :py:func:`khoros.api._api_request_with_payload`
+    * :py:func:`khoros.api._api_request_without_payload`
+    * :py:func:`khoros.api._report_failed_attempt`
+    * :py:func:`khoros.api._raise_exception_for_repeated_timeouts`
+    * :py:func:`khoros.api._attempt_json_conversion`
+    * :py:func:`khoros.api._confirm_field_supplied`
+    * :py:func:`khoros.auth.get_session_key`
+    * :py:func:`khoros.auth.get_sso_key`
+    * :py:func:`khoros.auth._get_session_key_header`
+    * :py:func:`khoros.liql.perform_query`
+    * :py:func:`khoros.bulk_data.query`
+    * :py:func:`khoros.bulk_data.filter_anonymous`
+    * :py:func:`khoros.bulk_data._construct_headers`
+* Added warning logging to the following functions:
+    * :py:func:`khoros.api._display_ssl_verify_warning`
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khoros.utils.tests.test_users.test_get_counts` function
+  to test the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
+
+General
+-------
+* Bumped Certifi from 2022.12.7 to 2023.7.22 to address the security
+  vulnerability CVE-2023-37920.
+
+|
+
+-----
+
+******
 v5.2.2
 ******
 **Release Date: 2023-05-23**

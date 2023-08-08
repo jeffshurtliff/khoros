@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     02 Nov 2022
+:Modified Date:     10 Jul 2023
 """
 
 import sys
@@ -46,7 +46,7 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=None, bulk_data_settings=None):
+                 ssl_verify=None, bulk_data_settings=None, logging_level=None):
         """This method instantiates the core Khoros object.
 
         .. versionchanged:: 5.0.0
@@ -114,6 +114,20 @@ class Khoros(object):
         """
         # Define the current version
         self.version = version.get_full_version()
+
+        # Establish logging
+        self.logging = logging
+        if logging_level:
+            logging_levels = {
+                'DEBUG': logging.DEBUG,
+                'INFO': logging.INFO,
+                'WARNING': logging.WARNING,
+                'ERROR': logging.ERROR,
+                'CRITICAL': logging.CRITICAL,
+            }
+            if logging_level.upper() in logging_levels:
+                self.logging.basicConfig(level=logging_levels.get(logging_level))
+                logger.info(f'The {logging_level.upper()} logging level has been enabled.')
 
         # Initialize the predefined settings dictionary if not passed to the class
         defined_settings = {} if not defined_settings else defined_settings
@@ -195,6 +209,7 @@ class Khoros(object):
         # Update the global variable if SSL Verify is explicitly disabled
         if self.core_settings.get('ssl_verify') is False:
             api.ssl_verify_disabled = True
+            logger.warn('SSL verification has been disabled for the core Khoros object.')
 
         # Add the Bulk Data API settings if applicable
         if bulk_data_settings is not None and isinstance(bulk_data_settings, dict):
@@ -253,9 +268,6 @@ class Khoros(object):
         # Capture the version information
         self.sys_version_info = tuple([i for i in sys.version_info])
 
-        # Establish logging
-        self.logging = logging
-
         # Validate the settings
         self._validate_base_url()
         self._define_url_settings()
@@ -290,6 +302,7 @@ class Khoros(object):
         self.categories = self._import_category_class()
         self.communities = self._import_community_class()
         self.grouphubs = self._import_grouphub_class()
+        self.labels = self._import_label_class()
         self.messages = self._import_message_class()
         self.nodes = self._import_node_class()
         self.roles = self._import_role_class()
@@ -449,6 +462,9 @@ class Khoros(object):
     def _connect_with_session_key(self):
         """This method establishes a connection to the Khoros environment using basic / session key authentication.
 
+        .. versionchanged:: 5.3.0
+           Added a logging message when the connection has been established.
+
         .. versionchanged:: 4.2.0
            General code improvements were made to avoid unnecessary :py:exc:`KeyError` exceptions.
 
@@ -469,9 +485,13 @@ class Khoros(object):
         self.auth['session_key'] = self.core_settings.get('session_auth').get('session_key')
         self.auth['header'] = self.core_settings.get('auth_header')
         self.auth['active'] = True
+        logger.info('The connection to the Khoros environment has been established successfully.')
 
     def _connect_with_lithium_token(self):
         """This method establishes a connection to the Khoros environment using SSO authentication.
+
+        .. versionchanged:: 5.3.0
+           Added a logging message when the connection has been established.
 
         .. versionadded:: 4.2.0
 
@@ -485,6 +505,7 @@ class Khoros(object):
         self.auth['session_key'] = session_key
         self.auth['header'] = session_key
         self.auth['active'] = True
+        logger.info('The connection to the Khoros environment has been established successfully.')
 
     def _import_v1_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.V1` inner class to be utilized in the
@@ -557,6 +578,13 @@ class Khoros(object):
         .. versionadded:: 2.6.0
         """
         return Khoros.GroupHub(self)
+
+    def _import_label_class(self):
+        """This method allows the :py:class:`khoros.core.Khoros.Label` inner class to be utilized in the core object.
+
+        .. versionadded:: 5.3.0
+        """
+        return Khoros.Label(self)
 
     def _import_message_class(self):
         """This method allows the :py:class:`khoros.core.Khoros.Message` inner class to be utilized in the core object.
@@ -1702,6 +1730,31 @@ class Khoros(object):
             """
             return structures_module.boards.board_exists(self.khoros_object, board_id, board_url)
 
+        def get_message_count(self, board_id):
+            """This method retrieves the total number of messages within a given board.
+
+            .. versionadded:: 5.3.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :returns: The number of messages within the node
+            """
+            return structures_module.boards.get_message_count(self.khoros_object, board_id)
+
+        def get_all_messages(self, board_id, fields=None):
+            """This function retrieves data for all messages within a given board.
+
+            .. versionadded:: 5.3.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :returns: A list containing a dictionary of data for each message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.boards.get_all_messages(self.khoros_object, board_id, fields)
+
     class BulkData(object):
         """This class includes methods for interacting with the Bulk Data API.
 
@@ -2772,6 +2825,28 @@ class Khoros(object):
                                                             group_hub_url, full_response, return_id, return_url,
                                                             return_api_url, return_http_code, return_status,
                                                             return_error_messages, split_errors)
+
+    class Label(object):
+        """This class includes methods for interacting with labels."""
+        def __init__(self, khoros_object):
+            """This method initializes the :py:class:`khoros.core.Khoros.Label` inner class object.
+
+            :param khoros_object: The core :py:class:`khoros.Khoros` object
+            :type khoros_object: class[khoros.Khoros]
+            """
+            self.khoros_object = khoros_object
+
+        def get_labels_for_message(self, message_id):
+            """This method retrieves the labels associated with a specific message.
+
+            .. versionadded:: 5.3.0
+
+            :param message_id: The ID associated with the message to query
+            :type message_id: str, int
+            :returns: A list of strings for the labels
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.labels.get_labels_for_message(self.khoros_object, message_id)
 
     class Message(object):
         """This class includes methods for interacting with messages."""
@@ -4746,6 +4821,21 @@ class Khoros(object):
             return objects_module.users.get_kudos_received_count(self.khoros_object, user_settings, user_id,
                                                                  login, email)
 
+        def get_users_count(self, registered=False, online=False):
+            """This method returns the total number of users in an environment. (Filtering possible for registered and online)
+
+            .. versionadded:: 5.3.0
+
+            :param registered: Return a count of registered users (``False`` by default)
+            :type registered: bool
+            :param online: Return a count of online users (``False`` by default)
+            :type online: bool
+            :returns: An integer defining the total user count for the environment
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`,
+                     :py:exc:`khoros.errors.exceptions.InvalidParameterError`
+            """
+            return objects_module.users.get_users_count(self.khoros_object, registered=registered, online=online)
+
         def get_online_user_count(self):
             """This method retrieves the number of users currently online.
 
@@ -4763,6 +4853,31 @@ class Khoros(object):
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
             return objects_module.users.get_all_users_count(self.khoros_object)
+
+        def get_all_users(self, fields=None, order_by='last_visit_time', order_by_desc=True):
+            """This function retrieves data for all users.
+
+            .. versionadded:: 5.3.0
+
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :param order_by: The order by which to sort the data (``last_visit_time`` by default)
+            :type order_by: str
+            :param order_by_desc: Indicates if the data should be sorted in descending (default) or ascending order
+            :type order_by_desc: bool
+            :returns: A list containing a dictionary of data for each user
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.users.get_all_users(self.khoros_object, fields, order_by, order_by_desc)
+
+        def get_registered_users_count(self):
+            """This method returns the total count of registered users on the community.
+
+            .. versionadded:: 5.0.0
+
+            :returns: An integer of the total registered users count
+            """
+            return objects_module.users.get_registered_users_count(self.khoros_object)
 
         def get_registration_data(self, user_settings=None, user_id=None, login=None, email=None):
             """This method retrieves the registration data for a given user.
@@ -4847,17 +4962,8 @@ class Khoros(object):
             """
             return objects_module.users.update_sso_id(self.khoros_object, new_sso_id, user_id, user_login)
 
-        def get_registered_users_count(self):
-            """This function returns the total count of registered users on the community.
-
-            .. versionadded:: 5.0.0
-
-            :returns: An integer of the total registered users count
-            """
-            return objects_module.users.get_registered_users_count(self.khoros_object)
-
         def get_online_users_count(self, anonymous=None, registered=None):
-            """This function returns the total count of users currently online.
+            """This method returns the total count of users currently online.
 
             .. versionadded:: 5.0.0
 

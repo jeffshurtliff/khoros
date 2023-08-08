@@ -6,7 +6,7 @@
 :Example:           ``base_url = bulk_data.get_base_url(community_id='example.prod')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 Nov 2022
+:Modified Date:     14 Jun 2023
 """
 
 import requests
@@ -64,6 +64,9 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
           europe=None, export_type=None, full_response=False):
     """This function performs a query against the Bulk Data API to retrieve CSV or JSON data.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionchanged:: 5.2.0
        Improved the error handling to display the response text in the raised exception when available.
 
@@ -105,15 +108,18 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
         if khoros_object and khoros_object.bulk_data_settings.get('client_id'):
             client_id = khoros_object.bulk_data_settings.get('client_id')
         else:
-            raise errors.exceptions.MissingAuthDataError('A valid Client ID is required to utilize the Bulk Data API.')
+            error_msg = 'A valid Client ID is required to utilize the Bulk Data API.'
+            logger.error(error_msg)
+            raise errors.exceptions.MissingAuthDataError(error_msg)
 
     # Get the auth token
     if not token:
         if khoros_object and khoros_object.bulk_data_settings.get('token'):
             token = khoros_object.bulk_data_settings.get('token')
         else:
-            raise errors.exceptions.MissingAuthDataError('A valid access token is required to utilize the '
-                                                         'Bulk Data API.')
+            error_msg = 'A valid access token is required to utilize the Bulk Data API.'
+            logger.error(error_msg)
+            raise errors.exceptions.MissingAuthDataError(error_msg)
 
     # Construct the API headers
     headers = _construct_headers(khoros_object, client_id, export_type)
@@ -131,6 +137,7 @@ def query(khoros_object=None, community_id=None, client_id=None, token=None, fro
             exc_msg = f'Bulk Data API request failed with a {response.status_code} response.'
             if response.text:
                 exc_msg = exc_msg.replace('.', f': {response.text}')
+            logger.error(exc_msg)
             raise errors.exceptions.APIRequestError(exc_msg)
         if export_type.lower() == 'json':
             response = response.json()
@@ -163,6 +170,9 @@ def filter_by_action(action_key, bulk_data):
 def filter_anonymous(bulk_data, remove_anonymous=None, remove_registered=None):
     """This function filters bulk data entries to keep only registered (default) or anonymous user activities.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionadded:: 5.2.0
 
     :param bulk_data: The Bulk Data API export in JSON format (i.e. dictionary)
@@ -180,9 +190,13 @@ def filter_anonymous(bulk_data, remove_anonymous=None, remove_registered=None):
     if remove_anonymous is None and remove_registered is None:
         remove_anonymous = True
     if remove_anonymous and remove_registered:
-        raise errors.exceptions.InvalidParameterError('You cannot remove both anonymous and registered users.')
+        error_msg = 'You cannot remove both anonymous and registered users.'
+        logger.error(error_msg)
+        raise errors.exceptions.InvalidParameterError(error_msg)
     if not remove_anonymous and not remove_registered:
-        raise errors.exceptions.InvalidParameterError('You must remove either anonymous or registered users.')
+        error_msg = 'You must remove either anonymous or registered users.'
+        logger.error(error_msg)
+        raise errors.exceptions.InvalidParameterError(error_msg)
     for entry in bulk_data['records']:
         if (remove_anonymous and entry.get('user.registration_status') != 'ANONYMOUS') or \
                 (remove_registered and entry.get('user.registration_status') == 'ANONYMOUS'):
@@ -300,6 +314,9 @@ def _validate_date_field(_date_value):
 def _construct_headers(_khoros_object=None, _client_id=None, _export_type=None):
     """This function constructs the headers to use in a Bulk Data API call.
 
+    .. versionchanged:: 5.3.0
+       Added logging error messages when exceptions are raised.
+
     .. versionadded:: 5.0.0
 
     :param _khoros_object: The core :py:class:`khoros.Khoros` object
@@ -316,7 +333,9 @@ def _construct_headers(_khoros_object=None, _client_id=None, _export_type=None):
         if _khoros_object and _khoros_object.bulk_data_settings.get('client_id'):
             _client_id = _khoros_object.bulk_data_settings.get('client_id')
         else:
-            raise errors.exceptions.MissingAuthDataError('A valid Client ID is required to utilize the Bulk Data API.')
+            _error_msg = 'A valid Client ID is required to utilize the Bulk Data API.'
+            logger.error(_error_msg)
+            raise errors.exceptions.MissingAuthDataError(_error_msg)
 
     # Get the Accept value depending on the export type
     if not _export_type:

@@ -4,7 +4,7 @@
 :Synopsis:          This module is used by pytest to verify that the ``users`` module functions properly
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     03 Oct 2022
+:Modified Date:     10 Jul 2023
 """
 
 import os
@@ -154,6 +154,9 @@ def test_users_table_query(monkeypatch):
 def test_get_counts():
     """This function tests the various functions that involve retrieving user-related counts.
 
+    .. versionchanged:: 5.3.0
+       Added assertions for the :py:meth:`khoros.core.Khoros.User.get_users_count` method.
+
     .. versionadded:: 5.1.2
     """
     # Instantiate the core object
@@ -213,6 +216,16 @@ def test_get_counts():
     # Test retrieving the online users count
     online_users_count = khoros_object.users.get_online_user_count()
     assert isinstance(online_users_count, int)
+
+    # Test the variations of the get_users_count() method
+    users_count = khoros_object.users.get_users_count()
+    registered_users_count = khoros_object.users.get_users_count(registered=True)
+    online_users_count = khoros_object.users.get_users_count(online=True)
+    assert isinstance(users_count, int)
+    assert isinstance(registered_users_count, int)
+    assert isinstance(online_users_count, int)
+    with pytest.raises(exceptions.InvalidParameterError):
+        khoros_object.users.get_users_count(registered=True, online=True)
 
 
 # Import the exceptions modules

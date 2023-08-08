@@ -19,7 +19,7 @@ def sdk_installed():
 
     .. versionadded:: 2.5.1
 
-    :returns: Boolean value indicating whether or not the Lithium SDK is installed
+    :returns: Boolean value indicating whether the Lithium SDK is installed
     """
     try:
         output = core_utils.run_cmd('li')
@@ -46,11 +46,11 @@ def get_sdk_version():
 
 
 def node_installed():
-    """This function checks whether or not Node.js is installed.
+    """This function checks whether Node.js is installed.
 
     .. versionadded:: 2.5.1
 
-    :returns: Boolean value indicating whether or not Node.js is installed
+    :returns: Boolean value indicating whether Node.js is installed
     """
     node_version = get_node_version()
     return True if node_version else False
@@ -73,11 +73,11 @@ def get_node_version():
 
 
 def npm_installed():
-    """This function checks whether or not npm is installed.
+    """This function checks whether npm is installed.
 
     .. versionadded:: 2.5.1
 
-    :returns: Boolean value indicating whether or not npm is installed
+    :returns: Boolean value indicating whether npm is installed
     """
     npm_version = get_npm_version()
     return True if npm_version else False

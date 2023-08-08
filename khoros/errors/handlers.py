@@ -188,7 +188,7 @@ def get_error_from_json(json_error, v1=False, include_error_bool=True, fail_on_n
 
 
 def verify_core_object_present(khoros_object):
-    """This function verifies whether or not the core object was supposed and raises an exception if not.
+    """This function verifies whether the core object was supposed and raises an exception if not.
 
     .. versionchanged:: 5.0.0
        Removed the redundant return statement.

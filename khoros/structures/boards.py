@@ -6,12 +6,13 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 May 2022
+:Modified Date:     05 Jun 2023
 """
 
 import warnings
+from operator import itemgetter
 
-from .. import api, errors
+from .. import api, liql, errors
 from ..objects import users
 from ..utils import log_utils
 from . import base
@@ -505,7 +506,129 @@ def board_exists(khoros_object, board_id=None, board_url=None):
     :type board_id: str, None
     :param board_url: The URL of the board to check
     :type board_url: str, None
-    :returns: Boolean value indicating whether or not the board already exists
+    :returns: Boolean value indicating whether the board already exists
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
     return base.structure_exists(khoros_object, 'board', board_id, board_url)
+
+
+def get_message_count(khoros_object, board_id):
+    """This function retrieves the total number of messages within a given board.
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :returns: The number of messages within the node
+    """
+    query = f"SELECT count(*) FROM messages WHERE board.id = '{board_id}'"
+    message_count = khoros_object.query(query).get('data').get('count')
+    return message_count
+
+
+def get_all_messages(khoros_object, board_id, fields=None):
+    """This function retrieves data for all messages within a given board.
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :returns: A list containing a dictionary of data for each message within the board
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    # Define the variable where the messages will be stored
+    messages = []
+
+    # Define the LiQL query to be performed
+    fields = '*' if not fields else fields
+    if not isinstance(fields, str):
+        fields = liql.parse_select_fields(fields)
+    query = f"SELECT {fields} FROM messages WHERE board.id = '{board_id}' ORDER BY last_publish_time DESC LIMIT 1000"
+
+    # Perform the first LiQL query and add to the master list
+    response, cursor = _perform_single_query(khoros_object, query, fields)
+    messages.extend(response)
+
+    # Continue looping as long as a cursor is present
+    while cursor:
+        response, cursor = _perform_single_query(khoros_object, query, fields, cursor)
+        messages.extend(response)
+
+    # Return the collected messages
+    return messages
+
+
+def _perform_single_query(khoros_object, query, fields=None, cursor=None):
+    """This function performs a single LiQL query with or without a cursor.
+
+    .. versionadded:: 5.3.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param query: The LiQL query to be performed
+    :type query: str
+    :param fields: Specific fields used in the LiQL SELECT statement
+    :type fields: str, tuple, list, set, None
+    :param cursor: The cursor from the LiQL response (when present)
+    :type cursor: str, None
+    :returns: The response to the LiQL query and the cursor when applicable
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    # Construct the entire LiQL query
+    cursor = '' if not cursor else liql.structure_cursor_clause(cursor)
+    query = f"{query} {cursor}" if cursor else query
+
+    # Perform the API call and retrieve the data
+    response = liql.perform_query(khoros_object, liql_query=query)
+    data = liql.get_returned_items(response)
+
+    # Get the cursor when present
+    cursor = None
+    if response.get('data').get('next_cursor'):
+        cursor = response['data'].get('next_cursor')
+
+    # Add missing columns to message data as needed
+    data = _add_missing_cols(data, fields)
+    try:
+        data = sorted(data, key=itemgetter(*tuple(data[0].keys())))
+    except KeyError as missing_key:
+        logger.error(f'Could not sort the message data because the \'{missing_key}\' key was missing.')
+
+    # Return the user data and cursor
+    return data, cursor
+
+
+def _add_missing_cols(msg_list, fields=None):
+    """This function adds columns (fields) that might be missing from a LiQL response containing messages.
+
+    .. versionadded:: 5.3.0
+
+    :param msg_list: The list of dictionaries containing message data
+    :type msg_list: list
+    :param fields: Specific fields used in the LiQL SELECT statement
+    :type fields: str, tuple, list, set, None
+    :returns: The same Liql response data with the required columns included
+    """
+    new_list = []
+    required_cols = ['type', 'id', 'view_href', 'subject', 'last_publish_time']
+
+    # Add any defined fields to the list of required columns
+    if fields and fields != '*':
+        parsed_fields = fields.split(',')
+        for field in parsed_fields:
+            if field not in required_cols:
+                required_cols.append(field)
+
+    # Loop through the messages and add any missing columns
+    for msg in msg_list:
+        for col in required_cols:
+            if col not in msg:
+                msg[col] = ''
+        new_list.append(msg)
+    return new_list

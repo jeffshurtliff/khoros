@@ -121,6 +121,9 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
                   allow_exceptions=True, verify=None, return_items=False):
     """This function performs a LiQL query using full Community API v2 URL containing the query."
 
+    .. versionchanged:: 5.3.0
+       Added error logging to correspond with the raised exceptions.
+
     .. versionchanged:: 5.0.0
        Two ``if`` statements have been merged.
 
@@ -148,12 +151,12 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
     :type return_json: bool
     :param verify_success: Optionally check to confirm that the API query was successful (``False`` by default)
     :type verify_success: bool
-    :param allow_exceptions: Defines whether or not exceptions can be raised for responses returning errors
+    :param allow_exceptions: Defines whether exceptions can be raised for responses returning errors
 
                              .. caution:: This does not apply to exceptions for missing required data.
 
     :type allow_exceptions: bool
-    :param verify: Determines whether or not to verify the server's TLS certificate (``True`` by default)
+    :param verify: Determines whether to verify the server's TLS certificate (``True`` by default)
     :type verify: bool, None
     :param return_items: Reduces the JSON response to be only the list of items returned from the LiQL response
                          (``False`` by default)
@@ -171,11 +174,14 @@ def perform_query(khoros_object, query_url=None, liql_query=None, return_json=Tr
 
     # Validate the LiQL query
     if not query_url and not liql_query:
-        raise errors.exceptions.MissingRequiredDataError("An API query URL or a raw LiQL query must be provided.")
+        error_msg = "An API query URL or a raw LiQL query must be provided."
+        logger.error(error_msg)
+        raise errors.exceptions.MissingRequiredDataError(error_msg)
     if liql_query:
         query_url = get_query_url(khoros_object.core, liql_query)
     if 'header' not in khoros_object.auth:
         error_msg = "Cannot perform the query as an authorization header is not configured."
+        logger.error(error_msg)
         raise errors.exceptions.MissingAuthDataError(error_msg)
 
     # Perform the API call and validate the data
