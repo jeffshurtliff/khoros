@@ -20,6 +20,13 @@ Additions to the :doc:`primary modules <primary-modules>`.
 Changed
 =======
 
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method to include
+  the ``where_filter`` parameter to further filter the LiQL query that is performed.
+
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.

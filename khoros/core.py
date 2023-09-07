@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Jul 2023
+:Modified Date:     07 Sep 2023
 """
 
 import sys
@@ -1741,8 +1741,11 @@ class Khoros(object):
             """
             return structures_module.boards.get_message_count(self.khoros_object, board_id)
 
-        def get_all_messages(self, board_id, fields=None):
+        def get_all_messages(self, board_id, fields=None, where_filter=None):
             """This function retrieves data for all messages within a given board.
+
+            .. versionchanged:: 5.4.0
+               Introduced the ``where_filter`` parameter to optionally further filter the LiQL query.
 
             .. versionadded:: 5.3.0
 
@@ -1750,10 +1753,12 @@ class Khoros(object):
             :type board_id: str
             :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
             :type fields: str, tuple, list, set, None
+            :param where_filter: One or more optional WHERE filters to include in the LiQL query
+            :type where_filter: str, tuple, list, set, None
             :returns: A list containing a dictionary of data for each message within the board
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return structures_module.boards.get_all_messages(self.khoros_object, board_id, fields)
+            return structures_module.boards.get_all_messages(self.khoros_object, board_id, fields, where_filter)
 
     class BulkData(object):
         """This class includes methods for interacting with the Bulk Data API.
