@@ -528,7 +528,7 @@ def get_message_count(khoros_object, board_id):
     return message_count
 
 
-def get_all_messages(khoros_object, board_id, fields=None):
+def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     """This function retrieves data for all messages within a given board.
 
     .. versionadded:: 5.3.0
@@ -539,6 +539,8 @@ def get_all_messages(khoros_object, board_id, fields=None):
     :type board_id: str
     :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
     :type fields: str, tuple, list, set, None
+    :param where_filter: One or more optional WHERE filters to include in the LiQL query
+    :type where_filter: str, tuple, list, set, None
     :returns: A list containing a dictionary of data for each message within the board
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -549,7 +551,9 @@ def get_all_messages(khoros_object, board_id, fields=None):
     fields = '*' if not fields else fields
     if not isinstance(fields, str):
         fields = liql.parse_select_fields(fields)
-    query = f"SELECT {fields} FROM messages WHERE board.id = '{board_id}' ORDER BY last_publish_time DESC LIMIT 1000"
+    where_clause = _construct_where_clause(where_filter)
+    query = f"SELECT {fields} FROM messages WHERE board.id = '{board_id}' " \
+            f"{where_clause}ORDER BY last_publish_time DESC LIMIT 1000"
 
     # Perform the first LiQL query and add to the master list
     response, cursor = _perform_single_query(khoros_object, query, fields)
@@ -562,6 +566,24 @@ def get_all_messages(khoros_object, board_id, fields=None):
 
     # Return the collected messages
     return messages
+
+
+def _construct_where_clause(_where_filter=None):
+    """This function constructs a supplemental WHERE clause from any filters that are provided.
+
+    .. versionadded:: 5.4.0
+
+    :param _where_filter: Zero or more WHERE filters
+    :type _where_filter: str, list, set, tuple, None
+    :returns: The constructed supplemental WHERE clause as a string
+    """
+    _where_clause = ''
+    if _where_filter:
+        _where_filter = [_where_filter] if isinstance(_where_filter, str) else _where_filter
+        for _filter in _where_filter:
+            if _filter:
+                _where_clause += f'AND {_filter} '
+    return _where_clause
 
 
 def _perform_single_query(khoros_object, query, fields=None, cursor=None):

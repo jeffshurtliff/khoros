@@ -4,6 +4,34 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.4.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khoros.structures.boards._construct_where_clause` function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.structures.boards.get_all_messages` function to include
+  the ``where_filter`` parameter to further filter the LiQL query that is performed.
+
+|
+
+-----
+
+******
 v5.3.0
 ******
 **Release Date: 2023-08-08**
