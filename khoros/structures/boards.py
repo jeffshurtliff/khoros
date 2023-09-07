@@ -571,6 +571,23 @@ def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     return messages
 
 
+def get_all_topic_messages(khoros_object, board_id, fields=None):
+    """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :returns: A list containing a dictionary of data for each topic message within the board
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    return get_all_messages(khoros_object, board_id, fields, where_filter='depth=0')
+
+
 def _construct_where_clause(_where_filter=None):
     """This function constructs a supplemental WHERE clause from any filters that are provided.
 

@@ -11,11 +11,24 @@ v5.4.0
 Added
 =====
 
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the following new methods:
+    * :py:meth:`khoros.core.Khoros.Board.get_all_topic_messages`
+    * :py:meth:`khoros.core.Khoros.Message.get_all_messages`
+    * :py:meth:`khoros.core.Khoros.Message.get_all_topic_messages`
+
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the :py:func:`khoros.structures.boards._construct_where_clause` function.
+* Added the following new functions:
+    * :py:func:`khoros.structures.boards.get_all_topic_messages`
+    * :py:func:`khoros.structures.boards._construct_where_clause`
+    * :py:func:`khoros.objects.messages.get_all_messages`
+    * :py:func:`khoros.objects.messages.get_all_topic_messages`
 
 Changed
 =======

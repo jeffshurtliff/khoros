@@ -1760,6 +1760,20 @@ class Khoros(object):
             """
             return structures_module.boards.get_all_messages(self.khoros_object, board_id, fields, where_filter)
 
+        def get_all_topic_messages(self, board_id, fields=None):
+            """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+            .. versionadded:: 5.4.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :returns: A list containing a dictionary of data for each topic message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.boards.get_all_topic_messages(self.khoros_object, board_id, fields)
+
     class BulkData(object):
         """This class includes methods for interacting with the Bulk Data API.
 
@@ -3376,6 +3390,37 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return objects_module.messages.format_user_mention(self.khoros_object, user_info, user_id, login)
+
+        def get_all_messages(self, board_id, fields=None, where_filter=None):
+            """This function retrieves data for all messages within a given board.
+
+            .. versionadded:: 5.4.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :param where_filter: One or more optional WHERE filters to include in the LiQL query
+            :type where_filter: str, tuple, list, set, None
+            :returns: A list containing a dictionary of data for each message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_all_messages(self.khoros_object, board_id, fields, where_filter)
+
+        def get_all_topic_messages(self, board_id, fields=None):
+            """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+            .. versionadded:: 5.4.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :returns: A list containing a dictionary of data for each topic message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_all_topic_messages(self.khoros_object, board_id, fields)
+
 
     class Node(object):
         """This class includes methods for interacting with nodes."""

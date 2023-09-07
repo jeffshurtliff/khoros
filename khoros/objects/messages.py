@@ -16,7 +16,7 @@ import warnings
 from . import attachments, users
 from . import tags as tags_module
 from .. import api, liql, errors
-from ..structures import nodes
+from ..structures import nodes, boards
 from ..utils import log_utils, core_utils
 
 # Initialize the logger for this module
@@ -1227,3 +1227,39 @@ def define_context_url(khoros_object, msg_id, context_url='', full_response=Fals
         raise errors.exceptions.APIRequestError('Encountered the following exception while defining the context_url '
                                                 f'value: {exc}')
     return response if full_response else successful
+
+
+def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
+    """This function retrieves data for all messages within a given board.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :param where_filter: One or more optional WHERE filters to include in the LiQL query
+    :type where_filter: str, tuple, list, set, None
+    :returns: A list containing a dictionary of data for each message within the board
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    return boards.get_all_messages(khoros_object, board_id, fields, where_filter)
+
+
+def get_all_topic_messages(khoros_object, board_id, fields=None):
+    """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :returns: A list containing a dictionary of data for each topic message within the board
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    return boards.get_all_topic_messages(khoros_object, board_id, fields)
