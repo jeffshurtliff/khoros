@@ -6,7 +6,7 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     05 Jun 2023
+:Modified Date:     07 Sep 2023
 """
 
 import warnings
@@ -370,7 +370,7 @@ def _structure_label_settings(_label_settings, _payload):
         else:
             # TODO: Leverage the logger instead of warnings
             warn_msg = f"The string '{_label_settings.get('allowed_labels')}' for the 'allowed_labels' field is " \
-                       f"not valid and will be ignored."
+                       "not valid and will be ignored."
             warnings.warn(warn_msg, UserWarning)
             _label_settings['allowed_labels'] = None
 
@@ -379,8 +379,8 @@ def _structure_label_settings(_label_settings, _payload):
             _label_settings.get('allowed_labels') is not None or
             _label_settings.get('allowed_labels') is not None):
         # TODO: Leverage the logger instead of warnings
-        warn_msg = f"The defined 'allowed_labels' field will be overwritten when the 'use_freeform_labels' and/or " \
-                   f"'use_predefined_labels' Boolean values are also configured."
+        warn_msg = "The defined 'allowed_labels' field will be overwritten when the 'use_freeform_labels' and/or " \
+                   "'use_predefined_labels' Boolean values are also configured."
         warnings.warn(warn_msg, UserWarning)
 
     # Define the 'allowed_labels' value based on the defined Boolean values when applicable
@@ -530,6 +530,9 @@ def get_message_count(khoros_object, board_id):
 
 def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     """This function retrieves data for all messages within a given board.
+
+    .. versionchanged:: 5.4.0
+       Introduced the ``where_filter`` parameter to optionally further filter the LiQL query.
 
     .. versionadded:: 5.3.0
 

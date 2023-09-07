@@ -34,6 +34,16 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Updated the :py:func:`khoros.structures.boards.get_all_messages` function to include
   the ``where_filter`` parameter to further filter the LiQL query that is performed.
 
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Converted some unnecessary f-strings into standard strings in the
+  :py:func:`khoros.structures.boards._structure_label_settings` function.
+
 |
 
 -----
