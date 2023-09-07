@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2022
+:Modified Date:     07 Sep 2023
 """
 
 import json
@@ -22,6 +22,7 @@ from ..utils import log_utils, core_utils
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
 
+# Define constants
 REQUIRED_FIELDS = ['board', 'subject']
 CONTEXT_KEYS = ['id', 'url']
 SEO_KEYS = ['title', 'description', 'canonical_url']
@@ -720,6 +721,9 @@ def _verify_message_id(_msg_id, _msg_url):
 def _verify_required_fields(_node, _node_id, _node_url, _subject):
     """This function verifies that the required fields to create a message are satisfied.
 
+    .. versionchanged:: 5.4.0
+       Removed the redundant ``return`` statement.
+
     .. versionchanged:: 2.8.0
        Updated the if statement to leverage the :py:func:`isinstance` function.
 
@@ -747,7 +751,6 @@ def _verify_required_fields(_node, _node_id, _node_url, _subject):
         _requirements_satisfied = False if 'id' not in _node else True
     if not _requirements_satisfied:
         raise errors.exceptions.MissingRequiredDataError("A node and subject must be defined when creating messages")
-    return
 
 
 def _add_moderation_status_to_payload(_payload, _moderation_status):
@@ -805,6 +808,9 @@ def _add_tags_to_payload(_payload, _tags, _khoros_object=None, _msg_id=None, _ov
 def _confirm_field_supplied(_fields_dict):
     """This function checks to ensure that at least one field has been enabled to retrieve.
 
+    .. versionchanged:: 5.4.0
+       Removed the redundant ``return`` statement.
+
     .. versionadded:: 2.3.0
     """
     _field_supplied = False
@@ -814,7 +820,6 @@ def _confirm_field_supplied(_fields_dict):
             break
     if not _field_supplied:
         raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
-    return
 
 
 def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,
@@ -847,7 +852,7 @@ def parse_v2_response(json_response, return_dict=False, status=False, response_m
     :returns: A string, tuple or dictionary with the parsed data
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
-    warnings.warn(f"This function is deprecated and 'khoros.api.parse_v2_response' should be used.", DeprecationWarning)
+    warnings.warn("This function is deprecated and 'khoros.api.parse_v2_response' should be used.", DeprecationWarning)
     return api.parse_v2_response(json_response, return_dict, status, response_msg, http_code, message_id, message_url,
                                  message_api_uri, v2_base)
 

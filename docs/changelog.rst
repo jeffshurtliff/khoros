@@ -33,6 +33,9 @@ Changes to the :doc:`primary modules <primary-modules>`.
 
 * Updated the :py:func:`khoros.structures.boards.get_all_messages` function to include
   the ``where_filter`` parameter to further filter the LiQL query that is performed.
+* Removed the redundant ``return`` statement from the following functions:
+    * :py:func:`khoros.objects.messages._verify_required_fields`
+    * :py:func:`khoros.objects.messages._confirm_field_supplied`
 
 Fixed
 =====
@@ -43,6 +46,8 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 
 * Converted some unnecessary f-strings into standard strings in the
   :py:func:`khoros.structures.boards._structure_label_settings` function.
+* Converted an unnecessary f-string into a standard string in the
+  :py:func:`khoros.objects.messages.parse_v2_response`
 
 |
 
