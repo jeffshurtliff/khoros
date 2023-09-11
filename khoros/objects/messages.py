@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Sep 2023
+:Modified Date:     11 Sep 2023
 """
 
 import json
@@ -1229,7 +1229,7 @@ def define_context_url(khoros_object, msg_id, context_url='', full_response=Fals
     return response if full_response else successful
 
 
-def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
+def get_all_messages(khoros_object, board_id, fields=None, where_filter=None, descending=True):
     """This function retrieves data for all messages within a given board.
 
     .. versionadded:: 5.4.0
@@ -1242,13 +1242,15 @@ def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     :type fields: str, tuple, list, set, None
     :param where_filter: One or more optional WHERE filters to include in the LiQL query
     :type where_filter: str, tuple, list, set, None
+    :param descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type descending: bool
     :returns: A list containing a dictionary of data for each message within the board
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    return boards.get_all_messages(khoros_object, board_id, fields, where_filter)
+    return boards.get_all_messages(khoros_object, board_id, fields, where_filter, descending)
 
 
-def get_all_topic_messages(khoros_object, board_id, fields=None):
+def get_all_topic_messages(khoros_object, board_id, fields=None, descending=True):
     """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
 
     .. versionadded:: 5.4.0
@@ -1259,7 +1261,9 @@ def get_all_topic_messages(khoros_object, board_id, fields=None):
     :type board_id: str
     :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
     :type fields: str, tuple, list, set, None
+    :param descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type descending: bool
     :returns: A list containing a dictionary of data for each topic message within the board
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    return boards.get_all_topic_messages(khoros_object, board_id, fields)
+    return boards.get_all_topic_messages(khoros_object, board_id, fields, descending)

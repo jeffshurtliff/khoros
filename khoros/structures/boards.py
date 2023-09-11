@@ -6,7 +6,7 @@
 :Example:           ``board_url = boards.create(khoros_object, 'my-board', 'My Board', 'forum', return_url=True)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Sep 2023
+:Modified Date:     11 Sep 2023
 """
 
 import warnings
@@ -528,11 +528,11 @@ def get_message_count(khoros_object, board_id):
     return message_count
 
 
-def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
+def get_all_messages(khoros_object, board_id, fields=None, where_filter=None, descending=True):
     """This function retrieves data for all messages within a given board.
 
     .. versionchanged:: 5.4.0
-       Introduced the ``where_filter`` parameter to optionally further filter the LiQL query.
+       Introduced the ``where_filter`` and ``descending`` parameters to more specifically adjust the LiQL query.
 
     .. versionadded:: 5.3.0
 
@@ -544,6 +544,8 @@ def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     :type fields: str, tuple, list, set, None
     :param where_filter: One or more optional WHERE filters to include in the LiQL query
     :type where_filter: str, tuple, list, set, None
+    :param descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type descending: bool
     :returns: A list containing a dictionary of data for each message within the board
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
@@ -555,8 +557,9 @@ def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     if not isinstance(fields, str):
         fields = liql.parse_select_fields(fields)
     where_clause = _construct_where_clause(where_filter)
+    order_by_clause = _construct_order_by_clause(where_filter, descending)
     query = f"SELECT {fields} FROM messages WHERE board.id = '{board_id}' " \
-            f"{where_clause}ORDER BY last_publish_time DESC LIMIT 1000"
+            f"{where_clause}ORDER BY {order_by_clause} LIMIT 1000"
 
     # Perform the first LiQL query and add to the master list
     response, cursor = _perform_single_query(khoros_object, query, fields)
@@ -571,7 +574,7 @@ def get_all_messages(khoros_object, board_id, fields=None, where_filter=None):
     return messages
 
 
-def get_all_topic_messages(khoros_object, board_id, fields=None):
+def get_all_topic_messages(khoros_object, board_id, fields=None, descending=True):
     """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
 
     .. versionadded:: 5.4.0
@@ -582,10 +585,12 @@ def get_all_topic_messages(khoros_object, board_id, fields=None):
     :type board_id: str
     :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
     :type fields: str, tuple, list, set, None
+    :param descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type descending: bool
     :returns: A list containing a dictionary of data for each topic message within the board
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
-    return get_all_messages(khoros_object, board_id, fields, where_filter='depth=0')
+    return get_all_messages(khoros_object, board_id, fields, where_filter='depth=0', descending=descending)
 
 
 def _construct_where_clause(_where_filter=None):
@@ -604,6 +609,24 @@ def _construct_where_clause(_where_filter=None):
             if _filter:
                 _where_clause += f'AND {_filter} '
     return _where_clause
+
+
+def _construct_order_by_clause(_where_filter=None, _descending=True):
+    """This function constructs the ORDER BY clause for the :py:func:`khoros.objects.boards.get_all_messages` function.
+
+    .. versionadded:: 5.4.0
+
+    :param _where_filter: Zero or more WHERE filters
+    :type _where_filter: str, list, set, tuple, None
+    :param _descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type _descending: bool
+    :returns: The constructed ORDER BY clause
+    """
+    _field = 'last_publish_time'
+    if isinstance(_where_filter, str) and 'depth=0' in _where_filter:
+        _field = 'conversation.last_post_time'
+    _direction = 'DESC' if _descending else 'ASC'
+    return f'{_field} {_direction}'
 
 
 def _perform_single_query(khoros_object, query, fields=None, cursor=None):

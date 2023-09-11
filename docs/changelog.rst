@@ -27,6 +27,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the following new functions:
     * :py:func:`khoros.structures.boards.get_all_topic_messages`
     * :py:func:`khoros.structures.boards._construct_where_clause`
+    * :py:func:`khoros.structures.boards._construct_order_by_clause`
     * :py:func:`khoros.objects.messages.get_all_messages`
     * :py:func:`khoros.objects.messages.get_all_topic_messages`
 
@@ -38,14 +39,16 @@ Core Object
 Changes to the :doc:`core-object-methods`.
 
 * Updated the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method to include
-  the ``where_filter`` parameter to further filter the LiQL query that is performed.
+  the ``where_filter`` and ``descending`` parameters to further filter the LiQL query
+  that is performed.
 
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
 * Updated the :py:func:`khoros.structures.boards.get_all_messages` function to include
-  the ``where_filter`` parameter to further filter the LiQL query that is performed.
+  the ``where_filter``  and ``descending`` parameters to further filter the LiQL query
+  that is performed.
 * Removed the redundant ``return`` statement from the following functions:
     * :py:func:`khoros.objects.messages._verify_required_fields`
     * :py:func:`khoros.objects.messages._confirm_field_supplied`
