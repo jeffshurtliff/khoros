@@ -3431,6 +3431,19 @@ class Khoros(object):
             """
             return objects_module.messages.get_all_topic_messages(self.khoros_object, board_id, fields, descending)
 
+        def get_kudos_for_message(self, message_id, count_only=False):
+            """This function retrieves the kudos for a given message ID and returns the full data or the kudos count.
+
+            .. versionadded:: 5.4.0
+
+            :param message_id: The ID of the message for which to retrieve the kudos
+            :type message_id: str
+            :param count_only: Determines if only the kudos count should be returned (``False`` by default)
+            :type count_only: bool
+            :returns: The JSON data for the message kudos or the simple kudos count as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_kudos_for_message(self.khoros_object, message_id, count_only)
 
     class Node(object):
         """This class includes methods for interacting with nodes."""

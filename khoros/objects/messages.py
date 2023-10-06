@@ -1267,3 +1267,22 @@ def get_all_topic_messages(khoros_object, board_id, fields=None, descending=True
     :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
     """
     return boards.get_all_topic_messages(khoros_object, board_id, fields, descending)
+
+
+def get_kudos_for_message(khoros_object, message_id, count_only=False):
+    """This function retrieves the kudos for a given message ID and returns the full data or the kudos count.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param message_id: The ID of the message for which to retrieve the kudos
+    :type message_id: str
+    :param count_only: Determines if only the kudos count should be returned (``False`` by default)
+    :type count_only: bool
+    :returns: The JSON data for the message kudos or the simple kudos count as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    query = f"SELECT * FROM kudos WHERE message.id = '{message_id}'"
+    kudos = liql.perform_query(khoros_object, liql_query=query, return_items=True)
+    return len(kudos) if count_only else kudos

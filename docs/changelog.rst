@@ -19,6 +19,7 @@ Additions to the :doc:`core-object-methods`.
     * :py:meth:`khoros.core.Khoros.Board.get_all_topic_messages`
     * :py:meth:`khoros.core.Khoros.Message.get_all_messages`
     * :py:meth:`khoros.core.Khoros.Message.get_all_topic_messages`
+    * :py:meth:`khoros.core.Khoros.Message.get_kudos_for_message`
 
 Primary Modules
 ---------------
@@ -30,6 +31,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khoros.structures.boards._construct_order_by_clause`
     * :py:func:`khoros.objects.messages.get_all_messages`
     * :py:func:`khoros.objects.messages.get_all_topic_messages`
+    * :py:func:`khoros.objects.messages.get_kudos_for_message`
 
 Changed
 =======
