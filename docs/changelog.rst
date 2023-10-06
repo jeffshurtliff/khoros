@@ -65,7 +65,11 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 * Converted some unnecessary f-strings into standard strings in the
   :py:func:`khoros.structures.boards._structure_label_settings` function.
 * Converted an unnecessary f-string into a standard string in the
-  :py:func:`khoros.objects.messages.parse_v2_response`
+  :py:func:`khoros.objects.messages.parse_v2_response` function.
+
+General
+-------
+* Bumped urllib3 from 1.26.16 to 1.26.17 to address CVE-2023-43804.
 
 |
 
