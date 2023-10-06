@@ -7,7 +7,7 @@
                     node_id='support-tkb')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     26 Sep 2022
+:Modified Date:     11 Sep 2023
 """
 
 import json
@@ -16,12 +16,13 @@ import warnings
 from . import attachments, users
 from . import tags as tags_module
 from .. import api, liql, errors
-from ..structures import nodes
+from ..structures import nodes, boards
 from ..utils import log_utils, core_utils
 
 # Initialize the logger for this module
 logger = log_utils.initialize_logging(__name__)
 
+# Define constants
 REQUIRED_FIELDS = ['board', 'subject']
 CONTEXT_KEYS = ['id', 'url']
 SEO_KEYS = ['title', 'description', 'canonical_url']
@@ -720,6 +721,9 @@ def _verify_message_id(_msg_id, _msg_url):
 def _verify_required_fields(_node, _node_id, _node_url, _subject):
     """This function verifies that the required fields to create a message are satisfied.
 
+    .. versionchanged:: 5.4.0
+       Removed the redundant ``return`` statement.
+
     .. versionchanged:: 2.8.0
        Updated the if statement to leverage the :py:func:`isinstance` function.
 
@@ -747,7 +751,6 @@ def _verify_required_fields(_node, _node_id, _node_url, _subject):
         _requirements_satisfied = False if 'id' not in _node else True
     if not _requirements_satisfied:
         raise errors.exceptions.MissingRequiredDataError("A node and subject must be defined when creating messages")
-    return
 
 
 def _add_moderation_status_to_payload(_payload, _moderation_status):
@@ -805,6 +808,9 @@ def _add_tags_to_payload(_payload, _tags, _khoros_object=None, _msg_id=None, _ov
 def _confirm_field_supplied(_fields_dict):
     """This function checks to ensure that at least one field has been enabled to retrieve.
 
+    .. versionchanged:: 5.4.0
+       Removed the redundant ``return`` statement.
+
     .. versionadded:: 2.3.0
     """
     _field_supplied = False
@@ -814,7 +820,6 @@ def _confirm_field_supplied(_fields_dict):
             break
     if not _field_supplied:
         raise errors.exceptions.MissingRequiredDataError("At least one field must be enabled to retrieve a response.")
-    return
 
 
 def parse_v2_response(json_response, return_dict=False, status=False, response_msg=False, http_code=False,
@@ -847,7 +852,7 @@ def parse_v2_response(json_response, return_dict=False, status=False, response_m
     :returns: A string, tuple or dictionary with the parsed data
     :raises: :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
     """
-    warnings.warn(f"This function is deprecated and 'khoros.api.parse_v2_response' should be used.", DeprecationWarning)
+    warnings.warn("This function is deprecated and 'khoros.api.parse_v2_response' should be used.", DeprecationWarning)
     return api.parse_v2_response(json_response, return_dict, status, response_msg, http_code, message_id, message_url,
                                  message_api_uri, v2_base)
 
@@ -1222,3 +1227,62 @@ def define_context_url(khoros_object, msg_id, context_url='', full_response=Fals
         raise errors.exceptions.APIRequestError('Encountered the following exception while defining the context_url '
                                                 f'value: {exc}')
     return response if full_response else successful
+
+
+def get_all_messages(khoros_object, board_id, fields=None, where_filter=None, descending=True):
+    """This function retrieves data for all messages within a given board.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :param where_filter: One or more optional WHERE filters to include in the LiQL query
+    :type where_filter: str, tuple, list, set, None
+    :param descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type descending: bool
+    :returns: A list containing a dictionary of data for each message within the board
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    return boards.get_all_messages(khoros_object, board_id, fields, where_filter, descending)
+
+
+def get_all_topic_messages(khoros_object, board_id, fields=None, descending=True):
+    """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param board_id: The ID of the board to query
+    :type board_id: str
+    :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+    :type fields: str, tuple, list, set, None
+    :param descending: Determines if the data should be returned in descending order (``True`` by default)
+    :type descending: bool
+    :returns: A list containing a dictionary of data for each topic message within the board
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    return boards.get_all_topic_messages(khoros_object, board_id, fields, descending)
+
+
+def get_kudos_for_message(khoros_object, message_id, count_only=False):
+    """This function retrieves the kudos for a given message ID and returns the full data or the kudos count.
+
+    .. versionadded:: 5.4.0
+
+    :param khoros_object: The core :py:class:`khoros.Khoros` object
+    :type khoros_object: class[khoros.Khoros]
+    :param message_id: The ID of the message for which to retrieve the kudos
+    :type message_id: str
+    :param count_only: Determines if only the kudos count should be returned (``False`` by default)
+    :type count_only: bool
+    :returns: The JSON data for the message kudos or the simple kudos count as an integer
+    :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+    """
+    query = f"SELECT * FROM kudos WHERE message.id = '{message_id}'"
+    kudos = liql.perform_query(khoros_object, liql_query=query, return_items=True)
+    return len(kudos) if count_only else kudos

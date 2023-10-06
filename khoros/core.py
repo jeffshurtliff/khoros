@@ -6,7 +6,7 @@
 :Example:           ``khoros = Khoros(helper='helper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Jul 2023
+:Modified Date:     11 Sep 2023
 """
 
 import sys
@@ -1741,8 +1741,11 @@ class Khoros(object):
             """
             return structures_module.boards.get_message_count(self.khoros_object, board_id)
 
-        def get_all_messages(self, board_id, fields=None):
+        def get_all_messages(self, board_id, fields=None, where_filter=None, descending=True):
             """This function retrieves data for all messages within a given board.
+
+            .. versionchanged:: 5.4.0
+               Introduced the ``where_filter`` and ``descending`` parameters to optionally filter the LiQL query.
 
             .. versionadded:: 5.3.0
 
@@ -1750,10 +1753,31 @@ class Khoros(object):
             :type board_id: str
             :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
             :type fields: str, tuple, list, set, None
+            :param where_filter: One or more optional WHERE filters to include in the LiQL query
+            :type where_filter: str, tuple, list, set, None
+            :param descending: Determines if the data should be returned in descending order (``True`` by default)
+            :type descending: bool
             :returns: A list containing a dictionary of data for each message within the board
             :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
             """
-            return structures_module.boards.get_all_messages(self.khoros_object, board_id, fields)
+            return structures_module.boards.get_all_messages(self.khoros_object, board_id, fields,
+                                                             where_filter, descending)
+
+        def get_all_topic_messages(self, board_id, fields=None, descending=True):
+            """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+            .. versionadded:: 5.4.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :param descending: Determines if the data should be returned in descending order (``True`` by default)
+            :type descending: bool
+            :returns: A list containing a dictionary of data for each topic message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return structures_module.boards.get_all_topic_messages(self.khoros_object, board_id, fields, descending)
 
     class BulkData(object):
         """This class includes methods for interacting with the Bulk Data API.
@@ -3371,6 +3395,55 @@ class Khoros(object):
                      :py:exc:`khoros.errors.exceptions.MissingRequiredDataError`
             """
             return objects_module.messages.format_user_mention(self.khoros_object, user_info, user_id, login)
+
+        def get_all_messages(self, board_id, fields=None, where_filter=None, descending=True):
+            """This function retrieves data for all messages within a given board.
+
+            .. versionadded:: 5.4.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :param where_filter: One or more optional WHERE filters to include in the LiQL query
+            :type where_filter: str, tuple, list, set, None
+            :param descending: Determines if the data should be returned in descending order (``True`` by default)
+            :type descending: bool
+            :returns: A list containing a dictionary of data for each message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_all_messages(self.khoros_object, board_id, fields,
+                                                            where_filter, descending)
+
+        def get_all_topic_messages(self, board_id, fields=None, descending=True):
+            """This function retrieves data for all topic messages (i.e. zero-depth messages) within a given board.
+
+            .. versionadded:: 5.4.0
+
+            :param board_id: The ID of the board to query
+            :type board_id: str
+            :param fields: Specific fields to query if not all fields are needed (comma-separated string or iterable)
+            :type fields: str, tuple, list, set, None
+            :param descending: Determines if the data should be returned in descending order (``True`` by default)
+            :type descending: bool
+            :returns: A list containing a dictionary of data for each topic message within the board
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_all_topic_messages(self.khoros_object, board_id, fields, descending)
+
+        def get_kudos_for_message(self, message_id, count_only=False):
+            """This function retrieves the kudos for a given message ID and returns the full data or the kudos count.
+
+            .. versionadded:: 5.4.0
+
+            :param message_id: The ID of the message for which to retrieve the kudos
+            :type message_id: str
+            :param count_only: Determines if only the kudos count should be returned (``False`` by default)
+            :type count_only: bool
+            :returns: The JSON data for the message kudos or the simple kudos count as an integer
+            :raises: :py:exc:`khoros.errors.exceptions.GETRequestError`
+            """
+            return objects_module.messages.get_kudos_for_message(self.khoros_object, message_id, count_only)
 
     class Node(object):
         """This class includes methods for interacting with nodes."""
