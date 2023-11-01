@@ -4,6 +4,78 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.4.0
+******
+**Release Date: 2023-11-01**
+
+Added
+=====
+
+Core Object
+-----------
+Additions to the :doc:`core-object-methods`.
+
+* Added the following new methods:
+    * :py:meth:`khoros.core.Khoros.Board.get_all_topic_messages`
+    * :py:meth:`khoros.core.Khoros.Message.get_all_messages`
+    * :py:meth:`khoros.core.Khoros.Message.get_all_topic_messages`
+    * :py:meth:`khoros.core.Khoros.Message.get_kudos_for_message`
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the following new functions:
+    * :py:func:`khoros.structures.boards.get_all_topic_messages`
+    * :py:func:`khoros.structures.boards._construct_where_clause`
+    * :py:func:`khoros.structures.boards._construct_order_by_clause`
+    * :py:func:`khoros.objects.messages.get_all_messages`
+    * :py:func:`khoros.objects.messages.get_all_topic_messages`
+    * :py:func:`khoros.objects.messages.get_kudos_for_message`
+
+Changed
+=======
+
+Core Object
+-----------
+Changes to the :doc:`core-object-methods`.
+
+* Updated the :py:meth:`khoros.core.Khoros.Board.get_all_messages` method to include
+  the ``where_filter`` and ``descending`` parameters to further filter the LiQL query
+  that is performed.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khoros.structures.boards.get_all_messages` function to include
+  the ``where_filter``  and ``descending`` parameters to further filter the LiQL query
+  that is performed.
+* Removed the redundant ``return`` statement from the following functions:
+    * :py:func:`khoros.objects.messages._verify_required_fields`
+    * :py:func:`khoros.objects.messages._confirm_field_supplied`
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Converted some unnecessary f-strings into standard strings in the
+  :py:func:`khoros.structures.boards._structure_label_settings` function.
+* Converted an unnecessary f-string into a standard string in the
+  :py:func:`khoros.objects.messages.parse_v2_response` function.
+
+General
+-------
+* Bumped urllib3 from 1.26.16 to 1.26.17 to address CVE-2023-43804.
+
+|
+
+-----
+
+******
 v5.3.0
 ******
 **Release Date: 2023-08-08**
