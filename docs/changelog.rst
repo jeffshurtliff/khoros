@@ -13,7 +13,8 @@ Fixed
 
 General
 -------
-* Bumped idna from 3.4 to 3.7 to address CVE-2024-3651.
+* Bumped ``idna`` from 3.4 to 3.7 to address CVE-2024-3651.
+* Bumped ``requests`` from 2.31.0 to 2.32.0 to address SNYK-PYTHON-REQUESTS-6928867.
 
 |
 
