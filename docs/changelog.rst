@@ -4,6 +4,22 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v5.4.1
+******
+**Release Date: TBD**
+
+Fixed
+=====
+
+General
+-------
+* Bumped idna from 3.4 to 3.7 to address CVE-2024-3651.
+
+|
+
+-----
+
+******
 v5.4.0
 ******
 **Release Date: 2023-11-01**
