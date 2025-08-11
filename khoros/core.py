@@ -46,8 +46,11 @@ class Khoros(object):
     def __init__(self, defined_settings=None, community_url=None, tenant_id=None, community_name=None, auth_type=None,
                  session_auth=None, oauth2=None, sso=None, helper=None, env_variables=None, auto_connect=True,
                  use_community_name=False, prefer_json=True, debug_mode=False, skip_env_variables=False, empty=False,
-                 ssl_verify=None, bulk_data_settings=None, logging_level=None):
+                 ssl_verify=None, bulk_data_settings=None, platform=None, logging_level=None):
         """This method instantiates the core Khoros object.
+
+        .. versionchanged:: 5.0.1
+           Added support for the Aurora platform w/ API v2.1.
 
         .. versionchanged:: 5.0.0
            Added support for the Bulk Data API.
@@ -108,6 +111,8 @@ class Khoros(object):
         :type ssl_verify: bool, None
         :param bulk_data: The values for utilizing the Bulk Data API
         :type bulk_data: dict, None
+        :param platform: The Khoros platform one is deployed on, like Aurora
+        :type platform: str, None
         :raises: :py:exc:`khoros.errors.exceptions.MissingAuthDataError`,
                  :py:exc:`khoros.errors.exceptions.CurrentlyUnsupportedError`,
                  :py:exc:`khoros.errors.exceptions.SessionAuthenticationError`
@@ -156,6 +161,7 @@ class Khoros(object):
             'empty': empty,
             'ssl_verify': ssl_verify,
             'bulk_data': bulk_data_settings,
+            'platform': platform,
         }
         for _arg_key, _arg_val in _individual_arguments.items():
             if _arg_val is not None and defined_settings.get(_arg_key) is None:
@@ -443,7 +449,10 @@ class Khoros(object):
         else:
             self.core_settings['base_url'] = self.core_settings.get('community_url')
         self.core_settings['v1_base'] = f"{self.core_settings.get('community_url')}/restapi/vc"
-        self.core_settings['v2_base'] = f"{self.core_settings.get('base_url')}/api/2.0"
+        if self.core_settings.get('platform') == 'Aurora':
+            self.core_settings['v2_base'] = f"{self.core_settings.get('base_url')}/api/2.1"
+        else:
+            self.core_settings['v2_base'] = f"{self.core_settings.get('base_url')}/api/2.0"
 
     def _session_auth_credentials_defined(self):
         """This method checks to see if session authentication credentials have been defined.
