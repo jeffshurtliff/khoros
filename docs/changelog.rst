@@ -4,6 +4,21 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v6.0.0
+******
+**Release Date: 2026-09-23**
+
+This is the final release of the package, which is now archived and no longer maintained.
+
+Changed
+=======
+
+* Raised the minimum required Python version to 3.10.
+* Updated the ``urllib3``, ``requests``, ``setuptools`` and ``pytest`` requirements, and the locked transitive
+  dependencies (``certifi``, ``idna``, ``jinja2``, ``pygments``), to resolve known security vulnerabilities.
+* Live-API tests now skip when no helper file or credentials are available.
+
+******
 v5.4.0
 ******
 **Release Date: 2023-11-01**

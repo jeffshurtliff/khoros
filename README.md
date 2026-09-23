@@ -2,20 +2,24 @@
 The **khoros** library acts as a Python software development kit (SDK) to administer and manage 
 [Khoros Communities](https://khoros.com/platform/communities) (formerly Lithium) online community platforms.
 
+> [!WARNING]
+> ## Archived / No Longer Maintained
+>
+> This repository is no longer actively maintained and has been archived.
+>
+> The project remains available for historical/reference purposes, but no further development, bug fixes, dependency updates, or security patches are planned. Issues and pull requests may not be reviewed or accepted.
+>
+> You are welcome to fork the repository and adapt or continue the project under the terms of its license.
+>
+> **Status:** Archived  
+> **Maintenance:** Discontinued
+
 <table>
     <tr>
         <td>Latest Stable Release</td>
         <td>
             <a href='https://pypi.org/project/khoros/'>
                 <img alt="PyPI" src="https://img.shields.io/pypi/v/khoros">
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td>Latest Beta/RC Release</td>
-        <td>
-            <a href='https://pypi.org/project/khoros/#history'>
-                <img alt="PyPI" src="https://img.shields.io/badge/pypi-5.4.0rc3-blue">
             </a>
         </td>
     </tr>
@@ -105,7 +109,7 @@ The **khoros** library acts as a Python software development kit (SDK) to admini
 </table>
 
 ## Installation
-The package can be installed via pip using the syntax below.
+Python 3.10 or later is required. The package can be installed via pip using the syntax below.
 
 ```sh
 pip install khoros --upgrade
