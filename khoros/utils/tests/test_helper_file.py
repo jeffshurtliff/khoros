@@ -10,6 +10,8 @@
 import os
 import sys
 
+import pytest
+
 
 def set_package_path():
     """This function adds the high-level khoros directory to the sys.path list.
@@ -38,6 +40,8 @@ def test_yaml_file():
     # Define the full path to the helper file
     helper_path = get_helper_path()
     yaml_file = f"{helper_path}khoros_helper.yml"
+    if not os.path.isfile(yaml_file):
+        pytest.skip('skipping tests where a valid helper file is needed')
 
     # Initialize the core object using the helper file
     khoros = Khoros(helper=yaml_file, auto_connect=False)

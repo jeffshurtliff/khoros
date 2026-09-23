@@ -5,17 +5,12 @@
 The table below shows which versions of this project 
 are currently being supported with security updates.
 
-| Version   | Supported          |
-| --------- | ------------------ |
-| \>= 5.0.x | :white_check_mark: |
-| 4.4.x     | :white_check_mark: |
-| 4.3.x     | :white_check_mark: |
-| 4.2.x     | :white_check_mark: |
-| 4.1.x     | :white_check_mark: |
-| 4.0.0     | :white_check_mark: |
-| 3.x.x     | :x:                |
-| 2.x.x     | :x:                |
-| < 2.0     | :x:                |
+**This project is archived and no longer maintained. No versions receive security updates.**
+
+| Version   | Supported |
+| --------- | --------- |
+| 6.0.0     | :x:       |
+| < 6.0.0   | :x:       |
 
 ## Reporting a Vulnerability
 
