@@ -205,7 +205,7 @@ def should_verify_tls(khoros_object=None):
     :type khoros_object: class[khoros.Khoros], None
     :returns: Boolean value indicating if the verification should occur
     """
-    global ssl_warning_shown, ssl_verify_disabled
+    global ssl_verify_disabled
     verify = None
     if khoros_object is not None and 'ssl_verify' in khoros_object.core_settings:
         verify = khoros_object.core_settings.get('ssl_verify')
